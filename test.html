@@ -1,0 +1,62 @@
+<html>
+<head>
+
+	<title>Form validator plugin for jQuery</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<script type="text/javascript" src="validator.js"></script>
+	
+	<link href="style.css" type="text/css" rel="stylesheet" />
+	
+</head>
+<body>
+
+	<form action="" onsubmit="if($(this).validate()) alert('Valid!'); return false;">
+		<p>
+			<strong>Required</strong> <em>required</em><br />
+			<input class="required" />
+		</p>
+		<p>
+			<strong>Minimum length</strong> <em>validate_min_length length5</em><br />
+			<input class="validate_min_length length5" />
+		</p>
+		<p>
+			<strong>Max length</strong> <em>validate_max_length length5</em><br />
+			<textarea class="validate_max_length length5" rows="1"></textarea>
+		</p>
+		<p>
+			<strong>E-mail</strong> <em>validate_email</em><br />
+			<input class="validate_email" />
+		</p>
+		<p>
+			<strong>Domain</strong> <em>validate_domain</em><br />
+			<input class="validate_domain" />
+		</p>
+		<p>
+			<strong>Url</strong> <em>validate_url</em><br />
+			<input class="validate_url" />
+		</p>
+		<p>
+			<strong>Float</strong> <em>validate_float</em><br />
+			<input class="validate_float" />
+		</p>
+		<p>
+			<strong>Time HH:mm</strong> <em>validate_time</em><br />
+			<input class="validate_time" />
+		</p>
+		<p>
+			<strong>Date yyyy-mm-dd</strong> <em>validate_date</em><br />
+			<input class="validate_date" />
+		</p>
+		<p>
+			<strong>Birthdate yyyy-mm-dd</strong> <em>validate_birthdate</em><br />
+			<input class="validate_birthdate" />
+		</p>
+		<p>
+			<input type="submit" value="Validate" />
+		</p>
+	</form>
+
+</body>
+</html>

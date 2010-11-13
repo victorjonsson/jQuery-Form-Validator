@@ -1,0 +1,19 @@
+* {
+	padding: 4px;
+}
+
+html, body {
+	padding: 0 10px 10px;
+}
+
+input[type=text] {
+	border: #CCC solid 1px;
+}
+
+.jquery_form_error_message {
+	margin:8px 0;
+	background: pink;
+}
+.error {
+	background: pink;
+}

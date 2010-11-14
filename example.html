@@ -26,6 +26,10 @@
 			<textarea class="validate_max_length length5" rows="1"></textarea>
 		</p>
 		<p>
+			<strong>Length between 3-5 characters</strong> <em>validate_length length3-5</em><br />
+			<textarea class="validate_length length3-5" rows="1"></textarea>
+		</p>
+		<p>
 			<strong>E-mail</strong> <em>validate_email</em><br />
 			<input class="validate_email" />
 		</p>
@@ -40,6 +44,10 @@
 		<p>
 			<strong>Float</strong> <em>validate_float</em><br />
 			<input class="validate_float" />
+		</p>
+		<p>
+			<strong>Integer</strong> <em>validate_int</em><br />
+			<input class="validate_int" />
 		</p>
 		<p>
 			<strong>Time HH:mm</strong> <em>validate_time</em><br />
@@ -64,6 +72,11 @@
 		<p>
 			<strong>Simple captcha, this field has to contain value "jqueryvalidation"</strong> <em>validate_spamcheck captcha[VALUE-TO-VALIDATE]</em><br />
 			<input class="validate_spamcheck captchajqueryvalidation" />
+		</p>
+		<p>
+			<strong>These two inputs has to have identical values (minimum 3 characters)</strong> <em>validate_confirmation</em><br />
+			<input name="something" class="validate_confirmation validate_min_lenght length3" />
+			<input name="something_confirmation" />
 		</p>
 		<p>
 			<strong>Length restriction <span id="maxlength">50</span></strong>

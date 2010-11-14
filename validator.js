@@ -3,13 +3,13 @@
 		validate : function(language, settings){
         	
 			/*
-			 * Locale
+			 * Dialogs
 			 */
 			var lang = {
-					errorTitle : 'Form submission not valid',
+					errorTitle : 'Form submission failed!',
 					requiredFields : 'You have not answered all required fields',
 					badTime : 'You have not given a correct time',
-					badEmail : 'You have not given a correct e-mail a',
+					badEmail : 'You have not given a correct e-mail address',
 					badTelephone : 'You have not given a correct phone number',
 					badSecurityAnswer : 'You have not given a correct answer to the security question',
 					badDate : 'You have not given a correct date',
@@ -17,12 +17,13 @@
 					toLongEnd : ' characters',
 					toShortStart : 'You have given an answer shorter then ',
 					toShortEnd : ' characters',
+					badLength : 'You have to give an answer between ',
 					badTime : 'You have not given a correct time',
-					somethingWrong : 'Something went wrong!',
 					notConfirmed : 'Values could not be confirmed',
 					badDomain : 'Incorrect domain value',
 					badUrl : 'Incorrect url value',
-					badFloat : 'Incorrect float value'
+					badFloat : 'Incorrect float value',
+					badInt : 'Incorrect integer value'
 				};
 	        
 			
@@ -70,8 +71,8 @@
 	         * @returns integer
 	         */
 	        var getAttributeInteger = function(classValue, attributeName) {
-	        	var regex = new RegExp('('+attributeName+'[0-9]+)', "g");
-	        	return classValue.match(regex)[0].replace(/[^0-9]/g, '');
+	        	var regex = new RegExp('('+attributeName+'[0-9\-]+)', "g");
+	        	return classValue.match(regex)[0].replace(/[^0-9\-]/g, '');
 	        };
 	        
 	        /** Error messages for this validation */
@@ -83,6 +84,8 @@
 	    	/** Default border color on elements when valid */
 	    	var defaultBorderColor = null;
 	        
+	    	var form = this;
+	    	
 	    	/*
 	    	 * Validate element values
 	    	 */
@@ -119,6 +122,17 @@
 	        				errorMessages.push(mess);
 	        		}
 	        		
+	        		// Length range
+	        		if(classes.indexOf('validate_length') > -1) {
+	        			var range = getAttributeInteger(classes, 'length').split('-');
+	        			if(value.length < parseInt(range[0]) || value.length > parseInt(range[1])) {
+	        				errorInputs.push($(this));
+		        			var mess = lang.badLength +getAttributeInteger(classes, 'length')+ lang.toLongEnd;
+		        			if(jQuery.inArray(mess, errorMessages) < 0)
+		        				errorMessages.push(mess);
+	        			}
+	        		}
+	        		
 	        		// Email
 	        		if(classes.indexOf('validate_email') > -1 && !jQueryFormHelper.validateEmail(value)) {
 	        			errorInputs.push($(this));
@@ -145,6 +159,13 @@
 	        			errorInputs.push($(this));
 	        			if(jQuery.inArray(lang.badFloat, errorMessages) < 0)
 	        				errorMessages.push(lang.badFloat);
+	        		}
+	        		
+	        		// Integer
+	        		else if(classes.indexOf('validate_int') > -1 && !jQueryFormHelper.validateInteger(value)) {
+	        			errorInputs.push($(this));
+	        			if(jQuery.inArray(lang.badInt, errorMessages) < 0)
+	        				errorMessages.push(lang.badInt);
 	        		}
 	        		
 	        		// Time
@@ -187,6 +208,20 @@
 	        			errorInputs.push($(this));
 	        			if(jQuery.inArray(lang.badSecurityAnswer, errorMessages) < 0)
 	        				errorMessages.push(lang.badSecurityAnswer);
+	        		}
+	        		
+	        		// confirmation
+	        		if(classes.indexOf('validate_confirmation') > -1) {
+	        			var conf = '';
+	        			var confInput = $(form).find('input[name='+$(this).attr('name')+'_confirmation]').eq(0);
+	        			if(confInput) 
+	        				conf = confInput.val();
+	        			
+	        			if(value != conf) {
+	        				errorInputs.push($(this));
+	        				if(jQuery.inArray(lang.notConfirmed, errorMessages) < 0)
+		        				errorMessages.push(lang.notConfirmed);
+	        			}
 	        		}
 	        	}
 	        });
@@ -374,6 +409,14 @@ jQueryFormHelper.validateFloat = function(val)
 };
 
 /**
+ * Validate that given value is a number
+ */
+
+jQueryFormHelper.validateInteger = function(val) {
+	return val != '' && val.replace(/[0-9]/g, '') == '';
+};
+
+/**
  * Has month only 30 days?
  * @return boolean
  */
@@ -388,7 +431,7 @@ jQueryFormHelper.isShortMonth = function(m)
 jQueryFormHelper.simpleSpamCheck = function(val, classAttr)
 {
 	answer = classAttr.match(/captcha([0-9a-z]+)/i)[1].replace('captcha', '');
-	return (val == answer) ? true : false;
+	return val == answer;
 };
 
 /**

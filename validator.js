@@ -263,7 +263,7 @@
 	    */
 	   restrictLength : function(maxLengthElement){
 			new jQueryFormHelper.lengthRestriction(this, maxLengthElement);
-			//return this;
+			return this;
 	   } 
 	   
 	});

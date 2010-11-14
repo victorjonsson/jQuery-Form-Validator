@@ -54,6 +54,23 @@
 			<input class="validate_birthdate" />
 		</p>
 		<p>
+			<strong>Valid telephone number</strong> <em>validate_phone</em><br />
+			<input class="validate_phone" />
+		</p>
+		<p>
+			<strong>Valid Swedish mobile telephone number</strong> <em>validate_swemobile</em><br />
+			<input class="validate_swemobile" />
+		</p>
+		<p>
+			<strong>Simple captcha, this field has to contain value "jqueryvalidation"</strong> <em>validate_spamcheck captcha[VALUE-TO-VALIDATE]</em><br />
+			<input class="validate_spamcheck captchajqueryvalidation" />
+		</p>
+		<p>
+			<strong>Length restriction <span id="maxlength">50</span></strong> <em> onfocus="$(this).restrictLength($('#maxlength'))"</em>
+			<br />
+			<textarea rows="3" onfocus="$(this).restrictLength($('#maxlength'))"></textarea>
+		</p>
+		<p>
 			<input type="submit" value="Validate" />
 		</p>
 	</form>

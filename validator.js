@@ -120,52 +120,73 @@
 	        		}
 	        		
 	        		// Email
-	        		if(classes.indexOf('validate_email') > -1 && !jQueryFormValidator.validateEmail(value)) {
+	        		if(classes.indexOf('validate_email') > -1 && !jQueryFormHelper.validateEmail(value)) {
 	        			errorInputs.push($(this));
 	        			if(jQuery.inArray(lang.badEmail, errorMessages) < 0)
 	        				errorMessages.push(lang.badEmail);
 	        		}
 	        		
 	        		// Domain
-	        		if(classes.indexOf('validate_domain') > -1 && !jQueryFormValidator.validateDomain(value)) {
+	        		else if(classes.indexOf('validate_domain') > -1 && !jQueryFormHelper.validateDomain(value)) {
 	        			errorInputs.push($(this));
 	        			if(jQuery.inArray(lang.badDomain, errorMessages) < 0)
 	        				errorMessages.push(lang.badDomain);
 	        		}
 	        		
 	        		// Url
-	        		if(classes.indexOf('validate_url') > -1 && !jQueryFormValidator.validateUrl(value)) {
+	        		else if(classes.indexOf('validate_url') > -1 && !jQueryFormHelper.validateUrl(value)) {
 	        			errorInputs.push($(this));
 	        			if(jQuery.inArray(lang.badUrl, errorMessages) < 0)
 	        				errorMessages.push(lang.badUrl);
 	        		}
 	        		
 	        		// Float
-	        		if(classes.indexOf('validate_float') > -1 && !jQueryFormValidator.validateFloat(value)) {
+	        		else if(classes.indexOf('validate_float') > -1 && !jQueryFormHelper.validateFloat(value)) {
 	        			errorInputs.push($(this));
 	        			if(jQuery.inArray(lang.badFloat, errorMessages) < 0)
 	        				errorMessages.push(lang.badFloat);
 	        		}
 	        		
 	        		// Time
-	        		if(classes.indexOf('validate_time') > -1 && !jQueryFormValidator.validateTime(value)) {
+	        		else if(classes.indexOf('validate_time') > -1 && !jQueryFormHelper.validateTime(value)) {
 	        			errorInputs.push($(this));
 	        			if(jQuery.inArray(lang.badTime, errorMessages) < 0)
 	        				errorMessages.push(lang.badTime);
 	        		}
 	        		
 	        		// Date
-	        		if(classes.indexOf('validate_date') > -1 && !jQueryFormValidator.validateDate(value)) {
+	        		else if(classes.indexOf('validate_date') > -1 && !jQueryFormHelper.validateDate(value)) {
 	        			errorInputs.push($(this));
 	        			if(jQuery.inArray(lang.badDate, errorMessages) < 0)
 	        				errorMessages.push(lang.badDate);
 	        		}
 	        		
 	        		// Birthdate
-	        		if(classes.indexOf('validate_birthdate') > -1 && !jQueryFormValidator.validateBirthdate(value)) {
+	        		else if(classes.indexOf('validate_birthdate') > -1 && !jQueryFormHelper.validateBirthdate(value)) {
 	        			errorInputs.push($(this));
 	        			if(jQuery.inArray(lang.badDate, errorMessages) < 0)
 	        				errorMessages.push(lang.badDate);
+	        		}
+	        		
+	        		// Phone number
+	        		else if(classes.indexOf('validate_phone') > -1 && !jQueryFormHelper.validatePhoneNumber(value)) {
+	        			errorInputs.push($(this));
+	        			if(jQuery.inArray(lang.badTelephone, errorMessages) < 0)
+	        				errorMessages.push(lang.badTelephone);
+	        		}
+	        		
+	        		// Swedish phone number
+	        		else if(classes.indexOf('validate_swemobile') > -1 && !jQueryFormHelper.validateSwedishMobileNumber(value)) {
+	        			errorInputs.push($(this));
+	        			if(jQuery.inArray(lang.badTelephone, errorMessages) < 0)
+	        				errorMessages.push(lang.badTelephone);
+	        		}
+	        		
+	        		// simple spam check
+	        		else if(classes.indexOf('validate_spamcheck') > -1 && !jQueryFormHelper.simpleSpamCheck(value, classes)) {
+	        			errorInputs.push($(this));
+	        			if(jQuery.inArray(lang.badSecurityAnswer, errorMessages) < 0)
+	        				errorMessages.push(lang.badSecurityAnswer);
 	        		}
 	        	}
 	        });
@@ -206,17 +227,40 @@
     
 })(jQuery);
 
+/**
+ * Plugin for displaying input length restriction
+ */
+(function($){
+	$.extend($.fn, {	
+		restrictLength : function(maxLengthElement) {
+			var maxLength = parseInt(maxLengthElement.text());
+			
+			$(this).keyup(function() {
+				$(this).val( $(this).val().substring(0, maxLength) );
+				maxLengthElement.text( maxLength - $(this).val().length );	
+			});
+			
+			$(this).blur(function() {
+				$(this).unbind('blur');
+				$(this).unbind('keyup');
+			});
+			
+			$(this).keyup();
+		}
+	});
+})(jQuery);
+
 
 /**
  * Namespace for helper functions
  */
-jQueryFormValidator = {};
+var jQueryFormHelper = {};
 
 /**
  * Validate email
  * @return boolean
  */
-jQueryFormValidator.validateEmail = function(email)
+jQueryFormHelper.validateEmail = function(email)
 {
 	// TODO: is this regexp enough for validating email correct?
 	emailFilter = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
@@ -227,7 +271,7 @@ jQueryFormValidator.validateEmail = function(email)
  * Validate phonenumber, atleast 7 digits only one hifen and plus allowed
  * @return boolean
  */
-jQueryFormValidator.validatePhoneNumber = function(tele)
+jQueryFormHelper.validatePhoneNumber = function(tele)
 {
 	numPlus = tele.match(/\+/g);
 	numHifen = tele.match(/-/g);
@@ -251,9 +295,9 @@ jQueryFormValidator.validatePhoneNumber = function(tele)
  * @param number
  * @return boolean
  */
-jQueryFormValidator.validateSwedishMobileNumber = function(number)
+jQueryFormHelper.validateSwedishMobileNumber = function(number)
 {
-	if(!jQueryFormValidator.validatePhoneNumber(number))
+	if(!jQueryFormHelper.validatePhoneNumber(number))
 		return false;
 	
 	number = number.replace(/[^0-9]/g, '');
@@ -263,7 +307,7 @@ jQueryFormValidator.validateSwedishMobileNumber = function(number)
 	else if(number.length != 11 && begin == '467')
 		return false;
 	
-	if(begin == '070' || begin == '073' || (begin == '467' && number.substr(3,1) == '0'))
+	if(begin == '070' || begin == '073' || begin == '072' || begin == '076' || (begin == '467' && number.substr(3,1) == '0'))
 		return true;
 	else
 		return false;
@@ -273,7 +317,7 @@ jQueryFormValidator.validateSwedishMobileNumber = function(number)
  * Is this a valid birth date YYYY-MM-DD
  * @return boolean
  */
-jQueryFormValidator.validateBirthdate = function(val)
+jQueryFormHelper.validateBirthdate = function(val)
 {
 	if(!this.validateDate(val))
 		return false;
@@ -292,7 +336,7 @@ jQueryFormValidator.validateBirthdate = function(val)
  * Is it a correct date YYYY-MM-DD
  * @return boolean
  */
-jQueryFormValidator.validateDate = function(val)
+jQueryFormHelper.validateDate = function(val)
 {
 	// enklast mšjliga...
 	if(val.match(/^(\d{4})\-(\d{2})\-(\d{2})$/) == null) 
@@ -322,7 +366,7 @@ jQueryFormValidator.validateDate = function(val)
 /**
  * Validate time HH:mm
  */
-jQueryFormValidator.validateTime = function(time)
+jQueryFormHelper.validateTime = function(time)
 {
 	if(time.match(/^(\d{2}):(\d{2})$/) == null) 
 		return false;
@@ -339,7 +383,7 @@ jQueryFormValidator.validateTime = function(time)
 /**
  * Validate float value
  */
-jQueryFormValidator.validateFloat = function(val) 
+jQueryFormHelper.validateFloat = function(val) 
 {
 	return val.match(/^(\-|)([0-9]+)\.([0-9]+)$/) != null;
 };
@@ -348,25 +392,24 @@ jQueryFormValidator.validateFloat = function(val)
  * Has month only 30 days?
  * @return boolean
  */
-jQueryFormValidator.isShortMonth = function(m)
+jQueryFormHelper.isShortMonth = function(m)
 {
-	return ( (m%2 == 0 && m < 7) || (m%2 != 0 & m > 7) ) ? true : false;
+	return (m%2 == 0 && m < 7) || (m%2 != 0 & m > 7);
 };
 
 /**
  * Simple spam check
  */
-jQueryFormValidator.simpleSpamCheck = function(val, classAttr)
+jQueryFormHelper.simpleSpamCheck = function(val, classAttr)
 {
-	answer = classAttr.match(/captcha([0-9a-z]*)/i)[1].replace('captcha', '');
+	answer = classAttr.match(/captcha([0-9a-z]+)/i)[1].replace('captcha', '');
 	return (val == answer) ? true : false;
 };
-
 
 /**
  * Validate domain name
  */
-jQueryFormValidator.validateDomain = function(val)
+jQueryFormHelper.validateDomain = function(val)
 {
 	val = val.replace('http://', '').replace('www.', '');
 	var arr = new Array(
@@ -429,9 +472,8 @@ jQueryFormValidator.validateDomain = function(val)
 	return true;
 };
 
-jQueryFormValidator.validateUrl = function(url)
+jQueryFormHelper.validateUrl = function(url)
 {
 	urlFilter = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 	return urlFilter.test(url);
 };
-

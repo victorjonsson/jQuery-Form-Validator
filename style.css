@@ -14,6 +14,15 @@ input[type=text] {
 	margin:8px 0;
 	background: pink;
 }
+
 .error {
 	background: pink;
+}
+
+#maxlength {
+	background: #CCC;
+}
+
+em {
+	background:lightyellow;
 }

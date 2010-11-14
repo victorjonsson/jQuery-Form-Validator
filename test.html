@@ -66,10 +66,13 @@
 			<input class="validate_spamcheck captchajqueryvalidation" />
 		</p>
 		<p>
-			<strong>Length restriction <span id="maxlength">50</span></strong> <em> onfocus="$(this).restrictLength($('#maxlength'))"</em>
+			<strong>Length restriction <span id="maxlength">50</span></strong>
 			<br />
-			<textarea rows="3" onfocus="$(this).restrictLength($('#maxlength'))"></textarea>
+			<textarea rows="3" id="area"></textarea>
 		</p>
+		<script type="text/javascript">
+			$('#area').restrictLength($('#maxlength'));
+		</script>
 		<p>
 			<input type="submit" value="Validate" />
 		</p>

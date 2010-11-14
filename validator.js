@@ -221,33 +221,18 @@
 	        }	        
 	        
 	        return true;
-	   }
-	    
+	   },
+	   
+	   /**
+	    * Plugin for displaying input length restriction
+	    */
+	   restrictLength : function(maxLengthElement){
+			new jQueryFormHelper.lengthRestriction(this, maxLengthElement);
+			//return this;
+	   } 
+	   
 	});
     
-})(jQuery);
-
-/**
- * Plugin for displaying input length restriction
- */
-(function($){
-	$.extend($.fn, {	
-		restrictLength : function(maxLengthElement) {
-			var maxLength = parseInt(maxLengthElement.text());
-			
-			$(this).keyup(function() {
-				$(this).val( $(this).val().substring(0, maxLength) );
-				maxLengthElement.text( maxLength - $(this).val().length );	
-			});
-			
-			$(this).blur(function() {
-				$(this).unbind('blur');
-				$(this).unbind('keyup');
-			});
-			
-			$(this).keyup();
-		}
-	});
 })(jQuery);
 
 
@@ -472,8 +457,31 @@ jQueryFormHelper.validateDomain = function(val)
 	return true;
 };
 
+/**
+ * Validate url
+ */
 jQueryFormHelper.validateUrl = function(url)
 {
 	urlFilter = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 	return urlFilter.test(url);
+};
+
+ /**
+  * Restrict input length
+  * @param inputElement Html Elemtn object
+  * @param maxLengthElement jQuery Object
+  */
+jQueryFormHelper.lengthRestriction = function(inputElement, maxLengthElement) {
+	this.input = inputElement;
+	this.maxLength = parseInt(maxLengthElement.text());
+	var self = this;
+
+	$(this.input).keyup(function() {
+		$(this).val( $(this).val().substring(0, self.maxLength) );
+		maxLengthElement.text( self.maxLength - $(this).val().length );
+	})
+	.focus(function() {
+		$(this).keyup();
+	})
+	.keyup();
 };

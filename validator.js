@@ -283,7 +283,7 @@ var jQueryFormHelper = {};
 jQueryFormHelper.validateEmail = function(email)
 {
 	// TODO: is this regexp enough for validating email correct?
-	emailFilter = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
+	var emailFilter = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
 	return emailFilter.test(email) ? true : false;
 };
 
@@ -293,8 +293,8 @@ jQueryFormHelper.validateEmail = function(email)
  */
 jQueryFormHelper.validatePhoneNumber = function(tele)
 {
-	numPlus = tele.match(/\+/g);
-	numHifen = tele.match(/-/g);
+	var numPlus = tele.match(/\+/g);
+	var numHifen = tele.match(/-/g);
 	if((numPlus != null && numPlus.length > 1) || (numHifen != null && numHifen.length > 1))
 		return false;
 	
@@ -321,7 +321,7 @@ jQueryFormHelper.validateSwedishMobileNumber = function(number)
 		return false;
 	
 	number = number.replace(/[^0-9]/g, '');
-	begin = number.substring(0, 3);
+	var begin = number.substring(0, 3);
 	if(number.length != 10 && begin != '467')
 		return false;
 	else if(number.length != 11 && begin == '467')
@@ -342,9 +342,9 @@ jQueryFormHelper.validateBirthdate = function(val)
 	if(!this.validateDate(val))
 		return false;
 	
-	d = new Date();
-	currentYear = d.getFullYear();
-	year = parseInt(val.substring(0, 4));
+	var d = new Date();
+	var currentYear = d.getFullYear();
+	var year = parseInt(val.substring(0, 4));
 	
 	if(year > currentYear || year < (currentYear - 122))
 		return false;
@@ -362,8 +362,8 @@ jQueryFormHelper.validateDate = function(val)
 	if(val.match(/^(\d{4})\-(\d{2})\-(\d{2})$/) == null) 
 		return false;
 	
-	month = val.substring(5, 8);
-	day = val.substring(8, 11);
+	var month = val.substring(5, 8);
+	var day = val.substring(8, 11);
 	
 	// skum fix. Šr talet 05 eller lŠgre ger parseInt rŠtt int annars fŒr man 0 nŠr man kšr parseInt?
 	if(month.indexOf('0') == 0)
@@ -392,8 +392,8 @@ jQueryFormHelper.validateTime = function(time)
 		return false;
 	else
 	{
-		hours = parseInt(time.split(':')[0]);
-		minutes = parseInt(time.split(':')[1]);
+		var hours = parseInt(time.split(':')[0]);
+		var minutes = parseInt(time.split(':')[1]);
 		if(hours > 24 || minutes > 59)
 			return false;
 	}
@@ -430,7 +430,7 @@ jQueryFormHelper.isShortMonth = function(m)
  */
 jQueryFormHelper.simpleSpamCheck = function(val, classAttr)
 {
-	answer = classAttr.match(/captcha([0-9a-z]+)/i)[1].replace('captcha', '');
+	var answer = classAttr.match(/captcha([0-9a-z]+)/i)[1].replace('captcha', '');
 	return val == answer;
 };
 
@@ -505,7 +505,7 @@ jQueryFormHelper.validateDomain = function(val)
  */
 jQueryFormHelper.validateUrl = function(url)
 {
-	urlFilter = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+	var urlFilter = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 	return urlFilter.test(url);
 };
 

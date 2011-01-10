@@ -89,7 +89,7 @@
 	    	/*
 	    	 * Validate element values
 	    	 */
-	        $(this).find('input,textarea').each(function() {
+	        $(this).find('input,textarea,select').each(function() {
 	        	if(!ignoreInput($(this).attr('name'), $(this).attr('type'))) {
 	        		
 	        		// memorize border color
@@ -358,14 +358,14 @@ jQueryFormHelper.validateBirthdate = function(val)
  */
 jQueryFormHelper.validateDate = function(val)
 {
-	// enklast mšjliga...
+	// enklast mï¿½jliga...
 	if(val.match(/^(\d{4})\-(\d{2})\-(\d{2})$/) == null) 
 		return false;
 	
 	var month = val.substring(5, 8);
 	var day = val.substring(8, 11);
 	
-	// skum fix. Šr talet 05 eller lŠgre ger parseInt rŠtt int annars fŒr man 0 nŠr man kšr parseInt?
+	// skum fix. ï¿½r talet 05 eller lï¿½gre ger parseInt rï¿½tt int annars fï¿½r man 0 nï¿½r man kï¿½r parseInt?
 	if(month.indexOf('0') == 0)
 		month = month.replace('0', '');
 	if(day.indexOf('0') == 0)

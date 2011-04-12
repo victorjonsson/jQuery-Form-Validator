@@ -26,11 +26,11 @@
             </p>
             <p>
                 <strong>Max length</strong> <em>validate_max_length length5</em><br />
-                <textarea data-validation="validate_max_length length5" rows="1"></textarea>
+                <textarea data-validation="validate_max_length length5" rows="4"></textarea>
             </p>
             <p>
                 <strong>Length between 3-5 characters</strong> <em>validate_length length3-5</em><br />
-                <textarea data-validation="validate_length length3-5" rows="1"></textarea>
+                <textarea data-validation="validate_length length3-5" rows="4"></textarea>
             </p>
             <p>
                 <strong>E-mail</strong> <em>validate_email</em><br />
@@ -73,6 +73,11 @@
                 <input data-validation="validate_swemobile" />
             </p>
             <p>
+                <strong>Custom validation</strong>
+                <em>validate_custom regexp/^[a-z]{2} [0-9]{2}$/</em>
+                <input data-validation="validate_custom regexp/^[a-z]{2} [0-9]{2}$/" />
+            </p>
+            <p>
                 <strong>Simple captcha, this field has to contain value "jqueryvalidation"</strong> <em>validate_spamcheck captcha[VALUE-TO-VALIDATE]</em><br />
                 <input data-validation="validate_spamcheck captchajqueryvalidation" />
             </p>
@@ -82,9 +87,12 @@
                 <input name="something_confirmation" />
             </p>
             <p>
-                <strong>Length restriction <span id="maxlength">50</span></strong>
+                <strong>Length restriction</strong>
+                <span class="chars_left">
+                    <span id="maxlength">50</span> characters left
+                </span>
                 <br />
-                <textarea rows="3" id="area"></textarea>
+                <textarea rows="4" id="area"></textarea>
             </p>
             <script type="text/javascript">
                 $('#area').restrictLength($('#maxlength'));

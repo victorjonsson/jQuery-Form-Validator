@@ -1,7 +1,7 @@
 (function($){
-	$.extend($.fn, {	
+	$.extend($.fn, {
 		validate : function(language, settings){
-        	
+
 			/*
 			 * Dialogs
 			 */
@@ -18,15 +18,15 @@
 					toShortStart : 'You have given an answer shorter then ',
 					toShortEnd : ' characters',
 					badLength : 'You have to give an answer between ',
-					badTime : 'You have not given a correct time',
 					notConfirmed : 'Values could not be confirmed',
 					badDomain : 'Incorrect domain value',
 					badUrl : 'Incorrect url value',
 					badFloat : 'Incorrect float value',
+                    badCustomVal : 'You gave an incorrect answer',
 					badInt : 'Incorrect integer value'
 				};
-	        
-			
+
+
 			/*
 			 * Config
 			 */
@@ -37,16 +37,16 @@
 					errorMessageClass : 'jquery_form_error_message', // class name of div containing error messages when not valid
                     validationRuleAttribute : 'data-validation'
 				};
-			
+
 			/*
-			 * Extends inital settings
+			 * Extends initial settings
 			 */
-	        if(settings) 
+	        if(settings)
 	        	$.extend(config, settings);
 	        if(language)
 	        	$.extend(lang, language);
-	        
-	        
+
+
 	        /**
 	         * Tells whether or not to validate element with this name and of this type
 	         * @param string name
@@ -56,15 +56,15 @@
 	        var ignoreInput = function(name, type) {
 	        	if(type == 'submit')
 	        		return true;
-	        	
+
 	        	for(var i=0; i < config.ignore.lenght; i++) {
 	        		if(config.ignore[i] == name)
 	        			return true;
 	        	}
-	        	
+
 	        	return false;
 	        };
-	        
+
 	        /**
 	         * <input class="length12" /> => getAttribute($(element).attr('class'), 'length') = 12
 	         * @param string classValue
@@ -75,28 +75,28 @@
 	        	var regex = new RegExp('('+attributeName+'[0-9\-]+)', "g");
 	        	return classValue.match(regex)[0].replace(/[^0-9\-]/g, '');
 	        };
-	        
+
 	        /** Error messages for this validation */
 	        var errorMessages = [];
-	        
+
 	        /** Input elements whitch value wasnt valid */
 	    	var errorInputs = [];
-	    	
+
 	    	/** Default border color on elements when valid */
 	    	var defaultBorderColor = null;
-	        
+
 	    	var form = this;
-	    	
+
 	    	/*
 	    	 * Validate element values
 	    	 */
 	        $(this).find('input,textarea,select').each(function() {
 	        	if(!ignoreInput($(this).attr('name'), $(this).attr('type'))) {
-	        		
+
 	        		// memorize border color
 	        		if(defaultBorderColor == null)
 	        			defaultBorderColor = $(this).css('border-color');
-	        			
+
 	        		var value = jQuery.trim($(this).val());
 	        		var validationRules = $(this).attr(config.validationRuleAttribute);
 
@@ -213,6 +213,16 @@
                                 errorMessages.push(lang.badSecurityAnswer);
                         }
 
+                        // Custom regexp validation
+                        if(validationRules.indexOf('validate_custom') > -1 && validationRules.indexOf('regexp/') > -1) {
+                            var regexp = new RegExp(validationRules.split('regexp/')[1].split('/')[0]);
+                            if(!regexp.test(value)) {
+                                errorInputs.push($(this));
+                                if(jQuery.inArray(mess, lang.badCustomVal) < 0)
+                                    errorMessages.push(lang.badCustomVal);
+                            }
+                        }
+
                         // confirmation
                         if(validationRules.indexOf('validate_confirmation') > -1) {
                             var conf = '';
@@ -229,49 +239,49 @@
                     }
 	        	}
 	        });
-	        
+
 	        // Reset style and remove error class
 	        $(this).find('input,textarea')
 	        	.css('border-color', defaultBorderColor)
 	        	.removeClass(config.errorElementClass);
-	        
+
 	        // Remove possible error message from last validation
 	        $('.'+config.errorMessageClass).remove();
-	        
+
 	        // Not valid
 	        if(errorInputs.length > 0) {
-	        	
+
 	        	// Create error message
 	        	var messages = '<strong>'+lang.errorTitle+'</strong>';
 	        	for(var i=0; i < errorMessages.length; i++)
 	        		messages += '<br />* '+errorMessages[i];
-	        	
+
 	        	// Show error message
 	        	$(this).children().eq(0).prepend('<p class="'+config.errorMessageClass+'">'+messages+'</p>');
-	        	
+
 	        	// Apply error style to invalid inputs
 	        	for(var i=0; i < errorInputs.length; i++) {
 	        		if(config.borderColorOnError != '')
 	        			errorInputs[i].css('border-color', config.borderColorOnError);
 	        		errorInputs[i].addClass(config.errorElementClass);
-	        	} 
-	        	
+	        	}
+
 	        	return false;
-	        }	        
-	        
+	        }
+
 	        return true;
 	   },
-	   
+
 	   /**
 	    * Plugin for displaying input length restriction
 	    */
 	   restrictLength : function(maxLengthElement){
 			new jQueryFormHelper.lengthRestriction(this, maxLengthElement);
 			return this;
-	   } 
-	   
+	   }
+
 	});
-    
+
 })(jQuery);
 
 
@@ -288,7 +298,7 @@ jQueryFormHelper.validateEmail = function(email)
 {
 	// TODO: is this regexp enough for validating email correct?
 	var emailFilter = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
-	return emailFilter.test(email) ? true : false;
+	return emailFilter.test(email);
 };
 
 /**
@@ -301,17 +311,12 @@ jQueryFormHelper.validatePhoneNumber = function(tele)
 	var numHifen = tele.match(/-/g);
 	if((numPlus != null && numPlus.length > 1) || (numHifen != null && numHifen.length > 1))
 		return false;
-	
+
 	if(numPlus != null && tele.indexOf('+') != 0)
 		return false;
-		
+
 	tele = tele.replace(/([-|\+])/g, '');
-	if(tele.length < 8)
-		return false;
-	if(tele.match(/[^0-9]/g) != null)
-		return false;
-	
-	return true;
+	return tele.length > 8 && tele.match(/[^0-9]/g) == null;
 };
 
 /**
@@ -323,18 +328,15 @@ jQueryFormHelper.validateSwedishMobileNumber = function(number)
 {
 	if(!jQueryFormHelper.validatePhoneNumber(number))
 		return false;
-	
+
 	number = number.replace(/[^0-9]/g, '');
 	var begin = number.substring(0, 3);
 	if(number.length != 10 && begin != '467')
 		return false;
 	else if(number.length != 11 && begin == '467')
 		return false;
-	
-	if(begin == '070' || begin == '073' || begin == '072' || begin == '076' || (begin == '467' && number.substr(3,1) == '0'))
-		return true;
-	else
-		return false;
+
+	return /07[0-9{1}]/.test(begin) || (begin == '467' && number.substr(3,1) == '0');
 };
 
 /**
@@ -345,15 +347,24 @@ jQueryFormHelper.validateBirthdate = function(val)
 {
 	if(!this.validateDate(val))
 		return false;
-	
+
 	var d = new Date();
 	var currentYear = d.getFullYear();
 	var year = parseInt(val.substring(0, 4));
-	
-	if(year > currentYear || year < (currentYear - 122))
-		return false;
-	
-	return true;
+
+    if(year == currentYear) {
+        var month = parseInt(val.substring(5, 7));
+        var currentMonth = d.getMonth() + 1;
+        if(month == currentMonth) {
+            var day = parseInt(val.substring(8, 10));
+            var currentDay = d.getDate();
+            return day <= currentDay;
+        }
+        else
+            return month < currentMonth;
+    }
+    else
+	    return year < currentYear && year > (currentYear - 122);
 };
 
 /**
@@ -363,24 +374,24 @@ jQueryFormHelper.validateBirthdate = function(val)
 jQueryFormHelper.validateDate = function(val)
 {
 	// enklast m�jliga...
-	if(val.match(/^(\d{4})\-(\d{2})\-(\d{2})$/) == null) 
+	if(val.match(/^(\d{4})\-(\d{2})\-(\d{2})$/) == null)
 		return false;
-	
+
 	var month = val.substring(5, 8);
 	var day = val.substring(8, 11);
-	
+
 	// skum fix. �r talet 05 eller l�gre ger parseInt r�tt int annars f�r man 0 n�r man k�r parseInt?
 	if(month.indexOf('0') == 0)
 		month = month.replace('0', '');
 	if(day.indexOf('0') == 0)
 		day = day.replace('0', '');
-	
+
 	month = parseInt(month);
 	day = parseInt(day);
-	
+
 	if(month == 2 && day > 28 || month > 12 || month == 0)
 		return false;
-	if((this.isShortMonth(month) && day > 30) || 
+	if((this.isShortMonth(month) && day > 30) ||
 			(!this.isShortMonth(month) && day > 31) || day == 0)
 		return false;
 
@@ -392,7 +403,7 @@ jQueryFormHelper.validateDate = function(val)
  */
 jQueryFormHelper.validateTime = function(time)
 {
-	if(time.match(/^(\d{2}):(\d{2})$/) == null) 
+	if(time.match(/^(\d{2}):(\d{2})$/) == null)
 		return false;
 	else
 	{
@@ -407,7 +418,7 @@ jQueryFormHelper.validateTime = function(time)
 /**
  * Validate float value
  */
-jQueryFormHelper.validateFloat = function(val) 
+jQueryFormHelper.validateFloat = function(val)
 {
 	return val.match(/^(\-|)([0-9]+)\.([0-9]+)$/) != null;
 };
@@ -470,11 +481,11 @@ jQueryFormHelper.validateDomain = function(val)
 			'.us','.uy','.uz','.va','.vc','.ve','.vg','.vi','.vn','.vu','.ws',
 			'.wf','.ye','.yt','.yu','.za','.zm','.zw', '.mobi'
 		);
-	
+
 	var dot = val.lastIndexOf('.');
 	var domain = val.substring(0, dot);
 	var ext = val.substring(dot, val.length);
-	
+
 	var hasTopDomain = false;
 	for(var i=0; i < arr.length; i++) {
 		if(arr[i] == ext) {
@@ -482,21 +493,21 @@ jQueryFormHelper.validateDomain = function(val)
 			break;
 		}
 	}
-	
+
 	if(!hasTopDomain)
 		return false;
 	else if(dot < 2 || dot > 57)
 		return false;
 	else
 	{
-		firstChar = domain.substring(0, 1);
-		lastChar = domain.substring(domain.length-1, domain.length);
+		var firstChar = domain.substring(0, 1);
+		var lastChar = domain.substring(domain.length-1, domain.length);
 		if(firstChar == '-' || firstChar == '.' || lastChar == '-' || lastChar == '.')
 			return false;
-		
+
 		if(domain.split('.').length > 3 || domain.split('..').length > 1)
 			return false;
-		
+
 		if(domain.replace(/[0-9a-z\.\-]/g, '') != '')
 			return false;
 	}

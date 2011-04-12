@@ -34,7 +34,8 @@
 					ignore : [], // Names of inputs not to be validated even though class attribute tells us to
 					errorElementClass : 'error', // Class that will be put on elements whitch value is invalid
 					borderColorOnError : 'red', // Border color of elements whitch value is invalid, empty string to not change border color
-					errorMessageClass : 'jquery_form_error_message' // 
+					errorMessageClass : 'jquery_form_error_message', // class name of div containing error messages when not valid
+                    validationRuleAttribute : 'data-validation'
 				};
 			
 			/*
@@ -97,132 +98,135 @@
 	        			defaultBorderColor = $(this).css('border-color');
 	        			
 	        		var value = jQuery.trim($(this).val());
-	        		var classes = $(this).attr('class');
-	        		
-	        		// Required
-	        		if(classes.indexOf('required') > -1 && value == '') {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.requiredFields, errorMessages) < 0)
-	        				errorMessages.push(lang.requiredFields);
-	        		}
-	        		
-	        		// Min length
-	        		if(classes.indexOf('validate_min_length') > -1 && value.length < getAttributeInteger(classes, 'length')) {
-	        			errorInputs.push($(this));
-	        			var mess = lang.toShortStart +getAttributeInteger(classes, 'length')+ lang.toShortEnd;
-	        			if(jQuery.inArray(mess, errorMessages) < 0)
-	        				errorMessages.push(mess);
-	        		}
-	        		
-	        		// Max length
-	        		if(classes.indexOf('validate_max_length') > -1 && value.length > getAttributeInteger(classes, 'length')) {
-	        			errorInputs.push($(this));
-	        			var mess = lang.toLongStart +getAttributeInteger(classes, 'length')+ lang.toLongEnd;
-	        			if(jQuery.inArray(mess, errorMessages) < 0)
-	        				errorMessages.push(mess);
-	        		}
-	        		
-	        		// Length range
-	        		if(classes.indexOf('validate_length') > -1) {
-	        			var range = getAttributeInteger(classes, 'length').split('-');
-	        			if(value.length < parseInt(range[0]) || value.length > parseInt(range[1])) {
-	        				errorInputs.push($(this));
-		        			var mess = lang.badLength +getAttributeInteger(classes, 'length')+ lang.toLongEnd;
-		        			if(jQuery.inArray(mess, errorMessages) < 0)
-		        				errorMessages.push(mess);
-	        			}
-	        		}
-	        		
-	        		// Email
-	        		if(classes.indexOf('validate_email') > -1 && !jQueryFormHelper.validateEmail(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badEmail, errorMessages) < 0)
-	        				errorMessages.push(lang.badEmail);
-	        		}
-	        		
-	        		// Domain
-	        		else if(classes.indexOf('validate_domain') > -1 && !jQueryFormHelper.validateDomain(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badDomain, errorMessages) < 0)
-	        				errorMessages.push(lang.badDomain);
-	        		}
-	        		
-	        		// Url
-	        		else if(classes.indexOf('validate_url') > -1 && !jQueryFormHelper.validateUrl(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badUrl, errorMessages) < 0)
-	        				errorMessages.push(lang.badUrl);
-	        		}
-	        		
-	        		// Float
-	        		else if(classes.indexOf('validate_float') > -1 && !jQueryFormHelper.validateFloat(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badFloat, errorMessages) < 0)
-	        				errorMessages.push(lang.badFloat);
-	        		}
-	        		
-	        		// Integer
-	        		else if(classes.indexOf('validate_int') > -1 && !jQueryFormHelper.validateInteger(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badInt, errorMessages) < 0)
-	        				errorMessages.push(lang.badInt);
-	        		}
-	        		
-	        		// Time
-	        		else if(classes.indexOf('validate_time') > -1 && !jQueryFormHelper.validateTime(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badTime, errorMessages) < 0)
-	        				errorMessages.push(lang.badTime);
-	        		}
-	        		
-	        		// Date
-	        		else if(classes.indexOf('validate_date') > -1 && !jQueryFormHelper.validateDate(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badDate, errorMessages) < 0)
-	        				errorMessages.push(lang.badDate);
-	        		}
-	        		
-	        		// Birthdate
-	        		else if(classes.indexOf('validate_birthdate') > -1 && !jQueryFormHelper.validateBirthdate(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badDate, errorMessages) < 0)
-	        				errorMessages.push(lang.badDate);
-	        		}
-	        		
-	        		// Phone number
-	        		else if(classes.indexOf('validate_phone') > -1 && !jQueryFormHelper.validatePhoneNumber(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badTelephone, errorMessages) < 0)
-	        				errorMessages.push(lang.badTelephone);
-	        		}
-	        		
-	        		// Swedish phone number
-	        		else if(classes.indexOf('validate_swemobile') > -1 && !jQueryFormHelper.validateSwedishMobileNumber(value)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badTelephone, errorMessages) < 0)
-	        				errorMessages.push(lang.badTelephone);
-	        		}
-	        		
-	        		// simple spam check
-	        		else if(classes.indexOf('validate_spamcheck') > -1 && !jQueryFormHelper.simpleSpamCheck(value, classes)) {
-	        			errorInputs.push($(this));
-	        			if(jQuery.inArray(lang.badSecurityAnswer, errorMessages) < 0)
-	        				errorMessages.push(lang.badSecurityAnswer);
-	        		}
-	        		
-	        		// confirmation
-	        		if(classes.indexOf('validate_confirmation') > -1) {
-	        			var conf = '';
-	        			var confInput = $(form).find('input[name='+$(this).attr('name')+'_confirmation]').eq(0);
-	        			if(confInput) 
-	        				conf = confInput.val();
-	        			
-	        			if(value != conf) {
-	        				errorInputs.push($(this));
-	        				if(jQuery.inArray(lang.notConfirmed, errorMessages) < 0)
-		        				errorMessages.push(lang.notConfirmed);
-	        			}
-	        		}
+	        		var validationRules = $(this).attr(config.validationRuleAttribute);
+
+                    if(typeof validationRules != 'undefined' && validationRules != null) {
+
+                        // Required
+                        if(validationRules.indexOf('required') > -1 && value == '') {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.requiredFields, errorMessages) < 0)
+                                errorMessages.push(lang.requiredFields);
+                        }
+
+                        // Min length
+                        if(validationRules.indexOf('validate_min_length') > -1 && value.length < getAttributeInteger(validationRules, 'length')) {
+                            errorInputs.push($(this));
+                            var mess = lang.toShortStart +getAttributeInteger(validationRules, 'length')+ lang.toShortEnd;
+                            if(jQuery.inArray(mess, errorMessages) < 0)
+                                errorMessages.push(mess);
+                        }
+
+                        // Max length
+                        if(validationRules.indexOf('validate_max_length') > -1 && value.length > getAttributeInteger(validationRules, 'length')) {
+                            errorInputs.push($(this));
+                            var mess = lang.toLongStart +getAttributeInteger(validationRules, 'length')+ lang.toLongEnd;
+                            if(jQuery.inArray(mess, errorMessages) < 0)
+                                errorMessages.push(mess);
+                        }
+
+                        // Length range
+                        if(validationRules.indexOf('validate_length') > -1) {
+                            var range = getAttributeInteger(validationRules, 'length').split('-');
+                            if(value.length < parseInt(range[0]) || value.length > parseInt(range[1])) {
+                                errorInputs.push($(this));
+                                var mess = lang.badLength +getAttributeInteger(validationRules, 'length')+ lang.toLongEnd;
+                                if(jQuery.inArray(mess, errorMessages) < 0)
+                                    errorMessages.push(mess);
+                            }
+                        }
+
+                        // Email
+                        if(validationRules.indexOf('validate_email') > -1 && !jQueryFormHelper.validateEmail(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badEmail, errorMessages) < 0)
+                                errorMessages.push(lang.badEmail);
+                        }
+
+                        // Domain
+                        else if(validationRules.indexOf('validate_domain') > -1 && !jQueryFormHelper.validateDomain(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badDomain, errorMessages) < 0)
+                                errorMessages.push(lang.badDomain);
+                        }
+
+                        // Url
+                        else if(validationRules.indexOf('validate_url') > -1 && !jQueryFormHelper.validateUrl(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badUrl, errorMessages) < 0)
+                                errorMessages.push(lang.badUrl);
+                        }
+
+                        // Float
+                        else if(validationRules.indexOf('validate_float') > -1 && !jQueryFormHelper.validateFloat(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badFloat, errorMessages) < 0)
+                                errorMessages.push(lang.badFloat);
+                        }
+
+                        // Integer
+                        else if(validationRules.indexOf('validate_int') > -1 && !jQueryFormHelper.validateInteger(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badInt, errorMessages) < 0)
+                                errorMessages.push(lang.badInt);
+                        }
+
+                        // Time
+                        else if(validationRules.indexOf('validate_time') > -1 && !jQueryFormHelper.validateTime(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badTime, errorMessages) < 0)
+                                errorMessages.push(lang.badTime);
+                        }
+
+                        // Date
+                        else if(validationRules.indexOf('validate_date') > -1 && !jQueryFormHelper.validateDate(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badDate, errorMessages) < 0)
+                                errorMessages.push(lang.badDate);
+                        }
+
+                        // Birthdate
+                        else if(validationRules.indexOf('validate_birthdate') > -1 && !jQueryFormHelper.validateBirthdate(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badDate, errorMessages) < 0)
+                                errorMessages.push(lang.badDate);
+                        }
+
+                        // Phone number
+                        else if(validationRules.indexOf('validate_phone') > -1 && !jQueryFormHelper.validatePhoneNumber(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badTelephone, errorMessages) < 0)
+                                errorMessages.push(lang.badTelephone);
+                        }
+
+                        // Swedish phone number
+                        else if(validationRules.indexOf('validate_swemobile') > -1 && !jQueryFormHelper.validateSwedishMobileNumber(value)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badTelephone, errorMessages) < 0)
+                                errorMessages.push(lang.badTelephone);
+                        }
+
+                        // simple spam check
+                        else if(validationRules.indexOf('validate_spamcheck') > -1 && !jQueryFormHelper.simpleSpamCheck(value, validationRules)) {
+                            errorInputs.push($(this));
+                            if(jQuery.inArray(lang.badSecurityAnswer, errorMessages) < 0)
+                                errorMessages.push(lang.badSecurityAnswer);
+                        }
+
+                        // confirmation
+                        if(validationRules.indexOf('validate_confirmation') > -1) {
+                            var conf = '';
+                            var confInput = $(form).find('input[name='+$(this).attr('name')+'_confirmation]').eq(0);
+                            if(confInput)
+                                conf = confInput.val();
+
+                            if(value != conf) {
+                                errorInputs.push($(this));
+                                if(jQuery.inArray(lang.notConfirmed, errorMessages) < 0)
+                                    errorMessages.push(lang.notConfirmed);
+                            }
+                        }
+                    }
 	        	}
 	        });
 	        

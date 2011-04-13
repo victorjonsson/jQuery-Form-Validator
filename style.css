@@ -1,13 +1,13 @@
 * {
-	margin:0;
+    margin: 0;
     padding: 0;
     font-family: "Lucida Grande", Lucida, sans-serif;
     color: #444;
 }
 
 body {
-	padding:20px;
-    background:#F2F2F2;
+    padding: 20px;
+    background: #F2F2F2;
     font-size: 14px;
 }
 
@@ -18,13 +18,13 @@ p {
 
 h1 {
     font-size: 28px;
-    margin-bottom: 20px;    
+    margin-bottom: 20px;
 }
 
 section, code, h2 {
     -moz-border-radius: 12px;
     -webkit-border-radius: 12px;
-    background:#FFF;
+    background: #FFF;
     padding: 15px 10px 10px;
     max-width: 500px;
     margin-bottom: 20px;
@@ -37,8 +37,8 @@ section, code, h2 {
 code {
     display: block;
     font-family: "Courier New", Courier, serif;
-    background:#E2E2E2;
-    color:black;
+    background: #E2E2E2;
+    color: black;
 }
 
 h2 {
@@ -48,10 +48,10 @@ h2 {
     -moz-border-radius-topright: 12px;
     -webkit-border-top-left-radius: 12px;
     -webkit-border-top-right-radius: 12px;
-    margin-bottom:0px;
+    margin-bottom: 0px;
     background: #CCC;
     font-size: 14px;
-    padding-top:10px;
+    padding-top: 10px;
 }
 
 textarea {
@@ -60,8 +60,8 @@ textarea {
 
 input, textarea {
     font-size: 14px;
-	border: #CCC solid 1px;
-    padding:5px;
+    border: #CCC solid 1px;
+    padding: 5px;
     background: white;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
@@ -72,17 +72,17 @@ input, textarea {
 }
 
 input[type=submit] {
-    background:#f0f8ff;
-    font-weight:bold;
+    background: #f0f8ff;
+    font-weight: bold;
     color: #3e8888;
     width: 130px;
     cursor: pointer;
 }
 
 .jquery_form_error_message {
-	margin:5px 0 20px;
+    margin: 5px 0 20px;
     padding: 10px;
-	background: pink;
+    background: pink;
     -moz-border-radius: 12px;
     -webkit-border-radius: 12px;
 }
@@ -93,24 +93,24 @@ input[type=submit] {
 
 span.chars_left
 span.jquery_form_error_message {
-	background: #f2f2f2;
+    background: #f2f2f2;
     padding: 0 2px;
     font-weight: normal;
     font-size: 90%;
     color: #666;
 }
 
-span.jquery_form_error_message  {
+span.jquery_form_error_message {
     color: red;
     display: block;
     background: none;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
 }
 
 em {
-	background: lightyellow;
+    background: lightyellow;
     font-size: 90%;
     color: #81815c;
-    padding:0 1px;
+    padding: 0 1px;
 }

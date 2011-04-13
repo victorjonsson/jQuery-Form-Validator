@@ -2,22 +2,22 @@
 <html>
 <head>
 
-	<title>Form validator plugin for jQuery</title>
+    <title>Form validator plugin for jQuery</title>
 
-    <meta charset="UTF-8" />
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
-	<script type="text/javascript" src="validator.js"></script>
-	
-	<link href="style.css" type="text/css" rel="stylesheet" />
-	
+    <script type="text/javascript" src="validator.js"></script>
+
+    <link href="style.css" type="text/css" rel="stylesheet"/>
+
 </head>
 <body>
+
     <h1>
         Form validation using jQuery
     </h1>
-    
     <p>
         <a href="https://github.com/victorjonsson/jQuery-Form-Validator/wiki">
             https://github.com/victorjonsson/jQuery-Form-Validator/wiki
@@ -28,9 +28,9 @@
         Basic concept
     </h2>
     <code>
-        &lt;form onsubmit="return $(this).validate()"&gt;<br />
-        &nbsp;&nbsp;&lt;input data-validation="some_predefined_rule" /&gt;<br />
-        &nbsp;&nbsp;...<br />
+        &lt;form onsubmit="return $(this).validate()"&gt;<br/>
+        &nbsp;&nbsp;&lt;input data-validation="some_predefined_rule" /&gt;<br/>
+        &nbsp;&nbsp;...<br/>
         &lt;/form&gt;
     </code>
 
@@ -38,147 +38,173 @@
     <section>
         <form action="" onsubmit="if($(this).validate()) alert('Valid!'); return false;">
             <p>
-                <strong>Required</strong> <em>required</em><br />
-                <input data-validation="required" />
+                <strong>Required</strong> <em>required</em><br/>
+                <input data-validation="required"/>
             </p>
+
             <p>
-                <strong>Minimum length</strong> <em>validate_min_length length5</em><br />
-                <input data-validation="validate_min_length length5" />
+                <strong>Minimum length</strong> <em>validate_min_length length5</em><br/>
+                <input data-validation="validate_min_length length5"/>
             </p>
+
             <p>
-                <strong>Max length</strong> <em>validate_max_length length5</em><br />
+                <strong>Max length</strong> <em>validate_max_length length5</em><br/>
                 <textarea data-validation="validate_max_length length5" rows="4"></textarea>
             </p>
+
             <p>
-                <strong>Length between 3-5 characters</strong> <em>validate_length length3-5</em><br />
+                <strong>Length between 3-5 characters</strong> <em>validate_length length3-5</em><br/>
                 <textarea data-validation="validate_length length3-5" rows="4"></textarea>
             </p>
+
             <p>
-                <strong>E-mail</strong> <em>validate_email</em><br />
-                <input data-validation="validate_email" />
+                <strong>E-mail</strong> <em>validate_email</em><br/>
+                <input data-validation="validate_email"/>
             </p>
+
             <p>
-                <strong>Domain</strong> <em>validate_domain</em><br />
-                <input data-validation="validate_domain" />
+                <strong>Domain</strong> <em>validate_domain</em><br/>
+                <input data-validation="validate_domain"/>
             </p>
+
             <p>
-                <strong>Url</strong> <em>validate_url</em><br />
-                <input data-validation="validate_url" />
+                <strong>Url</strong> <em>validate_url</em><br/>
+                <input data-validation="validate_url"/>
             </p>
+
             <p>
-                <strong>Float</strong> <em>validate_float</em><br />
-                <input data-validation="validate_float" />
+                <strong>Float</strong> <em>validate_float</em><br/>
+                <input data-validation="validate_float"/>
             </p>
+
             <p>
-                <strong>Integer</strong> <em>validate_int</em><br />
-                <input data-validation="validate_int" />
+                <strong>Integer</strong> <em>validate_int</em><br/>
+                <input data-validation="validate_int"/>
             </p>
+
             <p>
-                <strong>Time HH:mm</strong> <em>validate_time</em><br />
-                <input data-validation="validate_time" />
+                <strong>Time HH:mm</strong> <em>validate_time</em><br/>
+                <input data-validation="validate_time"/>
             </p>
+
             <p>
-                <strong>Date yyyy-mm-dd</strong> <em>validate_date</em><br />
-                <input data-validation="validate_date" />
+                <strong>Date yyyy-mm-dd</strong> <em>validate_date</em><br/>
+                <input data-validation="validate_date"/>
             </p>
+
             <p>
-                <strong>Birthdate yyyy-mm-dd</strong> <em>validate_birthdate</em><br />
-                <input data-validation="validate_birthdate" />
+                <strong>Birthdate yyyy-mm-dd</strong> <em>validate_birthdate</em><br/>
+                <input data-validation="validate_birthdate"/>
             </p>
+
             <p>
-                <strong>Valid telephone number</strong> <em>validate_phone</em><br />
-                <input data-validation="validate_phone" />
+                <strong>Valid telephone number</strong> <em>validate_phone</em><br/>
+                <input data-validation="validate_phone"/>
             </p>
+
             <p>
-                <strong>Valid Swedish mobile telephone number</strong> <em>validate_swemobile</em><br />
-                <input data-validation="validate_swemobile" />
+                <strong>Valid Swedish mobile telephone number</strong> <em>validate_swemobile</em><br/>
+                <input data-validation="validate_swemobile"/>
             </p>
+
             <p>
-                <strong>Valid Swedish social security number yyymmddXXXX</strong> <em>validate_swesc</em><br />
-                <input data-validation="validate_swesc" />
+                <strong>Valid Swedish social security number yyymmddXXXX</strong> <em>validate_swesc</em><br/>
+                <input data-validation="validate_swesc"/>
             </p>
+
             <p>
                 <strong>Custom validation</strong>
                 <em>validate_custom regexp/^[a-z]{2} [0-9]{2}$/</em>
-                <input data-validation="validate_custom regexp/^[a-z]{2} [0-9]{2}$/" />
+                <input data-validation="validate_custom regexp/^[a-z]{2} [0-9]{2}$/"/>
             </p>
+
             <p>
-                <strong>Simple captcha, this field has to contain value "jqueryvalidation"</strong> <em>validate_spamcheck captcha[VALUE-TO-VALIDATE]</em><br />
-                <input data-validation="validate_spamcheck captchajqueryvalidation" />
+                <strong>Simple captcha, this field has to contain value "jqueryvalidation"</strong> <em>validate_spamcheck
+                captcha[VALUE-TO-VALIDATE]</em><br/>
+                <input data-validation="validate_spamcheck captchajqueryvalidation"/>
             </p>
+
             <p>
-                <strong>These two inputs has to have identical values (minimum 3 characters)</strong> <em>validate_confirmation</em><br />
-                <input name="something" data-validation="validate_confirmation validate_min_length length3" />
-                <input name="something_confirmation" />
+                <strong>These two inputs has to have identical values (minimum 3 characters)</strong> <em>validate_confirmation</em><br/>
+                <input name="something" data-validation="validate_confirmation validate_min_length length3"/>
+                <input name="something_confirmation"/>
             </p>
+
             <p>
                 <strong>Length restriction</strong>
-                <span class="chars_left">
-                    <span id="maxlength">50</span> characters left
-                </span>
-                <br />
+                    <span class="chars_left">
+                        <span id="maxlength">50</span> characters left
+                    </span>
+                <br/>
                 <textarea rows="4" id="area"></textarea>
             </p>
             <script type="text/javascript">
                 $('#area').restrictLength($('#maxlength'));
             </script>
             <p>
-                <input type="submit" value="Validate form" />
+                <input type="submit" value="Validate form"/>
             </p>
         </form>
     </section>
 
-    <h2>Customized example (no border color on error, different position on error messages)</h2>
+    <h2>
+        Customized example (no border color on error, different position on error messages)
+    </h2>
     <section>
         <form action="" id="custom_form">
             <p>
-                <strong>Length between 3-5 characters</strong> <em>validate_length length3-5</em><br />
+                <strong>Length between 3-5 characters</strong> <em>validate_length length3-5</em><br/>
                 <textarea data-validation="validate_length length3-5" rows="4"></textarea>
             </p>
+
             <p>
-                <strong>E-mail</strong> <em>validate_email</em><br />
-                <input data-validation="validate_email" />
+                <strong>E-mail</strong> <em>validate_email</em><br/>
+                <input data-validation="validate_email"/>
             </p>
+
             <p>
-                <strong>Domain</strong> <em>validate_domain</em><br />
-                <input data-validation="validate_domain" />
+                <strong>Domain</strong> <em>validate_domain</em><br/>
+                <input data-validation="validate_domain"/>
             </p>
+
             <p>
-                <strong>Url</strong> <em>validate_url</em><br />
-                <input data-validation="validate_url" />
+                <strong>Url</strong> <em>validate_url</em><br/>
+                <input data-validation="validate_url"/>
             </p>
+
             <p>
                 <strong>When will you arrive</strong>
                 <em>Buy checking this option you will have to give a valid value on the question below otherwise not</em>
-                <input type="checkbox" name="disable_hours" checked="checked" />
+                <input type="checkbox" name="disable_hours" checked="checked"/>
             </p>
+
             <p>
-                <strong>Time HH:mm</strong> <em>validate_time</em><br />
-                <input data-validation="validate_time" name="hours" />
+                <strong>Time HH:mm</strong> <em>validate_time</em><br/>
+                <input data-validation="validate_time" name="hours"/>
             </p>
+
             <p>
-                <input type="submit" value="Validate form" />
+                <input type="submit" value="Validate form"/>
             </p>
         </form>
+        
         <script>
             var conf = {
-                    errorMessagePosition : 'element',
-                    borderColorOnError : '',
-                    ignore: []
-                };
-
+                errorMessagePosition : 'element',
+                borderColorOnError : '',
+                ignore: []
+            };
             $('#custom_form').submit(function() {
                 conf.ignore.length = 0;
-                if(!$('input[name=disable_hours]').is(':checked'))
+                if (!$('input[name=disable_hours]').is(':checked'))
                     conf.ignore.push('hours');
-                
-                if($(this).validate(false, conf))
+                if ($(this).validate(false, conf))
                     alert('Valid!');
-
                 return false;
             });
 
         </script>
+
     </section>
 </body>
 </html>

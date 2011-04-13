@@ -6,37 +6,39 @@
 			 * Dialogs
 			 */
 			var lang = {
-					errorTitle : 'Form submission failed!',
-					requiredFields : 'You have not answered all required fields',
-					badTime : 'You have not given a correct time',
-					badEmail : 'You have not given a correct e-mail address',
-					badTelephone : 'You have not given a correct phone number',
-					badSecurityAnswer : 'You have not given a correct answer to the security question',
-					badDate : 'You have not given a correct date',
-					toLongStart : 'You have given an answer longer then ',
-					toLongEnd : ' characters',
-					toShortStart : 'You have given an answer shorter then ',
-					toShortEnd : ' characters',
-					badLength : 'You have to give an answer between ',
-					notConfirmed : 'Values could not be confirmed',
-					badDomain : 'Incorrect domain value',
-					badUrl : 'Incorrect url value',
-					badFloat : 'Incorrect float value',
-                    badCustomVal : 'You gave an incorrect answer',
-					badInt : 'Incorrect integer value'
-				};
+                errorTitle : 'Form submission failed!',
+                requiredFields : 'You have not answered all required fields',
+                badTime : 'You have not given a correct time',
+                badEmail : 'You have not given a correct e-mail address',
+                badTelephone : 'You have not given a correct phone number',
+                badSecurityAnswer : 'You have not given a correct answer to the security question',
+                badDate : 'You have not given a correct date',
+                toLongStart : 'You have given an answer longer then ',
+                toLongEnd : ' characters',
+                toShortStart : 'You have given an answer shorter then ',
+                toShortEnd : ' characters',
+                badLength : 'You have to give an answer between ',
+                notConfirmed : 'Values could not be confirmed',
+                badDomain : 'Incorrect domain value',
+                badUrl : 'Incorrect url value',
+                badFloat : 'Incorrect float value',
+                badCustomVal : 'You gave an incorrect answer',
+                badInt : 'Incorrect integer value'
+
+            };
 
 
 			/*
 			 * Config
 			 */
 			var config = {
-					ignore : [], // Names of inputs not to be validated even though class attribute tells us to
-					errorElementClass : 'error', // Class that will be put on elements whitch value is invalid
-					borderColorOnError : 'red', // Border color of elements whitch value is invalid, empty string to not change border color
-					errorMessageClass : 'jquery_form_error_message', // class name of div containing error messages when not valid
-                    validationRuleAttribute : 'data-validation'
-				};
+                ignore : [], // Names of inputs not to be validated even though class attribute tells us to
+                errorElementClass : 'error', // Class that will be put on elements whitch value is invalid
+                borderColorOnError : 'red', // Border color of elements whitch value is invalid, empty string to not change border color
+                errorMessageClass : 'jquery_form_error_message', // class name of div containing error messages when not valid
+                validationRuleAttribute : 'data-validation'
+			};
+            
 
 			/*
 			 * Extends initial settings
@@ -66,15 +68,24 @@
 	        };
 
 	        /**
-	         * <input class="length12" /> => getAttribute($(element).attr('class'), 'length') = 12
+	         * <input data-validation="length12" /> => getAttribute($(element).attr('class'), 'length') = 12
 	         * @param string classValue
 	         * @param string attributeName
 	         * @returns integer
 	         */
-	        var getAttributeInteger = function(classValue, attributeName) {
-	        	var regex = new RegExp('('+attributeName+'[0-9\-]+)', "g");
-	        	return classValue.match(regex)[0].replace(/[^0-9\-]/g, '');
+	        var getAttributeInteger = function(attrValue, attrName) {
+	        	var regex = new RegExp('('+attrName+'[0-9\-]+)', "g");
+	        	return attrValue.match(regex)[0].replace(/[^0-9\-]/g, '');
 	        };
+
+            /**
+             * Adds message to error message stack if not already in the message stack
+             * @param string mess
+             */
+            var addErrorMessage = function(mess) {
+                if(jQuery.inArray(mess, errorMessages) < 0)
+                    errorMessages.push(mess);  
+            };
 
 	        /** Error messages for this validation */
 	        var errorMessages = [];
@@ -85,7 +96,29 @@
 	    	/** Default border color on elements when valid */
 	    	var defaultBorderColor = null;
 
+            /** Form instance */
 	    	var form = this;
+
+            /*
+             * Validate radio buttons
+             */
+            $(this).find('input[type=radio]').each(function() {
+                var validationRule = $(this).attr(config.validationRuleAttribute);
+                if(typeof validationRule != 'undefined' && validationRule != null) {
+                    if(validationRule == 'required') {
+                        var radioButtonName = $(this).attr('name');
+                        var isChecked = false;
+                        form.find('input[name='+radioButtonName+']').each(function() {
+                            if($(this).is(':checked'))
+                                isChecked = true;
+                        });
+
+                        if(!isChecked) {
+                            errorMessages.push(lang.requiredFields);
+                        }
+                    }
+                }
+            });
 
 	    	/*
 	    	 * Validate element values
@@ -105,24 +138,21 @@
                         // Required
                         if(validationRules.indexOf('required') > -1 && value == '') {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.requiredFields, errorMessages) < 0)
-                                errorMessages.push(lang.requiredFields);
+                            addErrorMessage(lang.requiredFields);
                         }
 
                         // Min length
                         if(validationRules.indexOf('validate_min_length') > -1 && value.length < getAttributeInteger(validationRules, 'length')) {
                             errorInputs.push($(this));
                             var mess = lang.toShortStart +getAttributeInteger(validationRules, 'length')+ lang.toShortEnd;
-                            if(jQuery.inArray(mess, errorMessages) < 0)
-                                errorMessages.push(mess);
+                            addErrorMessage(mess);
                         }
 
                         // Max length
                         if(validationRules.indexOf('validate_max_length') > -1 && value.length > getAttributeInteger(validationRules, 'length')) {
                             errorInputs.push($(this));
                             var mess = lang.toLongStart +getAttributeInteger(validationRules, 'length')+ lang.toLongEnd;
-                            if(jQuery.inArray(mess, errorMessages) < 0)
-                                errorMessages.push(mess);
+                            addErrorMessage(mess);
                         }
 
                         // Length range
@@ -131,86 +161,74 @@
                             if(value.length < parseInt(range[0]) || value.length > parseInt(range[1])) {
                                 errorInputs.push($(this));
                                 var mess = lang.badLength +getAttributeInteger(validationRules, 'length')+ lang.toLongEnd;
-                                if(jQuery.inArray(mess, errorMessages) < 0)
-                                    errorMessages.push(mess);
+                                addErrorMessage(mess);
                             }
                         }
 
                         // Email
-                        if(validationRules.indexOf('validate_email') > -1 && !jQueryFormHelper.validateEmail(value)) {
+                        if(validationRules.indexOf('validate_email') > -1 && !jQueryFormUtils.validateEmail(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badEmail, errorMessages) < 0)
-                                errorMessages.push(lang.badEmail);
+                            addErrorMessage(lang.badEmail);
                         }
 
                         // Domain
-                        else if(validationRules.indexOf('validate_domain') > -1 && !jQueryFormHelper.validateDomain(value)) {
+                        else if(validationRules.indexOf('validate_domain') > -1 && !jQueryFormUtils.validateDomain(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badDomain, errorMessages) < 0)
-                                errorMessages.push(lang.badDomain);
+                            addErrorMessage(lang.badDomain);
                         }
 
                         // Url
-                        else if(validationRules.indexOf('validate_url') > -1 && !jQueryFormHelper.validateUrl(value)) {
+                        else if(validationRules.indexOf('validate_url') > -1 && !jQueryFormUtils.validateUrl(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badUrl, errorMessages) < 0)
-                                errorMessages.push(lang.badUrl);
+                            addErrorMessage(lang.badUrl);
                         }
 
                         // Float
-                        else if(validationRules.indexOf('validate_float') > -1 && !jQueryFormHelper.validateFloat(value)) {
+                        else if(validationRules.indexOf('validate_float') > -1 && !jQueryFormUtils.validateFloat(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badFloat, errorMessages) < 0)
-                                errorMessages.push(lang.badFloat);
+                            addErrorMessage(lang.badFloat);
                         }
 
                         // Integer
-                        else if(validationRules.indexOf('validate_int') > -1 && !jQueryFormHelper.validateInteger(value)) {
+                        else if(validationRules.indexOf('validate_int') > -1 && !jQueryFormUtils.validateInteger(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badInt, errorMessages) < 0)
-                                errorMessages.push(lang.badInt);
+                            addErrorMessage(lang.badInt);
                         }
 
                         // Time
-                        else if(validationRules.indexOf('validate_time') > -1 && !jQueryFormHelper.validateTime(value)) {
+                        else if(validationRules.indexOf('validate_time') > -1 && !jQueryFormUtils.validateTime(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badTime, errorMessages) < 0)
-                                errorMessages.push(lang.badTime);
+                            addErrorMessage(lang.badTime);
                         }
 
                         // Date
-                        else if(validationRules.indexOf('validate_date') > -1 && !jQueryFormHelper.validateDate(value)) {
+                        else if(validationRules.indexOf('validate_date') > -1 && !jQueryFormUtils.validateDate(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badDate, errorMessages) < 0)
-                                errorMessages.push(lang.badDate);
+                            addErrorMessage(lang.badDate);
                         }
 
-                        // Birthdate
-                        else if(validationRules.indexOf('validate_birthdate') > -1 && !jQueryFormHelper.validateBirthdate(value)) {
+                        // Birth date
+                        else if(validationRules.indexOf('validate_birthdate') > -1 && !jQueryFormUtils.validateBirthdate(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badDate, errorMessages) < 0)
-                                errorMessages.push(lang.badDate);
+                            addErrorMessage(lang.badDate);
                         }
 
                         // Phone number
-                        else if(validationRules.indexOf('validate_phone') > -1 && !jQueryFormHelper.validatePhoneNumber(value)) {
+                        else if(validationRules.indexOf('validate_phone') > -1 && !jQueryFormUtils.validatePhoneNumber(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badTelephone, errorMessages) < 0)
-                                errorMessages.push(lang.badTelephone);
+                            addErrorMessage(lang.badTelephone);
                         }
 
                         // Swedish phone number
-                        else if(validationRules.indexOf('validate_swemobile') > -1 && !jQueryFormHelper.validateSwedishMobileNumber(value)) {
+                        else if(validationRules.indexOf('validate_swemobile') > -1 && !jQueryFormUtils.validateSwedishMobileNumber(value)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badTelephone, errorMessages) < 0)
-                                errorMessages.push(lang.badTelephone);
+                            addErrorMessage(lang.badTelephone);
                         }
 
                         // simple spam check
-                        else if(validationRules.indexOf('validate_spamcheck') > -1 && !jQueryFormHelper.simpleSpamCheck(value, validationRules)) {
+                        else if(validationRules.indexOf('validate_spamcheck') > -1 && !jQueryFormUtils.simpleSpamCheck(value, validationRules)) {
                             errorInputs.push($(this));
-                            if(jQuery.inArray(lang.badSecurityAnswer, errorMessages) < 0)
-                                errorMessages.push(lang.badSecurityAnswer);
+                            addErrorMessage(lang.badSecurityAnswer);
                         }
 
                         // Custom regexp validation
@@ -218,8 +236,7 @@
                             var regexp = new RegExp(validationRules.split('regexp/')[1].split('/')[0]);
                             if(!regexp.test(value)) {
                                 errorInputs.push($(this));
-                                if(jQuery.inArray(mess, lang.badCustomVal) < 0)
-                                    errorMessages.push(lang.badCustomVal);
+                                addErrorMessage(lang.badCustomVal);
                             }
                         }
 
@@ -232,8 +249,7 @@
 
                             if(value != conf) {
                                 errorInputs.push($(this));
-                                if(jQuery.inArray(lang.notConfirmed, errorMessages) < 0)
-                                    errorMessages.push(lang.notConfirmed);
+                                addErrorMessage(lang.notConfirmed);
                             }
                         }
                     }
@@ -276,7 +292,7 @@
 	    * Plugin for displaying input length restriction
 	    */
 	   restrictLength : function(maxLengthElement){
-			new jQueryFormHelper.lengthRestriction(this, maxLengthElement);
+			new jQueryFormUtils.lengthRestriction(this, maxLengthElement);
 			return this;
 	   }
 
@@ -288,13 +304,14 @@
 /**
  * Namespace for helper functions
  */
-var jQueryFormHelper = {};
+var jQueryFormUtils = {};
+
 
 /**
  * Validate email
  * @return boolean
  */
-jQueryFormHelper.validateEmail = function(email)
+jQueryFormUtils.validateEmail = function(email)
 {
 	// TODO: is this regexp enough for validating email correct?
 	var emailFilter = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
@@ -305,7 +322,7 @@ jQueryFormHelper.validateEmail = function(email)
  * Validate phonenumber, atleast 7 digits only one hifen and plus allowed
  * @return boolean
  */
-jQueryFormHelper.validatePhoneNumber = function(tele)
+jQueryFormUtils.validatePhoneNumber = function(tele)
 {
 	var numPlus = tele.match(/\+/g);
 	var numHifen = tele.match(/-/g);
@@ -324,9 +341,9 @@ jQueryFormHelper.validatePhoneNumber = function(tele)
  * @param number
  * @return boolean
  */
-jQueryFormHelper.validateSwedishMobileNumber = function(number)
+jQueryFormUtils.validateSwedishMobileNumber = function(number)
 {
-	if(!jQueryFormHelper.validatePhoneNumber(number))
+	if(!jQueryFormUtils.validatePhoneNumber(number))
 		return false;
 
 	number = number.replace(/[^0-9]/g, '');
@@ -343,7 +360,7 @@ jQueryFormHelper.validateSwedishMobileNumber = function(number)
  * Is this a valid birth date YYYY-MM-DD
  * @return boolean
  */
-jQueryFormHelper.validateBirthdate = function(val)
+jQueryFormUtils.validateBirthdate = function(val)
 {
 	if(!this.validateDate(val))
 		return false;
@@ -371,7 +388,7 @@ jQueryFormHelper.validateBirthdate = function(val)
  * Is it a correct date YYYY-MM-DD
  * @return boolean
  */
-jQueryFormHelper.validateDate = function(val)
+jQueryFormUtils.validateDate = function(val)
 {
 	// enklast m�jliga...
 	if(val.match(/^(\d{4})\-(\d{2})\-(\d{2})$/) == null)
@@ -401,7 +418,7 @@ jQueryFormHelper.validateDate = function(val)
 /**
  * Validate time HH:mm
  */
-jQueryFormHelper.validateTime = function(time)
+jQueryFormUtils.validateTime = function(time)
 {
 	if(time.match(/^(\d{2}):(\d{2})$/) == null)
 		return false;
@@ -418,7 +435,7 @@ jQueryFormHelper.validateTime = function(time)
 /**
  * Validate float value
  */
-jQueryFormHelper.validateFloat = function(val)
+jQueryFormUtils.validateFloat = function(val)
 {
 	return val.match(/^(\-|)([0-9]+)\.([0-9]+)$/) != null;
 };
@@ -427,7 +444,7 @@ jQueryFormHelper.validateFloat = function(val)
  * Validate that given value is a number
  */
 
-jQueryFormHelper.validateInteger = function(val) {
+jQueryFormUtils.validateInteger = function(val) {
 	return val != '' && val.replace(/[0-9]/g, '') == '';
 };
 
@@ -435,7 +452,7 @@ jQueryFormHelper.validateInteger = function(val) {
  * Has month only 30 days?
  * @return boolean
  */
-jQueryFormHelper.isShortMonth = function(m)
+jQueryFormUtils.isShortMonth = function(m)
 {
 	return (m%2 == 0 && m < 7) || (m%2 != 0 & m > 7);
 };
@@ -443,7 +460,7 @@ jQueryFormHelper.isShortMonth = function(m)
 /**
  * Simple spam check
  */
-jQueryFormHelper.simpleSpamCheck = function(val, classAttr)
+jQueryFormUtils.simpleSpamCheck = function(val, classAttr)
 {
 	var answer = classAttr.match(/captcha([0-9a-z]+)/i)[1].replace('captcha', '');
 	return val == answer;
@@ -452,7 +469,7 @@ jQueryFormHelper.simpleSpamCheck = function(val, classAttr)
 /**
  * Validate domain name
  */
-jQueryFormHelper.validateDomain = function(val)
+jQueryFormUtils.validateDomain = function(val)
 {
 	val = val.replace('http://', '').replace('www.', '');
 	var arr = new Array(
@@ -518,7 +535,7 @@ jQueryFormHelper.validateDomain = function(val)
 /**
  * Validate url
  */
-jQueryFormHelper.validateUrl = function(url)
+jQueryFormUtils.validateUrl = function(url)
 {
 	var urlFilter = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 	return urlFilter.test(url);
@@ -529,7 +546,7 @@ jQueryFormHelper.validateUrl = function(url)
   * @param inputElement Html Elemtn object
   * @param maxLengthElement jQuery Object
   */
-jQueryFormHelper.lengthRestriction = function(inputElement, maxLengthElement) {
+jQueryFormUtils.lengthRestriction = function(inputElement, maxLengthElement) {
 	this.input = inputElement;
 	this.maxLength = parseInt(maxLengthElement.text());
 	var self = this;

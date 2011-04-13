@@ -36,8 +36,8 @@
                 badUrl : 'Incorrect url value',
                 badFloat : 'Incorrect float value',
                 badCustomVal : 'You gave an incorrect answer',
-                badInt : 'Incorrect integer value'
-
+                badInt : 'Incorrect integer value',
+                badSecurityNumber : 'Your social security number was incorrect'
             };
 
 
@@ -128,8 +128,8 @@
 	        	if(!ignoreInput($(this).attr('name'), $(this).attr('type'))) {
 
 	        		// memorize border color
-	        		if(defaultBorderColor == null)
-	        			defaultBorderColor = $(this).css('border-color');
+	        		if(jQueryFormUtils.defaultBorderColor == null && $(this).attr('type') == 'text')
+	        			jQueryFormUtils.defaultBorderColor = $(this).css('border-color');
 
 	        		var value = jQuery.trim($(this).val());
 	        		var validationRules = $(this).attr(config.validationRuleAttribute);
@@ -187,7 +187,7 @@
                         // Url
                         else if(validationRules.indexOf('validate_url') > -1 && !jQueryFormUtils.validateUrl(value)) {
                             errorInputs.push($(this));
-                            $(this).attr('data-error', lang.badFloat);
+                            $(this).attr('data-error', lang.badUrl);
                             addErrorMessage(lang.badUrl);
                         }
 
@@ -257,6 +257,13 @@
                             }
                         }
 
+                        // Swedish social security number
+                        if(validationRules.indexOf('validate_swesc') > -1 && !jQueryFormUtils.validateSwedishSecurityNumber(value)) {
+                            errorInputs.push($(this));
+                            $(this).attr('data-error', lang.badCustomVal);
+                            addErrorMessage(lang.badSecurityNumber);
+                        }
+
                         // confirmation
                         if(validationRules.indexOf('validate_confirmation') > -1) {
                             var conf = '';
@@ -274,16 +281,23 @@
 	        	}
 	        });
 
+            
+            //
 	        // Reset style and remove error class
-	        $(this).find('input,textarea')
-	        	.css('border-color', defaultBorderColor)
+	        //
+            $(this).find('input,textarea')
+	        	.css('border-color', jQueryFormUtils.defaultBorderColor)
 	        	.removeClass(config.errorElementClass);
 
+
+            //
 	        // Remove possible error message from last validation
-	        if(config.errorMessagePosition == 'top')
+	        //
+            if(config.errorMessagePosition == 'top')
                 $('.'+config.errorMessageClass).remove();
             else
                 $('.jquery_form_error_message').remove();
+
 
             //
 	        // Validation failed
@@ -342,6 +356,10 @@
  */
 var jQueryFormUtils = {};
 
+/**
+ * Static variable for holding default border color on input
+ */
+jQueryFormUtils.defaultBorderColor = null;
 
 /**
  * Validate email
@@ -434,14 +452,8 @@ jQueryFormUtils.validateDate = function(val)
 	var month = val.substring(5, 8);
 	var day = val.substring(8, 11);
 
-	// skum fix. �r talet 05 eller l�gre ger parseInt r�tt int annars f�r man 0 n�r man k�r parseInt?
-	if(month.indexOf('0') == 0)
-		month = month.replace('0', '');
-	if(day.indexOf('0') == 0)
-		day = day.replace('0', '');
-
-	month = parseInt(month);
-	day = parseInt(day);
+	month = jQueryFormUtils.parseDateInt(month);
+	day = jQueryFormUtils.parseDateInt(day);
 
 	if(month == 2 && day > 28 || month > 12 || month == 0)
 		return false;
@@ -450,6 +462,54 @@ jQueryFormUtils.validateDate = function(val)
 		return false;
 
 	return true;
+};
+
+/**
+ * skum fix. �r talet 05 eller l�gre ger parseInt r�tt int annars f�r man 0 n�r man k�r parseInt?
+ * @param val
+ */
+jQueryFormUtils.parseDateInt = function(val) {
+    if(val.indexOf('0') == 0)
+		val = val.replace('0', '');
+
+    return parseInt(val);
+};
+
+/**
+ * Validate swedish security number yyymmddXXXX
+ * @param securityNumber
+ */
+jQueryFormUtils.validateSwedishSecurityNumber = function(securityNumber) {
+    
+	if(!securityNumber.match(/^(\d{4})(\d{2})(\d{2})(\d{4})$/))
+        return false;
+
+	var fullYear = RegExp.$1;
+    var month = jQueryFormUtils.parseDateInt(RegExp.$2);
+    var day = jQueryFormUtils.parseDateInt(RegExp.$3);
+    // var gender = parseInt( (RegExp.$4) .substring(2,3)) % 2; ==> 1 == male && 0 == female
+
+    var months = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+
+    if(fullYear%400 == 0 || fullYear%4==0 && fullYear%100 != 0)
+        months[1] = 29;
+
+	if(month < 1 || month > 12 || day < 1 || day > months[month-1])
+        return false;
+
+    securityNumber = securityNumber.substring(2, securityNumber.length);
+
+	var check = '';
+
+	for(var i=0; i < securityNumber.length; i++)
+        check += ((((i+1)%2)+1)*securityNumber.substring(i,i+1));
+
+	var checksum = 0;
+
+	for(i=0; i < check.length; i++)
+        checksum += parseInt( check.substring(i, i+1) );
+
+	return checksum%10 == 0;
 };
 
 /**
@@ -543,7 +603,7 @@ jQueryFormUtils.validateDomain = function(val)
 			'.sy','.sz','.tc','.td','.tf','.tg','.th','.tj','.tk','.tm','.tn',
 			'.to','.tp','.tr','.tt','.tv','.tw','.tz','.ua','.ug','.uk','.um',
 			'.us','.uy','.uz','.va','.vc','.ve','.vg','.vi','.vn','.vu','.ws',
-			'.wf','.ye','.yt','.yu','.za','.zm','.zw', '.mobi'
+			'.wf','.ye','.yt','.yu','.za','.zm','.zw', '.mobi', '.xxx'
 		);
 
 	var dot = val.lastIndexOf('.');

@@ -14,6 +14,27 @@
 	
 </head>
 <body>
+    <h1>
+        Form validation using jQuery
+    </h1>
+    
+    <p>
+        <a href="https://github.com/victorjonsson/jQuery-Form-Validator/wiki">
+            https://github.com/victorjonsson/jQuery-Form-Validator/wiki
+        </a>
+    </p>
+
+    <h2>
+        Basic concept
+    </h2>
+    <code>
+        &lt;form onsubmit="return $(this).validate()"&gt;<br />
+        &nbsp;&nbsp;&lt;input data-validation="some_predefined_rule" /&gt;<br />
+        &nbsp;&nbsp;...<br />
+        &lt;/form&gt;
+    </code>
+
+    <h2>Example of all features</h2>
     <section>
         <form action="" onsubmit="if($(this).validate()) alert('Valid!'); return false;">
             <p>
@@ -73,6 +94,10 @@
                 <input data-validation="validate_swemobile" />
             </p>
             <p>
+                <strong>Valid Swedish social security number yyymmddXXXX</strong> <em>validate_swesc</em><br />
+                <input data-validation="validate_swesc" />
+            </p>
+            <p>
                 <strong>Custom validation</strong>
                 <em>validate_custom regexp/^[a-z]{2} [0-9]{2}$/</em>
                 <input data-validation="validate_custom regexp/^[a-z]{2} [0-9]{2}$/" />
@@ -103,6 +128,7 @@
         </form>
     </section>
 
+    <h2>Customized example (no border color on error, different position on error messages)</h2>
     <section>
         <form action="" id="custom_form">
             <p>
@@ -143,9 +169,9 @@
 
             $('#custom_form').submit(function() {
                 conf.ignore.length = 0;
-                if($('input[name=disable_hours]').is(':checked'))
-                   conf.ignore.push('hours');
-
+                if(!$('input[name=disable_hours]').is(':checked'))
+                    conf.ignore.push('hours');
+                
                 if($(this).validate(false, conf))
                     alert('Valid!');
 

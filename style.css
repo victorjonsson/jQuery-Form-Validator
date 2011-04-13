@@ -16,13 +16,42 @@ p {
     line-height: 180%;
 }
 
-section {
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;    
+}
+
+section, code, h2 {
     -moz-border-radius: 12px;
     -webkit-border-radius: 12px;
     background:#FFF;
     padding: 15px 10px 10px;
     max-width: 500px;
     margin-bottom: 20px;
+    -moz-border-radius-topleft: 0;
+    -moz-border-radius-topright: 0;
+    -webkit-border-top-left-radius: 0;
+    -webkit-border-top-right-radius: 0;
+}
+
+code {
+    display: block;
+    font-family: "Courier New", Courier, serif;
+    background:#E2E2E2;
+    color:black;
+}
+
+h2 {
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius-topleft: 12px;
+    -moz-border-radius-topright: 12px;
+    -webkit-border-top-left-radius: 12px;
+    -webkit-border-top-right-radius: 12px;
+    margin-bottom:0px;
+    background: #CCC;
+    font-size: 14px;
+    padding-top:10px;
 }
 
 textarea {

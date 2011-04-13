@@ -98,9 +98,61 @@
                 $('#area').restrictLength($('#maxlength'));
             </script>
             <p>
-                <input type="submit" value="Validate" />
+                <input type="submit" value="Validate form" />
             </p>
         </form>
+    </section>
+
+    <section>
+        <form action="" id="custom_form">
+            <p>
+                <strong>Length between 3-5 characters</strong> <em>validate_length length3-5</em><br />
+                <textarea data-validation="validate_length length3-5" rows="4"></textarea>
+            </p>
+            <p>
+                <strong>E-mail</strong> <em>validate_email</em><br />
+                <input data-validation="validate_email" />
+            </p>
+            <p>
+                <strong>Domain</strong> <em>validate_domain</em><br />
+                <input data-validation="validate_domain" />
+            </p>
+            <p>
+                <strong>Url</strong> <em>validate_url</em><br />
+                <input data-validation="validate_url" />
+            </p>
+            <p>
+                <strong>When will you arrive</strong>
+                <em>Buy checking this option you will have to give a valid value on the question below otherwise not</em>
+                <input type="checkbox" name="disable_hours" checked="checked" />
+            </p>
+            <p>
+                <strong>Time HH:mm</strong> <em>validate_time</em><br />
+                <input data-validation="validate_time" name="hours" />
+            </p>
+            <p>
+                <input type="submit" value="Validate form" />
+            </p>
+        </form>
+        <script>
+            var conf = {
+                    errorMessagePosition : 'element',
+                    borderColorOnError : '',
+                    ignore: []
+                };
+
+            $('#custom_form').submit(function() {
+                conf.ignore.length = 0;
+                if($('input[name=disable_hours]').is(':checked'))
+                   conf.ignore.push('hours');
+
+                if($(this).validate(false, conf))
+                    alert('Valid!');
+
+                return false;
+            });
+
+        </script>
     </section>
 </body>
 </html>

@@ -22,6 +22,7 @@ section {
     background:#FFF;
     padding: 15px 10px 10px;
     max-width: 500px;
+    margin-bottom: 20px;
 }
 
 textarea {
@@ -41,6 +42,14 @@ input, textarea {
     color: #666;
 }
 
+input[type=submit] {
+    background:#f0f8ff;
+    font-weight:bold;
+    color: #3e8888;
+    width: 130px;
+    cursor: pointer;
+}
+
 .jquery_form_error_message {
 	margin:5px 0 20px;
     padding: 10px;
@@ -53,12 +62,21 @@ input, textarea {
     background: pink;
 }
 
-span.chars_left {
+span.chars_left
+span.jquery_form_error_message {
 	background: #f2f2f2;
     padding: 0 2px;
     font-weight: normal;
     font-size: 90%;
     color: #666;
+}
+
+span.jquery_form_error_message  {
+    color: red;
+    display: block;
+    background: none;
+    margin:0;
+    padding:0;
 }
 
 em {

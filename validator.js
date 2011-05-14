@@ -1,3 +1,15 @@
+/*
+	FORM VALIDATION MADE EASY
+	------------------------------------------
+    Created by Victor Jonsson <http://www.victorjonsson.se>
+    Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
+    Available for download on jQuery.com <http://plugins.jquery.com/project/jQueryFormValidtor/>
+    
+    (c) 2011 Victor Jonsson, Sweden.
+    Dual licensed under the MIT or GPL Version 2 licenses
+    
+    $version 1.0
+*/
 (function($) {
     $.extend($.fn, {
         validate : function(language, settings) {

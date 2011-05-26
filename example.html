@@ -35,7 +35,7 @@
     </code>
 
     <h2>Example of all features</h2>
-    <section>
+    <div class="section">
         <form action="" onsubmit="if($(this).validate()) alert('Valid!'); return false;">
             <p>
                 <strong>Required</strong> <em>required</em><br/>
@@ -125,11 +125,19 @@
             </p>
 
             <p>
-                <strong>These two inputs has to have identical values (minimum 3 characters)</strong> <em>validate_confirmation</em><br/>
+                <strong>These two inputs has to have identical values (minimum 3 characters)</strong> <em>validate_confirmation length3</em><br/>
                 <input name="something" data-validation="validate_confirmation validate_min_length length3"/>
                 <input name="something_confirmation"/>
             </p>
-
+            <p>
+                <strong>These features applies to select lists as well</strong>
+                <select name="whatever" data-validation="required">
+                    <option value="">- - Select something - -</option>
+                    <option value="1">Green</option>
+                    <option value="2">Blue</option>
+                    <option value="red">Red</option>
+                </select>
+            </p>
             <p>
                 <strong>Length restriction</strong>
                     <span class="chars_left">
@@ -145,12 +153,12 @@
                 <input type="submit" value="Validate form"/>
             </p>
         </form>
-    </section>
+    </div class="section">
 
     <h2>
         Customized example (no border color on error, different position on error messages)
     </h2>
-    <section>
+    <div class="section">
         <form action="" id="custom_form">
             <p>
                 <strong>Length between 3-5 characters</strong> <em>validate_length length3-5</em><br/>
@@ -205,6 +213,6 @@
 
         </script>
 
-    </section>
+    </div class="section">
 </body>
 </html>

@@ -289,7 +289,7 @@
             //
             // Reset style and remove error class
             //
-            $(this).find('input,textarea')
+            $(this).find('input,textarea,select')
                     .css('border-color', jQueryFormUtils.defaultBorderColor)
                     .removeClass(config.errorElementClass);
 

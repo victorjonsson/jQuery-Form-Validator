@@ -21,7 +21,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-section, code, h2 {
+div.section, code, h2 {
     -moz-border-radius: 12px;
     -webkit-border-radius: 12px;
     background: #FFF;

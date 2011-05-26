@@ -9,10 +9,11 @@
 /public_html/data/upload/*
 build.properties
 .buildpath
+.idea
 .project
 .settings/
 .settings/**/*
 .bak/
 .bak/**/*
 *.DS_Store
-!.gitignore
+.gitignore

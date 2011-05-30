@@ -8,10 +8,98 @@
 	(c) 2011 Victor Jonsson, Sweden.
 	Dual licensed under the MIT or GPL Version 2 licenses
     
-	$version 1.0
+	$version 1.1
 */
 (function($) {
     $.extend($.fn, {
+
+        /**
+         * @param attrName
+         * @return jQuery
+         */
+        showHelp : function(attrName) {
+            if(typeof attrName == 'undefined')
+                attrName = 'data-help';
+
+            $(this).each(function() {
+                var help = $(this).attr(attrName);
+                if(help) {
+                    $(this)
+                        .focus(function() {
+                            var span = $('<span />')
+                                            .addClass('jquery_form_help')
+                                            .text(help)
+                                            .hide()
+                                            .fadeIn();
+
+                            $(this).after(span);
+                        })
+                        .blur(function() {
+                            $(this).parent().find('.jquery_form_help')
+                                                .fadeOut('slow', function() {
+                                                    $(this).remove();
+                                                });
+                        });
+                }
+            });
+            return $(this);
+        },
+
+        /**
+         * Function that validates the value of given input and shows
+         * error message in a span element that is appended to the parent
+         * element
+         * @param language
+         * @param settings
+         * @return jQuery
+         */
+        doValidate : function(language, settings) {
+            var config = {
+                    validationRuleAttribute : 'data-validation',
+                    errorElementClass : 'error', // Class that will be put on elements which value is invalid
+                    borderColorOnError : 'red'
+            };
+
+            if (settings)
+                $.extend(config, settings);
+            if (language)
+                $.extend(language, jQueryFormUtils.LANG);
+            else
+                language = jQueryFormUtils.LANG;
+
+            if (jQueryFormUtils.defaultBorderColor == null && $(this).attr('type') == 'text')
+                jQueryFormUtils.defaultBorderColor = $(this).css('border-color');
+
+            // Remove possible error style applied by previous validation
+            $(this)
+                .removeClass(config.errorElementClass)
+                .parent()
+                    .find('.jquery_form_error_message').remove();
+
+            var validation = jQueryFormUtils.validateInput($(this), language, config.validationRuleAttribute);
+
+            if(validation !== true) {
+                $(this)
+                    .addClass(config.errorElementClass)
+                    .parent()
+                        .append('<span class="jquery_form_error_message">'+validation+'</span>');
+
+                if(config.borderColorOnError != '')
+                    $(this).css('border-color', config.borderColorOnError);
+            }
+            else {
+                if(config.borderColorOnError != '')
+                    $(this).css('border-color', jQueryFormUtils.defaultBorderColor);
+            }
+
+            return $(this);
+        },
+
+        /**
+         * Function that validate all inputs in a form
+         * @param language
+         * @param settings
+         */
         validate : function(language, settings) {
 
             /*
@@ -66,7 +154,7 @@
             /** Error messages for this validation */
             var errorMessages = [];
 
-            /** Input elements whitch value wasnt valid */
+            /** Input elements which value was not valid */
             var errorInputs = [];
 
             /** Form instance */
@@ -77,17 +165,17 @@
             //
             $(this).find('input[type=radio]').each(function() {
                 var validationRule = $(this).attr(config.validationRuleAttribute);
-                if (typeof validationRule != 'undefined' && validationRule != null) {
-                    if (validationRule == 'required') {
-                        var radioButtonName = $(this).attr('name');
-                        var isChecked = false;
-                        form.find('input[name=' + radioButtonName + ']').each(function() {
-                            if ($(this).is(':checked'))
-                                isChecked = true;
-                        });
-                        if (!isChecked) {
-                            errorMessages.push(language.requiredFields);
-                        }
+                if (typeof validationRule != 'undefined' && validationRule == 'required') {
+                    var radioButtonName = $(this).attr('name');
+                    var isChecked = false;
+                    form.find('input[name=' + radioButtonName + ']').each(function() {
+                        if ($(this).is(':checked'))
+                            isChecked = true;
+                    });
+                    if (!isChecked) {
+                        errorMessages.push(language.requiredFields);
+                        errorInputs.push($(this));
+                        $(this).attr('data-error', language.requiredFields);
                     }
                 }
             });
@@ -128,10 +216,8 @@
             //
             // Remove possible error messages from last validation
             //
-            if (config.errorMessagePosition == 'top')
-                $('.' + config.errorMessageClass).remove();
-            else
-                $('.jquery_form_error_message').remove();
+            $('.' + config.errorMessageClass).remove();
+            $('.jquery_form_error_message').remove();
 
 
             //
@@ -459,7 +545,6 @@ jQueryFormUtils.validateDomain = function(val) {
  * @return string|true
  */
 jQueryFormUtils.validateInput = function(el, language, validationRuleAttr, form) {
-
     var value = jQuery.trim(el.val());
     var validationRules = el.attr(validationRuleAttr);
 
@@ -568,7 +653,7 @@ jQueryFormUtils.validateInput = function(el, language, validationRuleAttr, form)
         }
 
         // confirmation
-        if (validationRules.indexOf('validate_confirmation') > -1) {
+        if (validationRules.indexOf('validate_confirmation') > -1 && typeof(form) != 'undefined') {
             var conf = '';
             var confInput = form.find('input[name=' + el.attr('name') + '_confirmation]').eq(0);
             if (confInput)

@@ -108,7 +108,7 @@
             </p>
 
             <p>
-                <strong>Valid Swedish social security number yyymmddXXXX</strong> <em>validate_swesc</em><br/>
+                <strong>Valid Swedish social security number yyyymmddXXXX</strong> <em>validate_swesc</em><br/>
                 <input data-validation="validate_swesc"/>
             </p>
 
@@ -123,7 +123,14 @@
                 captcha[VALUE-TO-VALIDATE]</em><br/>
                 <input data-validation="validate_spamcheck captchajqueryvalidation"/>
             </p>
-
+            <p>
+                <strong>One of these radio buttons has to be checked</strong>
+                <em>required</em>
+                <br />
+                <input type="radio" data-validation="required" name="s1" value="0" /> Yes<br />
+                <input type="radio" name="s1" value="1" /> No<br />
+                <input type="radio" name="s1" value="2" /> Maybe
+            </p>
             <p>
                 <strong>These two inputs has to have identical values (minimum 3 characters)</strong> <em>validate_confirmation length3</em><br/>
                 <input name="something" data-validation="validate_confirmation validate_min_length length3"/>
@@ -163,22 +170,22 @@
         <form action="" id="custom_form">
             <p>
                 <strong>Length between 3-5 characters</strong> <em>validate_length length3-5</em><br/>
-                <textarea data-validation="validate_length length3-5" rows="4"></textarea>
+                <textarea name="1" data-validation="validate_length length3-5" rows="4"></textarea>
             </p>
 
             <p>
                 <strong>E-mail</strong> <em>validate_email</em><br/>
-                <input data-validation="validate_email"/>
+                <input name="2" data-validation="validate_email"/>
             </p>
 
             <p>
                 <strong>Domain</strong> <em>validate_domain</em><br/>
-                <input data-validation="validate_domain"/>
+                <input id="testing" name="3" data-help="Only top domain name" data-validation="validate_domain"/>
             </p>
 
             <p>
                 <strong>Url</strong> <em>validate_url</em><br/>
-                <input data-validation="validate_url"/>
+                <input name="4" data-validation="validate_url"/>
             </p>
 
             <p>
@@ -189,11 +196,11 @@
 
             <p>
                 <strong>Time HH:mm</strong> <em>validate_time</em><br/>
-                <input data-validation="validate_time" name="hours"/>
+                <input name="6" data-validation="validate_time" name="hours"/>
             </p>
 
             <p>
-                <input type="submit" value="Validate form"/>
+                <input name="7" type="submit" value="Validate form"/>
             </p>
         </form>
         
@@ -203,15 +210,23 @@
                 borderColorOnError : '',
                 ignore: []
             };
-            $('#custom_form').submit(function() {
-                conf.ignore.length = 0;
-                if (!$('input[name=disable_hours]').is(':checked'))
-                    conf.ignore.push('hours');
-                if ($(this).validate(false, conf))
-                    alert('Valid!');
-                return false;
-            });
+            
+            $('#custom_form')
+                .submit(function() {
+                    conf.ignore.length = 0;
 
+                    if (!$('input[name=disable_hours]').is(':checked'))
+                        conf.ignore.push('hours');
+                    if ($(this).validate(false, conf))
+                        alert('Valid!');
+
+                    return false;
+                })
+                .find('textarea,input')
+                        .blur(function() {
+                           $(this).doValidate(false, conf);
+                        })
+                        .showHelp();
         </script>
 
     </div>

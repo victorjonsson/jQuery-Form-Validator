@@ -114,3 +114,9 @@ em {
     color: #81815c;
     padding: 0 1px;
 }
+
+.jquery_form_help {
+    color:#999;
+    font-family: Georgia, "Times New Roman", serif;
+    margin-left: 4px;
+}

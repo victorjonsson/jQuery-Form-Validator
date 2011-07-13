@@ -178,7 +178,7 @@
 
             /**
              * Adds message to error message stack if not already in the message stack
-             * @param string mess
+             * @param {String} mess
              */
             var addErrorMessage = function(mess) {
                 if (jQuery.inArray(mess, errorMessages) < 0)
@@ -317,7 +317,7 @@ jQueryFormUtils.defaultBorderColor = null;
 
 /**
  * Validate email
- * @return boolean
+ * @return {Boolean}
  */
 jQueryFormUtils.validateEmail = function(email) {
     // TODO: is this regexp enough for validating email correct?
@@ -327,7 +327,7 @@ jQueryFormUtils.validateEmail = function(email) {
 
 /**
  * Validate phone number, at least 7 digits only one hyphen and plus allowed
- * @return boolean
+ * @return {Boolean}
  */
 jQueryFormUtils.validatePhoneNumber = function(tele) {
     var numPlus = tele.match(/\+/g);
@@ -344,8 +344,8 @@ jQueryFormUtils.validatePhoneNumber = function(tele) {
 
 /**
  * Validate that string is a swedish telephone number
- * @param number
- * @return boolean
+ * @param {Number}
+ * @return {Boolean}
  */
 jQueryFormUtils.validateSwedishMobileNumber = function(number) {
     if (!jQueryFormUtils.validatePhoneNumber(number))
@@ -363,7 +363,7 @@ jQueryFormUtils.validateSwedishMobileNumber = function(number) {
 
 /**
  * Is this a valid birth date YYYY-MM-DD
- * @return boolean
+ * @return {Boolean}
  */
 jQueryFormUtils.validateBirthdate = function(val) {
     if (!this.validateDate(val))
@@ -390,8 +390,8 @@ jQueryFormUtils.validateBirthdate = function(val) {
 
 /**
  * Is it a correct date YYYY-MM-DD
- * @param string val
- * @return bool
+ * @param {String} val
+ * @return {Boolean}
  */
 jQueryFormUtils.validateDate = function(val) {
     // enklast m�jliga...
@@ -413,7 +413,8 @@ jQueryFormUtils.validateDate = function(val) {
 
 /**
  * skum fix. är talet 05 eller lägre ger parseInt rätt int annars får man 0 när man kör parseInt?
- * @param val
+ * @param {String} val
+ * @param {Number}
  */
 jQueryFormUtils.parseDateInt = function(val) {
     if (val.indexOf('0') == 0)
@@ -423,7 +424,8 @@ jQueryFormUtils.parseDateInt = function(val) {
 
 /**
  * Validate swedish security number yyymmddXXXX
- * @param securityNumber
+ * @param {String} securityNumber
+ * @return {Boolean}
  */
 jQueryFormUtils.validateSwedishSecurityNumber = function(securityNumber) {
     if (!securityNumber.match(/^(\d{4})(\d{2})(\d{2})(\d{4})$/))
@@ -454,8 +456,8 @@ jQueryFormUtils.validateSwedishSecurityNumber = function(securityNumber) {
 
 /**
  * Validate time HH:mm
- * @param string time
- * @return bool
+ * @param {String} time
+ * @return {Boolean}
  */
 jQueryFormUtils.validateTime = function(time) {
     if (time.match(/^(\d{2}):(\d{2})$/) == null)
@@ -463,7 +465,7 @@ jQueryFormUtils.validateTime = function(time) {
     else {
         var hours = parseInt(time.split(':')[0]);
         var minutes = parseInt(time.split(':')[1]);
-        if (hours > 24 || minutes > 59)
+        if((hours > 24 || minutes > 59) || (hours == 24 && minutes > 0))
             return false;
     }
     return true;
@@ -471,8 +473,8 @@ jQueryFormUtils.validateTime = function(time) {
 
 /**
  * Validate float value
- * @param string val
- * @return bool
+ * @param {String} val
+ * @return {Boolean}
  */
 jQueryFormUtils.validateFloat = function(val) {
     return val.match(/^(\-|)([0-9]+)\.([0-9]+)$/) != null;
@@ -480,8 +482,8 @@ jQueryFormUtils.validateFloat = function(val) {
 
 /**
  * Validate that given value is a number
- * @param string val
- * @return bool
+ * @param {String} val
+ * @return {Boolean}
  */
 jQueryFormUtils.validateInteger = function(val) {
     return val != '' && val.replace(/[0-9]/g, '') == '';
@@ -489,8 +491,8 @@ jQueryFormUtils.validateInteger = function(val) {
 
 /**
  * Has month only 30 days?
- * @param number m
- * @return bool
+ * @param {Number} m
+ * @return {Boolean}
  */
 jQueryFormUtils.isShortMonth = function(m) {
     return (m % 2 == 0 && m < 7) || (m % 2 != 0 & m > 7);
@@ -498,9 +500,9 @@ jQueryFormUtils.isShortMonth = function(m) {
 
 /**
  * Simple spam check
- * @param string val
- * @param string classAttr
- * @return bool
+ * @param {String} val
+ * @param {String} classAttr
+ * @return {Boolean}
  */
 jQueryFormUtils.simpleSpamCheck = function(val, classAttr) {
     var answer = classAttr.match(/captcha([0-9a-z]+)/i)[1].replace('captcha', '');
@@ -509,8 +511,8 @@ jQueryFormUtils.simpleSpamCheck = function(val, classAttr) {
 
 /**
  * Validate domain name
- * @param string val
- * @return bool
+ * @param {String} val
+ * @return {Boolean}
  */
 jQueryFormUtils.validateDomain = function(val) {
     val = val.replace('http://', '').replace('www.', '');
@@ -572,11 +574,11 @@ jQueryFormUtils.validateDomain = function(val) {
  * Validate the value of given element according to the validation rule
  * defined in attribute with given name. Will return true if valid,
  * error message otherwise
- * @param jQuery el
- * @param Object language (jQueryFormUtils.LANG)
- * @param string validationRuleAttr
- * @param jQuery form
- * @return string|true
+ * @param {jQuery} el
+ * @param {Object} language (jQueryFormUtils.LANG)
+ * @param {String} validationRuleAttr
+ * @param {jQuery} form
+ * @return {String}|{Boolean}
  */
 jQueryFormUtils.validateInput = function(el, language, validationRuleAttr, form) {
     var value = jQuery.trim(el.val());
@@ -586,8 +588,8 @@ jQueryFormUtils.validateInput = function(el, language, validationRuleAttr, form)
 
         /**
          * <input data-validation="length12" /> => getAttribute($(element).attr('class'), 'length') = 12
-         * @param string classValue
-         * @param string attributeName
+         * @param {String} attrValue
+         * @param {String} attrName
          * @returns integer
          */
         var getAttributeInteger = function(attrValue, attrName) {
@@ -702,7 +704,8 @@ jQueryFormUtils.validateInput = function(el, language, validationRuleAttr, form)
 };
 
 /**
- * Error dialogs 
+ * Error dialogs
+ * @var {Object}
  */
 jQueryFormUtils.LANG =  {
     errorTitle : 'Form submission failed!',
@@ -729,8 +732,8 @@ jQueryFormUtils.LANG =  {
 
 /**
  * Validate url
- * @param string url
- * @return bool
+ * @param {String} url
+ * @return {Boolean}
  */
 jQueryFormUtils.validateUrl = function(url) {
     var urlFilter = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
@@ -739,8 +742,9 @@ jQueryFormUtils.validateUrl = function(url) {
 
 /**
  * Restrict input length
- * @param inputElement Jquery Html object
- * @param maxLengthElement jQuery Html Object
+ * @param {jQuery} inputElement Jquery Html object
+ * @param {jQuery} maxLengthElement jQuery Html Object
+ * @return void
  */
 jQueryFormUtils.lengthRestriction = function(inputElement, maxLengthElement) {
     this.input = inputElement;
@@ -748,9 +752,11 @@ jQueryFormUtils.lengthRestriction = function(inputElement, maxLengthElement) {
     var self = this;
 
     $(this.input).keyup(function() {
-        $(this).val($(this).val().substring(0, self.maxLength));
-        maxLengthElement.text(self.maxLength - $(this).val().length);
-    }).focus(function() {
-        $(this).keyup();
-    }).keyup();
+            $(this).val($(this).val().substring(0, self.maxLength));
+            maxLengthElement.text(self.maxLength - $(this).val().length);
+        })
+        .focus(function() {
+            $(this).keyup();
+        })
+        .keyup();
 };

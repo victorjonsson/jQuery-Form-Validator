@@ -8,6 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="jquery.formvalidator.js"></script>
 
     <link href="style.css" type="text/css" rel="stylesheet"/>
@@ -164,7 +165,7 @@
     </div>
 
     <h2>
-        Customized example (no border color on error, different position on error messages)
+        Customized example (no border color on error, different position on error messages, validate input value on blur)
     </h2>
     <div class="section">
         <form action="" id="custom_form">
@@ -180,7 +181,7 @@
 
             <p>
                 <strong>Domain</strong> <em>validate_domain</em><br/>
-                <input id="testing" name="3" data-help="Only top domain name" data-validation="validate_domain"/>
+                <input id="testing" name="3" data-help="No protocol is needed" data-validation="validate_domain"/>
             </p>
 
             <p>
@@ -190,13 +191,13 @@
 
             <p>
                 <strong>When will you arrive</strong>
-                <em>Buy checking this option you will have to give a valid value on the question below otherwise not</em>
+                <em>The answer given on the question below will only be validated if this option is unchecked</em>
                 <input type="checkbox" name="disable_hours" checked="checked"/>
             </p>
 
             <p>
                 <strong>Time HH:mm</strong> <em>validate_time</em><br/>
-                <input name="6" data-validation="validate_time" name="hours"/>
+                <input data-validation="validate_time" name="hours"/>
             </p>
 
             <p>
@@ -215,18 +216,17 @@
                 .submit(function() {
                     conf.ignore.length = 0;
 
-                    if (!$('input[name=disable_hours]').is(':checked'))
+                    if ($('input[name=disable_hours]').is(':checked'))
                         conf.ignore.push('hours');
+
                     if ($(this).validate(false, conf))
                         alert('Valid!');
 
                     return false;
                 })
-                .find('textarea,input')
-                        .blur(function() {
-                           $(this).doValidate(false, conf);
-                        })
-                        .showHelp();
+                .validateOnBlur(false, conf)
+                .showHelpOnFocus();
+            
         </script>
 
     </div>

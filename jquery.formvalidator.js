@@ -1,38 +1,59 @@
 /*
-	FORM VALIDATION MADE EASY
-	------------------------------------------
-	Created by Victor Jonsson <http://www.victorjonsson.se>
-	Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
-	Available for download on jQuery.com <http://plugins.jquery.com/project/jQueryFormValidtor/>
- 
-	(c) 2011 Victor Jonsson, Sweden.
-	Dual licensed under the MIT or GPL Version 2 licenses
-    
-	$version 1.1
+*
+* FORM VALIDATION MADE EASY
+* ------------------------------------------
+* Created by Victor Jonsson <http://www.victorjonsson.se>
+* Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
+* Available for download at jQuery.com <http://plugins.jquery.com/project/jQueryFormValidtor/>
+*
+* (c) 2011 Victor Jonsson, Sweden.
+* Dual licensed under the MIT or GPL Version 2 licenses
+*
+* $version 1.1
+*
 */
+
 (function($) {
     $.extend($.fn, {
 
         /**
-         * @param attrName
-         * @return jQuery
+         * Should be called on the element containing the input elements
+         * @param {Object} language Optional, will override jQueryFormUtils.LANG
+         * @param {Object} settings Optional, will override the default settings
+         * @return {jQuery}
          */
-        showHelp : function(attrName) {
+        validateOnBlur : function(language, settings) {
+            $(this).find('textarea,input').blur(function() {
+                       $(this).doValidate(language, settings);
+                    });
+
+            return $(this);
+        },
+
+        /**
+         * Should be called on the element containing the input elements.
+         * <input data-help="The info that I want to display for the user when input is focused" ... />
+         * @param {String} attrName Optional, default is data-help
+         * @return {jQuery}
+         */
+        showHelpOnFocus : function(attrName) {
             if(typeof attrName == 'undefined')
                 attrName = 'data-help';
 
-            $(this).each(function() {
+            $(this).find('textarea,input').each(function() {
                 var help = $(this).attr(attrName);
                 if(help) {
                     $(this)
                         .focus(function() {
-                            var span = $('<span />')
-                                            .addClass('jquery_form_help')
-                                            .text(help)
-                                            .hide()
-                                            .fadeIn();
-
-                            $(this).after(span);
+                            if($(this).parent().find('.jquery_form_help').length == 0) {
+                                $(this).after(
+                                      $('<span />')
+                                        .addClass('jquery_form_help')
+                                        .text(help)
+                                        .hide()
+                                        .fadeIn()
+                                    );
+                            }
                         })
                         .blur(function() {
                             $(this).parent().find('.jquery_form_help')
@@ -42,6 +63,7 @@
                         });
                 }
             });
+            
             return $(this);
         },
 
@@ -49,11 +71,15 @@
          * Function that validates the value of given input and shows
          * error message in a span element that is appended to the parent
          * element
-         * @param language
-         * @param settings
-         * @return jQuery
+         * @param {Object} language Optional, will override jQueryFormUtils.LANG
+         * @param {Object} settings Optional, will override the default settings
+         * @param {Boolean} attachKeyupEvent Optional
+         * @return {jQuery}
          */
-        doValidate : function(language, settings) {
+        doValidate : function(language, settings, attachKeyupEvent) {
+            if(typeof attachKeyupEvent == 'undefined')
+                attachKeyupEvent = true;
+
             var config = {
                     validationRuleAttribute : 'data-validation',
                     errorElementClass : 'error', // Class that will be put on elements which value is invalid
@@ -75,10 +101,15 @@
                 .removeClass(config.errorElementClass)
                 .parent()
                     .find('.jquery_form_error_message').remove();
+            
+            if(config.borderColorOnError != '')
+                $(this).css('border-color', jQueryFormUtils.defaultBorderColor);
 
             var validation = jQueryFormUtils.validateInput($(this), language, config.validationRuleAttribute);
 
-            if(validation !== true) {
+            if(validation === true)
+                $(this).unbind('keyup');
+            else {
                 $(this)
                     .addClass(config.errorElementClass)
                     .parent()
@@ -86,10 +117,12 @@
 
                 if(config.borderColorOnError != '')
                     $(this).css('border-color', config.borderColorOnError);
-            }
-            else {
-                if(config.borderColorOnError != '')
-                    $(this).css('border-color', jQueryFormUtils.defaultBorderColor);
+
+                if(attachKeyupEvent) {
+                    $(this).bind('keyup', function() {
+                        $(this).doValidate(language, settings, false);
+                    });
+                }
             }
 
             return $(this);
@@ -128,13 +161,14 @@
             
             /**
              * Tells whether or not to validate element with this name and of this type
-             * @param string name
-             * @param string type
-             * @return boolean
+             * @param {String} name
+             * @param {String} type
+             * @return {Boolean}
              */
             var ignoreInput = function(name, type) {
-                if (type == 'submit')
+                if (type == 'submit' || type == 'button')
                     return true;
+
                 for (var i = 0; i < config.ignore.length; i++) {
                     if (config.ignore[i] == name)
                         return true;
@@ -237,7 +271,7 @@
                     var messages = '<strong>' + language.errorTitle + '</strong>';
                     for (var i = 0; i < errorMessages.length; i++)
                         messages += '<br />* ' + errorMessages[i];
-                    $(this).children().eq(0).prepend('<p class="' + config.errorMessageClass + '">' + messages + '</p>');
+                    $(this).children().eq(0).before('<p class="' + config.errorMessageClass + '">' + messages + '</p>');
                     if(config.scrollToTopOnError)
                         $(window).scrollTop($(form).offset().top - 20);
                 }

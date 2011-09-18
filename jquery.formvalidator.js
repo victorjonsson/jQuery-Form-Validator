@@ -1,5 +1,4 @@
 /*
-*
 * FORM VALIDATION MADE EASY
 * ------------------------------------------
 * Created by Victor Jonsson <http://www.victorjonsson.se>
@@ -9,8 +8,7 @@
 * (c) 2011 Victor Jonsson, Sweden.
 * Dual licensed under the MIT or GPL Version 2 licenses
 *
-* $version 1.2 beta 
-*
+* $version 1.2
 */
 
 (function($) {
@@ -368,7 +366,7 @@ jQueryFormUtils.validateSwedishMobileNumber = function(number) {
  * @return {Boolean}
  */
 jQueryFormUtils.validateBirthdate = function(val, dateFormat) {
-    var inputDate = this.validateDate(val, dateFormat);
+    var inputDate = this.parseDate(val, dateFormat);
     if (!inputDate)
         return false;
 
@@ -392,29 +390,28 @@ jQueryFormUtils.validateBirthdate = function(val, dateFormat) {
 };
 
 /**
- * Is it a correct date YYYY-MM-DD. Will return false if not, otherwise
+ * Is it a correct date according to given dateFormat. Will return false if not, otherwise
  * an array 0=>year 1=>month 2=>day
  * @param {String} val
+ * @param {String} dateFormat
  * @return {Array}|{Boolean}
  */
-jQueryFormUtils.validateDate = function(val, dateFormat) {
+jQueryFormUtils.parseDate = function(val, dateFormat) {
     var divider = dateFormat.replace(/[a-zA-Z]/gi, '').substring(0,1);
     var regexp = '^';
     var formatParts = dateFormat.split(divider);
     for(var i=0; i < formatParts.length; i++)
         regexp += (i > 0 ? '\\'+divider:'') + '(\\d{'+formatParts[i].length+'})';
     regexp += '$';
-
+    
     var matches = val.match(new RegExp(regexp));
-
-    // enklast m�jliga...
     if (matches == null)
         return false;
 
     var findDateUnit = function(unit, formatParts, matches) {
         for(var i=0; i < formatParts.length; i++) {
             if(formatParts[i].substring(0,1) == unit) {
-                return matches[i+1];
+                return jQueryFormUtils.parseDateInt(matches[i+1]);
             }
         }
         return -1;
@@ -423,10 +420,7 @@ jQueryFormUtils.validateDate = function(val, dateFormat) {
     var month = findDateUnit('m', formatParts, matches);
     var day = findDateUnit('d', formatParts, matches);
     var year = findDateUnit('y', formatParts, matches);
-    month = jQueryFormUtils.parseDateInt(month);
-    day = jQueryFormUtils.parseDateInt(day);
-    year = jQueryFormUtils.parseDateInt(year);
-    
+
     if (month == 2 && day > 28 || month > 12 || month == 0)
         return false;
     if ((this.isShortMonth(month) && day > 30) || (!this.isShortMonth(month) && day > 31) || day == 0)
@@ -675,7 +669,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
         }
 
         // Date
-        else if (validationRules.indexOf('validate_date') > -1 && !jQueryFormUtils.validateDate(value, config.dateFormat)) {
+        else if (validationRules.indexOf('validate_date') > -1 && !jQueryFormUtils.parseDate(value, config.dateFormat)) {
             return language.badDate;
         }
 

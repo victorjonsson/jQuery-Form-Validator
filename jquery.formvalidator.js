@@ -9,7 +9,7 @@
 * (c) 2011 Victor Jonsson, Sweden.
 * Dual licensed under the MIT or GPL Version 2 licenses
 *
-* $version 1.1
+* $version 1.2 beta 
 *
 */
 
@@ -83,7 +83,8 @@
             var config = {
                     validationRuleAttribute : 'data-validation',
                     errorElementClass : 'error', // Class that will be put on elements which value is invalid
-                    borderColorOnError : 'red'
+                    borderColorOnError : 'red',
+                    dateFormat : 'yyyy-mm-dd'
             };
 
             if (settings)
@@ -105,7 +106,7 @@
             if(config.borderColorOnError != '')
                 $(this).css('border-color', jQueryFormUtils.defaultBorderColor);
 
-            var validation = jQueryFormUtils.validateInput($(this), language, config.validationRuleAttribute);
+            var validation = jQueryFormUtils.validateInput($(this), language, config);
 
             if(validation === true)
                 $(this).unbind('keyup');
@@ -145,7 +146,8 @@
                 errorMessageClass : 'jquery_form_error_message', // class name of div containing error messages when validation fails
                 validationRuleAttribute : 'data-validation', // name of the attribute holding the validation rules
                 errorMessagePosition : 'top', // Can be either "top" or "element"
-                scrollToTopOnError : true
+                scrollToTopOnError : true,
+                dateFormat : 'yyyy-mm-dd'
             };
             
             /*
@@ -227,7 +229,7 @@
                     var valid = jQueryFormUtils.validateInput(
                                                     $(this),
                                                     language,
-                                                    config.validationRuleAttribute,
+                                                    config,
                                                     $(form)
                                                 );
                     
@@ -365,19 +367,20 @@ jQueryFormUtils.validateSwedishMobileNumber = function(number) {
  * Is this a valid birth date YYYY-MM-DD
  * @return {Boolean}
  */
-jQueryFormUtils.validateBirthdate = function(val) {
-    if (!this.validateDate(val))
+jQueryFormUtils.validateBirthdate = function(val, dateFormat) {
+    var inputDate = this.validateDate(val, dateFormat);
+    if (!inputDate)
         return false;
 
     var d = new Date();
     var currentYear = d.getFullYear();
-    var year = parseInt(val.substring(0, 4));
+    var year = inputDate[0];
+    var month = inputDate[1];
+    var day = inputDate[2];
 
     if (year == currentYear) {
-        var month = parseInt(val.substring(5, 7));
         var currentMonth = d.getMonth() + 1;
         if (month == currentMonth) {
-            var day = parseInt(val.substring(8, 10));
             var currentDay = d.getDate();
             return day <= currentDay;
         }
@@ -385,30 +388,51 @@ jQueryFormUtils.validateBirthdate = function(val) {
             return month < currentMonth;
     }
     else
-        return year < currentYear && year > (currentYear - 122);
+        return year < currentYear && year > (currentYear - 124); // we can not live for ever yet...
 };
 
 /**
- * Is it a correct date YYYY-MM-DD
+ * Is it a correct date YYYY-MM-DD. Will return false if not, otherwise
+ * an array 0=>year 1=>month 2=>day
  * @param {String} val
- * @return {Boolean}
+ * @return {Array}|{Boolean}
  */
-jQueryFormUtils.validateDate = function(val) {
+jQueryFormUtils.validateDate = function(val, dateFormat) {
+    var divider = dateFormat.replace(/[a-zA-Z]/gi, '').substring(0,1);
+    var regexp = '^';
+    var formatParts = dateFormat.split(divider);
+    for(var i=0; i < formatParts.length; i++)
+        regexp += (i > 0 ? '\\'+divider:'') + '(\\d{'+formatParts[i].length+'})';
+    regexp += '$';
+
+    var matches = val.match(new RegExp(regexp));
+
     // enklast m�jliga...
-    if (val.match(/^(\d{4})\-(\d{2})\-(\d{2})$/) == null)
+    if (matches == null)
         return false;
 
-    var month = val.substring(5, 8);
-    var day = val.substring(8, 11);
+    var findDateUnit = function(unit, formatParts, matches) {
+        for(var i=0; i < formatParts.length; i++) {
+            if(formatParts[i].substring(0,1) == unit) {
+                return matches[i+1];
+            }
+        }
+        return -1;
+    };
+
+    var month = findDateUnit('m', formatParts, matches);
+    var day = findDateUnit('d', formatParts, matches);
+    var year = findDateUnit('y', formatParts, matches);
     month = jQueryFormUtils.parseDateInt(month);
     day = jQueryFormUtils.parseDateInt(day);
-
+    year = jQueryFormUtils.parseDateInt(year);
+    
     if (month == 2 && day > 28 || month > 12 || month == 0)
         return false;
     if ((this.isShortMonth(month) && day > 30) || (!this.isShortMonth(month) && day > 31) || day == 0)
         return false;
 
-    return true;
+    return [year, month, day];
 };
 
 /**
@@ -580,9 +604,9 @@ jQueryFormUtils.validateDomain = function(val) {
  * @param {jQuery} form
  * @return {String}|{Boolean}
  */
-jQueryFormUtils.validateInput = function(el, language, validationRuleAttr, form) {
+jQueryFormUtils.validateInput = function(el, language, config, form) {
     var value = jQuery.trim(el.val());
-    var validationRules = el.attr(validationRuleAttr);
+    var validationRules = el.attr(config.validationRuleAttribute);
 
     if (typeof validationRules != 'undefined' && validationRules != null) {
 
@@ -651,12 +675,12 @@ jQueryFormUtils.validateInput = function(el, language, validationRuleAttr, form)
         }
 
         // Date
-        else if (validationRules.indexOf('validate_date') > -1 && !jQueryFormUtils.validateDate(value)) {
+        else if (validationRules.indexOf('validate_date') > -1 && !jQueryFormUtils.validateDate(value, config.dateFormat)) {
             return language.badDate;
         }
 
         // Birth date
-        else if (validationRules.indexOf('validate_birthdate') > -1 && !jQueryFormUtils.validateBirthdate(value)) {
+        else if (validationRules.indexOf('validate_birthdate') > -1 && !jQueryFormUtils.validateBirthdate(value, config.dateFormat)) {
             return language.badDate;
         }
 

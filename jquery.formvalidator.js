@@ -90,7 +90,7 @@
             if (settings)
                 $.extend(config, settings);
             if (language)
-                $.extend(language, jQueryFormUtils.LANG);
+                $.extend(jQueryFormUtils.LANG,language);
             else
                 language = jQueryFormUtils.LANG;
 
@@ -156,7 +156,7 @@
             if (settings)
                 $.extend(config, settings);
             if (language)
-                $.extend(language, jQueryFormUtils.LANG);
+                $.extend(jQueryFormUtils.LANG, language);
             else
                 language = jQueryFormUtils.LANG;
 

@@ -8,7 +8,7 @@
 * (c) 2011 Victor Jonsson, Sweden.
 * Dual licensed under the MIT or GPL Version 2 licenses
 *
-* $version 1.2
+* $version 1.3.beta
 */
 
 (function($) {
@@ -320,9 +320,14 @@ jQueryFormUtils.defaultBorderColor = null;
  * @return {Boolean}
  */
 jQueryFormUtils.validateEmail = function(email) {
-    // TODO: is this regexp enough for validating email correct?
     var emailFilter = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
-    return emailFilter.test(email);
+    if(emailFilter.test(email)) {
+       var parts = email.split('@');
+       if(parts.length == 2) {
+           return jQueryFormUtils.validateDomain(parts[1]);
+       }
+    }
+    return false;
 };
 
 /**

@@ -14,6 +14,7 @@
 
         /**
          * Should be called on the element containing the input elements
+         *
          * @param {Object} language Optional, will override jQueryFormUtils.LANG
          * @param {Object} settings Optional, will override the default settings
          * @return {jQuery}
@@ -29,6 +30,7 @@
         /**
          * Should be called on the element containing the input elements.
          * <input data-help="The info that I want to display for the user when input is focused" ... />
+         *
          * @param {String} attrName Optional, default is data-help
          * @return {jQuery}
          */
@@ -68,6 +70,7 @@
          * Function that validates the value of given input and shows
          * error message in a span element that is appended to the parent
          * element
+         *
          * @param {Object} language Optional, will override jQueryFormUtils.LANG
          * @param {Object} settings Optional, will override the default settings
          * @param {Boolean} attachKeyupEvent Optional
@@ -131,6 +134,7 @@
 
         /**
          * Function that validate all inputs in a form
+         *
          * @param language
          * @param settings
          */
@@ -163,6 +167,7 @@
             
             /**
              * Tells whether or not to validate element with this name and of this type
+             *
              * @param {String} name
              * @param {String} type
              * @return {Boolean}
@@ -180,6 +185,7 @@
 
             /**
              * Adds message to error message stack if not already in the message stack
+             *
              * @param {String} mess
              */
             var addErrorMessage = function(mess) {
@@ -320,6 +326,7 @@ jQueryFormUtils.defaultBorderColor = null;
 
 /**
  * Validate email
+ *
  * @return {Boolean}
  */
 jQueryFormUtils.validateEmail = function(email) {
@@ -335,6 +342,7 @@ jQueryFormUtils.validateEmail = function(email) {
 
 /**
  * Validate phone number, at least 7 digits only one hyphen and plus allowed
+ *
  * @return {Boolean}
  */
 jQueryFormUtils.validatePhoneNumber = function(tele) {
@@ -352,6 +360,7 @@ jQueryFormUtils.validatePhoneNumber = function(tele) {
 
 /**
  * Validate that string is a swedish telephone number
+ *
  * @param {Number}
  * @return {Boolean}
  */
@@ -371,6 +380,7 @@ jQueryFormUtils.validateSwedishMobileNumber = function(number) {
 
 /**
  * Is this a valid birth date YYYY-MM-DD
+ *
  * @return {Boolean}
  */
 jQueryFormUtils.validateBirthdate = function(val, dateFormat) {
@@ -400,6 +410,7 @@ jQueryFormUtils.validateBirthdate = function(val, dateFormat) {
 /**
  * Is it a correct date according to given dateFormat. Will return false if not, otherwise
  * an array 0=>year 1=>month 2=>day
+ *
  * @param {String} val
  * @param {String} dateFormat
  * @return {Array}|{Boolean}
@@ -439,6 +450,7 @@ jQueryFormUtils.parseDate = function(val, dateFormat) {
 
 /**
  * skum fix. är talet 05 eller lägre ger parseInt rätt int annars får man 0 när man kör parseInt?
+ *
  * @param {String} val
  * @param {Number}
  */
@@ -450,6 +462,7 @@ jQueryFormUtils.parseDateInt = function(val) {
 
 /**
  * Validate swedish security number yyymmddXXXX
+ *
  * @param {String} securityNumber
  * @return {Boolean}
  */
@@ -482,6 +495,7 @@ jQueryFormUtils.validateSwedishSecurityNumber = function(securityNumber) {
 
 /**
  * Validate time HH:mm
+ *
  * @param {String} time
  * @return {Boolean}
  */
@@ -499,6 +513,7 @@ jQueryFormUtils.validateTime = function(time) {
 
 /**
  * Validate float value
+ *
  * @param {String} val
  * @return {Boolean}
  */
@@ -508,6 +523,7 @@ jQueryFormUtils.validateFloat = function(val) {
 
 /**
  * Validate that given value is a number
+ *
  * @param {String} val
  * @return {Boolean}
  */
@@ -517,6 +533,7 @@ jQueryFormUtils.validateInteger = function(val) {
 
 /**
  * Has month only 30 days?
+ *
  * @param {Number} m
  * @return {Boolean}
  */
@@ -526,6 +543,7 @@ jQueryFormUtils.isShortMonth = function(m) {
 
 /**
  * Simple spam check
+ *
  * @param {String} val
  * @param {String} classAttr
  * @return {Boolean}
@@ -537,6 +555,7 @@ jQueryFormUtils.simpleSpamCheck = function(val, classAttr) {
 
 /**
  * Validate domain name
+ *
  * @param {String} val
  * @return {Boolean}
  */
@@ -600,6 +619,7 @@ jQueryFormUtils.validateDomain = function(val) {
  * Validate the value of given element according to the validation rule
  * defined in attribute with given name. Will return true if valid,
  * error message otherwise
+ *
  * @param {jQuery} el
  * @param {Object} language (jQueryFormUtils.LANG)
  * @param {String} validationRuleAttr
@@ -731,6 +751,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
 
 /**
  * Error dialogs
+ *
  * @var {Object}
  */
 jQueryFormUtils.LANG =  {
@@ -758,6 +779,7 @@ jQueryFormUtils.LANG =  {
 
 /**
  * Validate url
+ *
  * @param {String} url
  * @return {Boolean}
  */
@@ -768,6 +790,7 @@ jQueryFormUtils.validateUrl = function(url) {
 
 /**
  * Restrict input length
+ *
  * @param {jQuery} inputElement Jquery Html object
  * @param {jQuery} maxLengthElement jQuery Html Object
  * @return void

@@ -69,6 +69,11 @@ input, textarea {
     -webkit-box-shadow: inset 0 0 5px #EEE;
     box-shadow: inset 0 0 5px #EEE;
     color: #666;
+    width: 70%;
+}
+
+input[type=checkbox], input[type=radio] {
+    width:auto;
 }
 
 input[type=submit] {

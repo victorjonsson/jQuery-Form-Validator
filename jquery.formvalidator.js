@@ -5,12 +5,10 @@
 * Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
 * Available for download at jQuery.com <http://plugins.jquery.com/project/jQueryFormValidtor/>
 *
-* (c) 2011 Victor Jonsson, Sweden.
-* Dual licensed under the MIT or GPL Version 2 licenses
-*
+* $license Creative Commons Erkännande-DelaLika 3.0 Unported License <http://creativecommons.org/licenses/by-sa/3.0/>
 * $version 1.3.beta
+* $stable 1.2 (https://github.com/victorjonsson/jQuery-Form-Validator/zipball/v1.2)
 */
-
 (function($) {
     $.extend($.fn, {
 
@@ -43,8 +41,9 @@
                 if(help) {
                     $(this)
                         .focus(function() {
-                            if($(this).parent().find('.jquery_form_help').length == 0) {
-                                $(this).after(
+                            var $element = $(this);
+                            if($element.parent().find('.jquery_form_help').length == 0) {
+                                $element.after(
                                       $('<span />')
                                         .addClass('jquery_form_help')
                                         .text(help)
@@ -55,9 +54,9 @@
                         })
                         .blur(function() {
                             $(this).parent().find('.jquery_form_help')
-                                                .fadeOut('slow', function() {
-                                                    $(this).remove();
-                                                });
+                                .fadeOut('slow', function() {
+                                    $(this).remove();
+                                });
                         });
                 }
             });
@@ -78,6 +77,8 @@
             if(typeof attachKeyupEvent == 'undefined')
                 attachKeyupEvent = true;
 
+            var $element = $(this);
+
             var config = {
                     validationRuleAttribute : 'data-validation',
                     errorElementClass : 'error', // Class that will be put on elements which value is invalid
@@ -92,33 +93,34 @@
             else
                 language = jQueryFormUtils.LANG;
 
-            if (jQueryFormUtils.defaultBorderColor == null && $(this).attr('type') == 'text')
-                jQueryFormUtils.defaultBorderColor = $(this).css('border-color');
+            var elementType = $element.attr('type');
+            if (jQueryFormUtils.defaultBorderColor == null && elementType != 'submit' && elementType != 'checkbox' && elementType != 'radio')
+                jQueryFormUtils.defaultBorderColor = $element.css('border-color');
 
             // Remove possible error style applied by previous validation
-            $(this)
+            $element
                 .removeClass(config.errorElementClass)
                 .parent()
                     .find('.jquery_form_error_message').remove();
             
             if(config.borderColorOnError != '')
-                $(this).css('border-color', jQueryFormUtils.defaultBorderColor);
+                $element.css('border-color', jQueryFormUtils.defaultBorderColor);
 
-            var validation = jQueryFormUtils.validateInput($(this), language, config);
+            var validation = jQueryFormUtils.validateInput($element, language, config);
 
             if(validation === true)
-                $(this).unbind('keyup');
+                $element.unbind('keyup');
             else {
-                $(this)
+                $element
                     .addClass(config.errorElementClass)
                     .parent()
                         .append('<span class="jquery_form_error_message">'+validation+'</span>');
 
                 if(config.borderColorOnError != '')
-                    $(this).css('border-color', config.borderColorOnError);
+                    $element.css('border-color', config.borderColorOnError);
 
                 if(attachKeyupEvent) {
-                    $(this).bind('keyup', function() {
+                    $element.bind('keyup', function() {
                         $(this).doValidate(language, settings, false);
                     });
                 }
@@ -192,17 +194,17 @@
             var errorInputs = [];
 
             /** Form instance */
-            var form = this;
+            var $form = $(this);
 
             //
             // Validate radio buttons
             //
-            $(this).find('input[type=radio]').each(function() {
+            $form.find('input[type=radio]').each(function() {
                 var validationRule = $(this).attr(config.validationRuleAttribute);
                 if (typeof validationRule != 'undefined' && validationRule == 'required') {
                     var radioButtonName = $(this).attr('name');
                     var isChecked = false;
-                    form.find('input[name=' + radioButtonName + ']').each(function() {
+                    $form.find('input[name=' + radioButtonName + ']').each(function() {
                         if ($(this).is(':checked'))
                             isChecked = true;
                     });
@@ -217,7 +219,7 @@
             //
             // Validate element values
             //
-            $(this).find('input,textarea,select').each(function() {
+            $form.find('input,textarea,select').each(function() {
                 if (!ignoreInput($(this).attr('name'), $(this).attr('type'))) {
 
                     // memorize border color
@@ -228,7 +230,7 @@
                                                     $(this),
                                                     language,
                                                     config,
-                                                    $(form)
+                                                    $form
                                                 );
                     
                     if(valid !== true) {
@@ -242,7 +244,7 @@
             //
             // Reset style and remove error class
             //
-            $(this).find('input,textarea,select')
+            $form.find('input,textarea,select')
                     .css('border-color', jQueryFormUtils.defaultBorderColor)
                     .removeClass(config.errorElementClass);
 
@@ -271,9 +273,10 @@
                     var messages = '<strong>' + language.errorTitle + '</strong>';
                     for (var i = 0; i < errorMessages.length; i++)
                         messages += '<br />* ' + errorMessages[i];
-                    $(this).children().eq(0).before('<p class="' + config.errorMessageClass + '">' + messages + '</p>');
+
+                    $form.children().eq(0).before('<p class="' + config.errorMessageClass + '">' + messages + '</p>');
                     if(config.scrollToTopOnError)
-                        $(window).scrollTop($(form).offset().top - 20);
+                        $(window).scrollTop($form.offset().top - 20);
                 }
 
                 // Display error message below input field
@@ -781,5 +784,5 @@ jQueryFormUtils.lengthRestriction = function(inputElement, maxLengthElement) {
         .focus(function() {
             $(this).keyup();
         })
-        .keyup();
+        .trigger('keyup');
 };

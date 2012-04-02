@@ -35,8 +35,9 @@
          * @return {jQuery}
          */
         showHelpOnFocus : function(attrName) {
-            if(typeof attrName == 'undefined')
+            if(typeof attrName === 'undefined') {
                 attrName = 'data-help';
+            }
 
             $(this).find('textarea,input').each(function() {
                 var help = $(this).attr(attrName);
@@ -44,7 +45,7 @@
                     $(this)
                         .focus(function() {
                             var $element = $(this);
-                            if($element.parent().find('.jquery_form_help').length == 0) {
+                            if($element.parent().find('.jquery_form_help').length === 0) {
                                 $element.after(
                                       $('<span />')
                                         .addClass('jquery_form_help')
@@ -77,8 +78,9 @@
          * @return {jQuery}
          */
         doValidate : function(language, settings, attachKeyupEvent) {
-            if(typeof attachKeyupEvent == 'undefined')
+            if(typeof attachKeyupEvent === 'undefined') {
                 attachKeyupEvent = true;
+            }
 
             var $element = $(this);
 
@@ -89,16 +91,19 @@
                     dateFormat : 'yyyy-mm-dd'
             };
 
-            if (settings)
+            if (settings) {
                 $.extend(config, settings);
-            if (language)
+            }
+            if (language) {
                 $.extend(jQueryFormUtils.LANG,language);
-            else
+            } else {
                 language = jQueryFormUtils.LANG;
+            }
 
             var elementType = $element.attr('type');
-            if (jQueryFormUtils.defaultBorderColor == null && elementType != 'submit' && elementType != 'checkbox' && elementType != 'radio')
+            if (jQueryFormUtils.defaultBorderColor === null && elementType !== 'submit' && elementType !== 'checkbox' && elementType !== 'radio') {
                 jQueryFormUtils.defaultBorderColor = $element.css('border-color');
+            }
 
             // Remove possible error style applied by previous validation
             $element
@@ -106,21 +111,23 @@
                 .parent()
                     .find('.jquery_form_error_message').remove();
             
-            if(config.borderColorOnError != '')
+            if(config.borderColorOnError !== '') {
                 $element.css('border-color', jQueryFormUtils.defaultBorderColor);
+            }
 
             var validation = jQueryFormUtils.validateInput($element, language, config);
 
-            if(validation === true)
+            if(validation === true) {
                 $element.unbind('keyup');
-            else {
+            } else {
                 $element
                     .addClass(config.errorElementClass)
                     .parent()
                         .append('<span class="jquery_form_error_message">'+validation+'</span>');
 
-                if(config.borderColorOnError != '')
+                if(config.borderColorOnError !== '') {
                     $element.css('border-color', config.borderColorOnError);
+                }
 
                 if(attachKeyupEvent) {
                     $element.bind('keyup', function() {
@@ -157,12 +164,14 @@
             /*
              * Extends initial settings
              */
-            if (settings)
+            if (settings) {
                 $.extend(config, settings);
-            if (language)
+            }
+            if (language) {
                 $.extend(jQueryFormUtils.LANG, language);
-            else
+            } else {
                 language = jQueryFormUtils.LANG;
+            }
 
             
             /**
@@ -173,12 +182,14 @@
              * @return {Boolean}
              */
             var ignoreInput = function(name, type) {
-                if (type == 'submit' || type == 'button')
+                if (type === 'submit' || type === 'button') {
                     return true;
+                }
 
                 for (var i = 0; i < config.ignore.length; i++) {
-                    if (config.ignore[i] == name)
+                    if (config.ignore[i] === name) {
                         return true;
+                    }
                 }
                 return false;
             };
@@ -189,8 +200,9 @@
              * @param {String} mess
              */
             var addErrorMessage = function(mess) {
-                if (jQuery.inArray(mess, errorMessages) < 0)
+                if (jQuery.inArray(mess, errorMessages) < 0) {
                     errorMessages.push(mess);
+                }
             };
 
             /** Error messages for this validation */
@@ -207,12 +219,13 @@
             //
             $form.find('input[type=radio]').each(function() {
                 var validationRule = $(this).attr(config.validationRuleAttribute);
-                if (typeof validationRule != 'undefined' && validationRule == 'required') {
+                if (typeof validationRule !== 'undefined' && validationRule === 'required') {
                     var radioButtonName = $(this).attr('name');
                     var isChecked = false;
                     $form.find('input[name=' + radioButtonName + ']').each(function() {
-                        if ($(this).is(':checked'))
+                        if ($(this).is(':checked')) {
                             isChecked = true;
+                        }
                     });
                     if (!isChecked) {
                         errorMessages.push(language.requiredFields);
@@ -229,8 +242,9 @@
                 if (!ignoreInput($(this).attr('name'), $(this).attr('type'))) {
 
                     // memorize border color
-                    if (jQueryFormUtils.defaultBorderColor == null && $(this).attr('type') == 'text')
+                    if (jQueryFormUtils.defaultBorderColor === null && $(this).attr('type') === 'text') {
                         jQueryFormUtils.defaultBorderColor = $(this).css('border-color');
+                    }
 
                     var valid = jQueryFormUtils.validateInput(
                                                     $(this),
@@ -269,20 +283,23 @@
 
                 // Apply error style to invalid inputs
                 for (var i = 0; i < errorInputs.length; i++) {
-                    if (config.borderColorOnError != '')
+                    if (config.borderColorOnError !== '') {
                         errorInputs[i].css('border-color', config.borderColorOnError);
+                    }
                     errorInputs[i].addClass(config.errorElementClass);
                 }
 
                 // display all error messages in top of form
-                if (config.errorMessagePosition == 'top') {
+                if (config.errorMessagePosition === 'top') {
                     var messages = '<strong>' + language.errorTitle + '</strong>';
-                    for (var i = 0; i < errorMessages.length; i++)
+                    for (var i = 0; i < errorMessages.length; i++) {
                         messages += '<br />* ' + errorMessages[i];
+                    }
 
                     $form.children().eq(0).before('<p class="' + config.errorMessageClass + '">' + messages + '</p>');
-                    if(config.scrollToTopOnError)
+                    if(config.scrollToTopOnError) {
                         $(window).scrollTop($form.offset().top - 20);
+                    }
                 }
 
                 // Display error message below input field
@@ -290,10 +307,11 @@
                     for (var i = 0; i < errorInputs.length; i++) {
                         var parent = errorInputs[i].parent();
                         var errorSpan = parent.find('span[class=jquery_form_error_message]');
-                        if (errorSpan.length > 0)
+                        if (errorSpan.length > 0) {
                             errorSpan.eq(0).text(errorInputs[i].attr('data-error'));
-                        else
+                        } else {
                             parent.append('<span class="jquery_form_error_message">' + errorInputs[i].attr('data-error') + '</span>');
+                        }
                     }
                 }
                 return false;
@@ -330,10 +348,10 @@ jQueryFormUtils.defaultBorderColor = null;
  * @return {Boolean}
  */
 jQueryFormUtils.validateEmail = function(email) {
-    var emailFilter = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
+    var emailFilter = /^([a-zA-Z0-9_\.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     if(emailFilter.test(email)) {
        var parts = email.split('@');
-       if(parts.length == 2) {
+       if(parts.length === 2) {
            return jQueryFormUtils.validateDomain(parts[1]);
        }
     }
@@ -349,13 +367,15 @@ jQueryFormUtils.validatePhoneNumber = function(tele) {
     var numPlus = tele.match(/\+/g);
     var numHifen = tele.match(/-/g);
 
-    if ((numPlus != null && numPlus.length > 1) || (numHifen != null && numHifen.length > 1))
+    if ((numPlus !== null && numPlus.length > 1) || (numHifen !== null && numHifen.length > 1)) {
         return false;
-    if (numPlus != null && tele.indexOf('+') != 0)
+    }
+    if (numPlus !== null && tele.indexOf('+') !== 0) {
         return false;
+    }
 
     tele = tele.replace(/([-|\+])/g, '');
-    return tele.length > 8 && tele.match(/[^0-9]/g) == null;
+    return tele.length > 8 && tele.match(/[^0-9]/g) === null;
 };
 
 /**
@@ -365,17 +385,19 @@ jQueryFormUtils.validatePhoneNumber = function(tele) {
  * @return {Boolean}
  */
 jQueryFormUtils.validateSwedishMobileNumber = function(number) {
-    if (!jQueryFormUtils.validatePhoneNumber(number))
+    if (!jQueryFormUtils.validatePhoneNumber(number)) {
         return false;
+    }
 
     number = number.replace(/[^0-9]/g, '');
     var begin = number.substring(0, 3);
 
-    if (number.length != 10 && begin != '467')
+    if (number.length !== 10 && begin !== '467') {
         return false;
-    else if (number.length != 11 && begin == '467')
+    } else if (number.length !== 11 && begin === '467') {
         return false;
-    return /07[0-9{1}]/.test(begin) || (begin == '467' && number.substr(3, 1) == '0');
+    }
+    return (/07[0-9{1}]/).test(begin) || (begin === '467' && number.substr(3, 1) === '0');
 };
 
 /**
@@ -385,8 +407,9 @@ jQueryFormUtils.validateSwedishMobileNumber = function(number) {
  */
 jQueryFormUtils.validateBirthdate = function(val, dateFormat) {
     var inputDate = this.parseDate(val, dateFormat);
-    if (!inputDate)
+    if (!inputDate) {
         return false;
+    }
 
     var d = new Date();
     var currentYear = d.getFullYear();
@@ -394,17 +417,19 @@ jQueryFormUtils.validateBirthdate = function(val, dateFormat) {
     var month = inputDate[1];
     var day = inputDate[2];
 
-    if (year == currentYear) {
+    if (year === currentYear) {
         var currentMonth = d.getMonth() + 1;
-        if (month == currentMonth) {
+        if (month === currentMonth) {
             var currentDay = d.getDate();
             return day <= currentDay;
         }
-        else
+        else {
             return month < currentMonth;
+        }
     }
-    else
+    else {
         return year < currentYear && year > (currentYear - 124); // we can not live for ever yet...
+    }
 };
 
 /**
@@ -419,17 +444,19 @@ jQueryFormUtils.parseDate = function(val, dateFormat) {
     var divider = dateFormat.replace(/[a-zA-Z]/gi, '').substring(0,1);
     var regexp = '^';
     var formatParts = dateFormat.split(divider);
-    for(var i=0; i < formatParts.length; i++)
+    for(var i=0; i < formatParts.length; i++) {
         regexp += (i > 0 ? '\\'+divider:'') + '(\\d{'+formatParts[i].length+'})';
+    }
     regexp += '$';
     
     var matches = val.match(new RegExp(regexp));
-    if (matches == null)
+    if (matches === null) {
         return false;
+    }
 
     var findDateUnit = function(unit, formatParts, matches) {
         for(var i=0; i < formatParts.length; i++) {
-            if(formatParts[i].substring(0,1) == unit) {
+            if(formatParts[i].substring(0,1) === unit) {
                 return jQueryFormUtils.parseDateInt(matches[i+1]);
             }
         }
@@ -440,10 +467,12 @@ jQueryFormUtils.parseDate = function(val, dateFormat) {
     var day = findDateUnit('d', formatParts, matches);
     var year = findDateUnit('y', formatParts, matches);
 
-    if (month == 2 && day > 28 || month > 12 || month == 0)
+    if (month === 2 && day > 28 || month > 12 || month === 0) {
         return false;
-    if ((this.isShortMonth(month) && day > 30) || (!this.isShortMonth(month) && day > 31) || day == 0)
+    }
+    if ((this.isShortMonth(month) && day > 30) || (!this.isShortMonth(month) && day > 31) || day === 0) {
         return false;
+    }
 
     return [year, month, day];
 };
@@ -455,9 +484,10 @@ jQueryFormUtils.parseDate = function(val, dateFormat) {
  * @param {Number}
  */
 jQueryFormUtils.parseDateInt = function(val) {
-    if (val.indexOf('0') == 0)
+    if (val.indexOf('0') === 0) {
         val = val.replace('0', '');
-    return parseInt(val);
+    }
+    return parseInt(val,10);
 };
 
 /**
@@ -467,30 +497,35 @@ jQueryFormUtils.parseDateInt = function(val) {
  * @return {Boolean}
  */
 jQueryFormUtils.validateSwedishSecurityNumber = function(securityNumber) {
-    if (!securityNumber.match(/^(\d{4})(\d{2})(\d{2})(\d{4})$/))
+    if (!securityNumber.match(/^(\d{4})(\d{2})(\d{2})(\d{4})$/)) {
         return false;
+    }
 
     var year = RegExp.$1;
     var month = jQueryFormUtils.parseDateInt(RegExp.$2);
     var day = jQueryFormUtils.parseDateInt(RegExp.$3);
     
-    // var gender = parseInt( (RegExp.$4) .substring(2,3)) % 2; ==> 1 == male && 0 == female
+    // var gender = parseInt( (RegExp.$4) .substring(2,3)) % 2; ==> 1 === male && 0 === female
 
     var months = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-    if (year % 400 == 0 || year % 4 == 0 && year % 100 != 0)
+    if (year % 400 === 0 || year % 4 === 0 && year % 100 !== 0) {
         months[1] = 29;
-    if (month < 1 || month > 12 || day < 1 || day > months[month - 1])
+    }
+    if (month < 1 || month > 12 || day < 1 || day > months[month - 1]) {
         return false;
+    }
 
     securityNumber = securityNumber.substring(2, securityNumber.length);
     var check = '';
-    for (var i = 0; i < securityNumber.length; i++)
+    for (var i = 0; i < securityNumber.length; i++) {
         check += ((((i + 1) % 2) + 1) * securityNumber.substring(i, i + 1));
+    }
     var checksum = 0;
-    for (i = 0; i < check.length; i++)
-        checksum += parseInt(check.substring(i, i + 1));
+    for (i = 0; i < check.length; i++) {
+        checksum += parseInt(check.substring(i, i + 1),10);
+    }
 
-    return checksum % 10 == 0;
+    return checksum % 10 === 0;
 };
 
 /**
@@ -500,13 +535,14 @@ jQueryFormUtils.validateSwedishSecurityNumber = function(securityNumber) {
  * @return {Boolean}
  */
 jQueryFormUtils.validateTime = function(time) {
-    if (time.match(/^(\d{2}):(\d{2})$/) == null)
+    if (time.match(/^(\d{2}):(\d{2})$/) === null) {
         return false;
-    else {
-        var hours = parseInt(time.split(':')[0]);
-        var minutes = parseInt(time.split(':')[1]);
-        if((hours > 24 || minutes > 59) || (hours == 24 && minutes > 0))
+    } else {
+        var hours = parseInt(time.split(':')[0],10);
+        var minutes = parseInt(time.split(':')[1],10);
+        if((hours > 24 || minutes > 59) || (hours === 24 && minutes > 0)) {
             return false;
+        }
     }
     return true;
 };
@@ -518,7 +554,7 @@ jQueryFormUtils.validateTime = function(time) {
  * @return {Boolean}
  */
 jQueryFormUtils.validateFloat = function(val) {
-    return val.match(/^(\-|)([0-9]+)\.([0-9]+)$/) != null;
+    return val.match(/^(\-|)([0-9]+)\.([0-9]+)$/) !== null;
 };
 
 /**
@@ -528,7 +564,7 @@ jQueryFormUtils.validateFloat = function(val) {
  * @return {Boolean}
  */
 jQueryFormUtils.validateInteger = function(val) {
-    return val != '' && val.replace(/[0-9]/g, '') == '';
+    return val !== '' && val.replace(/[0-9]/g, '') === '';
 };
 
 /**
@@ -538,7 +574,7 @@ jQueryFormUtils.validateInteger = function(val) {
  * @return {Boolean}
  */
 jQueryFormUtils.isShortMonth = function(m) {
-    return (m % 2 == 0 && m < 7) || (m % 2 != 0 & m > 7);
+    return (m % 2 === 0 && m < 7) || (m % 2 !== 0 && m > 7);
 };
 
 /**
@@ -550,7 +586,7 @@ jQueryFormUtils.isShortMonth = function(m) {
  */
 jQueryFormUtils.simpleSpamCheck = function(val, classAttr) {
     var answer = classAttr.match(/captcha([0-9a-z]+)/i)[1].replace('captcha', '');
-    return val == answer;
+    return val === answer;
 };
 
 /**
@@ -560,7 +596,7 @@ jQueryFormUtils.simpleSpamCheck = function(val, classAttr) {
  * @return {Boolean}
  */
 jQueryFormUtils.validateDomain = function(val) {
-    val = val.replace('http://', '').replace('www.', '');
+    val = val.replace('ftp://', '').replace('https://', '').replace('http://', '').replace('www.', '');
     var arr = new Array('.com', '.net', '.org', '.biz', '.coop', '.info', '.museum', '.name', '.pro',
                         '.edu', '.gov', '.int', '.mil', '.ac', '.ad', '.ae', '.af', '.ag', '.ai', '.al',
                         '.am', '.an', '.ao', '.aq', '.ar', '.as', '.at', '.au', '.aw', '.az', '.ba', '.bb',
@@ -589,27 +625,50 @@ jQueryFormUtils.validateDomain = function(val) {
     var ext = val.substring(dot, val.length);
     var hasTopDomain = false;
 
-    for (var i = 0; i < arr.length; i++) {
-        if (arr[i] == ext) {
-            hasTopDomain = true;
-            break;
-        }
-    }
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i] === ext) {
+			if(ext==='.uk') {
+				//Run Extra Checks for UK Domain Names
+				var domainParts = val.split('.');
+				var tld2 = domainParts[domainParts.length-2];
+				var ukarr = new Array('co', 'me', 'ac', 'gov', 'judiciary',
+				'ltd', 'mod', 'net', 'nhs', 'nic', 'org', 'parliament',
+				'plc', 'police', 'sch', 'bl', 'british-library', 'jet',
+				'nls');
+				
+				for(var j = 0; j < ukarr.length; j++) {
+					if(ukarr[j] === tld2)
+					{
+						hasTopDomain = true;
+						break;
+					}
+				}
+			} else {
+				hasTopDomain = true;
+				break;
+			}
+		}
+	}
+    
+    
 
-    if (!hasTopDomain)
+    if (!hasTopDomain) {
         return false;
-    else if (dot < 2 || dot > 57)
+    } else if (dot < 2 || dot > 57) {
         return false;
-    else {
+    } else {
         var firstChar = domain.substring(0, 1);
         var lastChar = domain.substring(domain.length - 1, domain.length);
 
-        if (firstChar == '-' || firstChar == '.' || lastChar == '-' || lastChar == '.')
+        if (firstChar === '-' || firstChar === '.' || lastChar === '-' || lastChar === '.') {
             return false;
-        if (domain.split('.').length > 3 || domain.split('..').length > 1)
+        }
+        if (domain.split('.').length > 3 || domain.split('..').length > 1) {
             return false;
-        if (domain.replace(/[0-9a-z\.\-]/g, '') != '')
+        }
+        if (domain.replace(/[0-9a-z\.\-]/g, '') !== '') {
             return false;
+        }
     }
 
     return true;
@@ -630,7 +689,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
     var value = jQuery.trim(el.val());
     var validationRules = el.attr(config.validationRuleAttribute);
 
-    if (typeof validationRules != 'undefined' && validationRules != null) {
+    if (typeof validationRules !== 'undefined' && validationRules !== null) {
 
         /**
          * <input data-validation="length12" /> => getAttribute($(element).attr('class'), 'length') = 12
@@ -644,7 +703,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
         };
 
         // Required
-        if (validationRules.indexOf('required') > -1 && value == '') {
+        if (validationRules.indexOf('required') > -1 && value === '') {
             return language.requiredFields;
         }
 
@@ -661,7 +720,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
         // Length range
         if (validationRules.indexOf('validate_length') > -1) {
             var range = getAttributeInteger(validationRules, 'length').split('-');
-            if (value.length < parseInt(range[0]) || value.length > parseInt(range[1])) {
+            if (value.length < parseInt(range[0],10) || value.length > parseInt(range[1],10)) {
                 return language.badLength + getAttributeInteger(validationRules, 'length') + language.toLongEnd;
             }
         }
@@ -735,12 +794,13 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
         }
 
         // confirmation
-        if (validationRules.indexOf('validate_confirmation') > -1 && typeof(form) != 'undefined') {
+        if (validationRules.indexOf('validate_confirmation') > -1 && typeof(form) !== 'undefined') {
             var conf = '';
             var confInput = form.find('input[name=' + el.attr('name') + '_confirmation]').eq(0);
-            if (confInput)
+            if (confInput) {
                 conf = confInput.val();
-            if (value != conf) {
+            }
+            if (value !== conf) {
                 return language.notConfirmed;
             }
         }
@@ -797,7 +857,7 @@ jQueryFormUtils.validateUrl = function(url) {
  */
 jQueryFormUtils.lengthRestriction = function(inputElement, maxLengthElement) {
     this.input = inputElement;
-    this.maxLength = parseInt(maxLengthElement.text());
+    this.maxLength = parseInt(maxLengthElement.text(),10);
     var self = this;
 
     $(this.input).keyup(function() {

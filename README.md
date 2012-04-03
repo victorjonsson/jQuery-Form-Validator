@@ -2,8 +2,6 @@ This plugin was created to minimize javascript logic in the html code when deali
 
 [Live example can be viewed here](http://victorjonsson.se/jquery-form-validator)
 
-[Also available for download at jQuery.com](http://plugins.jquery.com/project/jQueryFormValidatorMadeEasy)
-
 *Usage example*
 
 ```html

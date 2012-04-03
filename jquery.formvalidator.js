@@ -467,7 +467,9 @@ jQueryFormUtils.parseDate = function(val, dateFormat) {
     var day = findDateUnit('d', formatParts, matches);
     var year = findDateUnit('y', formatParts, matches);
 
-    if (month === 2 && day > 28 || month > 12 || month === 0) {
+    if ((month === 2 && day > 28 && (year % 4 !== 0  || year % 100 === 0 && year % 400 !== 0)) 
+    	|| (month === 2 && day > 29 && (year % 4 === 0 || year % 100 !== 0 && year % 400 === 0))
+    	|| month > 12 || month === 0) {
         return false;
     }
     if ((this.isShortMonth(month) && day > 30) || (!this.isShortMonth(month) && day > 31) || day === 0) {

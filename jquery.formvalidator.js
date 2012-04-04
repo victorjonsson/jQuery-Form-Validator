@@ -3,11 +3,10 @@
 * ------------------------------------------
 * Created by Victor Jonsson <http://www.victorjonsson.se>
 * Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
-* Available for download at jQuery.com <http://plugins.jquery.com/project/jQueryFormValidtor/>
 *
-* $license Creative Commons Erkännande-DelaLika 3.0 Unported License <http://creativecommons.org/licenses/by-sa/3.0/>
-* $version 1.3.beta
-* $stable 1.2 (https://github.com/victorjonsson/jQuery-Form-Validator/zipball/v1.2)
+* Dual licensed under the MIT or GPL Version 2 licenses
+*
+* $version 1.3
 */
 (function($) {
     $.extend($.fn, {
@@ -35,7 +34,7 @@
          * @return {jQuery}
          */
         showHelpOnFocus : function(attrName) {
-            if(typeof attrName === 'undefined') {
+            if(!attrName) {
                 attrName = 'data-help';
             }
 
@@ -45,7 +44,7 @@
                     $(this)
                         .focus(function() {
                             var $element = $(this);
-                            if($element.parent().find('.jquery_form_help').length === 0) {
+                            if($element.parent().find('.jquery_form_help').length == 0) {
                                 $element.after(
                                       $('<span />')
                                         .addClass('jquery_form_help')
@@ -78,7 +77,7 @@
          * @return {jQuery}
          */
         doValidate : function(language, settings, attachKeyupEvent) {
-            if(typeof attachKeyupEvent === 'undefined') {
+            if(typeof attachKeyupEvent == 'undefined') {
                 attachKeyupEvent = true;
             }
 
@@ -219,7 +218,7 @@
             //
             $form.find('input[type=radio]').each(function() {
                 var validationRule = $(this).attr(config.validationRuleAttribute);
-                if (typeof validationRule !== 'undefined' && validationRule === 'required') {
+                if (typeof validationRule != 'undefined' && validationRule === 'required') {
                     var radioButtonName = $(this).attr('name');
                     var isChecked = false;
                     $form.find('input[name=' + radioButtonName + ']').each(function() {
@@ -242,7 +241,7 @@
                 if (!ignoreInput($(this).attr('name'), $(this).attr('type'))) {
 
                     // memorize border color
-                    if (jQueryFormUtils.defaultBorderColor === null && $(this).attr('type') === 'text') {
+                    if (jQueryFormUtils.defaultBorderColor === null && $(this).attr('type')) {
                         jQueryFormUtils.defaultBorderColor = $(this).css('border-color');
                     }
 
@@ -351,7 +350,7 @@ jQueryFormUtils.validateEmail = function(email) {
     var emailFilter = /^([a-zA-Z0-9_\.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     if(emailFilter.test(email)) {
        var parts = email.split('@');
-       if(parts.length === 2) {
+       if(parts.length == 2) {
            return jQueryFormUtils.validateDomain(parts[1]);
        }
     }
@@ -392,9 +391,9 @@ jQueryFormUtils.validateSwedishMobileNumber = function(number) {
     number = number.replace(/[^0-9]/g, '');
     var begin = number.substring(0, 3);
 
-    if (number.length !== 10 && begin !== '467') {
+    if (number.length != 10 && begin !== '467') {
         return false;
-    } else if (number.length !== 11 && begin === '467') {
+    } else if (number.length != 11 && begin === '467') {
         return false;
     }
     return (/07[0-9{1}]/).test(begin) || (begin === '467' && number.substr(3, 1) === '0');
@@ -711,8 +710,7 @@ jQueryFormUtils.validateDomain = function(val) {
 				'nls');
 				
 				for(var j = 0; j < ukarr.length; j++) {
-					if(ukarr[j] === tld2)
-					{
+					if(ukarr[j] === tld2) {
 						hasTopDomain = true;
 						break;
 					}
@@ -763,7 +761,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
     var value = jQuery.trim(el.val());
     var validationRules = el.attr(config.validationRuleAttribute);
 
-    if (typeof validationRules !== 'undefined' && validationRules !== null) {
+    if (typeof validationRules != 'undefined' && validationRules !== null) {
 
         /**
          * <input data-validation="length12" /> => getAttribute($(element).attr('class'), 'length') = 12
@@ -873,7 +871,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
         }
 
         // confirmation
-        if (validationRules.indexOf('validate_confirmation') > -1 && typeof(form) !== 'undefined') {
+        if (validationRules.indexOf('validate_confirmation') > -1 && typeof(form) != 'undefined') {
             var conf = '';
             var confInput = form.find('input[name=' + el.attr('name') + '_confirmation]').eq(0);
             if (confInput) {
@@ -901,9 +899,9 @@ jQueryFormUtils.LANG =  {
     badTelephone : 'You have not given a correct phone number',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
-    toLongStart : 'You have given an answer longer then ',
+    toLongStart : 'You have given an answer longer than ',
     toLongEnd : ' characters',
-    toShortStart : 'You have given an answer shorter then ',
+    toShortStart : 'You have given an answer shorter than ',
     toShortEnd : ' characters',
     badLength : 'You have to give an answer between ',
     notConfirmed : 'Values could not be confirmed',
@@ -924,8 +922,17 @@ jQueryFormUtils.LANG =  {
  * @return {Boolean}
  */
 jQueryFormUtils.validateUrl = function(url) {
-    var urlFilter = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-    return urlFilter.test(url);
+    // contributed by Scott Gonzalez: http://projects.scottsplayground.com/iri/ but added support for arrays in the url ?arg[]=sdfsdf
+    var urlFilter = /^(https|http|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|\[|\]|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+    if(urlFilter.test(url)) {
+        var domain = url.split(/^https|^http|^ftp/i)[1].replace('://', '');
+        var domainSlashPos = domain.indexOf('/');
+        if(domainSlashPos > -1)
+            domain = domain.substr(0, domainSlashPos);
+
+        return jQueryFormUtils.validateDomain(domain); // todo: add support for IP-addresses
+    }
+    return false;
 };
 
 /**

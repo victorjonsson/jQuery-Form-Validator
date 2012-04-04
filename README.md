@@ -38,6 +38,7 @@ This plugin was created to minimize javascript logic in the html code when deali
  * **validate_length** — *Validate that input length is in given range (length3-20)*
  * **validate_confirmation**
  * **validate_spamcheck**
+ * **validate_ukvatnumber**
  * **validate_swesec** - *validate swedish social security number*
  * **required** — *no validation except that a value has to be given*
  * **validate_custom** - *Validate value against regexp (validate_custom regexp/^[a-z]{2} [0-9]{2}$/)
@@ -127,6 +128,48 @@ $('#my_form')
   });
 ```
 
+## Localization
+All error dialogs can be overwritten by passing an object into the validation function.
+
+```javascript
+var jQueryFormLang = {
+    errorTitle : 'Form submission failed!',
+    requiredFields : 'You have not answered all required fields',
+    badTime : 'You have not given a correct time',
+    badEmail : 'You have not given a correct e-mail address',
+    badTelephone : 'You have not given a correct phone number',
+    badSecurityAnswer : 'You have not given a correct answer to the security question',
+    badDate : 'You have not given a correct date',
+    toLongStart : 'You have given an answer longer than ',
+    toLongEnd : ' characters',
+    toShortStart : 'You have given an answer shorter than ',
+    toShortEnd : ' characters',
+    badLength : 'You have to give an answer between ',
+    notConfirmed : 'Values could not be confirmed',
+    badDomain : 'Incorrect domain value',
+    badUrl : 'Incorrect url value',
+    badFloat : 'Incorrect float value',
+    badCustomVal : 'You gave an incorrect answer',
+    badInt : 'Incorrect integer value',
+    badSecurityNumber : 'Your social security number was incorrect',
+    badUKVatAnswer : 'Incorrect UK VAT Number'
+};
+```
+
+```html
+<html>
+<head>
+    <script src="scripts/jquery.formvalidator.min.js"></script>
+    <script src="scripts/locale.en.js"></script>
+    ...
+<head>
+<body>
+    ...
+    <form action="script.php" onsubmit="return $(this).validate(jQueryFormLang);">
+    ...
+```
+
+
 ## Simple captcha example
 ```php
 <?php
@@ -168,3 +211,7 @@ $_SESSION['captcha'] = array( mt_rand(0,9), mt_rand(1, 9) );
   <p>Password: <input type="password" name="pass" data-validation="validate_confirmation" /></p>
   <p>Confirm password: <input type="password" name="pass_confirmation" /></p>
 ```
+
+## Contributors
+[Matt Clements](https://github.com/mattclements)<br />
+[Scott Gonzales](http://projects.scottsplayground.com/iri/)

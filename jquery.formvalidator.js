@@ -95,9 +95,9 @@
             }
             if (language) {
                 $.extend(jQueryFormUtils.LANG,language);
-            } else {
-                language = jQueryFormUtils.LANG;
             }
+            // get updated dialog strings
+            language = jQueryFormUtils.LANG;
 
             var elementType = $element.attr('type');
             if (jQueryFormUtils.defaultBorderColor === null && elementType !== 'submit' && elementType !== 'checkbox' && elementType !== 'radio') {
@@ -168,11 +168,10 @@
             }
             if (language) {
                 $.extend(jQueryFormUtils.LANG, language);
-            } else {
-                language = jQueryFormUtils.LANG;
-            }
+            } 
+	    // get updated dialog strings
+            language = jQueryFormUtils.LANG;
 
-            
             /**
              * Tells whether or not to validate element with this name and of this type
              *

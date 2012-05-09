@@ -85,9 +85,11 @@
 
             var config = {
                     validationRuleAttribute : 'data-validation',
+                    validationErrorMsgAttribute : 'data-validation-error-msg', // define custom err msg inline with element
                     errorElementClass : 'error', // Class that will be put on elements which value is invalid
                     borderColorOnError : 'red',
                     dateFormat : 'yyyy-mm-dd'
+                    
             };
 
             if (settings) {
@@ -155,6 +157,7 @@
                 borderColorOnError : 'red', // Border color of elements which value is invalid, empty string to not change border color
                 errorMessageClass : 'jquery_form_error_message', // class name of div containing error messages when validation fails
                 validationRuleAttribute : 'data-validation', // name of the attribute holding the validation rules
+                validationErrorMsgAttribute : 'data-validation-error-msg', // define custom err msg inline with element
                 errorMessagePosition : 'top', // Can be either "top" or "element"
                 scrollToTopOnError : true,
                 dateFormat : 'yyyy-mm-dd'
@@ -759,7 +762,9 @@ jQueryFormUtils.validateDomain = function(val) {
 jQueryFormUtils.validateInput = function(el, language, config, form) {
     var value = jQuery.trim(el.val());
     var validationRules = el.attr(config.validationRuleAttribute);
-
+    // see if form element has inline err msg attribute
+    var validationErrorMsg = el.attr(config.validationErrorMsgAttribute);
+    
     if (typeof validationRules != 'undefined' && validationRules !== null) {
 
         /**
@@ -775,98 +780,99 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
 
         // Required
         if (validationRules.indexOf('required') > -1 && value === '') {
-            return language.requiredFields;
+            // return custom inline err msg if defined
+            return validationErrorMsg || language.requiredFields;
         }
 
         // Min length
         if (validationRules.indexOf('validate_min_length') > -1 && value.length < getAttributeInteger(validationRules, 'length')) {
-            return language.toShortStart + getAttributeInteger(validationRules, 'length') + language.toShortEnd;
+            return validationErrorMsg || language.tooShortStart + getAttributeInteger(validationRules, 'length') + language.tooShortEnd;
         }
 
         // Max length
         if (validationRules.indexOf('validate_max_length') > -1 && value.length > getAttributeInteger(validationRules, 'length')) {
-            return language.toLongStart + getAttributeInteger(validationRules, 'length') + language.toLongEnd;
+            return validationErrorMsg || language.tooLongStart + getAttributeInteger(validationRules, 'length') + language.tooLongEnd;
         }
 
         // Length range
         if (validationRules.indexOf('validate_length') > -1) {
             var range = getAttributeInteger(validationRules, 'length').split('-');
             if (value.length < parseInt(range[0],10) || value.length > parseInt(range[1],10)) {
-                return language.badLength + getAttributeInteger(validationRules, 'length') + language.toLongEnd;
+                return validationErrorMsg || language.badLength + getAttributeInteger(validationRules, 'length') + language.tooLongEnd;
             }
         }
 
         // Email
         if (validationRules.indexOf('validate_email') > -1 && !jQueryFormUtils.validateEmail(value)) {
-            return language.badEmail;
+            return validationErrorMsg || language.badEmail;
         }
 
         // Domain
         else if (validationRules.indexOf('validate_domain') > -1 && !jQueryFormUtils.validateDomain(value)) {
-            return language.badDomain;
+            return validationErrorMsg || language.badDomain;
         }
 
         // Url
         else if (validationRules.indexOf('validate_url') > -1 && !jQueryFormUtils.validateUrl(value)) {
-            return language.badUrl;
+            return validationErrorMsg || language.badUrl;
         }
 
         // Float
         else if (validationRules.indexOf('validate_float') > -1 && !jQueryFormUtils.validateFloat(value)) {
-            return language.badFloat;
+            return validationErrorMsg || language.badFloat;
         }
 
         // Integer
         else if (validationRules.indexOf('validate_int') > -1 && !jQueryFormUtils.validateInteger(value)) {
-            return language.badInt;
+            return validationErrorMsg || language.badInt;
         }
 
         // Time
         else if (validationRules.indexOf('validate_time') > -1 && !jQueryFormUtils.validateTime(value)) {
-            return language.badTime;
+            return validationErrorMsg || language.badTime;
         }
 
         // Date
         else if (validationRules.indexOf('validate_date') > -1 && !jQueryFormUtils.parseDate(value, config.dateFormat)) {
-            return language.badDate;
+            return validationErrorMsg || language.badDate;
         }
 
         // Birth date
         else if (validationRules.indexOf('validate_birthdate') > -1 && !jQueryFormUtils.validateBirthdate(value, config.dateFormat)) {
-            return language.badDate;
+            return validationErrorMsg || language.badDate;
         }
 
         // Phone number
         else if (validationRules.indexOf('validate_phone') > -1 && !jQueryFormUtils.validatePhoneNumber(value)) {
-            return language.badTelephone;
+            return validationErrorMsg || language.badTelephone;
         }
 
         // Swedish phone number
         else if (validationRules.indexOf('validate_swemobile') > -1 && !jQueryFormUtils.validateSwedishMobileNumber(value)) {
-            return language.badTelephone;
+            return validationErrorMsg || language.badTelephone;
         }
 
         // simple spam check
         else if (validationRules.indexOf('validate_spamcheck') > -1 && !jQueryFormUtils.simpleSpamCheck(value, validationRules)) {
-            return language.badSecurityAnswer;
+            return validationErrorMsg || language.badSecurityAnswer;
         }
         
         // UK VAT Number check
         else if (validationRules.indexOf('validate_ukvatnumber') > -1 && !jQueryFormUtils.validateUKVATNumber(value)) {
-            return language.badUKVatAnswer;
+            return validationErrorMsg || language.badUKVatAnswer;
         }
 
         // Custom regexp validation
         if (validationRules.indexOf('validate_custom') > -1 && validationRules.indexOf('regexp/') > -1) {
             var regexp = new RegExp(validationRules.split('regexp/')[1].split('/')[0]);
             if (!regexp.test(value)) {
-                return language.badCustomVal;
+                return validationErrorMsg || language.badCustomVal;
             }
         }
 
         // Swedish social security number
         if (validationRules.indexOf('validate_swesc') > -1 && !jQueryFormUtils.validateSwedishSecurityNumber(value)) {
-            return language.badSecurityNumber;
+            return validationErrorMsg || language.badSecurityNumber;
         }
 
         // confirmation
@@ -877,7 +883,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
                 conf = confInput.val();
             }
             if (value !== conf) {
-                return language.notConfirmed;
+                return validationErrorMsg || language.notConfirmed;
             }
         }
     }
@@ -898,10 +904,10 @@ jQueryFormUtils.LANG =  {
     badTelephone : 'You have not given a correct phone number',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
-    toLongStart : 'You have given an answer longer than ',
-    toLongEnd : ' characters',
-    toShortStart : 'You have given an answer shorter than ',
-    toShortEnd : ' characters',
+    tooLongStart : 'You have given an answer longer than ',
+    tooLongEnd : ' characters',
+    tooShortStart : 'You have given an answer shorter than ',
+    tooShortEnd : ' characters',
     badLength : 'You have to give an answer between ',
     notConfirmed : 'Values could not be confirmed',
     badDomain : 'Incorrect domain value',

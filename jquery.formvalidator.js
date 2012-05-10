@@ -270,7 +270,7 @@
             //
             // Remove possible error messages from last validation
             //
-            $('.' + config.errorMessageClass).remove();
+            $('.' + config.errorMessageClass.split(' ').join('.')).remove();
             $('.jquery_form_error_message').remove();
 
 

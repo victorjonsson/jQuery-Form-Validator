@@ -61,6 +61,7 @@ textarea {
 input, textarea {
     font-size: 14px;
     border: #CCC solid 1px;
+    border-color:#CCC; /* important for validator to find default color */
     padding: 5px;
     background: white;
     -moz-border-radius: 4px;

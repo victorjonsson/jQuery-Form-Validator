@@ -45,6 +45,7 @@ This plugin was created to minimize javascript logic in the html code when deali
 
  * Show help information automatically when input is focused
  * Validate given values immediately when input is blurred.
+ * Inline error messages is also possible. If you add attribute data-validation-error-msg to an element the value of that attribute will be displayed instead of the error dialog that the validation function referrs to.
 
 
 ## Validate inputs on blur
@@ -112,7 +113,12 @@ var myConf = {
 
 	// Window automatically scrolls to the top of the form when submitted data is 
 	// invalid (default is true)
-	scrollToTopOnError : false
+	scrollToTopOnError : false,
+
+	// Name of the element attribute containing the error message that will be
+	// displayed instead of the error dialog that the validation function
+	// referrs to (default is data-validation-error-msg)
+	validationErrorMsgAttribute : 'data-error'
 };
 
 var myLang = {
@@ -169,6 +175,8 @@ var jQueryFormLang = {
     ...
 ```
 
+Inline validation is also possible. If you add attribute data-validation-error-msg to an element, the value of that attribute will
+be displayed instead of the error dialog that the validation function referres to.
 
 ## Simple captcha example
 ```php
@@ -213,5 +221,9 @@ $_SESSION['captcha'] = array( mt_rand(0,9), mt_rand(1, 9) );
 ```
 
 ## Contributors
-[Matt Clements](https://github.com/mattclements)<br />
+[Joel Sutherland](https://github.com/robamaton) (contributor)<br />
+[Steve Wasiura](https://github.com/stevewasiura) (contributor)<br />
+[Matt Clements](https://github.com/mattclements) (contributor)<br />
+[dfcplc](https://github.com/dfcplc) (contributor)<br />
+[Darren Mason](http://www.mypocket-technologies.com) (Password strength meter)<br />
 [Scott Gonzales](http://projects.scottsplayground.com/iri/)

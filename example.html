@@ -8,9 +8,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script type="text/javascript" src="jquery.formvalidator.min.js"></script>
+    <script type="text/javascript" src="jquery.formvalidator.min.js?upd=2"></script>
 
-    <link href="style.css" type="text/css" rel="stylesheet"/>
+    <link href="style.css?upd=2" type="text/css" rel="stylesheet"/>
 
 </head>
 <body>
@@ -39,12 +39,12 @@
         <form action="" onsubmit="if($(this).validate()) alert('Valid!'); return false;">
             <p>
                 <strong>Required</strong> <em>required</em><br/>
-                <input data-validation="required"/>
+                <input type="text" data-validation="required"/>
             </p>
 
             <p>
                 <strong>Minimum length</strong> <em>validate_min_length length5</em><br/>
-                <input data-validation="validate_min_length length5"/>
+                <input type="text" data-validation="validate_min_length length5"/>
             </p>
 
             <p>
@@ -59,74 +59,74 @@
 
             <p>
                 <strong>E-mail</strong> <em>validate_email</em><br/>
-                <input data-validation="validate_email"/>
+                <input type="text" data-validation="validate_email"/>
             </p>
 
             <p>
                 <strong>Domain</strong> <em>validate_domain</em><br/>
-                <input data-validation="validate_domain"/>
+                <input type="text" data-validation="validate_domain"/>
             </p>
 
             <p>
                 <strong>Url</strong> <em>validate_url</em><br/>
-                <input data-validation="validate_url"/>
+                <input type="text" data-validation="validate_url"/>
             </p>
 
             <p>
                 <strong>Float</strong> <em>validate_float</em><br/>
-                <input data-validation="validate_float"/>
+                <input type="text" data-validation="validate_float"/>
             </p>
 
             <p>
                 <strong>Integer</strong> <em>validate_int</em><br/>
-                <input data-validation="validate_int"/>
+                <input type="text" data-validation="validate_int"/>
             </p>
 
             <p>
                 <strong>Time HH:mm</strong> <em>validate_time</em><br/>
-                <input data-validation="validate_time"/>
+                <input type="text" data-validation="validate_time"/>
             </p>
 
             <p>
                 <strong>Date yyyy-mm-dd</strong> (Custom date format is also possible) <em>validate_date</em><br/>
-                <input data-validation="validate_date"/>
+                <input type="text" data-validation="validate_date"/>
             </p>
 
             <p>
                 <strong>Birthdate yyyy-mm-dd</strong> <em>validate_birthdate</em><br/>
-                <input data-validation="validate_birthdate"/>
+                <input type="text" data-validation="validate_birthdate"/>
             </p>
 
             <p>
                 <strong>Valid telephone number</strong> <em>validate_phone</em><br/>
-                <input data-validation="validate_phone"/>
+                <input type="text" data-validation="validate_phone"/>
             </p>
 
             <p>
                 <strong>Valid Swedish mobile telephone number</strong> <em>validate_swemobile</em><br/>
-                <input data-validation="validate_swemobile"/>
+                <input type="text" data-validation="validate_swemobile"/>
             </p>
 
             <p>
                 <strong>Valid Swedish social security number yyyymmddXXXX</strong> <em>validate_swesc</em><br/>
-                <input data-validation="validate_swesc"/>
+                <input type="text" data-validation="validate_swesc"/>
             </p>
             
             <p>
                 <strong>UK VAT Number</strong> <em>validate_ukvatnumber</em><br/>
-                <input name="4" data-validation="validate_ukvatnumber"/>
+                <input type="text" name="4" data-validation="validate_ukvatnumber"/>
             </p>
 
             <p>
                 <strong>Custom validation</strong>
                 <em>validate_custom regexp/^[a-z]{2} [0-9]{2}$/</em>
-                <input data-validation="validate_custom regexp/^[a-z]{2} [0-9]{2}$/"/>
+                <input type="text" data-validation="validate_custom regexp/^[a-z]{2} [0-9]{2}$/"/>
             </p>
 
             <p>
                 <strong>Simple captcha, this field has to contain value "jqueryvalidation"</strong> <em>validate_spamcheck
                 captcha[VALUE-TO-VALIDATE]</em><br/>
-                <input data-validation="validate_spamcheck captchajqueryvalidation"/>
+                <input type="text" data-validation="validate_spamcheck captchajqueryvalidation"/>
             </p>
             <p>
                 <strong>One of these radio buttons has to be checked</strong>
@@ -138,8 +138,8 @@
             </p>
             <p>
                 <strong>These two inputs has to have identical values (minimum 3 characters)</strong> <em>validate_confirmation length3</em><br/>
-                <input name="something" data-validation="validate_confirmation validate_min_length length3"/>
-                <input name="something_confirmation"/>
+                <input type="text" name="something" data-validation="validate_confirmation validate_min_length length3"/>
+                <input type="text" name="something_confirmation"/>
             </p>
             <p>
                 <strong>These features applies to select lists as well</strong>
@@ -149,6 +149,19 @@
                     <option value="1">Green</option>
                     <option value="2">Blue</option>
                     <option value="red">Red</option>
+                </select>
+            </p>
+            <p>
+                <strong>These features applies to select lists with multiple options as well</strong>
+                <br />
+                <select name="something" multiple="multiple" size="5" data-validation="validate_int">
+                    <option value="">- - Select something - -</option>
+                    <option value="1">Green</option>
+                    <option value="2">Blue</option>
+                    <option value="blue">* Not allowed</option>
+                    <option value="3">Purple</option>
+                    <option value="4">Black</option>
+                    <option value="red">* Not allowed</option>
                 </select>
             </p>
             <p>
@@ -180,17 +193,17 @@
 
             <p>
                 <strong>E-mail</strong> <em>validate_email</em><br/>
-                <input name="2" data-validation="validate_email"/>
+                <input type="text" name="2" data-validation="validate_email"/>
             </p>
 
             <p>
                 <strong>Domain</strong> <em>validate_domain</em><br/>
-                <input id="testing" name="3" data-help="No protocol is needed" data-validation="validate_domain"/>
+                <input type="text"id="testing" name="3" data-help="No protocol is needed" data-validation="validate_domain"/>
             </p>
 
             <p>
                 <strong>Url</strong> <em>validate_url</em><br/>
-                <input name="4" data-validation="validate_url"/>
+                <input type="text" name="4" data-validation="validate_url"/>
             </p>
 
             <p>
@@ -201,34 +214,39 @@
 
             <p>
                 <strong>Time HH:mm</strong> <em>validate_time</em><br/>
-                <input data-validation="validate_time" name="hours"/>
+                <input type="text" data-validation="validate_time" name="hours"/>
             </p>
-
+            <p>
+                <strong>Date (optional)</strong> <em>validate_date - This input will only be validated if it has a value</em><br/>
+                <input type="text" data-validation="validate_date" data-validation-optional="true" data-validation-error-msg="If you want to leave a date, it has to be correct" name="opt_date"/>
+            </p>
             <p>
                 <input name="7" type="submit" value="Validate form"/>
             </p>
         </form>
         
         <script>
-            var conf = {
+            var validationSettings = {
                 errorMessagePosition : 'element',
                 borderColorOnError : '',
-                ignore: []
+                ignore: ['hours']
             };
-            
+
+            $('input[name=disable_hours]').change(function() {
+                if($(this).is(':checked'))
+                    validationSettings.ignore.push('hours');
+                else
+                    validationSettings.ignore = [];
+            });
+
             $('#custom_form')
                 .submit(function() {
-                    conf.ignore.length = 0;
-
-                    if ($('input[name=disable_hours]').is(':checked'))
-                        conf.ignore.push('hours');
-
-                    if ($(this).validate(false, conf))
+                    if ($(this).validate(false, validationSettings))
                         alert('Valid!');
 
                     return false;
                 })
-                .validateOnBlur(false, conf)
+                .validateOnBlur(false, validationSettings)
                 .showHelpOnFocus();
             
         </script>

@@ -6,7 +6,7 @@
 *
 * Dual licensed under the MIT or GPL Version 2 licenses
 *
-* $version 1.3
+* $version 1.4
 */
 (function($) {
     $.extend($.fn, {
@@ -19,11 +19,12 @@
          * @return {jQuery}
          */
         validateOnBlur : function(language, settings) {
-            $(this).find('textarea,input').blur(function() {
+            var $el = $(this);
+            $el.find('textarea,input,select').blur(function() {
                        $(this).doValidate(language, settings);
                     });
 
-            return $(this);
+            return $el;
         },
 
         /**
@@ -38,7 +39,8 @@
                 attrName = 'data-help';
             }
 
-            $(this).find('textarea,input').each(function() {
+            var $el = $(this);
+            $el.find('textarea,input').each(function() {
                 var help = $(this).attr(attrName);
                 if(help) {
                     $(this)
@@ -63,7 +65,7 @@
                 }
             });
             
-            return $(this);
+            return $el;
         },
 
         /**
@@ -96,7 +98,7 @@
                 $.extend(config, settings);
             }
             if (language) {
-                $.extend(jQueryFormUtils.LANG,language);
+                $.extend(jQueryFormUtils.LANG, language);
             }
             // get updated dialog strings
             language = jQueryFormUtils.LANG;
@@ -116,24 +118,26 @@
                 $element.css('border-color', jQueryFormUtils.defaultBorderColor);
             }
 
-            var validation = jQueryFormUtils.validateInput($element, language, config);
+            if(!jQueryFormUtils.ignoreInput($element.attr('name'), elementType, config)) {
+                var validation = jQueryFormUtils.validateInput($element, language, config);
 
-            if(validation === true) {
-                $element.unbind('keyup');
-            } else {
-                $element
-                    .addClass(config.errorElementClass)
-                    .parent()
-                        .append('<span class="jquery_form_error_message">'+validation+'</span>');
+                if(validation === true) {
+                    $element.unbind('keyup');
+                } else {
+                    $element
+                        .addClass(config.errorElementClass)
+                        .parent()
+                            .append('<span class="jquery_form_error_message">'+validation+'</span>');
 
-                if(config.borderColorOnError !== '') {
-                    $element.css('border-color', config.borderColorOnError);
-                }
+                    if(config.borderColorOnError !== '') {
+                        $element.css('border-color', config.borderColorOnError);
+                    }
 
-                if(attachKeyupEvent) {
-                    $element.bind('keyup', function() {
-                        $(this).doValidate(language, settings, false);
-                    });
+                    if(attachKeyupEvent) {
+                        $element.bind('keyup', function() {
+                            $(this).doValidate(language, settings, false);
+                        });
+                    }
                 }
             }
 
@@ -172,7 +176,7 @@
             if (language) {
                 $.extend(jQueryFormUtils.LANG, language);
             } 
-	    // get updated dialog strings
+	        // get updated dialog strings
             language = jQueryFormUtils.LANG;
 
             /**
@@ -180,9 +184,10 @@
              *
              * @param {String} name
              * @param {String} type
+             * @param {Object} config
              * @return {Boolean}
              */
-            var ignoreInput = function(name, type) {
+            var ignoreInput = function(name, type, config) {
                 if (type === 'submit' || type === 'button') {
                     return true;
                 }
@@ -216,53 +221,53 @@
             var $form = $(this);
 
             //
-            // Validate radio buttons
-            //
-            $form.find('input[type=radio]').each(function() {
-                var validationRule = $(this).attr(config.validationRuleAttribute);
-                if (typeof validationRule != 'undefined' && validationRule === 'required') {
-                    var radioButtonName = $(this).attr('name');
-                    var isChecked = false;
-                    $form.find('input[name=' + radioButtonName + ']').each(function() {
-                        if ($(this).is(':checked')) {
-                            isChecked = true;
-                        }
-                    });
-                    if (!isChecked) {
-                        errorMessages.push(language.requiredFields);
-                        errorInputs.push($(this));
-                        $(this).attr('data-error', language.requiredFields);
-                    }
-                }
-            });
-
-            //
             // Validate element values
             //
             $form.find('input,textarea,select').each(function() {
 
-                if ($(this).attr("data-optional") == 'true' && $(this).val() == '') {
-                  return true;
-                }
+                var $el = $(this);
+                var elementType = $el.attr('type');
+                if (!jQueryFormUtils.ignoreInput($el.attr('name'), elementType, config)) {
 
-                if (!ignoreInput($(this).attr('name'), $(this).attr('type'))) {
-
-                    // memorize border color
-                    if (jQueryFormUtils.defaultBorderColor === null && $(this).attr('type')) {
-                        jQueryFormUtils.defaultBorderColor = $(this).css('border-color');
+                    // input of type radio
+                    if(elementType === 'radio') {
+                        var validationRule = $el.attr(config.validationRuleAttribute);
+                        if (typeof validationRule != 'undefined' && validationRule === 'required') {
+                            var radioButtonName = $el.attr('name');
+                            var isChecked = false;
+                            $form.find('input[name=' + radioButtonName + ']').each(function() {
+                                if ($(this).is(':checked')) {
+                                    isChecked = true;
+                                    return false;
+                                }
+                            });
+                            if (!isChecked && $.inArray(radioButtonName, config.ignore) == -1) {
+                                errorMessages.push(language.requiredFields);
+                                errorInputs.push($el);
+                                $(this).attr('data-error', language.requiredFields);
+                            }
+                        }
                     }
+                    // inputs, textareas and select lists
+                    else {
 
-                    var valid = jQueryFormUtils.validateInput(
-                                                    $(this),
-                                                    language,
-                                                    config,
-                                                    $form
-                                                );
-                    
-                    if(valid !== true) {
-                        errorInputs.push($(this));
-                        $(this).attr('data-error', valid);
-                        addErrorMessage(valid);
+                        // memorize border color
+                        if (jQueryFormUtils.defaultBorderColor === null && elementType) {
+                            jQueryFormUtils.defaultBorderColor = $.trim($el.css('border-color'));
+                        }
+
+                        var valid = jQueryFormUtils.validateInput(
+                                                        $el,
+                                                        language,
+                                                        config,
+                                                        $form
+                                                    );
+
+                        if(valid !== true) {
+                            errorInputs.push($el);
+                            $el.attr('data-error', valid);
+                            addErrorMessage(valid);
+                        }
                     }
                 }
             });
@@ -270,10 +275,16 @@
             //
             // Reset style and remove error class
             //
-            $form.find('input,textarea,select')
-                    .css('border-color', jQueryFormUtils.defaultBorderColor)
-                    .removeClass(config.errorElementClass);
+           // if(jQueryFormUtils.defaultBorderColor == config.borderColorOnError)
+             //   jQueryFormUtils.defaultBorderColor = 'inherit';
 
+            var borderStyleProp = jQueryFormUtils.defaultBorderColor===null ||
+                                    (jQueryFormUtils.defaultBorderColor.indexOf(' ') > -1 && jQueryFormUtils.defaultBorderColor.indexOf('rgb') == -1)
+                                    ? 'border':'border-color';
+
+            $form.find('input,textarea,select')
+                    .css(borderStyleProp, jQueryFormUtils.defaultBorderColor)
+                    .removeClass(config.errorElementClass);
 
             //
             // Remove possible error messages from last validation
@@ -508,6 +519,19 @@ jQueryFormUtils.validateBirthdate = function(val, dateFormat) {
     else {
         return year < currentYear && year > (currentYear - 124); // we can not live for ever yet...
     }
+};
+
+jQueryFormUtils.ignoreInput = function(name, type, config) {
+    if (type === 'submit' || type === 'button') {
+        return true;
+    }
+
+    for (var i = 0; i < config.ignore.length; i++) {
+        if (config.ignore[i] === name) {
+            return true;
+        }
+    }
+    return false;
 };
 
 /**
@@ -760,13 +784,47 @@ jQueryFormUtils.validateDomain = function(val) {
  *
  * @param {jQuery} el
  * @param {Object} language (jQueryFormUtils.LANG)
- * @param {String} validationRuleAttr
+ * @param {Object} config
  * @param {jQuery} form
  * @return {String}|{Boolean}
  */
 jQueryFormUtils.validateInput = function(el, language, config, form) {
-    var value = jQuery.trim(el.val());
+
+    var value = el.val();
+    var optional = el.attr("data-validation-optional");
+    if ((value === null || value.length == 0) && optional === 'true') {
+        return true;
+    }
+
+    // Select lists with multiple options (most likely at least)
+    if(typeof value == 'object') {
+        var createFakeInput = function(val) {
+            var fake = el.clone(false);
+            fake
+                .removeAttr('multiple')
+                .children()
+                    .remove();
+
+            $('<option value="'+val+'" selected="selected"></option>').appendTo(fake);
+            return fake;
+        };
+        if(!value) {
+            return jQueryFormUtils.validateInput(createFakeInput(''), language, config, form);
+        }
+        else {
+            var isValid;
+            for(var i=0; i < value.length; i++) {
+                isValid = jQueryFormUtils.validateInput(createFakeInput(value[i]), language, config, form);
+                if(isValid !== true)
+                    return isValid;
+            }
+            return true;
+        }
+    }
+
+    value = $.trim(value);
     var validationRules = el.attr(config.validationRuleAttribute);
+
     // see if form element has inline err msg attribute
     var validationErrorMsg = el.attr(config.validationErrorMsgAttribute);
     
@@ -776,7 +834,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
          * <input data-validation="length12" /> => getAttribute($(element).attr('class'), 'length') = 12
          * @param {String} attrValue
          * @param {String} attrName
-         * @returns integer
+         * @returns {Number}
          */
         var getAttributeInteger = function(attrValue, attrName) {
             var regex = new RegExp('(' + attrName + '[0-9\-]+)', "g");

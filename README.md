@@ -45,7 +45,7 @@ This plugin was created to minimize javascript logic in the html code when deali
 
  * Show help information automatically when input is focused
  * Validate given values immediately when input is blurred.
- * Inline error messages is also possible. If you add attribute data-validation-error-msg to an element the value of that attribute will be displayed instead of the error dialog that the validation function referrs to.
+ * Make validation optional by adding attribute data-validation-optional="true" to the element. This means that the validation defined in data-validation only will take place in case a value is given.
 
 
 ## Validate inputs on blur
@@ -175,8 +175,7 @@ var jQueryFormLang = {
     ...
 ```
 
-Inline validation is also possible. If you add attribute data-validation-error-msg to an element, the value of that attribute will
-be displayed instead of the error dialog that the validation function referres to.
+Inline error messages is also possible. If you add attribute data-validation-error-msg to an element the value of that attribute will be displayed instead of the error dialog that the validation function referrs to.
 
 ## Simple captcha example
 ```php

@@ -240,6 +240,11 @@
             // Validate element values
             //
             $form.find('input,textarea,select').each(function() {
+
+                if ($(this).attr("data-optional") == 'true' && $(this).val() == '') {
+                  return true;
+                }
+
                 if (!ignoreInput($(this).attr('name'), $(this).attr('type'))) {
 
                     // memorize border color

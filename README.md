@@ -219,10 +219,10 @@ $_SESSION['captcha'] = array( mt_rand(0,9), mt_rand(1, 9) );
   <p>Confirm password: <input type="password" name="pass_confirmation" /></p>
 ```
 
-## Contributors
+## Credits
+[Victor Jonsson](https://github.com/victorjonsson)<br />
 [Joel Sutherland](https://github.com/robamaton) (contributor)<br />
 [Steve Wasiura](https://github.com/stevewasiura) (contributor)<br />
 [Matt Clements](https://github.com/mattclements) (contributor)<br />
 [dfcplc](https://github.com/dfcplc) (contributor)<br />
-[Darren Mason](http://www.mypocket-technologies.com) (Password strength meter)<br />
-[Scott Gonzales](http://projects.scottsplayground.com/iri/)
+[Scott Gonzales](http://projects.scottsplayground.com/iri/) (URL regexp)

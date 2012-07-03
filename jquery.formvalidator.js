@@ -312,8 +312,8 @@
                     for (var i = 0; i < errorMessages.length; i++) {
                         messages += '<br />* ' + errorMessages[i];
                     }
-
-                    $form.children().eq(0).before('<p class="' + config.errorMessageClass + '">' + messages + '</p>');
+			// using div instead of P gives better control of css display properties
+                    $form.children().eq(0).before('<div class="' + config.errorMessageClass + '">' + messages + '</div>');
                     if(config.scrollToTopOnError) {
                         $(window).scrollTop($form.offset().top - 20);
                     }

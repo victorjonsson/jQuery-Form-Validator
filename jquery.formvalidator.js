@@ -793,7 +793,28 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
 
     var value = el.val();
     var optional = el.attr("data-validation-optional");
-    if ((value === null || value.length == 0) && optional === 'true') {
+    
+    // test if a checkbox forces this element to be validated
+    var validate_if_checked = 0; // set initial value false
+    // get value of this element's attribute "... if-checked"
+    var validate_if_checked_el_name = el.attr("data-validation-if-checked");
+    // get the form closest to this element
+    var thisform = el.closest("form");
+    // make sure we can proceed
+    if (validate_if_checked_el_name != null && thisform != null) {
+        // select the checkbox type element in this form
+        var validate_if_checked_el_obj = thisform.find('input[name="' + validate_if_checked_el_name + '"]');
+        // test if it's property "checked" is checked
+        if ( validate_if_checked_el_obj.prop('checked') )
+            {   // set value for validation checkpoint
+                validate_if_checked = 1; 
+            } 
+    } // end if depend_checked_el_name not null
+
+
+    // validation checkpoint  (added extra criteria depend_check)
+    // if empty AND optional AND does not depend on a checkbox being checked, it is ok, return true
+    if ((value === null || value.length == 0) && optional === 'true' && !validate_if_checked) {
         return true;
     }
 

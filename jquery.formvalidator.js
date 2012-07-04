@@ -86,6 +86,7 @@
             var $element = $(this);
 
             var config = {
+            	    ignore : [], // Names of inputs not to be validated, overwriting attribute notaed validation
                     validationRuleAttribute : 'data-validation',
                     validationErrorMsgAttribute : 'data-validation-error-msg', // define custom err msg inline with element
                     errorElementClass : 'error', // Class that will be put on elements which value is invalid

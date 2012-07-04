@@ -797,33 +797,8 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
         return true;
     }
 
-    // Select lists with multiple options (most likely at least)
-    if(typeof value == 'object') {
-        var createFakeInput = function(val) {
-            var fake = el.clone(false);
-            fake
-                .removeAttr('multiple')
-                .children()
-                    .remove();
-
-            $('<option value="'+val+'" selected="selected"></option>').appendTo(fake);
-            return fake;
-        };
-        if(!value) {
-            return jQueryFormUtils.validateInput(createFakeInput(''), language, config, form);
-        }
-        else {
-            var isValid;
-            for(var i=0; i < value.length; i++) {
-                isValid = jQueryFormUtils.validateInput(createFakeInput(value[i]), language, config, form);
-                if(isValid !== true)
-                    return isValid;
-            }
-            return true;
-        }
-    }
-
-    value = $.trim(value);
+    value = value || '';	// coerce to empty string if null
+    
     var validationRules = el.attr(config.validationRuleAttribute);
 
     // see if form element has inline err msg attribute

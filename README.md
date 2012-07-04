@@ -39,9 +39,10 @@ This plugin was created to minimize javascript logic in the html code when deali
  * **validate_confirmation**
  * **validate_spamcheck**
  * **validate_ukvatnumber**
- * **validate_swesec** - *validate swedish social security number*
+ * **validate_swesec** — *validate swedish social security number*
  * **required** — *no validation except that a value has to be given*
- * **validate_custom** - *Validate value against regexp (validate_custom regexp/^[a-z]{2} [0-9]{2}$/)
+ * **validate_custom** — *Validate value against regexp (validate_custom regexp/^[a-z]{2} [0-9]{2}$/)
+ * **validate_num_answers** — *Validate that a select element has the required number of selected options (validate_num_answers num5)*
 
  * Show help information automatically when input is focused
  * Validate given values immediately when input is blurred.

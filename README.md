@@ -46,6 +46,7 @@ This plugin was created to minimize javascript logic in the html code when deali
  * Show help information automatically when input is focused
  * Validate given values immediately when input is blurred.
  * Make validation optional by adding attribute data-validation-optional="true" to the element. This means that the validation defined in data-validation only will take place in case a value is given.
+ * Make validation dependent on another input of type checkbox being checked by adding attribute data-validation-if-checked="name of checkbox input"
 
 
 ## Validate inputs on blur
@@ -158,7 +159,9 @@ var jQueryFormLang = {
     badCustomVal : 'You gave an incorrect answer',
     badInt : 'Incorrect integer value',
     badSecurityNumber : 'Your social security number was incorrect',
-    badUKVatAnswer : 'Incorrect UK VAT Number'
+    badUKVatAnswer : 'Incorrect UK VAT Number',
+    badNumberOfSelectedOptionsStart : 'You have to choose at least ',
+    badNumberOfSelectedOptionsEnd : ' answers'
 };
 ```
 

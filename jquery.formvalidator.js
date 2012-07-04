@@ -6,7 +6,7 @@
 *
 * Dual licensed under the MIT or GPL Version 2 licenses
 *
-* $version 1.4
+* $version 1.5
 */
 (function($) {
     $.extend($.fn, {
@@ -179,27 +179,6 @@
             } 
 	        // get updated dialog strings
             language = jQueryFormUtils.LANG;
-
-            /**
-             * Tells whether or not to validate element with this name and of this type
-             *
-             * @param {String} name
-             * @param {String} type
-             * @param {Object} config
-             * @return {Boolean}
-             */
-            var ignoreInput = function(name, type, config) {
-                if (type === 'submit' || type === 'button') {
-                    return true;
-                }
-
-                for (var i = 0; i < config.ignore.length; i++) {
-                    if (config.ignore[i] === name) {
-                        return true;
-                    }
-                }
-                return false;
-            };
 
             /**
              * Adds message to error message stack if not already in the message stack
@@ -779,64 +758,118 @@ jQueryFormUtils.validateDomain = function(val) {
 };
 
 /**
+ * <input data-validation="length12" /> => getAttribute($(element).attr('class'), 'length') = 12
+ * @param {String} attrValue
+ * @param {String} attrName
+ * @returns {Number}
+ */
+jQueryFormUtils.attrInt = function(attrValue, attrName) {
+    var regex = new RegExp('(' + attrName + '[0-9\-]+)', "g");
+    return attrValue.match(regex)[0].replace(/[^0-9\-]/g, '');
+};
+
+/**
+ * Validate the value of given element according to the validation rule
+ * defined in attribute with given name. Will return true if valid,
+ * error message otherwise.
+ *
+ * Notice!
+ * This function is a wrapper around jQueryFormUtils.validate that makes
+ * it possible to handle select elements with multiple values
+ *
+ * @param {jQuery} el - Element containing the value (input,select,textarea)
+ * @param {Object} language (jQueryFormUtils.LANG)
+ * @param {Object} config
+ * @param {jQuery} form - Optional
+ * @return {String}|{Boolean}
+ */
+jQueryFormUtils.validateInput = function(el, language, config, form) {
+    var values = el.val();
+    values = values || '';	// coerce to empty string if null
+
+    if( !(values instanceof Array) ) {
+        values = [values];
+    }
+
+    // Validate select with multiple values
+    if( el.get(0).nodeName == 'SELECT' && el.attr('multiple') ) {
+        var validationRules = el.attr(config.validationRuleAttribute);
+        var validationErrorMsg = el.attr(config.validationErrorMsgAttribute);
+        if(validationRules.indexOf('validate_num_answers') > -1) {
+            var num = jQueryFormUtils.attrInt(validationRules, 'num');
+            if(num > values.length) {
+                return validationErrorMsg || (language.badNumberOfSelectedOptionsStart +num+ language.badNumberOfSelectedOptionsEnd);
+            }
+        }
+    }
+
+
+    for(var i=0; i < values.length; i++) {
+        var validation = jQueryFormUtils.validate(values[i], el, language, config, form);
+        if(validation !== true)
+            return validation;
+    }
+
+    return true;
+};
+
+/**
  * Validate the value of given element according to the validation rule
  * defined in attribute with given name. Will return true if valid,
  * error message otherwise
  *
- * @param {jQuery} el
+ * @see jQueryFormUtils.validateInput
+ *
+ * @param {String} value
+ * @param {jQuery} el - Element containing the value (input,select,textarea)
  * @param {Object} language (jQueryFormUtils.LANG)
  * @param {Object} config
- * @param {jQuery} form
+ * @param {jQuery} form - Optional
  * @return {String}|{Boolean}
  */
-jQueryFormUtils.validateInput = function(el, language, config, form) {
+jQueryFormUtils.validate = function(value, el, language, config, form) {
 
-    var value = el.val();
     var optional = el.attr("data-validation-optional");
     
     // test if a checkbox forces this element to be validated
-    var validate_if_checked = 0; // set initial value false
+    var validationDependsOnCheckedInput = false;
+    var validationDependentInputIsChecked = false;
     // get value of this element's attribute "... if-checked"
-    var validate_if_checked_el_name = el.attr("data-validation-if-checked");
-    // get the form closest to this element
-    var thisform = el.closest("form");
+    var validateIfCheckedElementName = el.attr("data-validation-if-checked");
     // make sure we can proceed
-    if (validate_if_checked_el_name != null && thisform != null) {
+    if (validateIfCheckedElementName != null) {
+
+        // Set the boolean telling us that the validation depends
+        // on another input being checked
+        validationDependsOnCheckedInput = true;
+
+        // Form not given as argument
+        if(!form)
+            form = el.closest("form");
+
         // select the checkbox type element in this form
-        var validate_if_checked_el_obj = thisform.find('input[name="' + validate_if_checked_el_name + '"]');
+        var validateIfCheckedElement = form.find('input[name="' + validateIfCheckedElementName + '"]');
+
         // test if it's property "checked" is checked
-        if ( validate_if_checked_el_obj.prop('checked') )
-            {   // set value for validation checkpoint
-                validate_if_checked = 1; 
-            } 
-    } // end if depend_checked_el_name not null
+        if ( validateIfCheckedElement.prop('checked') ) {
+            // set value for validation checkpoint
+            validationDependentInputIsChecked = true;
+        }
+    }
 
-
-    // validation checkpoint  (added extra criteria depend_check)
-    // if empty AND optional AND does not depend on a checkbox being checked, it is ok, return true
-    if ((value === null || value.length == 0) && optional === 'true' && !validate_if_checked) {
+    // validation checkpoint
+    // if empty AND optional attribute is present
+    // OR depending on a checkbox being checked AND checkbox is checked, return true
+    if ((!value && optional === 'true') || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
         return true;
     }
 
-    value = value || '';	// coerce to empty string if null
-    
     var validationRules = el.attr(config.validationRuleAttribute);
 
     // see if form element has inline err msg attribute
     var validationErrorMsg = el.attr(config.validationErrorMsgAttribute);
     
     if (typeof validationRules != 'undefined' && validationRules !== null) {
-
-        /**
-         * <input data-validation="length12" /> => getAttribute($(element).attr('class'), 'length') = 12
-         * @param {String} attrValue
-         * @param {String} attrName
-         * @returns {Number}
-         */
-        var getAttributeInteger = function(attrValue, attrName) {
-            var regex = new RegExp('(' + attrName + '[0-9\-]+)', "g");
-            return attrValue.match(regex)[0].replace(/[^0-9\-]/g, '');
-        };
 
         // Required
         if (validationRules.indexOf('required') > -1 && value === '') {
@@ -845,20 +878,20 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
         }
 
         // Min length
-        if (validationRules.indexOf('validate_min_length') > -1 && value.length < getAttributeInteger(validationRules, 'length')) {
-            return validationErrorMsg || language.tooShortStart + getAttributeInteger(validationRules, 'length') + language.tooShortEnd;
+        if (validationRules.indexOf('validate_min_length') > -1 && value.length < jQueryFormUtils.attrInt(validationRules, 'length')) {
+            return validationErrorMsg || language.tooShortStart + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooShortEnd;
         }
 
         // Max length
-        if (validationRules.indexOf('validate_max_length') > -1 && value.length > getAttributeInteger(validationRules, 'length')) {
-            return validationErrorMsg || language.tooLongStart + getAttributeInteger(validationRules, 'length') + language.tooLongEnd;
+        if (validationRules.indexOf('validate_max_length') > -1 && value.length > jQueryFormUtils.attrInt(validationRules, 'length')) {
+            return validationErrorMsg || language.tooLongStart + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
         }
 
         // Length range
         if (validationRules.indexOf('validate_length') > -1) {
-            var range = getAttributeInteger(validationRules, 'length').split('-');
+            var range = jQueryFormUtils.attrInt(validationRules, 'length').split('-');
             if (value.length < parseInt(range[0],10) || value.length > parseInt(range[1],10)) {
-                return validationErrorMsg || language.badLength + getAttributeInteger(validationRules, 'length') + language.tooLongEnd;
+                return validationErrorMsg || language.badLength + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
             }
         }
 
@@ -976,7 +1009,9 @@ jQueryFormUtils.LANG =  {
     badCustomVal : 'You gave an incorrect answer',
     badInt : 'Incorrect integer value',
     badSecurityNumber : 'Your social security number was incorrect',
-    badUKVatAnswer : 'Incorrect UK VAT Number'
+    badUKVatAnswer : 'Incorrect UK VAT Number',
+    badNumberOfSelectedOptionsStart : 'You have to choose at least ',
+    badNumberOfSelectedOptionsEnd : ' answers'
 };
 
 

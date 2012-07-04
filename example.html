@@ -2,21 +2,21 @@
 <html>
 <head>
 
-    <title>Form validator plugin for jQuery</title>
+    <title>Form validation using jQuery</title>
 
     <meta charset="UTF-8"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script type="text/javascript" src="jquery.formvalidator.min.js?upd=2"></script>
+    <script type="text/javascript" src="jquery.formvalidator.min.js?upd=1.5"></script>
 
-    <link href="style.css?upd=2" type="text/css" rel="stylesheet"/>
+    <link href="style.css?upd=1.5" type="text/css" rel="stylesheet"/>
 
 </head>
 <body>
 
     <h1>
-        Form validation using jQuery
+        jQuery Form Validation (v 1.5)
     </h1>
     <p>
         <a href="https://github.com/victorjonsson/jQuery-Form-Validator/">
@@ -152,9 +152,13 @@
                 </select>
             </p>
             <p>
-                <strong>These features applies to select lists with multiple options as well</strong>
+                <strong>These features applies to select lists with multiple options as well.
+                You have to select at least two answers from this list and you'r not allowed
+                to select &quot;* Not allowed&quot;</strong>
                 <br />
-                <select name="something" multiple="multiple" size="5" data-validation="validate_int">
+                <em>validate_num_answers num2 validate_int</em>
+                <br />
+                <select name="something" multiple="multiple" size="5" data-validation="validate_num_answers num2 validate_int">
                     <option value="">- - Select something - -</option>
                     <option value="1">Green</option>
                     <option value="2">Blue</option>
@@ -163,6 +167,18 @@
                     <option value="4">Black</option>
                     <option value="red">* Not allowed</option>
                 </select>
+            </p>
+            <p>
+                <strong>Website, optional (this input will only be validated if it has a value)</strong>
+                <em>data-validation-optional=&quot;true&quot; data-validation=&quot;validate_url&quot;</em>
+                <input type="text" data-validation="validate_url" data-validation-optional="true"/>
+            </p>
+            <p>
+                <strong>E-mail (this input will not be validated unless this checkbox is checked
+                    <input type="checkbox" name="my_checkbox" value="1" />)</strong>
+                <br />
+                <em>data-validation-if-checked=&quot;my_checkbox&quot; data-validation=&quot;validate_email&quot;</em>
+                <input type="text" data-validation="validate_email" data-validation-if-checked="my_checkbox"/>
             </p>
             <p>
                 <strong>Length restriction</strong>
@@ -208,16 +224,16 @@
 
             <p>
                 <strong>When will you arrive</strong>
-                <em>The answer given on the question below will only be validated if this option is unchecked</em>
+                <em>The answer given on the question below will only be validated if this option is checked</em>
                 <input type="checkbox" name="disable_hours" checked="checked"/>
             </p>
 
             <p>
                 <strong>Time HH:mm</strong> <em>validate_time</em><br/>
-                <input type="text" data-validation="validate_time" name="hours"/>
+                <input type="text" data-validation-if-checked="disable_hours" data-validation="validate_time" name="hours"/>
             </p>
             <p>
-                <strong>Date (optional)</strong> <em>validate_date - This input will only be validated if it has a value</em><br/>
+                <strong>Date yyyy-mm-dd (optional)</strong> <em>validate_date - This input will only be validated if it has a value</em><br/>
                 <input type="text" data-validation="validate_date" data-validation-optional="true" data-validation-error-msg="If you want to leave a date, it has to be correct" name="opt_date"/>
             </p>
             <p>
@@ -228,16 +244,8 @@
         <script>
             var validationSettings = {
                 errorMessagePosition : 'element',
-                borderColorOnError : '',
-                ignore: ['hours']
+                borderColorOnError : ''
             };
-
-            $('input[name=disable_hours]').change(function() {
-                if($(this).is(':checked'))
-                    validationSettings.ignore.push('hours');
-                else
-                    validationSettings.ignore = [];
-            });
 
             $('#custom_form')
                 .submit(function() {

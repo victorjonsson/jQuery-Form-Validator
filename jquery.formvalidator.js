@@ -6,7 +6,7 @@
 *
 * Dual licensed under the MIT or GPL Version 2 licenses
 *
-* $version 1.5
+* $version 1.5.1
 */
 (function($) {
     $.extend($.fn, {
@@ -29,14 +29,14 @@
 
         /**
          * Should be called on the element containing the input elements.
-         * <input data-help="The info that I want to display for the user when input is focused" ... />
+         * <input data-validation-help="The info that I want to display for the user when input is focused" ... />
          *
-         * @param {String} attrName Optional, default is data-help
+         * @param {String} attrName Optional, default is data-validation-help
          * @return {jQuery}
          */
         showHelpOnFocus : function(attrName) {
             if(!attrName) {
-                attrName = 'data-help';
+                attrName = 'data-validation-help';
             }
 
             var $el = $(this);
@@ -221,10 +221,12 @@
                                     return false;
                                 }
                             });
-                            if (!isChecked && $.inArray(radioButtonName, config.ignore) == -1) {
-                                errorMessages.push(language.requiredFields);
+
+                            if (!isChecked) {
+                                var validationErrorMsg = $el.attr(config.validationErrorMsgAttribute);
+                                $el.attr('data-validation-current-error', validationErrorMsg || language.requiredFields);
+                                errorMessages.push(validationErrorMsg || language.requiredFields);
                                 errorInputs.push($el);
-                                $(this).attr('data-error', language.requiredFields);
                             }
                         }
                     }
@@ -245,7 +247,7 @@
 
                         if(valid !== true) {
                             errorInputs.push($el);
-                            $el.attr('data-error', valid);
+                            $el.attr('data-validation-current-error', valid);
                             addErrorMessage(valid);
                         }
                     }
@@ -292,7 +294,7 @@
                     for (var i = 0; i < errorMessages.length; i++) {
                         messages += '<br />* ' + errorMessages[i];
                     }
-			// using div instead of P gives better control of css display properties
+			        // using div instead of P gives better control of css display properties
                     $form.children().eq(0).before('<div class="' + config.errorMessageClass + '">' + messages + '</div>');
                     if(config.scrollToTopOnError) {
                         $(window).scrollTop($form.offset().top - 20);
@@ -305,9 +307,9 @@
                         var parent = errorInputs[i].parent();
                         var errorSpan = parent.find('span[class=jquery_form_error_message]');
                         if (errorSpan.length > 0) {
-                            errorSpan.eq(0).text(errorInputs[i].attr('data-error'));
+                            errorSpan.eq(0).text(errorInputs[i].attr('data-validation-current-error'));
                         } else {
-                            parent.append('<span class="jquery_form_error_message">' + errorInputs[i].attr('data-error') + '</span>');
+                            parent.append('<span class="jquery_form_error_message">' + errorInputs[i].attr('data-validation-current-error') + '</span>');
                         }
                     }
                 }
@@ -415,8 +417,7 @@ jQueryFormUtils.validateUKVATNumber = function(number) {
 	
 	var valid = false;
 	
-	var VATsplit = [];
-	VATsplit = number.split("");
+	var VATsplit = number.split("");
 	
 	var checkDigits = Number(VATsplit[7] + VATsplit[8]);  // two final digits as a number
 	
@@ -453,7 +454,7 @@ jQueryFormUtils.validateUKVATNumber = function(number) {
 	// If not valid try the new method (introduced November 2009) by subtracting 55 from the mod 97 check digit if we can - else add 42
 	
 	if (!valid) {
-		total = total%97  // modulus 97  
+		total = total%97;  // modulus 97
 		
 		if (total >= 55) {
 			total = total - 55

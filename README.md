@@ -74,7 +74,7 @@ Since version 1.1 it is possible to display help information for each input. The
 <form action="" onsubmit="return $(this).validate();" id="my_form">
 	<p>
 	  <strong>Why not:</strong>
-	  <textarea name="why" data-help="Please give us some more information" data-validation="required"></textarea>
+	  <textarea name="why" data-validation-help="Please give us some more information" data-validation="required"></textarea>
 	</p>
 	...
 </form>

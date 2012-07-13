@@ -84,7 +84,9 @@
             }
 
             var $element = $(this);
-
+            // test if there is custom obj to hold element error msg (id = element name + err_msg)
+            var elementErrMsgObj = document.getElementById($element.attr('name')+'_err_msg');
+            
             var config = {
             	    ignore : [], // Names of inputs not to be validated, overwriting attribute notaed validation
                     validationRuleAttribute : 'data-validation',
@@ -115,6 +117,11 @@
                 .parent()
                     .find('.jquery_form_error_message').remove();
             
+            // if element has custom err msg container, clear it
+            if( elementErrMsgObj != null) {
+                elementErrMsgObj.innerHTML = ''; 
+            } 
+            
             if(config.borderColorOnError !== '') {
                 $element.css('border-color', jQueryFormUtils.defaultBorderColor);
             }
@@ -125,10 +132,13 @@
                 if(validation === true) {
                     $element.unbind('keyup');
                 } else {
-                    $element
-                        .addClass(config.errorElementClass)
-                        .parent()
-                            .append('<span class="jquery_form_error_message">'+validation+'</span>');
+                    $element.addClass(config.errorElementClass);
+                    // if element has custom err msg container, use it
+                    if( elementErrMsgObj != null) {
+                        elementErrMsgObj.innerHTML = validation; 
+                    } else { // use regular span append
+                        $element.parent().append('<span class="jquery_form_error_message">'+validation+'</span>');
+                    }
 
                     if(config.borderColorOnError !== '') {
                         $element.css('border-color', config.borderColorOnError);

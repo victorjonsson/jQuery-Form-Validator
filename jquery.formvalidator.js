@@ -1044,16 +1044,25 @@ jQueryFormUtils.validateUrl = function(url) {
  * @return void
  */
 jQueryFormUtils.lengthRestriction = function(inputElement, maxLengthElement) {
-    this.input = inputElement;
-    this.maxLength = parseInt(maxLengthElement.text(),10);
-    var self = this;
+    // read maxChars from counter display initial text value
+    var maxChars = parseInt(maxLengthElement.text(),10);
 
-    $(this.input).keyup(function() {
-            $(this).val($(this).val().substring(0, self.maxLength));
-            maxLengthElement.text(self.maxLength - $(this).val().length);
-        })
-        .focus(function() {
-            $(this).keyup();
-        })
-        .trigger('keyup');
+    // bind events to this element
+    // setTimeout is needed, cut or paste fires before val is available
+    $(inputElement).bind('keydown keyup keypress focus blur',  countCharacters )
+                   .bind('cut paste', function(){ setTimeout(countCharacters, 100); } )
+                   ;
+    // internal function does the counting and sets display value
+    function countCharacters(){
+        var numChars = inputElement.val().length;
+        if(numChars > maxChars){
+            // get current scroll bar position
+            var currScrollTopPos = inputElement.scrollTop();
+            // trim value to max length
+            inputElement.val(inputElement.val().substring(0, maxChars));
+            inputElement.scrollTop(currScrollTopPos);
+        };
+        // set counter text
+        maxLengthElement.text(maxChars - numChars);
+    };
 };

@@ -1,6 +1,6 @@
 This plugin was created to minimize javascript logic in the html code when dealing with front-end validation of form data. 
 
-[Live example can be viewed here](http://victorjonsson.se/jquery-form-validator)
+[Live example can be viewed here](http://victorjonsson.se/jquery-form-validator/?from=github)
 
 *Usage example*
 

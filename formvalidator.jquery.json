@@ -9,15 +9,16 @@
     "version" : "1.5.4",
     "author" : {
         "name": "Victor Jonsson",
-        "url": "http://victorjonsson.se"
+        "url": "http://victorjonsson.se",
+        "email" : "kontakt@victorjonsson.se"
     },
     "homepage" : "https://github.com/victorjonsson/jQuery-Form-Validator",
-    "demo" : "http://victorjonsson.se/jquery-form-validator/?from=jQuery",
+    "demo" : "http://victorjonsson.se/51/jquery-form-validator/?from=jQuery",
     "download" : "https://raw.github.com/victorjonsson/jQuery-Form-Validator/master/jquery.formvalidator.min.js",
     "bugs" : "https://github.com/victorjonsson/jQuery-Form-Validator/issues",
     "licenses" : [{
         "type": "GPLv2",
-        "url": "http://www.example.com/licenses/gpl.html"
+        "url": "http://www.gnu.org/licenses/gpl-2.0.html"
     }],
     "dependencies" : {
         "jquery": ">=1.5"

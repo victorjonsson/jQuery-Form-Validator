@@ -6,7 +6,7 @@
 *
 * Dual licensed under the MIT or GPL Version 2 licenses
 *
-* $version 1.5.1
+* $version 1.5.2
 */
 (function($) {
     $.extend($.fn, {

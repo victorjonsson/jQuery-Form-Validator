@@ -2,7 +2,11 @@
     "name" : "formvalidator",
     "title" : "jQuery Form Validator",
     "description" : "This plugin was created to minimize javascript logic in the html code when dealing with front-end validation of form data",
-    "version" : "1.5.3",
+    "keywords": [
+        "form",
+        "validation"
+    ],
+    "version" : "1.5.4",
     "author" : {
         "name": "Victor Jonsson",
         "url": "http://victorjonsson.se"
@@ -10,6 +14,7 @@
     "homepage" : "https://github.com/victorjonsson/jQuery-Form-Validator",
     "demo" : "http://victorjonsson.se/jquery-form-validator/?from=jQuery",
     "download" : "https://raw.github.com/victorjonsson/jQuery-Form-Validator/master/jquery.formvalidator.min.js",
+    "bugs" : "https://github.com/victorjonsson/jQuery-Form-Validator/issues",
     "licenses" : [{
         "type": "GPLv2",
         "url": "http://www.example.com/licenses/gpl.html"

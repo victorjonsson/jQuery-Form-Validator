@@ -4,9 +4,8 @@
 * Created by Victor Jonsson <http://www.victorjonsson.se>
 * Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
 *
-* Dual licensed under the MIT or GPL Version 2 licenses
-*
-* $version 1.5.2
+* @license GPLv2 http://www.example.com/licenses/gpl.html
+* @version 1.5.3
 */
 (function($) {
     $.extend($.fn, {

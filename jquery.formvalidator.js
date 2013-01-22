@@ -5,7 +5,7 @@
 * Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
 *
 * @license GPLv2 http://www.example.com/licenses/gpl.html
-* @version 1.5.4
+* @version 1.5.5
 */
 (function($) {
     $.extend($.fn, {

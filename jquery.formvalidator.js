@@ -44,22 +44,24 @@
                 if(help) {
                     $(this)
                         .focus(function() {
+                        	var $name = $(this).attr('name');
                             var $element = $(this);
-                            if($element.parent().find('.jquery_form_help').length == 0) {
+                            if($element.parent().find('.jquery_form_help_'+$name).length == 0) {
                                 $element.after(
                                       $('<span />')
-                                        .addClass('jquery_form_help')
+                                        .addClass('jquery_form_help_'+$name)
                                         .text(help)
                                         .hide()
                                         .fadeIn()
                                     );
+                            }else{
+                            	$element.parent().find('.jquery_form_help_'+$name).fadeIn();
                             }
                         })
                         .blur(function() {
-                            $(this).parent().find('.jquery_form_help')
-                                .fadeOut('slow', function() {
-                                    $(this).remove();
-                                });
+                        	var $name = $(this).attr('name');
+                            $(this).parent().find('.jquery_form_help_'+$name)
+                                .fadeOut('slow');
                         });
                 }
             });

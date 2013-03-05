@@ -692,6 +692,7 @@ jQueryFormUtils.simpleSpamCheck = function(val, classAttr) {
  * @return {Boolean}
  */
 jQueryFormUtils.validateDomain = function(val) {
+	val = val.toLowerCase();
     val = val.replace('ftp://', '').replace('https://', '').replace('http://', '').replace('www.', '');
     var arr = new Array('.com', '.net', '.org', '.biz', '.coop', '.info', '.museum', '.name', '.pro',
                         '.edu', '.gov', '.int', '.mil', '.ac', '.ad', '.ae', '.af', '.ag', '.ai', '.al',

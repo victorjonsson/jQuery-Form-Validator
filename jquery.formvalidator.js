@@ -163,7 +163,6 @@
          * @param settings
          */
         validate : function(language, settings) {
-
             /*
              * Config
              */
@@ -215,18 +214,16 @@
             // Validate element values
             //
             $form.find('input,textarea,select').each(function() {
-
                 var $el = $(this);
                 var elementType = $el.attr('type');
                 if (!jQueryFormUtils.ignoreInput($el.attr('name'), elementType, config)) {
-
                     // input of type radio
                     if(elementType === 'radio') {
                         var validationRule = $el.attr(config.validationRuleAttribute);
                         if (typeof validationRule != 'undefined' && validationRule === 'required') {
                             var radioButtonName = $el.attr('name');
                             var isChecked = false;
-                            $form.find('input[name=' + radioButtonName + ']').each(function() {
+                            $form.find('input[name="' + radioButtonName + '"]').each(function() {
                                 if ($(this).is(':checked')) {
                                     isChecked = true;
                                     return false;
@@ -980,11 +977,10 @@ jQueryFormUtils.validate = function(value, el, language, config, form) {
         if (validationRules.indexOf('validate_swesc') > -1 && !jQueryFormUtils.validateSwedishSecurityNumber(value)) {
             return validationErrorMsg || language.badSecurityNumber;
         }
-
         // confirmation
         if (validationRules.indexOf('validate_confirmation') > -1 && typeof(form) != 'undefined') {
             var conf = '';
-            var confInput = form.find('input[name=' + el.attr('name') + '_confirmation]').eq(0);
+            var confInput = form.find('input[name="' + el.attr('name') + '_confirmation"]').eq(0);
             if (confInput) {
                 conf = confInput.val();
             }

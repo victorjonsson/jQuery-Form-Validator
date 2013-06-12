@@ -230,3 +230,4 @@ $_SESSION['captcha'] = array( mt_rand(0,9), mt_rand(1, 9) );
 [Matt Clements](https://github.com/mattclements) (contributor)<br />
 [dfcplc](https://github.com/dfcplc) (contributor)<br />
 [Scott Gonzales](http://projects.scottsplayground.com/iri/) (URL regexp)
+[Repkit](https://github.com/Repkit)

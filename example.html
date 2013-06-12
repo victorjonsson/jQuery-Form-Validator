@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script type="text/javascript" src="jquery.formvalidator.min.js?upd=1.5.1"></script>
+    <script type="text/javascript" src="jquery.formvalidator.js"></script>
 
     <link href="style.css?upd=1.5" type="text/css" rel="stylesheet"/>
 
@@ -179,6 +179,12 @@
                 <br />
                 <em>data-validation-if-checked=&quot;my_checkbox&quot; data-validation=&quot;validate_email&quot;</em>
                 <input type="text" data-validation="validate_email" data-validation-if-checked="my_checkbox"/>
+            </p>
+            <p>
+                <strong>Elements named as array validation</strong>
+                <em>data-validation=&quot;validate_confirmation validate_email&quot;</em>
+                <input name="customer[email]" type="text" data-validation="validate_confirmation validate_email">
+                <input name="customer[email]_confirmation" type="text">
             </p>
             <p>
                 <strong>Length restriction</strong>

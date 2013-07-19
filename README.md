@@ -31,6 +31,7 @@ particular form.
 <script src="js/jquery.min.js"></script>
 <script src="js/form-validator/jquery.form-validator.min.js"></script>
 <script>
+/* important to locate this script AFTER the closing form element, so form object is loaded in DOM before setup is called */
     $.setupForm({
         modules : 'date, security'
     });

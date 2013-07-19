@@ -2,16 +2,15 @@
  * jQuery Form Validator Module: Date
  * ------------------------------------------
  * Created by Victor Jonsson <http://www.victorjonsson.se>
- * Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
  *
  * The following validators will be added by this module:
- *  - validate_country
- *  - validate_state
- *  - validate_longlat
+ *  - Country
+ *  - US state
+ *  - longitude and latitude
  *
- *
+ * @website http://formvalidator.net/#location-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.3
+ * @version 2.0.7
  */
 (function($) {
 
@@ -19,7 +18,7 @@
      * Validate that country exists
      */
     $.formUtils.addValidator({
-        name : 'validate_country',
+        name : 'country',
         validate : function(str) {
             return $.inArray(str.toLowerCase(), this.countries) > -1;
         },
@@ -32,7 +31,7 @@
      * Is this a valid federate state in the US
      */
     $.formUtils.addValidator({
-        name : 'validate_federatestate',
+        name : 'federatestate',
         validate : function(str) {
             return $.inArray(str.toLowerCase(), this.states) > -1;
         },
@@ -43,7 +42,7 @@
 
 
     $.formUtils.addValidator({
-        name : 'validate_longlat',
+        name : 'longlat',
         validate : function(str) {
             var regexp = /^[+-]?\d+\.\d+, ?[+-]?\d+\.\d+$/;
             return regexp.test(str);

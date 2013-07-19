@@ -2,10 +2,10 @@
 * jQuery Form Validator
 * ------------------------------------------
 * Created by Victor Jonsson <http://www.victorjonsson.se>
-* Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
 *
+* @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.0.3
+* @version 2.0.7
 */
 (function($) {
 
@@ -512,7 +512,7 @@
         * @param {Object} validator
         */
         addValidator : function(validator) {
-            var name = validator.name.indexOf('validate_') === 0 ? validator.name : 'validate_'+validator.name;
+            var name = validator.name.indexOf('validate_') === 0 ? validator.name : 'validate_'+validator.name; // legacy...
             this.validators[name] = validator;
         },
 
@@ -522,6 +522,8 @@
          */
         on : function(evt, callback) {
             // Why not use $(document).bind('validators.loaded', func);
+            if( this._events[evt] === undefined )
+                this._events[evt] = [];
             this._events[evt].push(callback);
         },
 
@@ -531,7 +533,7 @@
          * @param [argB]
          */
         trigger : function(evt, argA, argB) {
-            $.each(this._events[evt], function(i, func) {
+            $.each(this._events[evt] || [], function(i, func) {
                 func(argA, argB);
             });
         },
@@ -1070,7 +1072,9 @@
             badNumberOfSelectedOptionsStart : 'You have to choose at least ',
             badNumberOfSelectedOptionsEnd : ' answers',
             badAlphaNumeric : 'The answer you gave must contain only alphanumeric characters ',
-            badAlphaNumericExtra: ' and '
+            badAlphaNumericExtra: ' and ',
+            wrongFileSize : 'The file you are trying to upload is too large',
+            wrongFileType : 'The file you are trying to upload is of wrong type'
         }
     };
 

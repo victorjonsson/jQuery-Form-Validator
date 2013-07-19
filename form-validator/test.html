@@ -50,6 +50,14 @@
         <input data-validation="even_number">
     </p>
     <p>
+        <strong>File validation</strong>
+        <br />
+        <input type="file" name="some-file"
+                data-validation="size mime"
+                data-validation-allowing="jpg, png, ico"
+                data-validation-max-size="100kb" />
+    </p>
+    <p>
         Callback validation, set this value to &quot;1&quot; and
         validation will fail<br />
         <input id="callback" />
@@ -396,6 +404,36 @@
             });
         });
 
+        /*
+         * FILE VALIDATION
+         */
+        test('File validation', function() {
+            equal(100, $.formUtils.convertSizeNameToBytes('100'));
+            equal(100, $.formUtils.convertSizeNameToBytes('100b'));
+            equal(100, $.formUtils.convertSizeNameToBytes('100B'));
+            equal(112640, $.formUtils.convertSizeNameToBytes('110kb'));
+            equal(112640, $.formUtils.convertSizeNameToBytes('110KB'));
+            equal(10485760, $.formUtils.convertSizeNameToBytes('10M'));
+            equal(10485760, $.formUtils.convertSizeNameToBytes('10MB'));
+            equal(10485760, $.formUtils.convertSizeNameToBytes('10mb'));
+            equal(10485760, $.formUtils.convertSizeNameToBytes('10m'));
+
+            var extensionTests = [
+                {val:input('file.jpg', {'allowing' : 'jpg', '':'extension'}), isValid:true},
+                {val:input('file.JPG', {'allowing' : 'jpg', '':'extension'}), isValid:true},
+                {val:input('file.jpgs', {'allowing' : 'jpg', '':'extension'}), isValid:false},
+                {val:input('file', {'allowing' : 'jpg', '':'extension'}), isValid:false},
+                {val:input('file.jpeg', {'allowing' : 'jpg', '':'extension'}), isValid:true},
+                {val:input('file.JPEG', {'allowing' : 'jpg, png, gif', '':'extension'}), isValid:true},
+                {val:input('file.JPEG', {'allowing' : 'jpg,', '':'extension'}), isValid:true},
+                {val:input('file.JPEG', {'allowing' : ' jpg ', '':'extension'}), isValid:true}
+            ];
+
+            $.each(extensionTests, function(i, obj) {
+                runTest(obj, 'extension');
+            });
+        });
+
         // TODO: Write more tests...
 
     }
@@ -406,7 +444,7 @@
         language : {
             requiredFields: 'Du måste bocka för denna'
         },
-        modules : 'security'+dev+', location'+dev+', sweden'+dev+', uk'+dev,
+        modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev,
         onModulesLoaded: function( $form ) {
             console.log('About to run all tests');
             runAllTests();

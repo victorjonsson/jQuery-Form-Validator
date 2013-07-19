@@ -4,15 +4,13 @@
  * Created by Victor Jonsson <http://www.victorjonsson.se>
  * Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
  *
- * This form validation module adds validators used to validate date
- * and time values. The following validators will be added by
- * this module:
- *  - validate_time
- *  - validate_birthdate
+ * The following validators will be added by this module:
+ *  - Time (HH:mmm)
+ *  - Birth date
  *
- *
+ * @website http://formvalidator.net/#location-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.3
+ * @version 2.0.7
  */
 (function($) {
 
@@ -20,7 +18,7 @@
      * Validate time hh:mm
      */
     $.formUtils.addValidator({
-        name : 'validate_time',
+        name : 'time',
         validate : function(time) {
             if (time.match(/^(\d{2}):(\d{2})$/) === null) {
                 return false;
@@ -41,7 +39,7 @@
      * Is this a valid birth date
      */
     $.formUtils.addValidator({
-        name : 'validate_birthdate',
+        name : 'birthdate',
         validate : function(val, $el, conf) {
             var dateFormat = 'yyyy-mm-dd';
             if($el.valAttr('format')) {

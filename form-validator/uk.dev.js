@@ -2,17 +2,17 @@
  * jQuery Form Validator Module: Security
  * ------------------------------------------
  * Created by Victor Jonsson <http://www.victorjonsson.se>
- * Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
  *
  * This form validation module adds validators typically used on
  * websites in the UK. This module adds the following validators:
- *  - validate_ukvatnumber
+ *  - ukvatnumber
  *
+ * @website http://formvalidator.net/#uk-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.3
+ * @version 2.0.7
  */
 $.formUtils.addValidator({
-    name : 'validate_ukvatnumber',
+    name : 'ukvatnumber',
     validate : function(number) {
 
         // Code Adapted from http://www.codingforums.com/showthread.php?t=211967

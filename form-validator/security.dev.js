@@ -2,10 +2,9 @@
  * jQuery Form Validator Module: Security
  * ------------------------------------------
  * Created by Victor Jonsson <http://victorjonsson.se>
- * Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
  *
- * This form validation module adds validators typically used when validating
- * user registration forms. This module adds the following validators:
+ * This module adds validators typically used in registration forms.
+ * This module adds the following validators:
  *  - spamcheck
  *  - confirmation
  *  - strength
@@ -13,7 +12,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.3
+ * @version 2.0.7
  */
 (function($) {
 
@@ -21,7 +20,7 @@
      * Simple spam check
      */
     $.formUtils.addValidator({
-        name : 'validate_spamcheck',
+        name : 'spamcheck',
         validate : function(val, $el, config) {
             var attr = $el.valAttr('captcha');
             return attr === val;
@@ -35,7 +34,7 @@
      * Validate confirmation
      */
     $.formUtils.addValidator({
-        name : 'validate_confirmation',
+        name : 'confirmation',
         validate : function(value, $el, config, language, $form) {
             var conf = '';
             var confInput = $form.find('input[name=' + $el.attr('name') + '_confirmation]').eq(0);
@@ -52,7 +51,7 @@
      * Validate password strength
      */
     $.formUtils.addValidator({
-        name : 'validate_strength',
+        name : 'strength',
         validate : function(val, $el, conf) {
             var requiredStrength = $el.valAttr('strength')
             if(requiredStrength && requiredStrength > 3)
@@ -235,7 +234,7 @@
     $.formUtils.addValidator({
         oldKeyupEvent : false,
         oldSubmitEvent : false,
-        name:'validate_backend',
+        name : 'backend',
         validate : function(val, $el, conf, lang, $form) {
 
             var backendValid = $el.valAttr('backend-valid'),

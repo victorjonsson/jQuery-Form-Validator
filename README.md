@@ -74,7 +74,7 @@ Read the documentation for the default features at [http://formvalidator.net/#de
  * **spamcheck**
  * **confirmation**
  * **strength** — *Validate the strength of a password (strength strength3)*
- * **backend** — *Validate value of input on backend*
+ * **backend** — *Validate value of input on server side*
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
 
@@ -92,6 +92,13 @@ Read the documentation for the date module at [http://formvalidator.net/#date-va
  * Suggest states in the US
 
 Read the documentation for the location module at [http://formvalidator.net/#location-validators](http://formvalidator.net/#location-validators)
+
+### Module: file
+ * **mime**
+ * **extension**
+ * **size**
+
+Read the documentation for the file module at [http://formvalidator.net/#file-validators](http://formvalidator.net/#file-validators)
 
 ### Module: sweden
  * **swemob** — *validate that the value is a swedish mobile telephone number*
@@ -227,14 +234,18 @@ var enErrorDialogs = {
     badLength : 'You have to give an answer between ',
     notConfirmed : 'Values could not be confirmed',
     badDomain : 'Incorrect domain value',
-    badUrl : 'Incorrect url value',
-    badFloat : 'Incorrect float value',
+    badUrl : 'The answer you gave was not a correct URL',
     badCustomVal : 'You gave an incorrect answer',
-    badInt : 'Incorrect integer value',
+    badInt : 'The answer you gave was not a correct number',
     badSecurityNumber : 'Your social security number was incorrect',
     badUKVatAnswer : 'Incorrect UK VAT Number',
+    badStrength : 'The password isn\'t strong enough',
     badNumberOfSelectedOptionsStart : 'You have to choose at least ',
-    badNumberOfSelectedOptionsEnd : ' answers'
+    badNumberOfSelectedOptionsEnd : ' answers',
+    badAlphaNumeric : 'The answer you gave must contain only alphanumeric characters ',
+    badAlphaNumericExtra: ' and ',
+    wrongFileSize : 'The file you are trying to upload is too large',
+    wrongFileType : 'The file you are trying to upload is of wrong type'
 };
 ```
 
@@ -268,6 +279,9 @@ that attribute will be displayed instead of the error dialog that the validation
 ```
 
 ## Changelog
+
+#### 2.0.7
+ * Now possible to validate file size, extension and mime type (using the file module)
 
 #### 2.0
  * [min|max]_length is removed (now merged with length validation).

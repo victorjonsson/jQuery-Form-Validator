@@ -2,7 +2,6 @@
  * jQuery Form Validator Module: Security
  * ------------------------------------------
  * Created by Victor Jonsson <http://www.victorjonsson.se>
- * Documentation and issue tracking on Github <https://github.com/victorjonsson/jQuery-Form-Validator/>
  *
  * This form validation module adds validators typically used on swedish
  * websites. This module adds the following validators:
@@ -12,8 +11,9 @@
  *  - validate_county
  *  - validate_swephone
  *
+ * @website http://formvalidator.net/#swedish-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.3
+ * @version 2.0.7
  */
 (function($, window) {
 
@@ -21,7 +21,7 @@
     * Validate swedish social security number yyyymmddXXXX
     */
     $.formUtils.addValidator({
-        name : 'validate_swesec',
+        name : 'swesec',
         validate : function(securityNumber, $input) {
 
             var year, month, day, ssnParts;
@@ -69,7 +69,7 @@
     });
 
     $.formUtils.addValidator({
-        name : 'validate_swecounty',
+        name : 'swecounty',
         validate : function(str) {
             str = str.toLowerCase();
             if($.inArray(str, this.counties) == -1) {
@@ -108,7 +108,7 @@
     });
 
     $.formUtils.addValidator({
-        name : 'validate_swemunicipality',
+        name : 'swemunicipality',
         validate : function(str) {
             str = str.toLowerCase();
             if($.inArray(str, this.municipalities) == -1) {
@@ -139,7 +139,7 @@
      * Validate phone number, at least 7 digits only one hyphen and plus allowed
      */
     $.formUtils.addValidator({
-        name : 'validate_swephone',
+        name : 'swephone',
         validate : function(tele) {
             var numPlus = tele.match(/\+/g);
             var numHifen = tele.match(/-/g);
@@ -163,7 +163,7 @@
      * Validate that string is a swedish telephone number
      */
     $.formUtils.addValidator({
-        name : 'validate_swemobile',
+        name : 'swemobile',
         validate : function(number) {
             if (!$.formUtils.validators.validate_swephone.validate(number)) {
                 return false;

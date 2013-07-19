@@ -291,7 +291,7 @@ that attribute will be displayed instead of the error dialog that the validation
  * Length validation now looks at attribute data-validation-length (eg. min5, max200, 3-12).
  * The validation rule no longer needs to be prefixed with "validate_" (it's still possible to use the prefix but it's considered deprecated).
  * Some validation functions is moved to modules (see the function reference over at http://formvalidator.net).
- * Added function $.formSetup() to reduce the amount of code that has to be written when initiating the form validation.
+ * Added function $.setupForm() to reduce the amount of code that has to be written when initiating the form validation.
 
 
 ## Credits

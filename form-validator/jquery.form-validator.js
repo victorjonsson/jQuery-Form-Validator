@@ -166,7 +166,8 @@
         } else if( val === false || val === null ) {
             return this.removeAttr('data-validation-'+name);
         } else {
-            return this.attr('data-validation-'+name, val);
+            if(name.length > 0) name='-'+name;
+            return this.attr('data-validation'+name, val);
         }
     };
 

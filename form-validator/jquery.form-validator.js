@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.0.9
+* @version 2.0.10
 */
 (function($) {
 
@@ -503,7 +503,8 @@
         * @param {Object} validator
         */
         addValidator : function(validator) {
-            var name = validator.name.indexOf('validate_') === 0 ? validator.name : ''+validator.name; // legacy...
+            // prefix with "validate_" for backward compatibility reasons
+            var name = validator.name.indexOf('validate_') === 0 ? validator.name : 'validate_'+validator.name;
             this.validators[name] = validator;
         },
 

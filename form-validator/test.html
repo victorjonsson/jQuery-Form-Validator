@@ -5,7 +5,7 @@
     <title>QUnit Tests</title>
     <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css">
     <style>
-        .jquery_form_error_message {
+        .form-error {
             color: darkred;
         }
     </style>
@@ -81,7 +81,7 @@
             elAttr = {};
         if( typeof dataValidationAttr == 'string') {
             elAttr['data-validation'] = dataValidationAttr;
-        } else {
+        } else if(dataValidationAttr) {
             $.each(dataValidationAttr, function(x, val) {
                 if( x == '' ) {
                     elAttr['data-validation'] = val;
@@ -408,6 +408,9 @@
          * FILE VALIDATION
          */
         test('File validation', function() {
+
+            clearForm();
+
             equal(100, $.formUtils.convertSizeNameToBytes('100'));
             equal(100, $.formUtils.convertSizeNameToBytes('100b'));
             equal(100, $.formUtils.convertSizeNameToBytes('100B'));
@@ -432,6 +435,29 @@
             $.each(extensionTests, function(i, obj) {
                 runTest(obj, 'extension');
             });
+        });
+
+        test('Confirmation', function() {
+
+            clearForm();
+
+            var $inputA = input('hejsan', {'':'confirmation'}, {name:'test'}),
+                $inputB = input('hej', undefined, {name:'test_confirmation'}),
+                result = $.formUtils.validateInput($inputA, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+
+            equal(
+                typeof(result) == 'string', // Should be an error message
+                true,
+                'Could not check that inputs did not confirmation each other'
+            );
+
+            $inputB.val('hejsan');
+            result = $.formUtils.validateInput($inputA, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+            equal(
+                result,
+                true,
+                'Could not validate confirmation'
+            );
         });
 
         // TODO: Write more tests...

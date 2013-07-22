@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.7
+ * @version 2.0.9
  */
 (function($, window) {
 
@@ -128,7 +128,10 @@
      */
     $.formUtils.on('load', function() {
         $('input[type="file"]').filter('*[data-validation]').bind('change', function() {
-            $(this).parent().find('.form-error').remove();
+            $(this)
+                .removeClass('error')
+                .parent()
+                    .find('.form-error').remove();
         });
     });
 

@@ -12,7 +12,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.7
+ * @version 2.0.9
  */
 (function($) {
 
@@ -36,11 +36,15 @@
     $.formUtils.addValidator({
         name : 'confirmation',
         validate : function(value, $el, config, language, $form) {
-            var conf = '';
-            var confInput = $form.find('input[name=' + $el.attr('name') + '_confirmation]').eq(0);
+            var conf = '',
+                confInputName = $el.attr('name') + '_confirmation',
+                confInput = $form.find('input[name="' +confInputName+ '"]').eq(0);
             if (confInput) {
                 conf = confInput.val();
+            } else {
+                console.warn('Could not find an input with name "'+confInputName+'"');
             }
+
             return value === conf;
         },
         errorMessage : '',
@@ -234,7 +238,7 @@
     $.formUtils.addValidator({
         oldKeyupEvent : false,
         oldSubmitEvent : false,
-        name : 'backend',
+        name : 'server',
         validate : function(val, $el, conf, lang, $form) {
 
             var backendValid = $el.valAttr('backend-valid'),
@@ -249,7 +253,7 @@
 
             $form
                 .bind('submit', function() {return false;})
-                .addClass('validating-backend');
+                .addClass('validating-server-side');
 
             var backendUrl = document.location.href;
 

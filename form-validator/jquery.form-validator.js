@@ -194,7 +194,7 @@
             }
             errorInputs.push($element);
             $element
-                .valAttr('current-error', mess)
+                .valAttr('error-current', mess)
                 .removeClass('valid');
         },
 
@@ -244,7 +244,7 @@
                     addErrorMessage(validation, $element);
                 } else {
                     $element
-                        .valAttr('current-error', false)
+                        .valAttr('error-current', false)
                         .addClass('valid');
                 }
             }
@@ -311,9 +311,9 @@
                     var $parent = $input.parent(),
                         $errorSpan = $parent.find('span[class='+config.errorMessageClass+']');
                     if ($errorSpan.length > 0) {
-                        $errorSpan.append(', '+$input.valAttr('current-error'));
+                        $errorSpan.append(', '+$input.valAttr('error-current'));
                     } else {
-                        $parent.append('<span class="'+config.errorMessageClass+'">' + $input.valAttr('current-error') + '</span>');
+                        $parent.append('<span class="'+config.errorMessageClass+'">' + $input.valAttr('error-current') + '</span>');
                     }
                 });
             }
@@ -386,7 +386,7 @@
      * Short hand function that makes the validation setup require less code
      * @param config
      */
-    $.setupForm = function(config) {
+    $.validatorConfig = function(config) {
         config = $.extend({
             form : 'form',
             validateOnBlur : true,

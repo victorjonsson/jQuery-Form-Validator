@@ -310,7 +310,7 @@
                     var $parent = $input.parent(),
                         $errorSpan = $parent.find('span[class='+config.errorMessageClass+']');
                     if ($errorSpan.length > 0) {
-                        $errorSpan.text($input.valAttr('current-error'));
+                        $errorSpan.append(', '+$input.valAttr('current-error'));
                     } else {
                         $parent.append('<span class="'+config.errorMessageClass+'">' + $input.valAttr('current-error') + '</span>');
                     }

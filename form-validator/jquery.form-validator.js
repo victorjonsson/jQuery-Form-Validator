@@ -386,7 +386,7 @@
      * Short hand function that makes the validation setup require less code
      * @param config
      */
-    $.setupForm = function(config) {
+    $.validatorLoad = function(config) {
         config = $.extend({
             form : 'form',
             validateOnBlur : true,
@@ -828,6 +828,35 @@
            $(document).bind("ready", countCharacters);
         },
 
+        /**
+        * Test numeric against allowed range
+        *
+        * @param $value int
+        * @param $rangeAllowed str; (1-2, min1, max2)
+        * @return array 
+        */
+        numericRangeCheck : function($value, $rangeAllowed) 
+        {
+           // split by dash
+           var range = $.split($rangeAllowed, '-');
+           // range ?
+           if (range.length == 2 && ($value < parseInt(range[0],10) || $value > parseInt(range[1],10) ))
+               {   // value is out of range
+                   return [ "out", range[0], range[1] ] ;
+               }
+               else if ($rangeAllowed.indexOf('min') === 0) // min
+                   {    // check if above min
+                       var minQty = parseInt($rangeAllowed.substr(3),10);
+                       if($value < minQty) { return [ "min", minQty ] ; }
+                   }
+                   else if ($rangeAllowed.indexOf('max') === 0) // max
+                       {    var maxQty = parseInt($rangeAllowed.substr(3),10);
+                            if($value > maxQty) { return [ "max", maxQty ] ; }
+                       }
+           else { return "ok"} // value is in allowed range
+        },
+
+
         _numSuggestionElements : 0,
         _selectedSuggestion : null,
         _previousTypedVal : null,
@@ -1043,11 +1072,10 @@
             badTelephone : 'You have not given a correct phone number',
             badSecurityAnswer : 'You have not given a correct answer to the security question',
             badDate : 'You have not given a correct date',
-            tooLongStart : 'You have given an answer longer than ',
-            tooLongEnd : ' characters',
-            tooShortStart : 'You have given an answer shorter than ',
-            tooShortEnd : ' characters',
-            badLength : 'You have to give an answer between ',
+            lengthBadStart : 'You must give an answer between ',
+            lengthBadEnd : 'characters',
+            lengthTooLongStart : 'You have given an answer longer than ',
+            lengthTooShortStart : 'You have given an answer shorter than ',
             notConfirmed : 'Values could not be confirmed',
             badDomain : 'Incorrect domain value',
             badUrl : 'The answer you gave was not a correct URL',
@@ -1061,7 +1089,13 @@
             badAlphaNumeric : 'The answer you gave must contain only alphanumeric characters ',
             badAlphaNumericExtra: ' and ',
             wrongFileSize : 'The file you are trying to upload is too large',
-            wrongFileType : 'The file you are trying to upload is of wrong type'
+            wrongFileType : 'The file you are trying to upload is of wrong type',
+            groupCheckedRangeStart : 'Please choose between ',
+            groupCheckedTooFewStart : 'Please choose at least ',
+            groupCheckedTooManyStart : 'Please choose a maximum of ',           
+            groupCheckedEnd : ' item(s)',
+            
+            _dummy--last-item-placeholder-without-comma : 0
         }
     };
 
@@ -1198,39 +1232,39 @@
     */
     $.formUtils.addValidator({
         name : 'length',
-        validate : function(value, $el, config, language) {
-            var len = $el.valAttr('length');
-            if(len == undefined) {
+        validate : function(value, $el, config, lang) {
+            var lengthAllowed = $el.valAttr('length');
+            if(lengthAllowed == undefined) {
                 var elementType = $el.get(0).nodeName;
                 alert('Please add attribute "data-validation-length" to '+elementType+' named '+$el.attr('name'));
                 return true;
             }
 
-            var range = $.split(len, '-');
+            // check if length is above min, below max, within range etc.
+                var lengthCheckResults = $.formUtils.numericRangeCheck(value.length, lengthAllowed) ;
 
-            // range
-            if(range.length == 2 && (value.length < parseInt(range[0],10) || value.length > parseInt(range[1],10))) {
-                this.errorMessage = language.badLength + len + language.tooLongEnd;
-                return false;
-            }
-            // min
-            else if(len.indexOf('min') === 0) {
-                var minLength = parseInt(len.substr(3),10);
-                if(minLength > value.length) {
-                    this.errorMessage = language.tooShortStart + minLength + language.tooShortEnd;
-                    return false;
+                switch(lengthCheckResults[0] )
+                {   // outside of allowed range
+                    case "out":
+                        this.errorMessage = lang.lengthBadStart + len + lang.lengthBadEnd;
+                        checkResult = false;
+                        break;
+                    // too short
+                    case "min":
+                        this.errorMessage = lang.lengthTooShortStart + lengthCheckResults[1] + lang.lengthBadEnd;
+                        checkResult = false;
+                        break;
+                    // too long
+                    case "max":
+                        this.errorMessage = lang.lengthTooLongStart + lengthCheckResults[1] + lang.lengthBadEnd;
+                        checkResult = false;
+                        break;
+                    // ok
+                    default:
+                        checkResult = true;
                 }
-            }
-            // max
-            else if(len.indexOf('max') === 0) {
-                var maxLength = parseInt(len.substr(3),10);
-                if(maxLength < value.length) {
-                    this.errorMessage = language.tooLongStart + maxLength + language.tooLongEnd;
-                    return false;
-                }
-            }
-
-            return true;
+            
+            return checkResult;
         },
         errorMessage : '',
         errorMessageKey: ''
@@ -1348,5 +1382,75 @@
         errorMessage : '',
         errorMessageKey: 'badDate'
     });
+
+
+/*  
+    * Validate group of checkboxes, validate qty required is checked
+    * written by Steve Wasiura : http://stevewasiura.waztech.com
+    * element attrs
+    *    data-validation="checkbox_group"
+    *    data-validation-qty="1-2"  // min 1 max 2
+    *    data-validation-error-msg="chose min 1, max of 2 checkboxes"
+    */
+   
+    /* formUtils global var to hold string of checkboxes that were prev checked by validator, 
+    *  to prevent wasted duplication when multiple checkboxes have call to same validator 
+    */
+    $.formUtils._checkboxGroups = '';
+       
+    $.formUtils.addValidator({
+        name : 'checkbox_group',
+        validate : function(val, $el, config, lang, form) 
+        {   // set return var
+            var checkResult = true;
+            // get name of element. since it is a checkbox group, all checkboxes will have same name
+            var elname = $el.attr('name');
+            // check if we have already checked this group
+            // global var "_checkboxGroups"
+            // if element name is not found in global var, then do the check
+            if ($.formUtils._checkboxGroups.indexOf(elname) == -1 )
+            {   // get count of checked checkboxes with this name
+                var checkedCount = $("input[type=checkbox][name^='"+elname+"']:checked", form).length;
+                // get el attr that specs qty required / allowed
+                var qtyAllowed = $el.valAttr('qty');
+                if (qtyAllowed == undefined) {
+                    var elementType = $el.get(0).nodeName;
+                    alert('Attribute "data-validation-qty" is missing from '+elementType+' named '+$el.attr('name'));
+                }
+                // call Utility function to check if count is above min, below max, within range etc.
+                var qtyCheckResults = $.formUtils.numericRangeCheck(checkedCount, qtyAllowed) ;
+                // results will be array, [0]=result str, [1]=qty int
+                switch(qtyCheckResults[0] )
+                {   // outside allowed range
+                    case "out":
+                        this.errorMessage = lang.groupCheckedRangeStart + qtyAllowed + lang.groupCheckedEnd;
+                        checkResult = false;
+                        break;
+                    // below min qty
+                    case "min":
+                        this.errorMessage = lang.groupCheckedTooFewStart + qtyCheckResults[1] + lang.groupCheckedEnd;
+                        checkResult = false;
+                        break;
+                    // above max qty
+                    case "max":
+                        this.errorMessage = lang.groupCheckedTooManyStart + qtyCheckResults[1] + lang.groupCheckedEnd;
+                        checkResult = false;
+                        break;
+                    // ok
+                    default:
+                        checkResult = true;
+                }
+
+                // add element name to global var so group won't be checked on subsequent calls
+                $.formUtils._checkboxGroups += elname + ', ';
+            }
+            
+        return checkResult;
+        
+        } // remove comma
+     //   errorMessage : '', // set above in switch statement
+     //   errorMessageKey: '' // not used
+    });
+    
 
 })(jQuery);

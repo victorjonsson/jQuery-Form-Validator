@@ -312,7 +312,7 @@
                     var $parent = $input.parent(),
                         $errorSpan = $parent.find('span[class='+config.errorMessageClass+']');
                     if ($errorSpan.length > 0) {
-                        $errorSpan.append(', '+$input.valAttr('current-error'));
+                        $errorSpan.text(', '+$input.valAttr('current-error'));
                     } else {
                         $parent.append('<span class="'+config.errorMessageClass+'">' + $input.valAttr('current-error') + '</span>');
                     }
@@ -697,6 +697,11 @@
                 var validator = $.formUtils.validators[rule];
 
                 if( validator && typeof validator['validatorFunction'] == 'function' ) {
+                    // special change of element for checkbox_group rule
+                    if ( rule == 'validate_checkbox_group' ) {
+                        // set element to first in group, so error msg is set only once
+                            $element = $("[name='"+$element.attr('name')+"']:eq(0)");
+                    }
 
                     var isValid = validator.validatorFunction(value, $element, config, language, $form);
 
@@ -836,25 +841,20 @@
         * @param $rangeAllowed str; (1-2, min1, max2)
         * @return array 
         */
-        numericRangeCheck : function($value, $rangeAllowed) 
+        numericRangeCheck : function(value, rangeAllowed) 
         {
            // split by dash
-           var range = $.split($rangeAllowed, '-');
+           var range = $.split(rangeAllowed, '-');
+           // min or max
+           var minmax = parseInt(rangeAllowed.substr(3),10)
            // range ?
-           if (range.length == 2 && ($value < parseInt(range[0],10) || $value > parseInt(range[1],10) ))
-               {   // value is out of range
-                   return [ "out", range[0], range[1] ] ;
-               }
-               else if ($rangeAllowed.indexOf('min') === 0) // min
-                   {    // check if above min
-                       var minQty = parseInt($rangeAllowed.substr(3),10);
-                       if($value < minQty) { return [ "min", minQty ] ; }
-                   }
-                   else if ($rangeAllowed.indexOf('max') === 0) // max
-                       {    var maxQty = parseInt($rangeAllowed.substr(3),10);
-                            if($value > maxQty) { return [ "max", maxQty ] ; }
-                       }
-           else { return "ok"} // value is in allowed range
+           if (range.length == 2 && (value < parseInt(range[0],10) || value > parseInt(range[1],10) ) )
+           {   return [ "out", range[0], range[1] ] ; } // value is out of range
+           else if (rangeAllowed.indexOf('min') === 0 && (value < minmax ) ) // min
+                {  return ["min", minmax]; } // value is below min
+                else if (rangeAllowed.indexOf('max') === 0 && (value > minmax ) ) // max
+                     {   return ["max", minmax]; } // value is above max
+           else { return [ "ok" ] ; } // value is in allowed range
         },
 
 
@@ -1394,56 +1394,43 @@
     *    data-validation-error-msg="chose min 1, max of 2 checkboxes"
     */
    
-    /* formUtils global var to hold string of checkboxes that were prev checked by validator, 
-    *  to prevent wasted duplication when multiple checkboxes have call to same validator 
-    */
-    $.formUtils._checkboxGroups = '';
-       
     $.formUtils.addValidator({
         name : 'checkbox_group',
-        validatorFunction : function(val, $el, config, lang, form) 
-        {   // set return var
+        validatorFunction : function(val, $el, config, lang, $form) 
+        {   // preset return var
             var checkResult = true;
             // get name of element. since it is a checkbox group, all checkboxes will have same name
             var elname = $el.attr('name');
-            // check if we have already checked this group
-            // global var "_checkboxGroups"
-            // if element name is not found in global var, then do the check
-            if ($.formUtils._checkboxGroups.indexOf(elname) == -1 )
-            {   // get count of checked checkboxes with this name
-                var checkedCount = $("input[type=checkbox][name^='"+elname+"']:checked", form).length;
-                // get el attr that specs qty required / allowed
-                var qtyAllowed = $el.valAttr('qty');
-                if (qtyAllowed == undefined) {
-                    var elementType = $el.get(0).nodeName;
-                    alert('Attribute "data-validation-qty" is missing from '+elementType+' named '+$el.attr('name'));
-                }
-                // call Utility function to check if count is above min, below max, within range etc.
-                var qtyCheckResults = $.formUtils.numericRangeCheck(checkedCount, qtyAllowed) ;
-                // results will be array, [0]=result str, [1]=qty int
-                switch(qtyCheckResults[0] )
-                {   // outside allowed range
-                    case "out":
-                        this.errorMessage = lang.groupCheckedRangeStart + qtyAllowed + lang.groupCheckedEnd;
-                        checkResult = false;
-                        break;
-                    // below min qty
-                    case "min":
-                        this.errorMessage = lang.groupCheckedTooFewStart + qtyCheckResults[1] + lang.groupCheckedEnd;
-                        checkResult = false;
-                        break;
-                    // above max qty
-                    case "max":
-                        this.errorMessage = lang.groupCheckedTooManyStart + qtyCheckResults[1] + lang.groupCheckedEnd;
-                        checkResult = false;
-                        break;
-                    // ok
-                    default:
-                        checkResult = true;
-                }
-
-                // add element name to global var so group won't be checked on subsequent calls
-                $.formUtils._checkboxGroups += elname + ', ';
+            // get count of checked checkboxes with this name
+            var checkedCount = $("input[type=checkbox][name^='"+elname+"']:checked", $form).length;
+            // get el attr that specs qty required / allowed
+            var qtyAllowed = $el.valAttr('qty');
+            if (qtyAllowed == undefined) {
+                var elementType = $el.get(0).nodeName;
+                alert('Attribute "data-validation-qty" is missing from '+elementType+' named '+$el.attr('name'));
+            }
+            // call Utility function to check if count is above min, below max, within range etc.
+            var qtyCheckResults = $.formUtils.numericRangeCheck(checkedCount, qtyAllowed) ;
+            // results will be array, [0]=result str, [1]=qty int
+            switch(qtyCheckResults[0] ) {   
+                // outside allowed range
+                case "out":
+                    this.errorMessage = lang.groupCheckedRangeStart + qtyAllowed + lang.groupCheckedEnd;
+                    checkResult = false;
+                    break;
+                // below min qty
+                case "min":
+                    this.errorMessage = lang.groupCheckedTooFewStart + qtyCheckResults[1] + lang.groupCheckedEnd;
+                    checkResult = false;
+                    break;
+                // above max qty
+                case "max":
+                    this.errorMessage = lang.groupCheckedTooManyStart + qtyCheckResults[1] + lang.groupCheckedEnd;
+                    checkResult = false;
+                    break;
+                // ok
+                default:
+                    checkResult = true;
             }
             
         return checkResult;

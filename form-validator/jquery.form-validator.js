@@ -12,22 +12,23 @@
     'use strict';
 
     /**
-    * Should be called on the element containing the input elements
+    * Assigns validateInputOnBlur function to elements blur event
     *
     * @param {Object} language Optional, will override $.formUtils.LANG
     * @param {Object} settings Optional, will override the default settings
     * @return {jQuery}
     */
     $.fn.validateOnBlur = function(language, settings) {
-        this.find('textarea,input').blur(function() {
-               $(this).doValidate(language, settings);
+        this.find('input[data-validation], textarea[data-validation]')
+            .blur(function() {
+               $(this).validateInputOnBlur(language, settings);
             });
-
         return this;
     };
 
     /**
-    * Should be called on the element containing the input elements.
+    * fade in help message when input gains focus
+    * fade out when input loses focus
     * <input data-help="The info that I want to display for the user when input is focused" ... />
     *
     * @param {String} attrName - Optional, default is data-help
@@ -71,16 +72,16 @@
     };
 
     /**
-    * Function that validates the value of given input and shows
-    * error message in a span element that is appended to the parent
-    * element
+    * Validate single input when it loses focus
+    * shows error message in a span element 
+    * that is appended to the parent element
     *
     * @param {Object} [language] Optional, will override $.formUtils.LANG
     * @param {Object} [config] Optional, will override the default settings
     * @param {Boolean} [attachKeyupEvent] Optional
     * @return {jQuery}
     */
-    $.fn.doValidate = function(language, config, attachKeyupEvent) {
+    $.fn.validateInputOnBlur = function(language, config, attachKeyupEvent) {
         if(attachKeyupEvent === undefined) {
             attachKeyupEvent = true;
         }
@@ -143,7 +144,7 @@
 
             if(attachKeyupEvent) {
                 $element.bind('keyup', function() {
-                    $(this).doValidate(language, config, false);
+                    $(this).validateInputOnBlur(language, config, false);
                 });
             }
         }
@@ -177,7 +178,7 @@
      * @param [language]
      * @param [config]
      */
-    $.fn.validate = function(language, config) {
+    $.fn.validateForm = function(language, config) {
 
         language = $.extend($.formUtils.LANG, language || {});
         config = $.extend($.formUtils.defaultConfig(), config || {});
@@ -311,7 +312,7 @@
                     var $parent = $input.parent(),
                         $errorSpan = $parent.find('span[class='+config.errorMessageClass+']');
                     if ($errorSpan.length > 0) {
-                        $errorSpan.append(', '+$input.valAttr('current-error'));
+                        $errorSpan.text(', '+$input.valAttr('current-error'));
                     } else {
                         $parent.append('<span class="'+config.errorMessageClass+'">' + $input.valAttr('current-error') + '</span>');
                     }
@@ -386,7 +387,7 @@
      * Short hand function that makes the validation setup require less code
      * @param config
      */
-    $.setupForm = function(config) {
+    $.validatorLoad = function(config) {
         config = $.extend({
             form : 'form',
             validateOnBlur : true,
@@ -410,7 +411,7 @@
                     }, 200);
                     return false;
                 }
-                var valid = $(this).validate(config.language, config);
+                var valid = $(this).validateForm(config.language, config);
                 if( valid && typeof config.onSuccess == 'function') {
                     var callbackResponse = config.onSuccess($form);
                     if( callbackResponse === false )
@@ -450,7 +451,7 @@
     $.formUtils = {
 
         /**
-         * Default config for $(...).validate();
+         * Default config for $(...).validateForm();
          */
         defaultConfig :  function() {
             return {
@@ -695,9 +696,14 @@
 
                 var validator = $.formUtils.validators[rule];
 
-                if( validator && typeof validator['validate'] == 'function' ) {
+                if( validator && typeof validator['validatorFunction'] == 'function' ) {
+                    // special change of element for checkbox_group rule
+                    if ( rule == 'validate_checkbox_group' ) {
+                        // set element to first in group, so error msg is set only once
+                            $element = $("[name='"+$element.attr('name')+"']:eq(0)");
+                    }
 
-                    var isValid = validator.validate(value, $element, config, language, $form);
+                    var isValid = validator.validatorFunction(value, $element, config, language, $form);
 
                     if(!isValid) {
                         validationErrorMsg =  $element.attr(config.validationErrorMsgAttribute);
@@ -827,6 +833,30 @@
            // count chars on pageload, if there are prefilled input-values
            $(document).bind("ready", countCharacters);
         },
+
+        /**
+        * Test numeric against allowed range
+        *
+        * @param $value int
+        * @param $rangeAllowed str; (1-2, min1, max2)
+        * @return array 
+        */
+        numericRangeCheck : function(value, rangeAllowed) 
+        {
+           // split by dash
+           var range = $.split(rangeAllowed, '-');
+           // min or max
+           var minmax = parseInt(rangeAllowed.substr(3),10)
+           // range ?
+           if (range.length == 2 && (value < parseInt(range[0],10) || value > parseInt(range[1],10) ) )
+           {   return [ "out", range[0], range[1] ] ; } // value is out of range
+           else if (rangeAllowed.indexOf('min') === 0 && (value < minmax ) ) // min
+                {  return ["min", minmax]; } // value is below min
+                else if (rangeAllowed.indexOf('max') === 0 && (value > minmax ) ) // max
+                     {   return ["max", minmax]; } // value is above max
+           else { return [ "ok" ] ; } // value is in allowed range
+        },
+
 
         _numSuggestionElements : 0,
         _selectedSuggestion : null,
@@ -1043,11 +1073,10 @@
             badTelephone : 'You have not given a correct phone number',
             badSecurityAnswer : 'You have not given a correct answer to the security question',
             badDate : 'You have not given a correct date',
-            tooLongStart : 'You have given an answer longer than ',
-            tooLongEnd : ' characters',
-            tooShortStart : 'You have given an answer shorter than ',
-            tooShortEnd : ' characters',
-            badLength : 'You have to give an answer between ',
+            lengthBadStart : 'You must give an answer between ',
+            lengthBadEnd : 'characters',
+            lengthTooLongStart : 'You have given an answer longer than ',
+            lengthTooShortStart : 'You have given an answer shorter than ',
             notConfirmed : 'Values could not be confirmed',
             badDomain : 'Incorrect domain value',
             badUrl : 'The answer you gave was not a correct URL',
@@ -1061,7 +1090,13 @@
             badAlphaNumeric : 'The answer you gave must contain only alphanumeric characters ',
             badAlphaNumericExtra: ' and ',
             wrongFileSize : 'The file you are trying to upload is too large',
-            wrongFileType : 'The file you are trying to upload is of wrong type'
+            wrongFileType : 'The file you are trying to upload is of wrong type',
+            groupCheckedRangeStart : 'Please choose between ',
+            groupCheckedTooFewStart : 'Please choose at least ',
+            groupCheckedTooManyStart : 'Please choose a maximum of ',           
+            groupCheckedEnd : ' item(s)',
+            
+            _dummy--last-item-placeholder-without-comma : 0
         }
     };
 
@@ -1076,12 +1111,12 @@
     */
     $.formUtils.addValidator({
         name : 'email',
-        validate : function(email) {
+        validatorFunction : function(email) {
             var emailFilter = /^([a-zA-Z0-9_\.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             if(emailFilter.test(email)) {
                var parts = email.split('@');
                if(parts.length == 2) {
-                   return $.formUtils.validators.validate_domain.validate(parts[1]);
+                   return $.formUtils.validators.validate_domain.validatorFunction(parts[1]);
                }
             }
             return false;
@@ -1095,7 +1130,7 @@
     */
     $.formUtils.addValidator({
         name : 'domain',
-        validate : function(val, $input) {
+        validatorFunction : function(val, $input) {
 
             var topDomains = ['.com', '.net', '.org', '.biz', '.coop', '.info', '.museum', '.name', '.pro',
                     '.edu', '.gov', '.int', '.mil', '.ac', '.ad', '.ae', '.af', '.ag', '.ai', '.al',
@@ -1186,7 +1221,7 @@
     */
     $.formUtils.addValidator({
         name : 'required',
-        validate : function(val, $el) {
+        validatorFunction : function(val, $el) {
             return $el.attr('type') == 'checkbox' ? $el.is(':checked') : $.trim(val) !== '';
         },
         errorMessage : '',
@@ -1198,39 +1233,39 @@
     */
     $.formUtils.addValidator({
         name : 'length',
-        validate : function(value, $el, config, language) {
-            var len = $el.valAttr('length');
-            if(len == undefined) {
+        validatorFunction : function(value, $el, config, lang) {
+            var lengthAllowed = $el.valAttr('length');
+            if(lengthAllowed == undefined) {
                 var elementType = $el.get(0).nodeName;
                 alert('Please add attribute "data-validation-length" to '+elementType+' named '+$el.attr('name'));
                 return true;
             }
 
-            var range = $.split(len, '-');
+            // check if length is above min, below max, within range etc.
+                var lengthCheckResults = $.formUtils.numericRangeCheck(value.length, lengthAllowed) ;
 
-            // range
-            if(range.length == 2 && (value.length < parseInt(range[0],10) || value.length > parseInt(range[1],10))) {
-                this.errorMessage = language.badLength + len + language.tooLongEnd;
-                return false;
-            }
-            // min
-            else if(len.indexOf('min') === 0) {
-                var minLength = parseInt(len.substr(3),10);
-                if(minLength > value.length) {
-                    this.errorMessage = language.tooShortStart + minLength + language.tooShortEnd;
-                    return false;
+                switch(lengthCheckResults[0] )
+                {   // outside of allowed range
+                    case "out":
+                        this.errorMessage = lang.lengthBadStart + len + lang.lengthBadEnd;
+                        checkResult = false;
+                        break;
+                    // too short
+                    case "min":
+                        this.errorMessage = lang.lengthTooShortStart + lengthCheckResults[1] + lang.lengthBadEnd;
+                        checkResult = false;
+                        break;
+                    // too long
+                    case "max":
+                        this.errorMessage = lang.lengthTooLongStart + lengthCheckResults[1] + lang.lengthBadEnd;
+                        checkResult = false;
+                        break;
+                    // ok
+                    default:
+                        checkResult = true;
                 }
-            }
-            // max
-            else if(len.indexOf('max') === 0) {
-                var maxLength = parseInt(len.substr(3),10);
-                if(maxLength < value.length) {
-                    this.errorMessage = language.tooLongStart + maxLength + language.tooLongEnd;
-                    return false;
-                }
-            }
-
-            return true;
+            
+            return checkResult;
         },
         errorMessage : '',
         errorMessageKey: ''
@@ -1241,7 +1276,7 @@
     */
     $.formUtils.addValidator({
         name : 'url',
-        validate : function(url) {
+        validatorFunction : function(url) {
             // written by Scott Gonzalez: http://projects.scottsplayground.com/iri/ but added support for arrays in the url ?arg[]=sdfsdf
             var urlFilter = /^(https|http|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|\[|\]|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
             if( urlFilter.test(url) ) {
@@ -1250,7 +1285,7 @@
                 if(domainSlashPos > -1)
                     domain = domain.substr(0, domainSlashPos);
 
-                return $.formUtils.validators.validate_domain.validate(domain); // todo: add support for IP-addresses
+                return $.formUtils.validators.validate_domain.validatorFunction(domain); // todo: add support for IP-addresses
             }
             return false;
         },
@@ -1263,7 +1298,7 @@
     */
     $.formUtils.addValidator({
         name : 'number',
-        validate : function(val, $el) {
+        validatorFunction : function(val, $el) {
             if(val !== '') {
                 var allowing = $el.valAttr('allowing') || '';
                 if(allowing.indexOf('number') == -1)
@@ -1291,7 +1326,7 @@
      */
     $.formUtils.addValidator({
         name : 'alphanumeric',
-        validate : function(val, $el, config, language) {
+        validatorFunction : function(val, $el, config, language) {
             var patternStart = '^([a-zA-Z0-9',
                 patternEnd = ']+)$',
                 additionalChars = $el.attr('data-validation-allowing'),
@@ -1321,7 +1356,7 @@
     */
     $.formUtils.addValidator({
         name : 'custom',
-        validate : function(val, $el, config) {
+        validatorFunction : function(val, $el, config) {
             var regexp = new RegExp($el.valAttr('regexp'));
             return regexp.test(val);
         },
@@ -1334,7 +1369,7 @@
     */
     $.formUtils.addValidator({
         name : 'date',
-        validate : function(date, $el, conf) {
+        validatorFunction : function(date, $el, conf) {
             var dateFormat = 'yyyy-mm-dd';
             if($el.valAttr('format')) {
                 dateFormat = $el.valAttr('format');
@@ -1348,5 +1383,62 @@
         errorMessage : '',
         errorMessageKey: 'badDate'
     });
+
+
+/*  
+    * Validate group of checkboxes, validate qty required is checked
+    * written by Steve Wasiura : http://stevewasiura.waztech.com
+    * element attrs
+    *    data-validation="checkbox_group"
+    *    data-validation-qty="1-2"  // min 1 max 2
+    *    data-validation-error-msg="chose min 1, max of 2 checkboxes"
+    */
+   
+    $.formUtils.addValidator({
+        name : 'checkbox_group',
+        validatorFunction : function(val, $el, config, lang, $form) 
+        {   // preset return var
+            var checkResult = true;
+            // get name of element. since it is a checkbox group, all checkboxes will have same name
+            var elname = $el.attr('name');
+            // get count of checked checkboxes with this name
+            var checkedCount = $("input[type=checkbox][name^='"+elname+"']:checked", $form).length;
+            // get el attr that specs qty required / allowed
+            var qtyAllowed = $el.valAttr('qty');
+            if (qtyAllowed == undefined) {
+                var elementType = $el.get(0).nodeName;
+                alert('Attribute "data-validation-qty" is missing from '+elementType+' named '+$el.attr('name'));
+            }
+            // call Utility function to check if count is above min, below max, within range etc.
+            var qtyCheckResults = $.formUtils.numericRangeCheck(checkedCount, qtyAllowed) ;
+            // results will be array, [0]=result str, [1]=qty int
+            switch(qtyCheckResults[0] ) {   
+                // outside allowed range
+                case "out":
+                    this.errorMessage = lang.groupCheckedRangeStart + qtyAllowed + lang.groupCheckedEnd;
+                    checkResult = false;
+                    break;
+                // below min qty
+                case "min":
+                    this.errorMessage = lang.groupCheckedTooFewStart + qtyCheckResults[1] + lang.groupCheckedEnd;
+                    checkResult = false;
+                    break;
+                // above max qty
+                case "max":
+                    this.errorMessage = lang.groupCheckedTooManyStart + qtyCheckResults[1] + lang.groupCheckedEnd;
+                    checkResult = false;
+                    break;
+                // ok
+                default:
+                    checkResult = true;
+            }
+            
+        return checkResult;
+        
+        } // remove comma
+     //   errorMessage : '', // set above in switch statement
+     //   errorMessageKey: '' // not used
+    });
+    
 
 })(jQuery);

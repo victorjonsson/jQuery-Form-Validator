@@ -13,7 +13,7 @@
  *
  * @website http://formvalidator.net/#swedish-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.12
+ * @version 2.0.14
  */
 (function($, window) {
 
@@ -177,7 +177,7 @@
             } else if (number.length != 11 && begin === '467') {
                 return false;
             }
-            return (/07[0-9{1}]/).test(begin) || (begin === '467' && number.substr(3, 1) === '0');
+            return (/07[0-9{1}]/).test(begin) || begin === '467';
         },
         errorMessage : '',
         errorMessageKey: 'badTelephone'

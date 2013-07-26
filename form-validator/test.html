@@ -6,7 +6,11 @@
     <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css">
     <style>
         .form-error {
-            color: darkred;
+            color: red;
+            display: block;
+        }
+        label {
+            margin-left: 5px;
         }
     </style>
 </head>
@@ -61,6 +65,35 @@
         Callback validation, set this value to &quot;1&quot; and
         validation will fail<br />
         <input id="callback" />
+    </p>
+    <p>
+        <strong>Checkbox group</strong><br />
+        <label>
+            <input type="checkbox" name="box" value="1"
+                    data-validation="checkbox_group"
+                    data-validation-qty="1-2" />
+            1
+        </label>
+        <label>
+            <input type="checkbox" name="box" value="2" />
+            2
+        </label>
+        <label>
+            <input type="checkbox" name="box" value="3" />
+            3
+        </label>
+        <label>
+            <input type="checkbox" name="box" value="4" />
+            4
+        </label>
+        <label>
+            <input type="checkbox" name="box" value="5" />
+            5
+        </label>
+        <label>
+            <input type="checkbox" name="box" value="6" />
+            6
+        </label>
     </p>
     <p>
         <input type="submit">
@@ -350,6 +383,31 @@
 
             $.each(links, function(i, obj) {
                 runTest(obj, 'time');
+            });
+        });
+
+
+        /*
+         * SWEDISH MOBILE VALIDATION
+         */
+        test("Swe mobile validation", function() {
+
+            clearForm();
+
+            var links = [
+                {val:'0702777118', isValid:true},
+                {val:'0722777118', isValid:true},
+                {val:'46702777118', isValid:true},
+                {val:'45702777118', isValid:false},
+                {val:'+46702777118', isValid:true},
+                {val:'+45702777118', isValid:false},
+                {val:'0732777118', isValid:true},
+                {val:'0302777118', isValid:false},
+                {val:'07027771', isValid:false}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'swemobile');
             });
         });
 

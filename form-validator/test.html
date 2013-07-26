@@ -502,7 +502,7 @@
     // Add a new validator
     $.formUtils.addValidator({
         name : 'even_number',
-        validate : function(value, $el, config, language, $form) {
+        validatorFunction : function(value, $el, config, language, $form) {
             return parseInt(value, 10) % 2 === 0;
         },
         errorMessage : 'You have to give an even number',

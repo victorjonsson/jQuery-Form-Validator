@@ -299,6 +299,10 @@ if **validateOnBlur** = true, jQ finds all form input elements with the data-val
 
 ## Changelog
 
+#### 2.1
+  * Code refactoring and some functions renamed
+  * Validator "checkbox_group" added
+
 #### 2.0.7
  * Now possible to validate file size, extension and mime type (using the file module)
 
@@ -320,8 +324,8 @@ if **validateOnBlur** = true, jQ finds all form input elements with the data-val
 [Victor Jonsson](https://github.com/victorjonsson)
 
 #### Contributors
-<a href="https://github.com/robamaton" target="_blank">Joel Sutherland</a><br />
 <a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a><br />
+<a href="https://github.com/robamaton" target="_blank">Joel Sutherland</a><br />
 <a href="https://github.com/mattclements" target="_blank">Matt Clements</a><br />
 <a href="https://github.com/dfcplc" target="_blank">@dfcplc</a><br />
 <a href="https://github.com/coffein" target="_blank">Andree Wendel</a><br />

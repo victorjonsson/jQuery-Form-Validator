@@ -9,11 +9,11 @@
  *
  * @website http://formvalidator.net/#uk-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.10
+ * @version 2.0.12
  */
 $.formUtils.addValidator({
     name : 'ukvatnumber',
-    validate : function(number) {
+    validatorFunction : function(number) {
 
         // Code Adapted from http://www.codingforums.com/showthread.php?t=211967
         // TODO: Extra Checking for other VAT Numbers (Other countries and UK Government/Health Authorities)

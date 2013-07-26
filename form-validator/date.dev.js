@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#location-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.0.10
+ * @version 2.0.12
  */
 (function($) {
 
@@ -19,7 +19,7 @@
      */
     $.formUtils.addValidator({
         name : 'time',
-        validate : function(time) {
+        validatorFunction : function(time) {
             if (time.match(/^(\d{2}):(\d{2})$/) === null) {
                 return false;
             } else {
@@ -40,7 +40,7 @@
      */
     $.formUtils.addValidator({
         name : 'birthdate',
-        validate : function(val, $el, conf) {
+        validatorFunction : function(val, $el, conf) {
             var dateFormat = 'yyyy-mm-dd';
             if($el.valAttr('format')) {
                 dateFormat = $el.valAttr('format');

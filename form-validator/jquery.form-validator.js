@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.0.10
+* @version 2.0.12
 */
 (function($) {
 
@@ -387,7 +387,7 @@
      * Short hand function that makes the validation setup require less code
      * @param config
      */
-    $.validatorLoad = function(config) {
+    $.setupForm = function(config) {
         config = $.extend({
             form : 'form',
             validateOnBlur : true,
@@ -1094,9 +1094,7 @@
             groupCheckedRangeStart : 'Please choose between ',
             groupCheckedTooFewStart : 'Please choose at least ',
             groupCheckedTooManyStart : 'Please choose a maximum of ',           
-            groupCheckedEnd : ' item(s)',
-            
-            _dummy--last-item-placeholder-without-comma : 0
+            groupCheckedEnd : ' item(s)'
         }
     };
 
@@ -1242,12 +1240,13 @@
             }
 
             // check if length is above min, below max, within range etc.
-                var lengthCheckResults = $.formUtils.numericRangeCheck(value.length, lengthAllowed) ;
+                var lengthCheckResults = $.formUtils.numericRangeCheck(value.length, lengthAllowed),
+                    checkResult;
 
                 switch(lengthCheckResults[0] )
                 {   // outside of allowed range
                     case "out":
-                        this.errorMessage = lang.lengthBadStart + len + lang.lengthBadEnd;
+                        this.errorMessage = lang.lengthBadStart + lengthAllowed + lang.lengthBadEnd;
                         checkResult = false;
                         break;
                     // too short
@@ -1385,7 +1384,7 @@
     });
 
 
-/*  
+    /*
     * Validate group of checkboxes, validate qty required is checked
     * written by Steve Wasiura : http://stevewasiura.waztech.com
     * element attrs
@@ -1393,7 +1392,6 @@
     *    data-validation-qty="1-2"  // min 1 max 2
     *    data-validation-error-msg="chose min 1, max of 2 checkboxes"
     */
-   
     $.formUtils.addValidator({
         name : 'checkbox_group',
         validatorFunction : function(val, $el, config, lang, $form) 
@@ -1439,6 +1437,5 @@
      //   errorMessage : '', // set above in switch statement
      //   errorMessageKey: '' // not used
     });
-    
 
 })(jQuery);

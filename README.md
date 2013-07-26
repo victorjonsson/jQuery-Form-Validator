@@ -32,7 +32,7 @@ particular form.
 <script src="js/form-validator/jquery.form-validator.min.js"></script>
 <script>
 /* important to locate this script AFTER the closing form element, so form object is loaded in DOM before setup is called */
-    $.setupForm({
+    $.validationSetup({
         modules : 'date, security'
     });
 </script>
@@ -48,7 +48,7 @@ So what has changed since version 1.x?
  * You no longer need to prefix the validation rules with "validate_".
  * Error message position now defaults to "element".
  * The optional features (validateOnBlur and showHelpOnFocus) is now enabled by default.
- * The function $.setupForm(config) is introduced to reduce the amount of code that has to be written when initiating the form validation.
+ * The function $.validationSetup(config) is introduced to reduce the amount of code that has to be written when initiating the form validation.
  * Demos and full documentation is now available at http://formvalidator.net/
 
 ### Default validators and features (no module needed)
@@ -144,7 +144,7 @@ that checks if the input contains an even number.
     });
 
     // Initiate form validation
-    $.setupForm();
+    $.validationSetup();
 
 </script>
 ```
@@ -251,9 +251,9 @@ var enErrorDialogs = {
     groupCheckedTooManyStart : 'Please choose a maximum of ', 
     groupCheckedRangeStart : 'Please choose between ',
     groupCheckedEnd : ' item(s)',
-            
+
     _dummy--last-item-no-comma : 0
-    
+
 };
 ```
 
@@ -265,14 +265,14 @@ var enErrorDialogs = {
 <script src="js/form-validator/jquery.form-validator.min.js"></script>
 <script src="js/form-validator/locale.en.js"></script>
 <script>
-  $.setupForm({
+  $.validationSetup({
     language : enErrorDialogs
   });
 </script>
 ...
 ```
 
-Inline error messages is also possible. If you add attribute `data-validation-error-msg` to an element the value of
+It's also possible to add inline error messages. If you add attribute `data-validation-error-msg` to an element the value of
 that attribute will be displayed instead of the error dialog that the validation function refers to.
 
 ## Input length restriction
@@ -287,14 +287,12 @@ that attribute will be displayed instead of the error dialog that the validation
 ```
 
 ## Program Flow
-form submit() event is bound to jQ func **validateForm()**
-
-when the form is submitted, it calls jQ func **$.formUtils.validateInput**, which calls **validatorFunction** for the specific validation rule assigned to the input element
-
-if a validation fails, error messages are assigned and displayed as configured.
-
-
-if **validateOnBlur** = true, jQ finds all form input elements with the data-validation attribute and binds their onBlur event to call the function **validateInputOnBlur**. it calls jQ func **$.formUtils.validateInput** to validate the single input when blurred
+Form submit() event is bound to jQ func **validateForm()** when the form is submitted, it calls
+jQ func **$.formUtils.validateInput**, which calls **validatorFunction** for the specific validation
+rule assigned to the input element. If a validation fails, error messages are assigned and displayed
+as configured. If **validateOnBlur** is set to true, jQ finds all form input elements with the
+data-validation attribute and binds their onBlur event to call the function **validateInputOnBlur**.
+it calls jQ func **$.formUtils.validateInput** to validate the single input when blurred.
 
 
 ## Changelog
@@ -314,7 +312,7 @@ if **validateOnBlur** = true, jQ finds all form input elements with the data-val
  * Length validation now looks at attribute data-validation-length (eg. min5, max200, 3-12).
  * The validation rule no longer needs to be prefixed with "validate_" (it's still possible to use the prefix but it's considered deprecated).
  * Some validation functions is moved to modules (see the function reference over at http://formvalidator.net).
- * Added function $.setupForm() to reduce the amount of code that has to be written when initiating the form validation.
+ * Added function $.validationSetup() to reduce the amount of code that has to be written when initiating the form validation.
 
 
 ## Credits
@@ -338,5 +336,5 @@ if **validateOnBlur** = true, jQ finds all form input elements with the data-val
 #### Additional credits
 
 <a href="http://projects.scottsplayground.com/iri/" target="_blank">Scott Gonzales</a> (URL regexp)<br />
-<a href="http://www.mypocket-technologies.com" target="_blank">Darren Mason</a> (Password strength meter)
+<a href="http://www.mypocket-technologies.com" target="_blank">Darren Mason</a> (Password strength meter)<br />
 <a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a> (Checkbox group)

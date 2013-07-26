@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.0.14
+* @version 2.1.0
 */
 (function($) {
 
@@ -387,7 +387,7 @@
      * Short hand function that makes the validation setup require less code
      * @param config
      */
-    $.setupForm = function(config) {
+    $.validationSetup = function(config) {
         config = $.extend({
             form : 'form',
             validateOnBlur : true,

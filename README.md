@@ -61,6 +61,7 @@ So what has changed since version 1.x?
  * **length** — *min/max/range*
  * **required** — *no validation except that a value has to be given*
  * **custom** — *Validate value against regexp*
+ * **checkboxgroup** — *ensure at least 1 checkbox in group has been selected*
  * Show help information automatically when input is focused
  * Validate given values immediately when input looses focus.
  * Make validation optional by adding attribute data-validation-optional="true" to the element. This means
@@ -135,7 +136,7 @@ that checks if the input contains an even number.
     // Add validator
     $.formUtils.addValidator({
         name : 'even',
-        validate : function(value, $el, config, language, $form) {
+        validatorFunction : function(value, $el, config, language, $form) {
             return parseInt(value, 10) % 2 === 0;
         },
         errorMessage : 'You have to answer an even number',
@@ -152,7 +153,7 @@ that checks if the input contains an even number.
 
 *name* - The name of the validator, which is used in the validation attribute of the input element.
 
-*validate* - Callback function that validates the input. Should return a boolean telling if the value is considered valid or not.
+*validatorFunction* - Callback function that validates the input. Should return a boolean telling if the value is considered valid or not.
 
 *errorMessageKey* - Name of language property that is used in case the value of the input is invalid.
 
@@ -228,11 +229,10 @@ var enErrorDialogs = {
     badTelephone : 'You have not given a correct phone number',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
-    tooLongStart : 'You have given an answer longer than ',
-    tooLongEnd : ' characters',
-    tooShortStart : 'You have given an answer shorter than ',
-    tooShortEnd : ' characters',
-    badLength : 'You have to give an answer between ',
+    lengthBadStart : 'You must give an answer between ',
+    lengthBadEnd : 'characters',
+    lengthTooLongStart : 'You have given an answer longer than ',
+    lengthTooShortStart : 'You have given an answer shorter than ',
     notConfirmed : 'Values could not be confirmed',
     badDomain : 'Incorrect domain value',
     badUrl : 'The answer you gave was not a correct URL',
@@ -246,7 +246,14 @@ var enErrorDialogs = {
     badAlphaNumeric : 'The answer you gave must contain only alphanumeric characters ',
     badAlphaNumericExtra: ' and ',
     wrongFileSize : 'The file you are trying to upload is too large',
-    wrongFileType : 'The file you are trying to upload is of wrong type'
+    wrongFileType : 'The file you are trying to upload is of wrong type',
+    groupCheckedTooFewStart : 'Please choose at least ',
+    groupCheckedTooManyStart : 'Please choose a maximum of ', 
+    groupCheckedRangeStart : 'Please choose between ',
+    groupCheckedEnd : ' item(s)',
+            
+    _dummy--last-item-no-comma : 0
+    
 };
 ```
 
@@ -279,6 +286,17 @@ that attribute will be displayed instead of the error dialog that the validation
 </script>
 ```
 
+## Program Flow
+form submit() event is bound to jQ func **validateForm()**
+
+when the form is submitted, it calls jQ func **$.formUtils.validateInput**, which calls **validatorFunction** for the specific validation rule assigned to the input element
+
+if a validation fails, error messages are assigned and displayed as configured.
+
+
+if **validateOnBlur** = true, jQ finds all form input elements with the data-validation attribute and binds their onBlur event to call the function **validateInputOnBlur**. it calls jQ func **$.formUtils.validateInput** to validate the single input when blurred
+
+
 ## Changelog
 
 #### 2.0.7
@@ -303,7 +321,7 @@ that attribute will be displayed instead of the error dialog that the validation
 
 #### Contributors
 <a href="https://github.com/robamaton" target="_blank">Joel Sutherland</a><br />
-<a href="https://github.com/stevewasiura" target="_blank">Steve Wasiura</a><br />
+<a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a><br />
 <a href="https://github.com/mattclements" target="_blank">Matt Clements</a><br />
 <a href="https://github.com/dfcplc" target="_blank">@dfcplc</a><br />
 <a href="https://github.com/coffein" target="_blank">Andree Wendel</a><br />
@@ -317,3 +335,4 @@ that attribute will be displayed instead of the error dialog that the validation
 
 <a href="http://projects.scottsplayground.com/iri/" target="_blank">Scott Gonzales</a> (URL regexp)<br />
 <a href="http://www.mypocket-technologies.com" target="_blank">Darren Mason</a> (Password strength meter)
+<a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a> (Checkbox group)

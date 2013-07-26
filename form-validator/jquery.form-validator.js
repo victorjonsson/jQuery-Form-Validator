@@ -12,22 +12,23 @@
     'use strict';
 
     /**
-    * Should be called on the element containing the input elements
+    * Assigns validateInputOnBlur function to elements blur event
     *
     * @param {Object} language Optional, will override $.formUtils.LANG
     * @param {Object} settings Optional, will override the default settings
     * @return {jQuery}
     */
     $.fn.validateOnBlur = function(language, settings) {
-        this.find('textarea,input').blur(function() {
-               $(this).doValidate(language, settings);
+        this.find('input[data-validation], textarea[data-validation]')
+            .blur(function() {
+               $(this).validateInputOnBlur(language, settings);
             });
-
         return this;
     };
 
     /**
-    * Should be called on the element containing the input elements.
+    * fade in help message when input gains focus
+    * fade out when input loses focus
     * <input data-help="The info that I want to display for the user when input is focused" ... />
     *
     * @param {String} attrName - Optional, default is data-help
@@ -71,16 +72,16 @@
     };
 
     /**
-    * Function that validates the value of given input and shows
-    * error message in a span element that is appended to the parent
-    * element
+    * Validate single input when it loses focus
+    * shows error message in a span element 
+    * that is appended to the parent element
     *
     * @param {Object} [language] Optional, will override $.formUtils.LANG
     * @param {Object} [config] Optional, will override the default settings
     * @param {Boolean} [attachKeyupEvent] Optional
     * @return {jQuery}
     */
-    $.fn.doValidate = function(language, config, attachKeyupEvent) {
+    $.fn.validateInputOnBlur = function(language, config, attachKeyupEvent) {
         if(attachKeyupEvent === undefined) {
             attachKeyupEvent = true;
         }
@@ -143,7 +144,7 @@
 
             if(attachKeyupEvent) {
                 $element.bind('keyup', function() {
-                    $(this).doValidate(language, config, false);
+                    $(this).validateInputOnBlur(language, config, false);
                 });
             }
         }
@@ -177,7 +178,7 @@
      * @param [language]
      * @param [config]
      */
-    $.fn.validate = function(language, config) {
+    $.fn.validateForm = function(language, config) {
 
         language = $.extend($.formUtils.LANG, language || {});
         config = $.extend($.formUtils.defaultConfig(), config || {});
@@ -410,7 +411,7 @@
                     }, 200);
                     return false;
                 }
-                var valid = $(this).validate(config.language, config);
+                var valid = $(this).validateForm(config.language, config);
                 if( valid && typeof config.onSuccess == 'function') {
                     var callbackResponse = config.onSuccess($form);
                     if( callbackResponse === false )
@@ -450,7 +451,7 @@
     $.formUtils = {
 
         /**
-         * Default config for $(...).validate();
+         * Default config for $(...).validateForm();
          */
         defaultConfig :  function() {
             return {
@@ -695,9 +696,9 @@
 
                 var validator = $.formUtils.validators[rule];
 
-                if( validator && typeof validator['validate'] == 'function' ) {
+                if( validator && typeof validator['validatorFunction'] == 'function' ) {
 
-                    var isValid = validator.validate(value, $element, config, language, $form);
+                    var isValid = validator.validatorFunction(value, $element, config, language, $form);
 
                     if(!isValid) {
                         validationErrorMsg =  $element.attr(config.validationErrorMsgAttribute);
@@ -1110,12 +1111,12 @@
     */
     $.formUtils.addValidator({
         name : 'email',
-        validate : function(email) {
+        validatorFunction : function(email) {
             var emailFilter = /^([a-zA-Z0-9_\.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             if(emailFilter.test(email)) {
                var parts = email.split('@');
                if(parts.length == 2) {
-                   return $.formUtils.validators.validate_domain.validate(parts[1]);
+                   return $.formUtils.validators.validate_domain.validatorFunction(parts[1]);
                }
             }
             return false;
@@ -1129,7 +1130,7 @@
     */
     $.formUtils.addValidator({
         name : 'domain',
-        validate : function(val, $input) {
+        validatorFunction : function(val, $input) {
 
             var topDomains = ['.com', '.net', '.org', '.biz', '.coop', '.info', '.museum', '.name', '.pro',
                     '.edu', '.gov', '.int', '.mil', '.ac', '.ad', '.ae', '.af', '.ag', '.ai', '.al',
@@ -1220,7 +1221,7 @@
     */
     $.formUtils.addValidator({
         name : 'required',
-        validate : function(val, $el) {
+        validatorFunction : function(val, $el) {
             return $el.attr('type') == 'checkbox' ? $el.is(':checked') : $.trim(val) !== '';
         },
         errorMessage : '',
@@ -1232,7 +1233,7 @@
     */
     $.formUtils.addValidator({
         name : 'length',
-        validate : function(value, $el, config, lang) {
+        validatorFunction : function(value, $el, config, lang) {
             var lengthAllowed = $el.valAttr('length');
             if(lengthAllowed == undefined) {
                 var elementType = $el.get(0).nodeName;
@@ -1275,7 +1276,7 @@
     */
     $.formUtils.addValidator({
         name : 'url',
-        validate : function(url) {
+        validatorFunction : function(url) {
             // written by Scott Gonzalez: http://projects.scottsplayground.com/iri/ but added support for arrays in the url ?arg[]=sdfsdf
             var urlFilter = /^(https|http|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|\[|\]|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
             if( urlFilter.test(url) ) {
@@ -1284,7 +1285,7 @@
                 if(domainSlashPos > -1)
                     domain = domain.substr(0, domainSlashPos);
 
-                return $.formUtils.validators.validate_domain.validate(domain); // todo: add support for IP-addresses
+                return $.formUtils.validators.validate_domain.validatorFunction(domain); // todo: add support for IP-addresses
             }
             return false;
         },
@@ -1297,7 +1298,7 @@
     */
     $.formUtils.addValidator({
         name : 'number',
-        validate : function(val, $el) {
+        validatorFunction : function(val, $el) {
             if(val !== '') {
                 var allowing = $el.valAttr('allowing') || '';
                 if(allowing.indexOf('number') == -1)
@@ -1325,7 +1326,7 @@
      */
     $.formUtils.addValidator({
         name : 'alphanumeric',
-        validate : function(val, $el, config, language) {
+        validatorFunction : function(val, $el, config, language) {
             var patternStart = '^([a-zA-Z0-9',
                 patternEnd = ']+)$',
                 additionalChars = $el.attr('data-validation-allowing'),
@@ -1355,7 +1356,7 @@
     */
     $.formUtils.addValidator({
         name : 'custom',
-        validate : function(val, $el, config) {
+        validatorFunction : function(val, $el, config) {
             var regexp = new RegExp($el.valAttr('regexp'));
             return regexp.test(val);
         },
@@ -1368,7 +1369,7 @@
     */
     $.formUtils.addValidator({
         name : 'date',
-        validate : function(date, $el, conf) {
+        validatorFunction : function(date, $el, conf) {
             var dateFormat = 'yyyy-mm-dd';
             if($el.valAttr('format')) {
                 dateFormat = $el.valAttr('format');
@@ -1400,7 +1401,7 @@
        
     $.formUtils.addValidator({
         name : 'checkbox_group',
-        validate : function(val, $el, config, lang, form) 
+        validatorFunction : function(val, $el, config, lang, form) 
         {   // set return var
             var checkResult = true;
             // get name of element. since it is a checkbox group, all checkboxes will have same name

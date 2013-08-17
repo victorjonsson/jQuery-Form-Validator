@@ -12,7 +12,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.0
+ * @version 2.1.5
  */
 (function($) {
 
@@ -235,77 +235,96 @@
         }
     });
 
+    var requestServer = function(serverURL, $element, val, conf, callback) {
+        $.ajax({
+            url : serverURL,
+            type : 'POST',
+            cache : false,
+            data : $element.attr('name')+'='+val,
+            dataType : 'json',
+            success : function(response) {
+
+                if(response.valid) {
+                    $element.valAttr('backend-valid', 'true');
+                }
+                else {
+                    $element.valAttr('backend-invalid', 'true');
+                    if(response.message)
+                        $element.attr(conf.validationErrorMsgAttribute, response.message);
+                    else
+                        $element.removeAttr(conf.validationErrorMsgAttribute);
+                }
+
+                if( !$element.valAttr('has-keyup-event') ) {
+                    $element
+                        .valAttr('has-keyup-event', '1')
+                        .bind('keyup', function() {
+                            $(this)
+                                .valAttr('backend-valid', false)
+                                .valAttr('backend-invalid', false)
+                                .removeAttr(conf.validationErrorMsgAttribute);
+                        });
+                }
+
+                callback();
+            }
+        });
+    },
+    disableFormSubmit = function() {
+        return false;
+    };
+
+    /*
+     * Server validation
+     */
     $.formUtils.addValidator({
-        oldKeyupEvent : false,
-        oldSubmitEvent : false,
         name : 'server',
         validatorFunction : function(val, $el, conf, lang, $form) {
 
             var backendValid = $el.valAttr('backend-valid'),
                 backendInvalid = $el.valAttr('backend-invalid'),
-                self = this;
+                serverURL = document.location.href;
+
+            if($el.valAttr('url')) {
+                serverURL = $el.valAttr('url');
+            } else if('serverURL' in conf) {
+                serverURL = conf.backendUrl;
+            }
 
             if(backendValid)
                 return true;
             else if(backendInvalid)
                 return false;
 
+            if($.formUtils.isValidatingEntireForm) {
+                $form
+                    .bind('submit', disableFormSubmit)
+                    .addClass('validating-server-side')
+                    .addClass('on-blur');
 
-            $form
-                .bind('submit', function() {return false;})
-                .addClass('validating-server-side');
-
-            var backendUrl = document.location.href;
-
-            if($el.valAttr('url')) {
-                backendUrl = $el.valAttr('url');
-            } else if('backendUrl' in conf) {
-                backendUrl = conf.backendUrl;
-            }
-
-            $.ajax({
-                url : backendUrl,
-                type : 'POST',
-                cache : false,
-                data : $el.attr('name')+'='+val,
-                dataType : 'json',
-                success : function(response) {
-
-                    if(response.valid) {
-                        $el.valAttr('backend-valid', 'true');
-                    }
-                    else {
-                        $el.valAttr('backend-invalid', 'true');
-                        if(response.message)
-                            $el.attr(conf.validationErrorMsgAttribute, response.message);
-                        else
-                            $el.removeAttr(conf.validationErrorMsgAttribute);
-                    }
-
+                requestServer(serverURL, $el, val, conf, function() {
                     $form
-                        .removeClass('validating-backend')
+                        .removeClass('validating-server-side')
+                        .removeClass('on-blur')
                         .get(0).onsubmit = function() {};
 
-                    $el
-                        .bind('keyup', function() {
-                            $(this)
-                                .valAttr('backend-valid', false)
-                                .valAttr('backend-invalid', false)
-                                .removeAttr(conf.validationErrorMsgAttribute);
-
-                            if(self.oldKeyupEvent == 'function')
-                                self.oldKeyupEvent();
-                        });
-
-                    $form.unbind('submit', function() {return false;});
+                    $form.unbind('submit', disableFormSubmit);
 
                     // fire submission again!
                     $form.trigger('submit');
-                }
-            });
+                });
 
-            $.formUtils.haltValidation = true;
-            return false;
+                $.formUtils.haltValidation = true;
+                return false;
+
+            } else {
+                $form.addClass('validating-server-side');
+                requestServer(serverURL, $el, val, conf, function() {
+                    $form.removeClass('validating-server-side');
+                    $el.trigger('blur');
+                });
+                return true;
+            }
         },
         errorMessage : '',
         errorMessageKey: 'badBackend'

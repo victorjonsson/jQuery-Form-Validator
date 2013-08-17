@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.0
+* @version 2.1.5
 */
 (function($) {
 
@@ -50,7 +50,7 @@
                         if($help.length == 0) {
                             $help = $('<span />')
                                         .addClass(className)
-                                        .addClass('form-help') // for css
+                                        .addClass('help-block') // twitter bs
                                         .text(help)
                                         .hide();
 
@@ -86,12 +86,12 @@
             attachKeyupEvent = true;
         }
 
-        language = $.extend(language || {}, $.formUtils.LANG);
+        language = $.extend($.formUtils.LANG, language || {});
         config = $.extend($.formUtils.defaultConfig(), config || {});
         config.errorMessagePosition = 'element';
 
         // Capture default error message
-        $.formUtils.figureOutDefaultBorderColor(this);
+        //$.formUtils.figureOutDefaultBorderColor(this);
 
         var $element = this,
 
@@ -102,8 +102,8 @@
 
             validationRule = $element.attr(config.validationRuleAttribute);
 
-        if( validationRule == 'server' ) {
-            // not possible to validate on the fly
+        if( !attachKeyupEvent && validationRule == 'server' ) {
+            // do not validate server side on keyup event
             return this;
         }
 
@@ -113,29 +113,40 @@
             .parent()
             .find('.'+config.errorMessageClass).remove();
 
+        // Twitter bs
+        $form.find('.has-error').removeClass('has-error');
+
         // if element has custom err msg container, clear it
         if( elementErrMsgObj != null) {
             elementErrMsgObj.innerHTML = '';
         }
 
-        if(config.borderColorOnError !== '') {
-            $element.css('border-color', $.formUtils.defaultBorderColor);
-        }
+        //if(config.borderColorOnError !== '') {
+          //  $element.css('border-color', $.formUtils.defaultBorderColor);
+        //}
 
         var validation = $.formUtils.validateInput($element, language, config, $form);
 
         if(validation === true) {
-            $element.addClass('valid');
+            $element
+                .addClass('valid')
+                .parent()
+                    .addClass('has-success'); // twitter bs
         } else {
             $element
                 .addClass(config.errorElementClass)
-                .removeClass('valid');
+                .removeClass('valid')
+                .parent()
+                    .addClass('has-error')
+                    .removeClass('has-success'); // twitter bs
 
             // if element has custom err msg container, use it
             if( elementErrMsgObj != null) {
                 elementErrMsgObj.innerHTML = validation;
             } else { // use regular span append
-                $element.parent().append('<span class="'+config.errorMessageClass+'">'+validation+'</span>');
+                var $parent = $element.parent();
+                $parent.append('<span class="'+config.errorMessageClass+' help-block">'+validation+'</span>');
+                $parent.addClass('has-error'); // twitter bs
             }
 
             if(config.borderColorOnError !== '') {
@@ -183,6 +194,9 @@
         language = $.extend($.formUtils.LANG, language || {});
         config = $.extend($.formUtils.defaultConfig(), config || {});
 
+        $.formUtils.isValidatingEntireForm = true;
+        $.formUtils.haltValidation = false;
+
         /**
          * Adds message to error message stack if not already in the message stack
          *
@@ -196,7 +210,9 @@
             errorInputs.push($element);
             $element
                 .valAttr('current-error', mess)
-                .removeClass('valid');
+                .removeClass('valid')
+                .parent()
+                    .removeClass('has-success');
         },
 
         /** Error messages for this validation */
@@ -225,14 +241,13 @@
         //
         // Validate element values
         //
-        $.formUtils.haltValidation = false;
-        $form.find('input,textarea,select').each(function() {
+        $form.find('input,textarea,select').filter(':not([type="submit"],[type="button"])').each(function() {
             var $element = $(this);
             var elementType = $element.attr('type');
             if (!ignoreInput($element.attr('name'), elementType)) {
 
                 // memorize border color
-                $.formUtils.figureOutDefaultBorderColor($element);
+               // $.formUtils.figureOutDefaultBorderColor($element);
 
                 var validation = $.formUtils.validateInput(
                                 $element,
@@ -246,7 +261,9 @@
                 } else {
                     $element
                         .valAttr('current-error', false)
-                        .addClass('valid');
+                        .addClass('valid')
+                        .parent()
+                            .addClass('has-success');
                 }
             }
 
@@ -255,13 +272,14 @@
         //
         // Reset style and remove error class
         //
-        var borderStyleProp = $.formUtils.defaultBorderColor===null ||
-            ($.formUtils.defaultBorderColor.indexOf(' ') > -1 && $.formUtils.defaultBorderColor.indexOf('rgb') == -1)
-            ? 'border':'border-color';
+        //var borderStyleProp = $.formUtils.defaultBorderColor===null ||
+          //  ($.formUtils.defaultBorderColor.indexOf(' ') > -1 && $.formUtils.defaultBorderColor.indexOf('rgb') == -1)
+           // ? 'border':'border-color';
 
         $form.find('input,textarea,select')
-            .css(borderStyleProp, $.formUtils.defaultBorderColor)
+            //.css(borderStyleProp, $.formUtils.defaultBorderColor)
             .removeClass(config.errorElementClass);
+        $form.find('.has-error').removeClass('has-error');
 
         //
         // Remove possible error messages from last validation
@@ -284,12 +302,18 @@
         //
         if (!$.formUtils.haltValidation && errorInputs.length > 0) {
 
+            // Reset form validation flag
+            $.formUtils.isValidatingEntireForm = false;
+
             // Apply error style to invalid inputs
             $.each(errorInputs, function(i, $input) {
                 if (config.borderColorOnError !== '') {
                     $input.css('border-color', config.borderColorOnError);
                 }
-                $input.addClass(config.errorElementClass);
+                $input
+                    .addClass(config.errorElementClass)
+                    .parent()
+                        .addClass('has-error');
             });
 
             // display all error messages in top of form
@@ -300,7 +324,7 @@
                 });
 
                 // using div instead of P gives better control of css display properties
-                $form.children().eq(0).before('<div class="' + config.errorMessageClass + '">' + messages + '</div>');
+                $form.children().eq(0).before('<div class="' + config.errorMessageClass + ' alert alert-danger">' + messages + '</div>');
                 if(config.scrollToTopOnError) {
                     $(window).scrollTop($form.offset().top - 20);
                 }
@@ -314,12 +338,15 @@
                     if ($errorSpan.length > 0) {
                         $errorSpan.text(', '+$input.valAttr('current-error'));
                     } else {
-                        $parent.append('<span class="'+config.errorMessageClass+'">' + $input.valAttr('current-error') + '</span>');
+                        $parent.append('<span class="'+config.errorMessageClass+' help-block">' + $input.valAttr('current-error') + '</span>');
                     }
                 });
             }
             return false;
         }
+
+        // Reset form validation flag
+        $.formUtils.isValidatingEntireForm = false;
 
         return !$.formUtils.haltValidation;
     };
@@ -499,6 +526,12 @@
          * not be sent
          */
         haltValidation : false,
+
+        /**
+         * This variable will be true $.fn.validateForm() is called
+         * and false when $.fn.validateOnBlur is called
+         */
+        isValidatingEntireForm : false,
 
         /**
         * Function for adding a validator
@@ -980,7 +1013,8 @@
                                 .css({
                                     overflow: 'hidden',
                                     textOverflow : 'ellipsis',
-                                    whiteSpace : 'nowrap'
+                                    whiteSpace : 'nowrap',
+                                    padding: '5px'
                                 })
                                 .addClass('form-suggest-element')
                                 .appendTo($suggestionContainer)

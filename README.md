@@ -250,10 +250,7 @@ var enErrorDialogs = {
     groupCheckedTooFewStart : 'Please choose at least ',
     groupCheckedTooManyStart : 'Please choose a maximum of ', 
     groupCheckedRangeStart : 'Please choose between ',
-    groupCheckedEnd : ' item(s)',
-
-    _dummy--last-item-no-comma : 0
-
+    groupCheckedEnd : ' item(s)'
 };
 ```
 
@@ -297,9 +294,14 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
+#### 2.1.5
+ * Fixed language bug (issue #43 on github)
+ * Validation on server side is now triggered by the blur event
+ * Now using class names that's compliant with twitter bootstrap 3.x
+
 #### 2.1
-  * Code refactoring and some functions renamed
-  * Validator "checkbox_group" added
+ * Code refactoring and some functions renamed
+ * Validator "checkbox_group" added
 
 #### 2.0.7
  * Now possible to validate file size, extension and mime type (using the file module)

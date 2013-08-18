@@ -294,6 +294,9 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
+#### 2.1.6
+ * Modules can now be loaded from remote website
+
 #### 2.1.5
  * Fixed language bug (issue #43 on github)
  * Validation on server side is now triggered by the blur event

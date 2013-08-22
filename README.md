@@ -32,7 +32,7 @@ particular form.
 <script src="js/form-validator/jquery.form-validator.min.js"></script>
 <script>
 /* important to locate this script AFTER the closing form element, so form object is loaded in DOM before setup is called */
-    $.validationSetup({
+    $.validate({
         modules : 'date, security'
     });
 </script>
@@ -48,7 +48,7 @@ So what has changed since version 1.x?
  * You no longer need to prefix the validation rules with "validate_".
  * Error message position now defaults to "element".
  * The optional features (validateOnBlur and showHelpOnFocus) is now enabled by default.
- * The function $.validationSetup(config) is introduced to reduce the amount of code that has to be written when initiating the form validation.
+ * The function $.validate(config) is introduced to reduce the amount of code that has to be written when initiating the form validation.
  * Demos and full documentation is now available at http://formvalidator.net/
 
 ### Default validators and features (no module needed)
@@ -144,7 +144,7 @@ that checks if the input contains an even number.
     });
 
     // Initiate form validation
-    $.validationSetup();
+    $.validate();
 
 </script>
 ```
@@ -262,7 +262,7 @@ var enErrorDialogs = {
 <script src="js/form-validator/jquery.form-validator.min.js"></script>
 <script src="js/form-validator/locale.en.js"></script>
 <script>
-  $.validationSetup({
+  $.validate({
     language : enErrorDialogs
   });
 </script>
@@ -293,6 +293,13 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 
 ## Changelog
+
+#### 2.1.8
+ * Now possible to configure the decimal separator when validating float values. Use either the
+ attribute *data-validation-decimal-separator* or the property *decimalSeparator* when
+calling $.validate()
+ * $.validationSetup is renamed to $.validate. You will still be able to initiate the validation by calling
+ the $.validationSetup but it's considered deprecated.
 
 #### 2.1.6
  * Modules can now be loaded from remote website

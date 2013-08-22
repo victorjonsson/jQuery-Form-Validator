@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.6
+* @version 2.1.8
 */
 (function($) {
 
@@ -401,7 +401,7 @@
      * Short hand function that makes the validation setup require less code
      * @param config
      */
-    $.validationSetup = function(config) {
+    $.validate = function(config) {
         config = $.extend({
             form : 'form',
             validateOnBlur : true,
@@ -460,6 +460,17 @@
     };
 
     /**
+     * @deprecated
+     * @param {Object} config
+     */
+    $.validationSetup = function(config) {
+        if( typeof console != 'undefined' && console.warn ) {
+            window.console.warn('Using deprecated function $.validationSetup, pls use $.validate instead');
+        }
+        $.validate(config);
+    };
+
+    /**
      * Object containing utility methods for this plugin
      */
     $.formUtils = {
@@ -477,7 +488,8 @@
                 validationErrorMsgAttribute : 'data-validation-error-msg', // define custom err msg inline with element
                 errorMessagePosition : 'element', // Can be either "top" or "element"
                 scrollToTopOnError : true,
-                dateFormat : 'yyyy-mm-dd'
+                dateFormat : 'yyyy-mm-dd',
+                decimalSeparator : '.'
             }
         },
 
@@ -1303,9 +1315,11 @@
     */
     $.formUtils.addValidator({
         name : 'number',
-        validatorFunction : function(val, $el) {
+        validatorFunction : function(val, $el, config) {
             if(val !== '') {
-                var allowing = $el.valAttr('allowing') || '';
+                var allowing = $el.valAttr('allowing') || '',
+                    decimalSeparator = $el.valAttr('decimal-separator') || config.decimalSeparator;
+
                 if(allowing.indexOf('number') == -1)
                     allowing += ',number';
 
@@ -1316,7 +1330,7 @@
                 if(allowing.indexOf('number') > -1 && val.replace(/[0-9]/g, '') === '') {
                     return true;
                 }
-                if(allowing.indexOf('float') > -1 && val.match(/^([0-9]+)\.([0-9]+)$/) !== null) {
+                if(allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9]+)\\'+decimalSeparator+'([0-9]+)$')) !== null) {
                     return true;
                 }
             }

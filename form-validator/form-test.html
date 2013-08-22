@@ -141,7 +141,7 @@
 
     var dev = window.location.hash.indexOf('dev') > -1 ? '.dev' : '';
 
-    $.validationSetup({
+    $.validate({
         language : {
             requiredFields: 'Du måste bocka för denna'
         },
@@ -173,7 +173,7 @@
         }
     });
 
-    // Load one module outside $.validationSetup() even though you do not have to
+    // Load one module outside $.validate() even though you do not have to
     $.formUtils.loadModules('date'+dev+'.js', false, false);
 
     // Add a new validator

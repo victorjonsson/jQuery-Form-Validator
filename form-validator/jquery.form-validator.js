@@ -126,7 +126,7 @@
                 .addClass('valid')
                 .parent()
                     .addClass('has-success'); // twitter bs
-        } else {
+        } else if(validation === false) {
             $element
                 .addClass(config.errorElementClass)
                 .removeClass('valid')
@@ -152,6 +152,12 @@
                     $(this).validateInputOnBlur(language, config, false);
                 });
             }
+        } else {
+            $element
+                .removeClass('valid')
+                .parent()
+                    .removeClass('has-error')
+                    .removeClass('has-success');
         }
 
         return this;

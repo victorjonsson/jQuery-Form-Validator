@@ -126,6 +126,12 @@
                 .addClass('valid')
                 .parent()
                     .addClass('has-success'); // twitter bs
+        } else if(validation === null) {
+            $element
+                .removeClass('valid')
+                .parent()
+                    .removeClass('has-error')
+                    .removeClass('has-success');
         } else {
             $element
                 .addClass(config.errorElementClass)
@@ -698,7 +704,7 @@
             // if empty AND optional attribute is present
             // OR depending on a checkbox being checked AND checkbox is checked, return true
             if ((!value && optional === 'true') || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
-                return true;
+                return null;
             }
 
             var validationRules = $element.attr(config.validationRuleAttribute),

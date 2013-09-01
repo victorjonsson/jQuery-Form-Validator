@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.8
+ * @version 2.1.9
  */
 (function($, window) {
 
@@ -68,9 +68,19 @@
      */
     $.formUtils.addValidator({
         name : 'extension',
-        validatorFunction : function(val, $input) {
-            var ext = val.substr( val.lastIndexOf('.')+1 );
-            return $.inArray(ext.toLowerCase(), _getTypes($input)) > -1;
+        validatorFunction : function(value, $input) {
+            var valid = true,
+                types = _getTypes($input);
+
+            $.each($input.get(0).files || [], function(i, file) {
+                var val = file.value,
+                    ext = val.substr( val.lastIndexOf('.')+1 );
+                if( $.inArray(ext.toLowerCase(), types) == -1 ) {
+                    valid = false;
+                    return false;
+                }
+            });
+            return valid;
         },
         errorMessage : 'The file you are trying to upload is of wrong type',
         errorMessageKey: 'wrongFileType'

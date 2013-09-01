@@ -294,6 +294,11 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
+### 2.1.9
+ * File validation now support multiple files
+ * Length validation can now be used to validate the number of uploaded files using a file input that supports multiple files
+ * Validation classes is no longer applied on inputs that for some reason shouldn't become validated
+
 #### 2.1.8
  * Now possible to configure the decimal separator when validating float values. Use either the
  attribute *data-validation-decimal-separator* or the property *decimalSeparator* when
@@ -337,6 +342,7 @@ calling $.validate()
 <a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a><br />
 <a href="https://github.com/robamaton" target="_blank">Joel Sutherland</a><br />
 <a href="https://github.com/mattclements" target="_blank">Matt Clements</a><br />
+<a href="http://www.joshtoft.com/" target="_blank">Josh Toft</a><br/>
 <a href="https://github.com/dfcplc" target="_blank">@dfcplc</a><br />
 <a href="https://github.com/coffein" target="_blank">Andree Wendel</a><br />
 <a href="http://www.huotmedia.com" target="_blank">Nicholas Huot</a><br />

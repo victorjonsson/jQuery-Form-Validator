@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.8
+* @version 2.1.9
 */
 (function($) {
 
@@ -109,7 +109,7 @@
             .removeClass(config.errorElementClass)
             .css('border-color', '')
             .parent()
-            .find('.'+config.errorMessageClass).remove();
+                .find('.'+config.errorMessageClass).remove();
 
         // Twitter bs
         $form.find('.has-error').removeClass('has-error');
@@ -204,15 +204,18 @@
          * @para {jQuery} $element
          */
         var addErrorMessage = function(mess, $element) {
-            if ($.inArray(mess, errorMessages) < 0) {
-                errorMessages.push(mess);
-            }
-            errorInputs.push($element);
-            $element
-                .valAttr('current-error', mess)
-                .removeClass('valid')
-                .parent()
+            // validate server side will return null as error message before the server is requested
+            if(mess !== null) {
+                if ($.inArray(mess, errorMessages) < 0) {
+                    errorMessages.push(mess);
+                }
+                errorInputs.push($element);
+                $element
+                    .valAttr('current-error', mess)
+                    .removeClass('valid')
+                    .parent()
                     .removeClass('has-success');
+            }
         },
 
         /** Error messages for this validation */
@@ -495,6 +498,7 @@
                 errorMessagePosition : 'element', // Can be either "top" or "element"
                 scrollToTopOnError : true,
                 dateFormat : 'yyyy-mm-dd',
+                addValidClassOnAll : false, // whether or not to apply class="valid" even if the input wasn't validated
                 decimalSeparator : '.'
             }
         },
@@ -704,13 +708,17 @@
             // if empty AND optional attribute is present
             // OR depending on a checkbox being checked AND checkbox is checked, return true
             if ((!value && optional === 'true') || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
-                return null;
+                return config.addValidClassOnAll ? true:null;
             }
 
             var validationRules = $element.attr(config.validationRuleAttribute),
 
                 // see if form element has inline err msg attribute
                 validationErrorMsg = true;
+
+            if( !validationRules ) {
+                return config.addValidClassOnAll ? true:null;
+            }
 
             $.split(validationRules, function(rule) {
                 if( rule.indexOf('validate_') !== 0 ) {
@@ -1098,7 +1106,7 @@
             badSecurityAnswer : 'You have not given a correct answer to the security question',
             badDate : 'You have not given a correct date',
             lengthBadStart : 'You must give an answer between ',
-            lengthBadEnd : 'characters',
+            lengthBadEnd : ' characters',
             lengthTooLongStart : 'You have given an answer longer than ',
             lengthTooShortStart : 'You have given an answer shorter than ',
             notConfirmed : 'Values could not be confirmed',
@@ -1255,38 +1263,41 @@
     */
     $.formUtils.addValidator({
         name : 'length',
-        validatorFunction : function(value, $el, config, lang) {
-            var lengthAllowed = $el.valAttr('length');
+        validatorFunction : function(val, $el, config, lang) {
+            var lengthAllowed = $el.valAttr('length'),
+                type = $el.attr('type');
+
             if(lengthAllowed == undefined) {
                 var elementType = $el.get(0).nodeName;
                 alert('Please add attribute "data-validation-length" to '+elementType+' named '+$el.attr('name'));
                 return true;
             }
 
-            // check if length is above min, below max, within range etc.
-                var lengthCheckResults = $.formUtils.numericRangeCheck(value.length, lengthAllowed),
-                    checkResult;
+            // check if length is above min, below max or within range.
+            var len = type == 'file' && $el.get(0).files !== undefined ? $el.get(0).files.length : val.length,
+                lengthCheckResults = $.formUtils.numericRangeCheck(len, lengthAllowed),
+                checkResult;
 
-                switch(lengthCheckResults[0] )
-                {   // outside of allowed range
-                    case "out":
-                        this.errorMessage = lang.lengthBadStart + lengthAllowed + lang.lengthBadEnd;
-                        checkResult = false;
-                        break;
-                    // too short
-                    case "min":
-                        this.errorMessage = lang.lengthTooShortStart + lengthCheckResults[1] + lang.lengthBadEnd;
-                        checkResult = false;
-                        break;
-                    // too long
-                    case "max":
-                        this.errorMessage = lang.lengthTooLongStart + lengthCheckResults[1] + lang.lengthBadEnd;
-                        checkResult = false;
-                        break;
-                    // ok
-                    default:
-                        checkResult = true;
-                }
+            switch(lengthCheckResults[0] )
+            {   // outside of allowed range
+                case "out":
+                    this.errorMessage = lang.lengthBadStart + lengthAllowed + lang.lengthBadEnd;
+                    checkResult = false;
+                    break;
+                // too short
+                case "min":
+                    this.errorMessage = lang.lengthTooShortStart + lengthCheckResults[1] + lang.lengthBadEnd;
+                    checkResult = false;
+                    break;
+                // too long
+                case "max":
+                    this.errorMessage = lang.lengthTooLongStart + lengthCheckResults[1] + lang.lengthBadEnd;
+                    checkResult = false;
+                    break;
+                // ok
+                default:
+                    checkResult = true;
+            }
             
             return checkResult;
         },

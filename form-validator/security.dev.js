@@ -12,7 +12,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.8
+ * @version 2.1.9
  */
 (function($) {
 
@@ -276,6 +276,15 @@
 
     /*
      * Server validation
+     * Flow (form submission):
+     *  1) Check if the value already has been validated on the server . If so, display the validation
+     *     result and continue the validation process, otherwise continue to step 2
+     *  2) Return false as if the value is invalid and set $.formUtils.haltValidation to true
+     *  3) Disable form submission on the form being validated
+     *  4) Request the server with value and input name and add class 'validating-server-side' to the form
+     *  5) When the server responds an attribute will be added to the element
+     *      telling the validator that the input has a valid/invalid value and enable form submission
+     *  6) Run form submission again (back to step 1)
      */
     $.formUtils.addValidator({
         name : 'server',
@@ -318,6 +327,7 @@
                 return false;
 
             } else {
+                // validaiton on blur
                 $form.addClass('validating-server-side');
                 requestServer(serverURL, $el, val, conf, function() {
                     $form.removeClass('validating-server-side');

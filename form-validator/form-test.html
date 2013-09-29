@@ -88,7 +88,7 @@
             <label class="control-label">Server validation</label>
             <input class="form-control" name="code"
                    data-validation-help="The word is &quot;secret&quot;"
-                   data-validation="server"
+                   data-validation="alphanumeric server"
                    data-validation-url="http://formvalidator.net/validate-email.php" />
         </div>
 
@@ -190,6 +190,7 @@
     $.formUtils.addValidator({
         name : 'even_number',
         validatorFunction : function(value, $el, config, language, $form) {
+            console.log('Event number');
             return parseInt(value, 10) % 2 === 0;
         },
         borderColorOnError : '',

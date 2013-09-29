@@ -12,7 +12,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.9
+ * @version 2.1.15
  */
 (function($) {
 
@@ -277,7 +277,7 @@
     /*
      * Server validation
      * Flow (form submission):
-     *  1) Check if the value already has been validated on the server . If so, display the validation
+     *  1) Check if the value already has been validated on the server. If so, display the validation
      *     result and continue the validation process, otherwise continue to step 2
      *  2) Return false as if the value is invalid and set $.formUtils.haltValidation to true
      *  3) Disable form submission on the form being validated
@@ -337,7 +337,8 @@
             }
         },
         errorMessage : '',
-        errorMessageKey: 'badBackend'
+        errorMessageKey: 'badBackend',
+        validateOnKeyUp : false
     });
 
     $.fn.displayPasswordStrength = function(conf) {

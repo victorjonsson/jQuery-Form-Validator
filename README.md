@@ -294,6 +294,12 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
+
+### 2.1.15
+ * E-mail addresses can now contain + symbol
+ * Correction of the US states in validation "federatestate"
+ * Fixed bug in server validation
+
 ### 2.1.9
  * File validation now support multiple files
  * Length validation can now be used to validate the number of uploaded files using a file input that supports multiple files

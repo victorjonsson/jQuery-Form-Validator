@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.9
+* @version 2.1.15
 */
 (function($) {
 
@@ -79,12 +79,14 @@
     * @param {Object} [language] Optional, will override $.formUtils.LANG
     * @param {Object} [config] Optional, will override the default settings
     * @param {Boolean} [attachKeyupEvent] Optional
+    * @param {String} [eventContext]
     * @return {jQuery}
     */
-    $.fn.validateInputOnBlur = function(language, config, attachKeyupEvent) {
-        if(attachKeyupEvent === undefined) {
+    $.fn.validateInputOnBlur = function(language, config, attachKeyupEvent, eventContext) {
+        if(attachKeyupEvent === undefined)
             attachKeyupEvent = true;
-        }
+        if(!eventContext)
+            eventContext = 'blur';
 
         language = $.extend($.formUtils.LANG, language || {});
         config = $.extend($.formUtils.defaultConfig(), config || {});
@@ -99,11 +101,6 @@
 
             validationRule = $element.attr(config.validationRuleAttribute);
 
-        if( !attachKeyupEvent && validationRule == 'server' ) {
-            // do not validate server side on keyup event
-            return this;
-        }
-
         // Remove possible error style applied by previous validation
         $element
             .removeClass(config.errorElementClass)
@@ -113,13 +110,14 @@
 
         // Twitter bs
         $form.find('.has-error').removeClass('has-error');
+        $element.removeClass('valid').parent().removeClass('has-success');
 
         // if element has custom err msg container, clear it
         if( elementErrMsgObj != null) {
             elementErrMsgObj.innerHTML = '';
         }
 
-        var validation = $.formUtils.validateInput($element, language, config, $form);
+        var validation = $.formUtils.validateInput($element, language, config, $form, eventContext);
 
         if(validation === true) {
             $element
@@ -155,7 +153,7 @@
 
             if(attachKeyupEvent) {
                 $element.bind('keyup', function() {
-                    $(this).validateInputOnBlur(language, config, false);
+                    $(this).validateInputOnBlur(language, config, false, 'keyup');
                 });
             }
         }
@@ -253,7 +251,8 @@
                                 $element,
                                 language,
                                 config,
-                                $form
+                                $form,
+                                'submit'
                             );
 
                 if(validation !== true) {
@@ -533,6 +532,8 @@
         addValidator : function(validator) {
             // prefix with "validate_" for backward compatibility reasons
             var name = validator.name.indexOf('validate_') === 0 ? validator.name : 'validate_'+validator.name;
+            if( validator.validateOnKeyUp === undefined )
+                validator.validateOnKeyUp = true;
             this.validators[name] = validator;
         },
 
@@ -672,9 +673,10 @@
         * @param {Object} language ($.formUtils.LANG)
         * @param {Object} config
         * @param {jQuery} $form
+        * @param {String} [eventContext]
         * @return {String|Boolean}
         */
-        validateInput : function($element, language, config, $form) {
+        validateInput : function($element, language, config, $form, eventContext) {
 
             var value = $.trim( $element.val() || ''),
                 optional = $element.valAttr('optional'),
@@ -734,7 +736,10 @@
                             $element = $("[name='"+$element.attr('name')+"']:eq(0)");
                     }
 
-                    var isValid = validator.validatorFunction(value, $element, config, language, $form);
+                    var isValid = true;
+                    if( eventContext != 'keyup' || validator.validateOnKeyUp ) {
+                        isValid = validator.validatorFunction(value, $element, config, language, $form);
+                    }
 
                     if(!isValid) {
                         validationErrorMsg =  $element.attr(config.validationErrorMsgAttribute);
@@ -745,6 +750,7 @@
                         }
                         return false; // breaks the iteration
                     }
+
                 } else {
                     console.warn('Using undefined validator "'+rule+'"');
                 }
@@ -1142,13 +1148,13 @@
     $.formUtils.addValidator({
         name : 'email',
         validatorFunction : function(email) {
-            var emailFilter = /^([a-zA-Z0-9_\.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-            if(emailFilter.test(email)) {
-               var parts = email.split('@');
-               if(parts.length == 2) {
-                   return $.formUtils.validators.validate_domain.validatorFunction(parts[1]);
-               }
+
+            var emailParts = email.split('@');
+            if( emailParts.length == 2 ) {
+                return $.formUtils.validators.validate_domain.validatorFunction(emailParts[1]) &&
+                        !(/[^a-zA-Z0-9_\+\.\-]/.test(emailParts[0]));
             }
+
             return false;
         },
         errorMessage : '',

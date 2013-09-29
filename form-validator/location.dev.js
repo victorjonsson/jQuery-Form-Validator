@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#location-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.9
+ * @version 2.1.15
  */
 (function($) {
 
@@ -35,7 +35,7 @@
         validatorFunction : function(str) {
             return $.inArray(str.toLowerCase(), this.states) > -1;
         },
-        states : ['alabama','alaska','arkansas','california','colorado','connecticut','delaware','florida','georgia','hawaii','idaho','illinois','indiana','iowa','kansas','kentucky','louisiana','maine','marylan ','massachusetts','michigan','minnesota','mississippi','missouri','montana','nebraska','nevada','new hampshire','new jersey','new mexico','new york','north carolina','north dakota','ohio','oklahoma','oregon','pennsylvania','rhode island','south carolina','south dakota','tennessee','texas','utah','vermont','virginia','washington','west virginia','wisconsin','wyoming'],
+        states : ['alabama','alaska', 'arizona', 'arkansas','california','colorado','connecticut','delaware','florida','georgia','hawaii','idaho','illinois','indiana','iowa','kansas','kentucky','louisiana','maine','maryland', 'district of columbia', 'massachusetts','michigan','minnesota','mississippi','missouri','montana','nebraska','nevada','new hampshire','new jersey','new mexico','new york','north carolina','north dakota','ohio','oklahoma','oregon','pennsylvania','rhode island','south carolina','south dakota','tennessee','texas','utah','vermont','virginia','washington','west virginia','wisconsin','wyoming'],
         errorMessage : '',
         errorMessageKey: 'badCustomVal'
     });

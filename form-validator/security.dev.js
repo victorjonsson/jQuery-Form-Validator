@@ -12,7 +12,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.15
+ * @version 2.1.25
  */
 (function($) {
 
@@ -258,11 +258,13 @@
                 if( !$element.valAttr('has-keyup-event') ) {
                     $element
                         .valAttr('has-keyup-event', '1')
-                        .bind('keyup', function() {
-                            $(this)
-                                .valAttr('backend-valid', false)
-                                .valAttr('backend-invalid', false)
-                                .removeAttr(conf.validationErrorMsgAttribute);
+                        .bind('keyup', function(evt) {
+                            if( evt.keyCode != 9 && evt.keyCode != 16 ) {
+                                $(this)
+                                    .valAttr('backend-valid', false)
+                                    .valAttr('backend-invalid', false)
+                                    .removeAttr(conf.validationErrorMsgAttribute);
+                            }
                         });
                 }
 
@@ -311,6 +313,8 @@
                     .addClass('validating-server-side')
                     .addClass('on-blur');
 
+                $el.addClass('validating-server-side');
+
                 requestServer(serverURL, $el, val, conf, function() {
                     $form
                         .removeClass('validating-server-side')
@@ -318,6 +322,7 @@
                         .get(0).onsubmit = function() {};
 
                     $form.unbind('submit', disableFormSubmit);
+                    $el.removeClass('validating-server-side');
 
                     // fire submission again!
                     $form.trigger('submit');
@@ -329,8 +334,10 @@
             } else {
                 // validaiton on blur
                 $form.addClass('validating-server-side');
+                $el.addClass('validating-server-side');
                 requestServer(serverURL, $el, val, conf, function() {
                     $form.removeClass('validating-server-side');
+                    $el.removeClass('validating-server-side');
                     $el.trigger('blur');
                 });
                 return true;

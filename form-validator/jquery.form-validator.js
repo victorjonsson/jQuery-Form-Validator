@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.15
+* @version 2.1.25
 */
 (function($) {
 
@@ -1168,7 +1168,7 @@
         name : 'domain',
         validatorFunction : function(val, $input) {
 
-            var topDomains = ['.com', '.net', '.org', '.biz', '.coop', '.info', '.museum', '.name', '.pro',
+            var topDomains = ['.eu', '.com', '.net', '.org', '.biz', '.coop', '.info', '.museum', '.name', '.pro',
                     '.edu', '.gov', '.int', '.mil', '.ac', '.ad', '.ae', '.af', '.ag', '.ai', '.al',
                     '.am', '.an', '.ao', '.aq', '.ar', '.as', '.at', '.au', '.aw', '.az', '.ba', '.bb',
                     '.bd', '.be', '.bf', '.bg', '.bh', '.bi', '.bj', '.bm', '.bn', '.bo', '.br', '.bs',

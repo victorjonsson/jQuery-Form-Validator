@@ -212,7 +212,15 @@
                 {val:input('1.0235', {'allowing':'float,negative,number', '':'number'}), isValid:true},
                 {val:input('1.0236', {'allowing':'float,negative,number', 'decimal-separator':',', '':'number'}), isValid:false},
                 //{val:input('1,023', {'allowing':'float,negative,number', 'decimal-separator':',', '':'number'}), isValid:true},
-                {val:'123', isValid:true}
+                {val:'123', isValid:true},
+                {val:input('12', {'allowing':'range[1;10]', '':'number'}), isValid:false},
+                {val:input('-1', {'allowing':'range[1;10]', '':'number'}), isValid:false},
+                {val:input('1', {'allowing':'range[1;10]', '':'number'}), isValid:true},
+                {val:input('10', {'allowing':'range[1;10]', '':'number'}), isValid:true},
+                {val:input('5', {'allowing':'range[1;10]', '':'number'}), isValid:true},
+                {val:input('-1', {'allowing':'range[-10;10],negative', '':'number'}), isValid:true},
+                {val:input('0.0001', {'allowing':'range[0.05;0.9]', '':'number'}), isValid:false},
+                {val:input('0.06', {'allowing':'range[0.05;0.9],float', '':'number'}), isValid:true}
             ];
 
             $.each(links, function(i, obj) {

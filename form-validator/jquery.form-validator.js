@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.26
+* @version 2.1.27
 */
 (function($) {
 
@@ -1384,7 +1384,9 @@
         validatorFunction : function(val, $el, config) {
             if(val !== '') {
                 var allowing = $el.valAttr('allowing') || '',
-                    decimalSeparator = $el.valAttr('decimal-separator') || config.decimalSeparator;
+                    decimalSeparator = $el.valAttr('decimal-separator') || config.decimalSeparator,
+                    allowsRange = false,
+                    begin, end;
 
                 if(allowing.indexOf('number') == -1)
                     allowing += ',number';
@@ -1393,10 +1395,17 @@
                     val = val.substr(1);
                 }
 
-                if(allowing.indexOf('number') > -1 && val.replace(/[0-9]/g, '') === '') {
+                if (allowing.indexOf('range') > -1)
+                {
+                    begin = parseFloat(allowing.substring(allowing.indexOf("[")+1, allowing.indexOf(";")));
+                    end = parseFloat(allowing.substring(allowing.indexOf(";")+1,allowing.indexOf("]")));
+                    allowsRange = true;
+                }
+
+                if(allowing.indexOf('number') > -1 && val.replace(/[0-9]/g, '') === '' && (!allowsRange || (val >= begin && val <= end)) ) {
                     return true;
                 }
-                if(allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9]+)\\'+decimalSeparator+'([0-9]+)$')) !== null) {
+                if(allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9]+)\\'+decimalSeparator+'([0-9]+)$')) !== null && (!allowsRange || (val >= begin && val <= end)) ) {
                     return true;
                 }
             }

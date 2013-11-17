@@ -295,18 +295,18 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 ## Changelog
 
 
-### 2.1.27
+#### 2.1.27
  * E-mail validation support .eu top domain
  * Improvements in server validation
  * Now possible to re-initiate the validation. This makes it possible to dynamically change the form and then call $.validate() again to refresh the validation (issue #59)
  * Number validation now supports range
 
-### 2.1.15
+#### 2.1.15
  * E-mail addresses can now contain + symbol
  * Correction of the US states in validation "federatestate"
  * Fixed bug in server validation
 
-### 2.1.9
+#### 2.1.9
  * File validation now support multiple files
  * Length validation can now be used to validate the number of uploaded files using a file input that supports multiple files
  * Validation classes is no longer applied on inputs that for some reason shouldn't become validated

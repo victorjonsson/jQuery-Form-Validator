@@ -55,7 +55,7 @@ So what has changed since version 1.x?
  * **url**
  * **email**
  * **domain** — *domain.com*
- * **number** — *float/negative/positive*
+ * **number** — *float/negative/positive/range*
  * **date** — *yyyy-mm-dd (format can be customized, more information below)*
  * **alphanumeric** — *with support for defining additional characters*
  * **length** — *min/max/range*

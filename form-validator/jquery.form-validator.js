@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.25
+* @version 2.1.26
 */
 (function($) {
 
@@ -19,10 +19,15 @@
     * @return {jQuery}
     */
     $.fn.validateOnBlur = function(language, settings) {
+
+        var blurValidationCallback = function() {
+                $(this).validateInputOnBlur(language, settings);
+            };
+
         this.find('input[data-validation], textarea[data-validation]')
-            .blur(function() {
-               $(this).validateInputOnBlur(language, settings);
-            });
+            .unbind('blur', blurValidationCallback)
+            .bind('blur', blurValidationCallback);
+
         return this;
     };
 
@@ -39,12 +44,24 @@
             attrName = 'data-validation-help';
         }
 
+        // Remove previously added event listeners
+        this.find('.has-help-txt')
+                .valAttr('has-keyup-event', false)
+                .valAttr('backend-valid', false)
+                .valAttr('backend-invalid', false)
+                .unbind('focus')
+                .unbind('blur')
+                .removeClass('has-help-txt');
+
+        // Add help text listeners
         this.find('textarea,input').each(function() {
             var $element = $(this),
                 className = 'jquery_form_help_' + $element.attr('name'),
                 help = $element.attr(attrName);
+
             if(help) {
                 $element
+                    .addClass('has-help-txt')
                     .focus(function() {
                         var $help = $element.parent().find('.'+className);
                         if($help.length == 0) {
@@ -367,8 +384,9 @@
 
             sugs = $.split($field.attr('data-suggestions'));
 
-            if( sugs.length > 0 ) {
+            if( sugs.length > 0 && !$field.hasClass('has-suggestions') ) {
                 $.formUtils.suggest($field, sugs, settings);
+                $field.addClass('has-suggestions');
             }
         });
         return this;
@@ -422,38 +440,46 @@
             onError : false
         }, config || {});
 
+        var formSubmitCallback = function() {
+            var $form = $(this);
+            if($.formUtils.isLoadingModules) {
+                setTimeout(function() {
+                    $form.trigger('submit');
+                }, 200);
+                return false;
+            }
+            var valid = $(this).validateForm(config.language, config);
+            if( valid && typeof config.onSuccess == 'function') {
+                var callbackResponse = config.onSuccess($form);
+                if( callbackResponse === false )
+                    return false;
+            } else if ( !valid && typeof config.onError == 'function' ) {
+                config.onError($form);
+                return false;
+            } else {
+                return valid;
+            }
+        };
+
+        // Remove all event listeners previously added
+        $('form').unbind('submit', formSubmitCallback);
+
+        // Add validation to forms
         $.split(config.form, function(formQuery) {
+
             var $form  = $(formQuery);
 
             // Validate when submitted
-            $form.bind('submit', function() {
-                if($.formUtils.isLoadingModules) {
-                    setTimeout(function() {
-                        $form.trigger('submit');
-                    }, 200);
-                    return false;
-                }
-                var valid = $(this).validateForm(config.language, config);
-                if( valid && typeof config.onSuccess == 'function') {
-                    var callbackResponse = config.onSuccess($form);
-                    if( callbackResponse === false )
-                        return false;
-                } else if ( !valid && typeof config.onError == 'function' ) {
-                    config.onError($form);
-                    return false;
-                } else {
-                    return valid;
-                }
-            });
+            $form.bind('submit', formSubmitCallback);
 
-            if( config.validateOnBlur ) {
-                $form.validateOnBlur(config.language, config);
-            }
             if( config.showHelpOnFocus ) {
                 $form.showHelpOnFocus();
             }
             if( config.addSuggestions ) {
                 $form.addSuggestions();
+            }
+            if( config.validateOnBlur ) {
+                $form.validateOnBlur(config.language, config);
             }
         });
 
@@ -564,6 +590,8 @@
          */
         isLoadingModules : false,
 
+        loadedModules : {},
+
         /**
         * @example
         *  $.formUtils.loadModules('date, security.dev');
@@ -592,6 +620,8 @@
                 return;
             }
 
+            var hasLoadedAnyModule = false;
+
             var loadModuleScripts = function(modules, path) {
                 var moduleList = $.split(modules),
                     numModules = moduleList.length,
@@ -599,7 +629,7 @@
                         numModules--;
                         if( numModules == 0 ) {
                             $.formUtils.isLoadingModules = false;
-                            if( fireEvent ) {
+                            if( fireEvent && hasLoadedAnyModule ) {
                                 $.formUtils.trigger('load', path);
                             }
                         }
@@ -620,16 +650,29 @@
                     else {
                         var scriptUrl = path + modName + (modName.substr(-3) == '.js' ? '':'.js'),
                             script = document.createElement('SCRIPT');
-                        script.type = 'text/javascript';
-                        script.onload = moduleLoadedCallback;
-                        script.src = scriptUrl + ( scriptUrl.substr(-7) == '.dev.js' ? cacheSuffix:'' );
-                        script.onreadystatechange = function() {
-                            // IE 7 fix
-                            if( this.readyState == 'complete' ) {
-                                moduleLoadedCallback();
-                            }
-                        };
-                        appendToElement.appendChild( script );
+
+                        if( scriptUrl in $.formUtils.loadedModules ) {
+                            // already loaded
+                            moduleLoadedCallback();
+                        }
+                        else {
+
+                            // Remember that this script is loaded
+                            $.formUtils.loadedModules[scriptUrl] = 1;
+                            hasLoadedAnyModule = true;
+
+                            // Load the script
+                            script.type = 'text/javascript';
+                            script.onload = moduleLoadedCallback;
+                            script.src = scriptUrl + ( scriptUrl.substr(-7) == '.dev.js' ? cacheSuffix:'' );
+                            script.onreadystatechange = function() {
+                                // IE 7 fix
+                                if( this.readyState == 'complete' ) {
+                                    moduleLoadedCallback();
+                                }
+                            };
+                            appendToElement.appendChild( script );
+                        }
                     }
                 });
             };

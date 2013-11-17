@@ -295,6 +295,11 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 ## Changelog
 
 
+### 2.1.x
+ * E-mail validation support .eu top domain
+ * Improvements in server validation
+ * Now possible to re-initiate the validation. This makes it possible to dynamically change the form and then call $.validate() again to refresh the validation (issue #59)
+
 ### 2.1.15
  * E-mail addresses can now contain + symbol
  * Correction of the US states in validation "federatestate"

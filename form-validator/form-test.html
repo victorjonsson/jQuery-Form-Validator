@@ -151,41 +151,46 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="jquery.form-validator.js"></script>
 <script>
-(function($) {
+(function($, window) {
 
     var dev = window.location.hash.indexOf('dev') > -1 ? '.dev' : '';
 
-    $.validate({
-        language : {
-            requiredFields: 'Du måste bocka för denna'
-        },
-        errorMessagePosition : 'top',
-        scrollToTopOnError : true,
-        modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev,
-        onModulesLoaded: function( $form ) {
-            $('#country-suggestions').suggestCountry();
-            $('#swedish-county-suggestions').suggestSwedishCounty();
-            $('#password').displayPasswordStrength();
-        },
-        onValidate : function() {
-            var $callbackInput = $('#callback');
-            if( $callbackInput.val() == 1 ) {
-                return {
-                    element : $callbackInput,
-                    message : 'This validation was made in a callback'
-                };
+    window.applyValidation = function() {
+        $.validate({
+            language : {
+                requiredFields: 'Du måste bocka för denna'
+            },
+            errorMessagePosition : 'top',
+            scrollToTopOnError : true,
+            modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev,
+            onModulesLoaded: function( $form ) {
+                console.log('wii');
+                $('#country-suggestions').suggestCountry();
+                $('#swedish-county-suggestions').suggestSwedishCounty();
+                $('#password').displayPasswordStrength();
+            },
+            onValidate : function() {
+                var $callbackInput = $('#callback');
+                if( $callbackInput.val() == 1 ) {
+                    return {
+                        element : $callbackInput,
+                        message : 'This validation was made in a callback'
+                    };
+                }
+            },
+            onError : function() {
+                if( !$.formUtils.haltValidation ) {
+                    alert('Invalid');
+                }
+            },
+            onSuccess : function() {
+                alert('Valid');
+                return false;
             }
-        },
-        onError : function() {
-            if( !$.formUtils.haltValidation ) {
-                alert('Invalid');
-            }
-        },
-        onSuccess : function() {
-            alert('Valid');
-            return false;
-        }
-    });
+        });
+    };
+
+    window.applyValidation();
 
     // Load one module outside $.validate() even though you do not have to
     $.formUtils.loadModules('date'+dev+'.js', false, false);
@@ -201,7 +206,7 @@
         errorMessageKey: 'badEvenNumber'
     });
 
-})(jQuery);
+})(jQuery, window);
 </script>
 <body>
 </html>

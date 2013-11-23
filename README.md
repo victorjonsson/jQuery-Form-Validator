@@ -362,7 +362,8 @@ calling $.validate()
 <a href="https://github.com/aL3xa" target="_blank">Alexandar Blagotic</a><br />
 <a href="http://thekindof.me/" target="_blank">Yasith Fernando</a><br />
 <a href="https://github.com/S0L4R1S" target="_blank">@S0L4R1S</a><br />
-<a href="http://lisangan.com/">Erick Lisangan</a>
+<a href="http://lisangan.com/">Erick Lisangan</a><br />
+<a href="https://github.com/kirbs-">@kirbs</a>
 
 #### Additional credits
 

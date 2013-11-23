@@ -56,7 +56,7 @@
         // Add help text listeners
         this.find('textarea,input').each(function() {
             var $element = $(this),
-                className = 'jquery_form_help_' + $element.attr('name'),
+                className = 'jquery_form_help_' + $element.attr('name').replace( /(:|\.|\[|\])/g, "" ),
                 help = $element.attr(attrName);
 
             if(help) {

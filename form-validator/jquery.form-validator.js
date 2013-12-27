@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.28
+* @version 2.1.29
 */
 (function($) {
 
@@ -19,14 +19,11 @@
     * @return {jQuery}
     */
     $.fn.validateOnBlur = function(language, settings) {
-
-        var blurValidationCallback = function() {
-                $(this).validateInputOnBlur(language, settings);
-            };
-
         this.find('input[data-validation], textarea[data-validation]')
-            .unbind('blur', blurValidationCallback)
-            .bind('blur', blurValidationCallback);
+            .unbind('blur.validation')
+            .bind('blur.validation', function() {
+                $(this).validateInputOnBlur(language, settings);
+            });
 
         return this;
     };
@@ -49,20 +46,20 @@
                 .valAttr('has-keyup-event', false)
                 .valAttr('backend-valid', false)
                 .valAttr('backend-invalid', false)
-                .unbind('focus')
-                .unbind('blur')
+                .unbind('focus.validation')
+                .unbind('blur.validation')
                 .removeClass('has-help-txt');
 
         // Add help text listeners
         this.find('textarea,input').each(function() {
             var $element = $(this),
-                className = 'jquery_form_help_' + $element.attr('name').replace( /(:|\.|\[|\])/g, "" ),
+                className = 'jquery_form_help_' + ($element.attr('name') || '').replace( /(:|\.|\[|\])/g, "" ),
                 help = $element.attr(attrName);
 
             if(help) {
                 $element
                     .addClass('has-help-txt')
-                    .focus(function() {
+                    .bind('focus.validation', function() {
                         var $help = $element.parent().find('.'+className);
                         if($help.length == 0) {
                             $help = $('<span />')
@@ -76,7 +73,7 @@
                         }
                         $help.fadeIn();
                     })
-                    .blur(function() {
+                    .bind('blur.validation', function() {
                         $(this)
                             .parent()
                             .find('.'+className)
@@ -440,29 +437,10 @@
             onError : false
         }, config || {});
 
-        var formSubmitCallback = function() {
-            var $form = $(this);
-            if($.formUtils.isLoadingModules) {
-                setTimeout(function() {
-                    $form.trigger('submit');
-                }, 200);
-                return false;
-            }
-            var valid = $(this).validateForm(config.language, config);
-            if( valid && typeof config.onSuccess == 'function') {
-                var callbackResponse = config.onSuccess($form);
-                if( callbackResponse === false )
-                    return false;
-            } else if ( !valid && typeof config.onError == 'function' ) {
-                config.onError($form);
-                return false;
-            } else {
-                return valid;
-            }
-        };
-
         // Remove all event listeners previously added
-        $('form').unbind('submit', formSubmitCallback);
+        $('form.has-validation-callback')
+            .removeClass('has-validation-callback')
+            .unbind('submit.validation');
 
         // Add validation to forms
         $.split(config.form, function(formQuery) {
@@ -470,7 +448,27 @@
             var $form  = $(formQuery);
 
             // Validate when submitted
-            $form.bind('submit', formSubmitCallback);
+            $form.bind('submit.validation', function() {
+                var $form = $(this);
+                if($.formUtils.isLoadingModules) {
+                    setTimeout(function() {
+                        $form.trigger('submit.validation');
+                    }, 200);
+                    return false;
+                }
+                var valid = $(this).validateForm(config.language, config);
+                if( valid && typeof config.onSuccess == 'function') {
+                    var callbackResponse = config.onSuccess($form);
+                    if( callbackResponse === false )
+                        return false;
+                } else if ( !valid && typeof config.onError == 'function' ) {
+                    config.onError($form);
+                    return false;
+                } else {
+                    return valid;
+                }
+            })
+            .addClass('has-validation-callback');
 
             if( config.showHelpOnFocus ) {
                 $form.showHelpOnFocus();
@@ -966,6 +964,14 @@
                 activeSuggestionCSS : {
                     background : '#E9E9E9'
                 }
+            },
+            setSuggsetionPosition = function($suggestionContainer, $input) {
+                var offset = $input.offset();
+                $suggestionContainer.css({
+                    width : $input.outerWidth(),
+                    left : offset.left + 'px',
+                    top : (offset.top + $input.outerHeight()) +'px'
+                });
             };
 
             if(settings)
@@ -974,6 +980,17 @@
             config.css['position'] = 'absolute';
             config.css['z-index'] = 9999;
             $element.attr('autocomplete', 'off');
+
+            if( this._numSuggestionElements === 0 ) {
+                // Re-position suggestion container if window size changes
+                $(window).bind('resize', function() {
+                    $('.jquery-form-suggestions').each(function() {
+                        var $container = $(this),
+                            suggestID = $container.attr('data-suggest-container');
+                        setSuggsetionPosition($container, $('.suggestions-'+suggestID).eq(0));
+                    });
+                });
+            }
 
             this._numSuggestionElements++;
 
@@ -987,11 +1004,13 @@
             $element
                 .data('suggestions', suggestions)
                 .valAttr('suggestion-nr', this._numSuggestionElements)
-                .bind('focus', function() {
+                .unbind('focus.validation')
+                .bind('focus.validation', function() {
                     $(this).trigger('keyup');
                     $.formUtils._selectedSuggestion = null;
                 })
-                .bind('keyup', function() {
+                .unbind('keyup.validation')
+                .bind('keyup.validation', function() {
                     var $input = $(this),
                         foundSuggestions = [],
                         val = $.trim($input.val()).toLocaleLowerCase();
@@ -1032,8 +1051,11 @@
                     // Create suggestion container if not already exists
                     else if(foundSuggestions.length > 0 && $suggestionContainer.length == 0) {
                         $suggestionContainer = $('<div></div>').css(config.css).appendTo('body');
-                        $suggestionContainer.addClass('jquery-form-suggestions');
-                        $suggestionContainer.addClass('jquery-form-suggestion-'+suggestionId);
+                        $element.addClass('suggestions-'+suggestionId);
+                        $suggestionContainer
+                            .attr('data-suggest-container', suggestionId)
+                            .addClass('jquery-form-suggestions')
+                            .addClass('jquery-form-suggestion-'+suggestionId);
                     }
 
                     // Show hidden container
@@ -1045,12 +1067,7 @@
                     if(foundSuggestions.length > 0 && val.length != foundSuggestions[0].length) {
 
                         // put container in place every time, just in case
-                        var offset = $input.offset();
-                        $suggestionContainer.css({
-                            width : $input.outerWidth(),
-                            left : offset.left + 'px',
-                            top : (offset.top + $input.outerHeight()) +'px'
-                        });
+                        setSuggsetionPosition($suggestionContainer, $input);
 
                         // Add suggestions HTML to container
                         $suggestionContainer.html('');
@@ -1073,7 +1090,8 @@
                         });
                     }
                 })
-                .bind('keydown', function(e) {
+                .unbind('keydown.validation')
+                .bind('keydown.validation', function(e) {
                     var code = (e.keyCode ? e.keyCode : e.which),
                         suggestionId,
                         $suggestionContainer,
@@ -1134,7 +1152,8 @@
                         }
                     }
                 })
-                .bind('blur', function() {
+                .unbind('blur.validation')
+                .bind('blur.validation', function() {
                     onSelectSuggestion($(this));
                 });
 

@@ -294,7 +294,7 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
-#### 2.1....
+#### 2.1.34
 * General improvements and bug fixes
 * Added events "beforeValidation" and "validation" (see http://formvalidator.net/#configuration_callbacks for more info)
 

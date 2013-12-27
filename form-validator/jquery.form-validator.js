@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.29
+* @version 2.1.30
 */
 (function($) {
 
@@ -1211,7 +1211,7 @@
         name : 'email',
         validatorFunction : function(email) {
 
-            var emailParts = email.split('@');
+            var emailParts = email.toLowerCase().split('@');
             if( emailParts.length == 2 ) {
                 return $.formUtils.validators.validate_domain.validatorFunction(emailParts[1]) &&
                         !(/[^a-zA-Z0-9_\+\.\-]/.test(emailParts[0]));

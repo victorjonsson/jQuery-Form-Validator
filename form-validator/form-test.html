@@ -51,43 +51,43 @@
     <form action="" id="test-form" role="form">
         <div class="form-group">
             <label class="control-label" for="inline-suggestions">Inline suggestions</label>
-            <input type="text" id="inline-suggestions" class="form-control" data-suggestions="Monkey, Horse, Fox, Tiger, Elephant" />
+            <input name="inline suggestions" type="text" id="inline-suggestions" class="form-control" data-suggestions="Monkey, Horse, Fox, Tiger, Elephant" />
         </div>
 
         <div class="form-group">
             <label class="control-label" for="country-suggestions">Country suggestions</label>
-            <input type="text" id="country-suggestions" class="form-control" />
+            <input name="country suggestions" type="text" id="country-suggestions" class="form-control" />
         </div>
 
         <div class="form-group">
             <label class="control-label" for="country-suggestions">Swedish county suggestions</label>
-            <input type="text" id="swedish-county-suggestions" class="form-control" />
+            <input name="Swedish county suggestion" type="text" id="swedish-county-suggestions" class="form-control" />
         </div>
 
         <div class="form-group password-strength">
             <label class="control-label" for="password">Display password strength (only strong)</label>
-            <input type="password" id="password" class="form-control" data-validation="strength" data-validation-strength="3" />
+            <input name="password" type="password" id="password" class="form-control" data-validation="strength" data-validation-strength="3" />
         </div>
 
         <div class="form-group">
             <label class="control-label">Alphanumeric and -_ and spaces</label>
-            <input class="form-control" name="test" data-validation="alphanumeric" data-validation-allowing="-_ " />
+            <input name="alphanumeric with spaces" class="form-control" name="test" data-validation="alphanumeric" data-validation-allowing="-_ " />
         </div>
 
         <div class="form-group">
             <label class="control-label">Alphanumeric only</label>
-            <input class="form-control" name="test2" data-validation="alphanumeric" />
+            <input name="aplhanumeric only" class="form-control" name="test2" data-validation="alphanumeric" />
         </div>
 
         <div class="checkbox">
             <label>
-                <input type="checkbox" data-validation="required" /> Must be checked
+                <input name="checkbox" type="checkbox" data-validation="required" /> Must be checked
             </label>
         </div>
 
         <div class="form-group">
             <label class="control-label">Even numbers only</label>
-            <input class="form-control" name="test4" data-validation="even_number" />
+            <input name="even numbers" class="form-control" name="test4" data-validation="even_number" />
         </div>
 
         <div class="form-group">
@@ -100,7 +100,7 @@
 
         <div class="form-group">
             <label class="control-label">File validation</label>
-            <input type="file" name="some-file" class="form-control"
+            <input type="file" name="some-file1" class="form-control"
                    data-validation="size mime required"
                    data-validation-error-msg="You must upload an image file"
                    data-validation-allowing="jpg, png, ico"
@@ -109,7 +109,7 @@
 
         <div class="form-group">
             <label class="control-label">File validation (multiple)</label>
-            <input type="file" multiple="multiple" name="some-file" class="form-control"
+            <input type="file" multiple="multiple" name="some-file2" class="form-control"
                    data-validation="size mime required length"
                    data-validation-length="min2"
                    data-validation-error-msg="You must upload at least two image files"
@@ -209,6 +209,13 @@
     // Load one module outside $.validate() even though you do not have to
     $.formUtils.loadModules('date'+dev+'.js', false, false);
 
+    $('input')
+        .on('beforeValidation', function() {
+            console.log('About to validate input "'+this.name+'"');
+        })
+        .on('validation', function(evt, isValid) {
+            console.log('Input '+this.name+' is '+( isValid ? 'VALID':'NOT VALID'));
+        });
 
 })(jQuery, window);
 </script>

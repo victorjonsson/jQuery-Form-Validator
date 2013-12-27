@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.32
+* @version 2.1.33
 */
 (function($) {
 
@@ -132,6 +132,8 @@
         }
 
         var validation = $.formUtils.validateInput($element, language, config, $form, eventContext);
+
+        $element.trigger('validation', [validation===true]);
 
         if(validation === true) {
             $element
@@ -268,6 +270,8 @@
                                 $form,
                                 'submit'
                             );
+
+                $element.trigger('validation', [validation===true]);
 
                 if(validation !== true) {
                     addErrorMessage(validation, $element);
@@ -718,6 +722,8 @@
         * @return {String|Boolean}
         */
         validateInput : function($element, language, config, $form, eventContext) {
+
+            $element.trigger('beforeValidation');
 
             var value = $.trim( $element.val() || ''),
                 optional = $element.valAttr('optional'),

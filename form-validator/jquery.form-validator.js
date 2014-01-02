@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.34
+* @version 2.1.35
 */
 (function($) {
 
@@ -441,15 +441,15 @@
             onError : false
         }, config || {});
 
-        // Remove all event listeners previously added
-        $('form.has-validation-callback')
-            .removeClass('has-validation-callback')
-            .unbind('submit.validation');
-
         // Add validation to forms
         $.split(config.form, function(formQuery) {
 
             var $form  = $(formQuery);
+
+            // Remove all event listeners previously added
+            $form
+                .removeClass('has-validation-callback')
+                .unbind('submit.validation');
 
             // Validate when submitted
             $form.bind('submit.validation', function() {

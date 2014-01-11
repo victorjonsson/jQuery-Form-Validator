@@ -5,52 +5,52 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.36
+* @version 2.1.38
 */
 (function($) {
 
     'use strict';
 
-    var _applyErrorStyle = function($element, config) {
-            $element
-                .addClass(config.errorElementClass)
+    var _applyErrorStyle = function($elem, conf) {
+            $elem
+                .addClass(conf.errorElementClass)
                 .removeClass('valid')
                 .parent()
                     .addClass('has-error')
                     .removeClass('has-success'); // twitter bs
 
-            if(config.borderColorOnError !== '') {
-                $element.css('border-color', config.borderColorOnError);
+            if(conf.borderColorOnError !== '') {
+                $elem.css('border-color', conf.borderColorOnError);
             }
         },
-        _removeErrorStyle = function($element, config) {
-            $element.each(function() {
-                _setInlineErrorMessage($(this), '', config);
+        _removeErrorStyle = function($elem, conf) {
+            $elem.each(function() {
+                _setInlineErrorMessage($(this), '', conf);
                 $(this)
                     .removeClass('valid')
-                    .removeClass(config.errorElementClass)
+                    .removeClass(conf.errorElementClass)
                     .css('border-color', '')
                     .parent()
                         .removeClass('has-error')
                         .removeClass('has-success')
-                        .find('.'+config.errorMessageClass) // remove inline error message
+                        .find('.'+conf.errorMessageClass) // remove inline error message
                             .remove();
             });
         },
-        _setInlineErrorMessage = function($input, mess, config) {
+        _setInlineErrorMessage = function($input, mess, conf) {
             var custom = _getInlineErrorElement($input);
             if( custom ) {
                 custom.innerHTML = mess;
             } else {
-                var $mess = $input.parent().find('.'+config.errorMessageClass+'.help-block');
+                var $mess = $input.parent().find('.'+conf.errorMessageClass+'.help-block');
                 if( $mess.length == 0 ) {
-                    $mess = $('<span></span>').addClass('help-block').addClass(config.errorMessageClass);
+                    $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
                     $mess.appendTo($input.parent());
                 }
                 $mess.html(mess);
             }
         },
-        _getInlineErrorElement = function($input, config) {
+        _getInlineErrorElement = function($input, conf) {
             return document.getElementById($input.attr('name')+'_err_msg');
         };
 
@@ -92,16 +92,16 @@
 
         // Add help text listeners
         this.find('textarea,input').each(function() {
-            var $element = $(this),
-                className = 'jquery_form_help_' + ($element.attr('name') || '').replace( /(:|\.|\[|\])/g, "" ),
-                help = $element.attr(attrName);
+            var $elem = $(this),
+                className = 'jquery_form_help_' + ($elem.attr('name') || '').replace( /(:|\.|\[|\])/g, "" ),
+                help = $elem.attr(attrName);
 
             if(help) {
-                $element
+                $elem
                     .addClass('has-help-txt')
                     .unbind('focus.help')
                     .bind('focus.help', function() {
-                        var $help = $element.parent().find('.'+className);
+                        var $help = $elem.parent().find('.'+className);
                         if($help.length == 0) {
                             $help = $('<span />')
                                         .addClass(className)
@@ -110,7 +110,7 @@
                                         .text(help)
                                         .hide();
 
-                            $element.after($help);
+                            $elem.after($help);
 
                         }
                         $help.fadeIn();
@@ -134,46 +134,46 @@
     * that is appended to the parent element
     *
     * @param {Object} [language] Optional, will override $.formUtils.LANG
-    * @param {Object} [config] Optional, will override the default settings
+    * @param {Object} [conf] Optional, will override the default settings
     * @param {Boolean} [attachKeyupEvent] Optional
     * @param {String} [eventContext]
     * @return {jQuery}
     */
-    $.fn.validateInputOnBlur = function(language, config, attachKeyupEvent, eventContext) {
+    $.fn.validateInputOnBlur = function(language, conf, attachKeyupEvent, eventContext) {
         if(attachKeyupEvent === undefined)
             attachKeyupEvent = true;
         if(!eventContext)
             eventContext = 'blur';
 
         language = $.extend($.formUtils.LANG, language || {});
-        _removeErrorStyle(this, config);
+        _removeErrorStyle(this, conf);
 
-        var $element = this,
-            $form = $element.closest("form"),
-            validationRule = $element.attr(config.validationRuleAttribute),
+        var $elem = this,
+            $form = $elem.closest("form"),
+            validationRule = $elem.attr(conf.validationRuleAttribute),
             validation = $.formUtils.validateInput(
-                            $element,
+                            $elem,
                             language,
-                            $.extend({}, config, {errorMessagePosition:'element'}),
+                            $.extend({}, conf, {errorMessagePosition:'element'}),
                             $form,
                             eventContext
                         );
 
-        $element.trigger('validation', [validation===true]);
+        $elem.trigger('validation', [validation===true]);
 
         if(validation === true) {
-            $element
+            $elem
                 .addClass('valid')
                 .parent()
                     .addClass('has-success'); // twitter bs
         } else if(validation !== null) {
 
-            _applyErrorStyle($element, config);
-            _setInlineErrorMessage($element, validation, config);
+            _applyErrorStyle($elem, conf);
+            _setInlineErrorMessage($elem, validation, conf);
 
             if(attachKeyupEvent) {
-                $element.bind('keyup', function() {
-                    $(this).validateInputOnBlur(language, config, false, 'keyup');
+                $elem.bind('keyup', function() {
+                    $(this).validateInputOnBlur(language, conf, false, 'keyup');
                 });
             }
         }
@@ -205,9 +205,9 @@
      * Function that validate all inputs in a form
      *
      * @param [language]
-     * @param [config]
+     * @param [conf]
      */
-    $.fn.validateForm = function(language, config) {
+    $.fn.validateForm = function(language, conf) {
 
         language = $.extend($.formUtils.LANG, language || {});
 
@@ -218,17 +218,17 @@
          * Adds message to error message stack if not already in the message stack
          *
          * @param {String} mess
-         * @para {jQuery} $element
+         * @para {jQuery} $elem
          */
-        var addErrorMessage = function(mess, $element) {
+        var addErrorMessage = function(mess, $elem) {
             // validate server side will return null as error message before the server is requested
             if(mess !== null) {
                 if ($.inArray(mess, errorMessages) < 0) {
                     errorMessages.push(mess);
                 }
-                errorInputs.push($element);
-                $element.attr('current-error', mess);
-                _applyErrorStyle($element, config);
+                errorInputs.push($elem);
+                $elem.attr('current-error', mess);
+                _applyErrorStyle($elem, conf);
             }
         },
 
@@ -252,33 +252,33 @@
             if (type === 'submit' || type === 'button' || type == 'reset') {
                 return true;
             }
-            return $.inArray(name, config.ignore || []) > -1;
+            return $.inArray(name, conf.ignore || []) > -1;
         };
 
         // Reset style and remove error class
-        $form.find('.'+config.errorMessageClass+'.alert').remove();
-        _removeErrorStyle($form.find('.'+config.errorElementClass+',.valid'), config);
+        $form.find('.'+conf.errorMessageClass+'.alert').remove();
+        _removeErrorStyle($form.find('.'+conf.errorElementClass+',.valid'), conf);
 
         // Validate element values
         $form.find('input,textarea,select').filter(':not([type="submit"],[type="button"])').each(function() {
-            var $element = $(this);
-            var elementType = $element.attr('type');
-            if (!ignoreInput($element.attr('name'), elementType)) {
+            var $elem = $(this);
+            var elementType = $elem.attr('type');
+            if (!ignoreInput($elem.attr('name'), elementType)) {
 
                 var validation = $.formUtils.validateInput(
-                                $element,
+                                $elem,
                                 language,
-                                config,
+                                conf,
                                 $form,
                                 'submit'
                             );
 
-                $element.trigger('validation', [validation===true]);
+                $elem.trigger('validation', [validation===true]);
 
                 if(validation !== true) {
-                    addErrorMessage(validation, $element);
+                    addErrorMessage(validation, $elem);
                 } else {
-                    $element
+                    $elem
                         .valAttr('current-error', false)
                         .addClass('valid')
                         .parent()
@@ -289,8 +289,8 @@
         });
 
         // Run validation callback
-        if( typeof config.onValidate == 'function' ) {
-            var resp = config.onValidate($form);
+        if( typeof conf.onValidate == 'function' ) {
+            var resp = conf.onValidate($form);
             if( resp && resp.element && resp.message ) {
                 addErrorMessage(resp.message, resp.element);
             }
@@ -303,15 +303,15 @@
             $.formUtils.isValidatingEntireForm = false;
 
             // display all error messages in top of form
-            if (config.errorMessagePosition === 'top') {
+            if (conf.errorMessagePosition === 'top') {
                 var messages = '<strong>' + language.errorTitle + '</strong>';
                 $.each(errorMessages, function(i, mess) {
                     messages += '<br />* ' + mess;
                 });
 
                 // using div instead of P gives better control of css display properties
-                $form.children().eq(0).before('<div class="' + config.errorMessageClass + ' alert alert-danger">' + messages + '</div>');
-                if(config.scrollToTopOnError) {
+                $form.children().eq(0).before('<div class="' + conf.errorMessageClass + ' alert alert-danger">' + messages + '</div>');
+                if(conf.scrollToTopOnError) {
                     $(window).scrollTop($form.offset().top - 20);
                 }
             }
@@ -319,7 +319,7 @@
             // Display error message below input field
             else {
                 $.each(errorInputs, function(i, $input) {
-                    _setInlineErrorMessage($input, $input.attr('current-error'), config);
+                    _setInlineErrorMessage($input, $input.attr('current-error'), conf);
                 });
             }
             return false;
@@ -393,9 +393,9 @@
 
     /**
      * Short hand function that makes the validation setup require less code
-     * @param config
+     * @param conf
      */
-    $.validate = function(config) {
+    $.validate = function(conf) {
 
         var defaultConf = $.extend($.formUtils.defaultConfig(), {
             form : 'form',
@@ -409,10 +409,10 @@
             onError : false
         });
 
-        config = $.extend(defaultConf, config || {});
+        conf = $.extend(defaultConf, conf || {});
 
         // Add validation to forms
-        $.split(config.form, function(formQuery) {
+        $.split(conf.form, function(formQuery) {
 
             var $form  = $(formQuery);
 
@@ -436,13 +436,13 @@
                     }, 200);
                     return false;
                 }
-                var valid = $form.validateForm(config.language, config);
-                if( valid && typeof config.onSuccess == 'function') {
-                    var callbackResponse = config.onSuccess($form);
+                var valid = $form.validateForm(conf.language, conf);
+                if( valid && typeof conf.onSuccess == 'function') {
+                    var callbackResponse = conf.onSuccess($form);
                     if( callbackResponse === false )
                         return false;
-                } else if ( !valid && typeof config.onError == 'function' ) {
-                    config.onError($form);
+                } else if ( !valid && typeof conf.onError == 'function' ) {
+                    conf.onError($form);
                     return false;
                 } else {
                     return valid;
@@ -450,41 +450,41 @@
             })
             .bind('reset.validation', function() {
                 // remove messages
-                $(this).find('.'+config.errorMessageClass+'.alert').remove();
-                _removeErrorStyle($(this).find('.'+config.errorElementClass+',.valid'), config);
+                $(this).find('.'+conf.errorMessageClass+'.alert').remove();
+                _removeErrorStyle($(this).find('.'+conf.errorElementClass+',.valid'), conf);
             })
             .addClass('has-validation-callback');
 
-            if( config.showHelpOnFocus ) {
+            if( conf.showHelpOnFocus ) {
                 $form.showHelpOnFocus();
             }
-            if( config.addSuggestions ) {
+            if( conf.addSuggestions ) {
                 $form.addSuggestions();
             }
-            if( config.validateOnBlur ) {
-                $form.validateOnBlur(config.language, config);
+            if( conf.validateOnBlur ) {
+                $form.validateOnBlur(conf.language, conf);
             }
         });
 
-        if( config.modules != '' ) {
-            if( typeof config.onModulesLoaded == 'function' ) {
+        if( conf.modules != '' ) {
+            if( typeof conf.onModulesLoaded == 'function' ) {
                 $.formUtils.on('load', function() {
-                    config.onModulesLoaded();
+                    conf.onModulesLoaded();
                 });
             }
-            $.formUtils.loadModules(config.modules);
+            $.formUtils.loadModules(conf.modules);
         }
     };
 
     /**
      * @deprecated
-     * @param {Object} config
+     * @param {Object} conf
      */
-    $.validationSetup = function(config) {
+    $.validationSetup = function(conf) {
         if( typeof console != 'undefined' && console.warn ) {
             window.console.warn('Using deprecated function $.validationSetup, pls use $.validate instead');
         }
-        $.validate(config);
+        $.validate(conf);
     };
 
     /**
@@ -603,62 +603,61 @@
                 return;
             }
 
-            var hasLoadedAnyModule = false;
-
-            var loadModuleScripts = function(modules, path) {
-                var moduleList = $.split(modules),
-                    numModules = moduleList.length,
-                    moduleLoadedCallback = function() {
-                        numModules--;
-                        if( numModules == 0 ) {
-                            $.formUtils.isLoadingModules = false;
-                            if( fireEvent && hasLoadedAnyModule ) {
-                                $.formUtils.trigger('load', path);
+            var hasLoadedAnyModule = false,
+                loadModuleScripts = function(modules, path) {
+                    var moduleList = $.split(modules),
+                        numModules = moduleList.length,
+                        moduleLoadedCallback = function() {
+                            numModules--;
+                            if( numModules == 0 ) {
+                                $.formUtils.isLoadingModules = false;
+                                if( fireEvent && hasLoadedAnyModule ) {
+                                    $.formUtils.trigger('load', path);
+                                }
                             }
-                        }
-                    };
+                        };
 
-                if( numModules > 0 ) {
-                    $.formUtils.isLoadingModules = true;
-                }
-
-                var cacheSuffix = '?__='+( new Date().getTime() ),
-                    appendToElement = document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0];
-
-                $.each(moduleList, function(i, modName) {
-                    modName = $.trim(modName);
-                    if( modName.length == 0 ) {
-                        moduleLoadedCallback();
+                    if( numModules > 0 ) {
+                        $.formUtils.isLoadingModules = true;
                     }
-                    else {
-                        var scriptUrl = path + modName + (modName.substr(-3) == '.js' ? '':'.js'),
-                            script = document.createElement('SCRIPT');
 
-                        if( scriptUrl in $.formUtils.loadedModules ) {
-                            // already loaded
+                    var cacheSuffix = '?__='+( new Date().getTime() ),
+                        appendToElement = document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0];
+
+                    $.each(moduleList, function(i, modName) {
+                        modName = $.trim(modName);
+                        if( modName.length == 0 ) {
                             moduleLoadedCallback();
                         }
                         else {
+                            var scriptUrl = path + modName + (modName.substr(-3) == '.js' ? '':'.js'),
+                                script = document.createElement('SCRIPT');
 
-                            // Remember that this script is loaded
-                            $.formUtils.loadedModules[scriptUrl] = 1;
-                            hasLoadedAnyModule = true;
+                            if( scriptUrl in $.formUtils.loadedModules ) {
+                                // already loaded
+                                moduleLoadedCallback();
+                            }
+                            else {
 
-                            // Load the script
-                            script.type = 'text/javascript';
-                            script.onload = moduleLoadedCallback;
-                            script.src = scriptUrl + ( scriptUrl.substr(-7) == '.dev.js' ? cacheSuffix:'' );
-                            script.onreadystatechange = function() {
-                                // IE 7 fix
-                                if( this.readyState == 'complete' ) {
-                                    moduleLoadedCallback();
-                                }
-                            };
-                            appendToElement.appendChild( script );
+                                // Remember that this script is loaded
+                                $.formUtils.loadedModules[scriptUrl] = 1;
+                                hasLoadedAnyModule = true;
+
+                                // Load the script
+                                script.type = 'text/javascript';
+                                script.onload = moduleLoadedCallback;
+                                script.src = scriptUrl + ( scriptUrl.substr(-7) == '.dev.js' ? cacheSuffix:'' );
+                                script.onreadystatechange = function() {
+                                    // IE 7 fix
+                                    if( this.readyState == 'complete' ) {
+                                        moduleLoadedCallback();
+                                    }
+                                };
+                                appendToElement.appendChild( script );
+                            }
                         }
-                    }
-                });
-            };
+                    });
+                };
 
             if( path ) {
                 loadModuleScripts(modules, path);
@@ -695,19 +694,19 @@
         * found in the attribute data-validation. Will return true if valid,
         * error message otherwise
         *
-        * @param {jQuery} $element
+        * @param {jQuery} $elem
         * @param {Object} language ($.formUtils.LANG)
-        * @param {Object} config
+        * @param {Object} conf
         * @param {jQuery} $form
         * @param {String} [eventContext]
         * @return {String|Boolean}
         */
-        validateInput : function($element, language, config, $form, eventContext) {
+        validateInput : function($elem, language, conf, $form, eventContext) {
 
-            $element.trigger('beforeValidation');
+            $elem.trigger('beforeValidation');
 
-            var value = $.trim( $element.val() || ''),
-                optional = $element.valAttr('optional'),
+            var value = $.trim( $elem.val() || ''),
+                optional = $elem.valAttr('optional'),
 
                 // test if a checkbox forces this element to be validated
                 validationDependsOnCheckedInput = false,
@@ -715,7 +714,7 @@
                 validateIfCheckedElement = false,
 
                 // get value of this element's attribute "... if-checked"
-                validateIfCheckedElementName = $element.valAttr("if-checked");
+                validateIfCheckedElementName = $elem.valAttr("if-checked");
 
             // make sure we can proceed
             if (validateIfCheckedElementName != null) {
@@ -738,16 +737,16 @@
             // if empty AND optional attribute is present
             // OR depending on a checkbox being checked AND checkbox is checked, return true
             if ((!value && optional === 'true') || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
-                return config.addValidClassOnAll ? true:null;
+                return conf.addValidClassOnAll ? true:null;
             }
 
-            var validationRules = $element.attr(config.validationRuleAttribute),
+            var validationRules = $elem.attr(conf.validationRuleAttribute),
 
                 // see if form element has inline err msg attribute
                 validationErrorMsg = true;
 
             if( !validationRules ) {
-                return config.addValidClassOnAll ? true:null;
+                return conf.addValidClassOnAll ? true:null;
             }
 
             $.split(validationRules, function(rule) {
@@ -761,16 +760,16 @@
                     // special change of element for checkbox_group rule
                     if ( rule == 'validate_checkbox_group' ) {
                         // set element to first in group, so error msg is set only once
-                            $element = $("[name='"+$element.attr('name')+"']:eq(0)");
+                            $elem = $("[name='"+$elem.attr('name')+"']:eq(0)");
                     }
 
                     var isValid = true;
                     if( eventContext != 'keyup' || validator.validateOnKeyUp ) {
-                        isValid = validator.validatorFunction(value, $element, config, language, $form);
+                        isValid = validator.validatorFunction(value, $elem, conf, language, $form);
                     }
 
                     if(!isValid) {
-                        validationErrorMsg =  $element.attr(config.validationErrorMsgAttribute);
+                        validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute);
                         if( !validationErrorMsg ) {
                             validationErrorMsg = language[validator.errorMessageKey];
                             if( !validationErrorMsg )
@@ -875,6 +874,7 @@
         lengthRestriction : function($inputElement, $maxLengthElement) {
                 // read maxChars from counter display initial text value
            var maxChars = parseInt($maxLengthElement.text(),10),
+                charsLeft = 0,
 
                // internal function does the counting and sets display value
                countCharacters = function() {
@@ -886,8 +886,12 @@
                        $inputElement.val($inputElement.val().substring(0, maxChars));
                        $inputElement.scrollTop(currScrollTopPos);
                    }
+                   charsLeft = maxChars - numChars;
+                   if( charsLeft < 0 )
+                       charsLeft = 0;
+
                    // set counter text
-                   $maxLengthElement.text(maxChars - numChars);
+                   $maxLengthElement.text(charsLeft);
                };
 
            // bind events to this element
@@ -930,13 +934,13 @@
         /**
          * Utility function that can be used to create plugins that gives
          * suggestions when inputs is typed into
-         * @param {jQuery} $element
+         * @param {jQuery} $elem
          * @param {Array} suggestions
          * @param {Object} settings - Optional
          * @return {jQuery}
          */
-        suggest : function($element, suggestions, settings) {
-            var config =  {
+        suggest : function($elem, suggestions, settings) {
+            var conf =  {
                 css : {
                     maxHeight: '150px',
                     background: '#FFF',
@@ -962,11 +966,11 @@
             };
 
             if(settings)
-                $.extend(config, settings);
+                $.extend(conf, settings);
 
-            config.css['position'] = 'absolute';
-            config.css['z-index'] = 9999;
-            $element.attr('autocomplete', 'off');
+            conf.css['position'] = 'absolute';
+            conf.css['z-index'] = 9999;
+            $elem.attr('autocomplete', 'off');
 
             if( this._numSuggestionElements === 0 ) {
                 // Re-position suggestion container if window size changes
@@ -988,7 +992,7 @@
                 $('.jquery-form-suggestion-'+suggestionId).fadeOut('fast');
             };
 
-            $element
+            $elem
                 .data('suggestions', suggestions)
                 .valAttr('suggestion-nr', this._numSuggestionElements)
                 .unbind('focus.suggest')
@@ -1037,8 +1041,8 @@
 
                     // Create suggestion container if not already exists
                     else if(foundSuggestions.length > 0 && $suggestionContainer.length == 0) {
-                        $suggestionContainer = $('<div></div>').css(config.css).appendTo('body');
-                        $element.addClass('suggestions-'+suggestionId);
+                        $suggestionContainer = $('<div></div>').css(conf.css).appendTo('body');
+                        $elem.addClass('suggestions-'+suggestionId);
                         $suggestionContainer
                             .attr('data-suggest-container', suggestionId)
                             .addClass('jquery-form-suggestions')
@@ -1132,7 +1136,7 @@
                                 .css('background', 'none')
                                 .eq($.formUtils._selectedSuggestion)
                                     .addClass('active-suggestion')
-                                    .css(config.activeSuggestionCSS);
+                                    .css(conf.activeSuggestionCSS);
 
                             e.preventDefault();
                             return false;
@@ -1144,7 +1148,7 @@
                     onSelectSuggestion($(this));
                 });
 
-            return $element;
+            return $elem;
         },
 
        /**
@@ -1329,7 +1333,7 @@
     */
     $.formUtils.addValidator({
         name : 'length',
-        validatorFunction : function(val, $el, config, lang) {
+        validatorFunction : function(val, $el, conf, lang) {
             var lengthAllowed = $el.valAttr('length'),
                 type = $el.attr('type');
 
@@ -1344,7 +1348,7 @@
                 lengthCheckResults = $.formUtils.numericRangeCheck(len, lengthAllowed),
                 checkResult;
 
-            switch(lengthCheckResults[0] )
+            switch(lengthCheckResults[0])
             {   // outside of allowed range
                 case "out":
                     this.errorMessage = lang.lengthBadStart + lengthAllowed + lang.lengthBadEnd;
@@ -1400,10 +1404,10 @@
     */
     $.formUtils.addValidator({
         name : 'number',
-        validatorFunction : function(val, $el, config) {
+        validatorFunction : function(val, $el, conf) {
             if(val !== '') {
                 var allowing = $el.valAttr('allowing') || '',
-                    decimalSeparator = $el.valAttr('decimal-separator') || config.decimalSeparator,
+                    decimalSeparator = $el.valAttr('decimal-separator') || conf.decimalSeparator,
                     allowsRange = false,
                     begin, end;
 
@@ -1439,7 +1443,7 @@
      */
     $.formUtils.addValidator({
         name : 'alphanumeric',
-        validatorFunction : function(val, $el, config, language) {
+        validatorFunction : function(val, $el, conf, language) {
             var patternStart = '^([a-zA-Z0-9',
                 patternEnd = ']+)$',
                 additionalChars = $el.attr('data-validation-allowing'),
@@ -1469,7 +1473,7 @@
     */
     $.formUtils.addValidator({
         name : 'custom',
-        validatorFunction : function(val, $el, config) {
+        validatorFunction : function(val, $el, conf) {
             var regexp = new RegExp($el.valAttr('regexp'));
             return regexp.test(val);
         },
@@ -1508,7 +1512,7 @@
     */
     $.formUtils.addValidator({
         name : 'checkbox_group',
-        validatorFunction : function(val, $el, config, lang, $form) 
+        validatorFunction : function(val, $el, conf, lang, $form)
         {   // preset return var
             var checkResult = true;
             // get name of element. since it is a checkbox group, all checkboxes will have same name
@@ -1547,7 +1551,7 @@
             
         return checkResult;
         
-        } // remove comma
+        }
      //   errorMessage : '', // set above in switch statement
      //   errorMessageKey: '' // not used
     });

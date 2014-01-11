@@ -95,6 +95,12 @@
         </div>
 
         <div class="form-group">
+            <label class="control-label">Text</label>
+            (<span id="max-len">20</span> chars left)<br />
+            <textarea id="text-area" name="some-text"></textarea>
+        </div>
+
+        <div class="form-group">
             <label class="control-label">Server validation</label>
             <input class="form-control" name="code"
                    data-validation-help="The word is &quot;secret&quot;"
@@ -240,6 +246,8 @@
             }
         });
     };
+
+    $('#text-area').restrictLength($('#max-len'));
 
     window.applyValidation(true);
     window.applyValidation(false, '#form-b');

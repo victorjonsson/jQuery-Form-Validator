@@ -5,11 +5,54 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.35
+* @version 2.1.36
 */
 (function($) {
 
     'use strict';
+
+    var _applyErrorStyle = function($element, config) {
+            $element
+                .addClass(config.errorElementClass)
+                .removeClass('valid')
+                .parent()
+                    .addClass('has-error')
+                    .removeClass('has-success'); // twitter bs
+
+            if(config.borderColorOnError !== '') {
+                $element.css('border-color', config.borderColorOnError);
+            }
+        },
+        _removeErrorStyle = function($element, config) {
+            $element.each(function() {
+                _setInlineErrorMessage($(this), '', config);
+                $(this)
+                    .removeClass('valid')
+                    .removeClass(config.errorElementClass)
+                    .css('border-color', '')
+                    .parent()
+                        .removeClass('has-error')
+                        .removeClass('has-success')
+                        .find('.'+config.errorMessageClass) // remove inline error message
+                            .remove();
+            });
+        },
+        _setInlineErrorMessage = function($input, mess, config) {
+            var custom = _getInlineErrorElement($input);
+            if( custom ) {
+                custom.innerHTML = mess;
+            } else {
+                var $mess = $input.parent().find('.'+config.errorMessageClass+'.help-block');
+                if( $mess.length == 0 ) {
+                    $mess = $('<span></span>').addClass('help-block').addClass(config.errorMessageClass);
+                    $mess.appendTo($input.parent());
+                }
+                $mess.html(mess);
+            }
+        },
+        _getInlineErrorElement = function($input, config) {
+            return document.getElementById($input.attr('name')+'_err_msg');
+        };
 
     /**
     * Assigns validateInputOnBlur function to elements blur event
@@ -19,8 +62,7 @@
     * @return {jQuery}
     */
     $.fn.validateOnBlur = function(language, settings) {
-        this.find('input[data-validation], textarea[data-validation]')
-            .unbind('blur.validation')
+        this.find('input[data-validation],textarea[data-validation]')
             .bind('blur.validation', function() {
                 $(this).validateInputOnBlur(language, settings);
             });
@@ -46,8 +88,6 @@
                 .valAttr('has-keyup-event', false)
                 .valAttr('backend-valid', false)
                 .valAttr('backend-invalid', false)
-                .unbind('focus.validation')
-                .unbind('blur.validation')
                 .removeClass('has-help-txt');
 
         // Add help text listeners
@@ -59,11 +99,13 @@
             if(help) {
                 $element
                     .addClass('has-help-txt')
-                    .bind('focus.validation', function() {
+                    .unbind('focus.help')
+                    .bind('focus.help', function() {
                         var $help = $element.parent().find('.'+className);
                         if($help.length == 0) {
                             $help = $('<span />')
                                         .addClass(className)
+                                        .addClass('help')
                                         .addClass('help-block') // twitter bs
                                         .text(help)
                                         .hide();
@@ -73,7 +115,8 @@
                         }
                         $help.fadeIn();
                     })
-                    .bind('blur.validation', function() {
+                    .unbind('blur.help')
+                    .bind('blur.help', function() {
                         $(this)
                             .parent()
                             .find('.'+className)
@@ -103,35 +146,18 @@
             eventContext = 'blur';
 
         language = $.extend($.formUtils.LANG, language || {});
-        config = $.extend($.formUtils.defaultConfig(), config || {});
-        config.errorMessagePosition = 'element';
+        _removeErrorStyle(this, config);
 
         var $element = this,
-
-            // test if there is custom obj to hold element error msg (id = element name + err_msg)
-            elementErrMsgObj = document.getElementById($element.attr('name')+'_err_msg'),
-
             $form = $element.closest("form"),
-
-            validationRule = $element.attr(config.validationRuleAttribute);
-
-        // Remove possible error style applied by previous validation
-        $element
-            .removeClass(config.errorElementClass)
-            .css('border-color', '')
-            .parent()
-                .find('.'+config.errorMessageClass).remove();
-
-        // Twitter bs
-        $form.find('.has-error').removeClass('has-error');
-        $element.removeClass('valid').parent().removeClass('has-success');
-
-        // if element has custom err msg container, clear it
-        if( elementErrMsgObj != null) {
-            elementErrMsgObj.innerHTML = '';
-        }
-
-        var validation = $.formUtils.validateInput($element, language, config, $form, eventContext);
+            validationRule = $element.attr(config.validationRuleAttribute),
+            validation = $.formUtils.validateInput(
+                            $element,
+                            language,
+                            $.extend({}, config, {errorMessagePosition:'element'}),
+                            $form,
+                            eventContext
+                        );
 
         $element.trigger('validation', [validation===true]);
 
@@ -140,32 +166,10 @@
                 .addClass('valid')
                 .parent()
                     .addClass('has-success'); // twitter bs
-        } else if(validation === null) {
-            $element
-                .removeClass('valid')
-                .parent()
-                    .removeClass('has-error')
-                    .removeClass('has-success');
-        } else {
-            $element
-                .addClass(config.errorElementClass)
-                .removeClass('valid')
-                .parent()
-                    .addClass('has-error')
-                    .removeClass('has-success'); // twitter bs
+        } else if(validation !== null) {
 
-            // if element has custom err msg container, use it
-            if( elementErrMsgObj != null) {
-                elementErrMsgObj.innerHTML = validation;
-            } else { // use regular span append
-                var $parent = $element.parent();
-                $parent.append('<span class="'+config.errorMessageClass+' help-block">'+validation+'</span>');
-                $parent.addClass('has-error'); // twitter bs
-            }
-
-            if(config.borderColorOnError !== '') {
-                $element.css('border-color', config.borderColorOnError);
-            }
+            _applyErrorStyle($element, config);
+            _setInlineErrorMessage($element, validation, config);
 
             if(attachKeyupEvent) {
                 $element.bind('keyup', function() {
@@ -206,7 +210,6 @@
     $.fn.validateForm = function(language, config) {
 
         language = $.extend($.formUtils.LANG, language || {});
-        config = $.extend($.formUtils.defaultConfig(), config || {});
 
         $.formUtils.isValidatingEntireForm = true;
         $.formUtils.haltValidation = false;
@@ -224,11 +227,8 @@
                     errorMessages.push(mess);
                 }
                 errorInputs.push($element);
-                $element
-                    .valAttr('current-error', mess)
-                    .removeClass('valid')
-                    .parent()
-                    .removeClass('has-success');
+                $element.attr('current-error', mess);
+                _applyErrorStyle($element, config);
             }
         },
 
@@ -249,15 +249,17 @@
          * @return {Boolean}
          */
         ignoreInput = function(name, type) {
-            if (type === 'submit' || type === 'button') {
+            if (type === 'submit' || type === 'button' || type == 'reset') {
                 return true;
             }
             return $.inArray(name, config.ignore || []) > -1;
         };
 
-        //
+        // Reset style and remove error class
+        $form.find('.'+config.errorMessageClass+'.alert').remove();
+        _removeErrorStyle($form.find('.'+config.errorElementClass+',.valid'), config);
+
         // Validate element values
-        //
         $form.find('input,textarea,select').filter(':not([type="submit"],[type="button"])').each(function() {
             var $element = $(this);
             var elementType = $element.attr('type');
@@ -286,23 +288,7 @@
 
         });
 
-        //
-        // Reset style and remove error class
-        //
-        $form.find('.has-error').removeClass('has-error');
-        $form.find('input,textarea,select')
-            .css('border-color', '')
-            .removeClass(config.errorElementClass);
-
-        //
-        // Remove possible error messages from last validation
-        //
-        $('.' + $.split(config.errorMessageClass, ' ').join('.')).remove();
-        $('.'+config.errorMessageClass).remove();
-
-        //
         // Run validation callback
-        //
         if( typeof config.onValidate == 'function' ) {
             var resp = config.onValidate($form);
             if( resp && resp.element && resp.message ) {
@@ -310,24 +296,11 @@
             }
         }
 
-        //
         // Validation failed
-        //
         if (!$.formUtils.haltValidation && errorInputs.length > 0) {
 
             // Reset form validation flag
             $.formUtils.isValidatingEntireForm = false;
-
-            // Apply error style to invalid inputs
-            $.each(errorInputs, function(i, $input) {
-                if (config.borderColorOnError !== '') {
-                    $input.css('border-color', config.borderColorOnError);
-                }
-                $input
-                    .addClass(config.errorElementClass)
-                    .parent()
-                        .addClass('has-error');
-            });
 
             // display all error messages in top of form
             if (config.errorMessagePosition === 'top') {
@@ -346,13 +319,7 @@
             // Display error message below input field
             else {
                 $.each(errorInputs, function(i, $input) {
-                    var $parent = $input.parent(),
-                        $errorSpan = $parent.find('span[class='+config.errorMessageClass+']');
-                    if ($errorSpan.length > 0) {
-                        $errorSpan.text(', '+$input.valAttr('current-error'));
-                    } else {
-                        $parent.append('<span class="'+config.errorMessageClass+' help-block">' + $input.valAttr('current-error') + '</span>');
-                    }
+                    _setInlineErrorMessage($input, $input.attr('current-error'), config);
                 });
             }
             return false;
@@ -429,7 +396,8 @@
      * @param config
      */
     $.validate = function(config) {
-        config = $.extend({
+
+        var defaultConf = $.extend($.formUtils.defaultConfig(), {
             form : 'form',
             validateOnBlur : true,
             showHelpOnFocus : true,
@@ -439,7 +407,9 @@
             language : false,
             onSuccess : false,
             onError : false
-        }, config || {});
+        });
+
+        config = $.extend(defaultConf, config || {});
 
         // Add validation to forms
         $.split(config.form, function(formQuery) {
@@ -447,9 +417,15 @@
             var $form  = $(formQuery);
 
             // Remove all event listeners previously added
+            $form.find('.has-help-txt')
+                .unbind('focus.validation')
+                .unbind('blur.validation');
             $form
                 .removeClass('has-validation-callback')
-                .unbind('submit.validation');
+                .unbind('submit.validation')
+                .unbind('reset.validation')
+                .find('input[data-validation],textarea[data-validation]')
+                    .unbind('blur.validation')
 
             // Validate when submitted
             $form.bind('submit.validation', function() {
@@ -460,7 +436,7 @@
                     }, 200);
                     return false;
                 }
-                var valid = $(this).validateForm(config.language, config);
+                var valid = $form.validateForm(config.language, config);
                 if( valid && typeof config.onSuccess == 'function') {
                     var callbackResponse = config.onSuccess($form);
                     if( callbackResponse === false )
@@ -471,6 +447,11 @@
                 } else {
                     return valid;
                 }
+            })
+            .bind('reset.validation', function() {
+                // remove messages
+                $(this).find('.'+config.errorMessageClass+'.alert').remove();
+                _removeErrorStyle($(this).find('.'+config.errorElementClass+',.valid'), config);
             })
             .addClass('has-validation-callback');
 
@@ -1010,13 +991,13 @@
             $element
                 .data('suggestions', suggestions)
                 .valAttr('suggestion-nr', this._numSuggestionElements)
-                .unbind('focus.validation')
-                .bind('focus.validation', function() {
+                .unbind('focus.suggest')
+                .bind('focus.suggest', function() {
                     $(this).trigger('keyup');
                     $.formUtils._selectedSuggestion = null;
                 })
-                .unbind('keyup.validation')
-                .bind('keyup.validation', function() {
+                .unbind('keyup.suggest')
+                .bind('keyup.suggest', function() {
                     var $input = $(this),
                         foundSuggestions = [],
                         val = $.trim($input.val()).toLocaleLowerCase();
@@ -1158,8 +1139,8 @@
                         }
                     }
                 })
-                .unbind('blur.validation')
-                .bind('blur.validation', function() {
+                .unbind('blur.suggest')
+                .bind('blur.suggest', function() {
                     onSelectSuggestion($(this));
                 });
 

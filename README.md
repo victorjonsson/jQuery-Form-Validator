@@ -294,6 +294,9 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
+#### 3.1.36
+* Now possible to use the native reset() function to clear error messages and error styling of the input elements
+
 #### 2.1.34
 * General improvements and bug fixes
 * Added events "beforeValidation" and "validation" (see http://formvalidator.net/#configuration_callbacks for more info)

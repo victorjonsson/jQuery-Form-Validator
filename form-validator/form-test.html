@@ -44,11 +44,15 @@
             margin-left: 10px;
         }
 
+        span.help {
+            color: #999 !important;
+        }
+
     </style>
 </head>
 <body>
 <div>
-    <form action="" id="test-form" role="form">
+    <form action="" id="form-a" role="form">
         <div class="form-group">
             <label class="control-label" for="inline-suggestions">Inline suggestions</label>
             <input name="inline suggestions" type="text" id="inline-suggestions" class="form-control" data-suggestions="Monkey, Horse, Fox, Tiger, Elephant" />
@@ -56,12 +60,12 @@
 
         <div class="form-group">
             <label class="control-label" for="country-suggestions">Country suggestions</label>
-            <input name="country suggestions" type="text" id="country-suggestions" class="form-control" />
+            <input name="country suggestions" data-validation="country" type="text" id="country-suggestions" class="form-control" />
         </div>
 
         <div class="form-group">
             <label class="control-label" for="country-suggestions">Swedish county suggestions</label>
-            <input name="Swedish county suggestion" type="text" id="swedish-county-suggestions" class="form-control" />
+            <input name="Swedish county suggestion" data-validation="swecounty" type="text" id="swedish-county-suggestions" class="form-control" />
         </div>
 
         <div class="form-group password-strength">
@@ -147,6 +151,29 @@
         </div>
         <p>
             <input type="submit" class="button">
+            <input type="reset" class="button">
+        </p>
+    </form>
+    <hr />
+    <form id="form-b">
+        <div class="form-group">
+            <label class="control-label">Test</label>
+            <input name="test" data-validation="number" type="text" />
+        </div>
+        <p>
+            <input type="submit" class="button">
+            <input type="reset" class="button">
+        </p>
+    </form>
+    <hr />
+    <form id="form-c">
+        <div class="form-group">
+            <label class="control-label">Country</label>
+            <input name="test" data-validation="country" data-validation-error-msg="No valid country given" />
+        </div>
+        <p>
+            <input type="submit" class="button">
+            <input type="reset" class="button">
         </p>
     </form>
 </div>
@@ -169,21 +196,31 @@
         errorMessageKey: 'badEvenNumber'
     });
 
-    window.applyValidation = function() {
+    window.applyValidation = function(validateOnBlur, forms, messagePosition) {
+        if( !forms )
+            forms = 'form';
+        if( !messagePosition )
+            messagePosition = 'top';
+
         $.validate({
+            form : forms,
             language : {
                 requiredFields: 'Du måste bocka för denna'
             },
-            errorMessagePosition : 'top',
+            validateOnBlur : validateOnBlur,
+            errorMessagePosition : messagePosition,
             scrollToTopOnError : true,
+            borderColorOnError : 'purple',
             modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev,
-            onModulesLoaded: function( $form ) {
+            onModulesLoaded: function() {
                 $('#country-suggestions').suggestCountry();
                 $('#swedish-county-suggestions').suggestSwedishCounty();
                 $('#password').displayPasswordStrength();
             },
-            onValidate : function() {
-                console.log('wii');
+            onValidate : function($f) {
+
+                console.log('about to validate form '+$f.attr('id'));
+
                 var $callbackInput = $('#callback');
                 if( $callbackInput.val() == 1 ) {
                     return {
@@ -192,19 +229,21 @@
                     };
                 }
             },
-            onError : function() {
+            onError : function($form) {
                 if( !$.formUtils.haltValidation ) {
-                    alert('Invalid');
+                    alert('Invalid '+$form.attr('id'));
                 }
             },
-            onSuccess : function() {
-                alert('Valid');
+            onSuccess : function($form) {
+                alert('Valid '+$form.attr('id'));
                 return false;
             }
         });
     };
 
-    window.applyValidation();
+    window.applyValidation(true);
+    window.applyValidation(false, '#form-b');
+    window.applyValidation(true, '#form-c', 'element');
 
     // Load one module outside $.validate() even though you do not have to
     $.formUtils.loadModules('date'+dev+'.js', false, false);

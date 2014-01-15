@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Form Test</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/css/bootstrap.min.css" />
+    <style>
+	.get-in-touch {
+		position: relative;
+		margin: 0 auto;
+		padding: 30px;
+		max-width: 370px;
+		border-radius: 2px;
+		background: rgb(255, 255, 255) url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAGCAYAAACFIR03AAAAV0lEQVR42tXOMRWAQAwE0RWFDRTg5d47Jeg4Q9gI06RbqlwKil/P6LpXbDCf85AxEBtMGjKG/jyPUHUerfP4nEeoOo/Wedj5pOo8Wudh55Oq82idh51PLxpvled7kLAXAAAAAElFTkSuQmCC) repeat-x;
+		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+	}
+
+	.get-in-touch input[type=text],.get-in-touch input[type=email], .get-in-touch textarea {
+		background: rgb(235, 241, 245);
+		color: rgb(36, 39, 41);
+	}
+	.get-in-touch  input:focus, .get-in-touch  textarea:focus {
+		outline: 0;
+		background: #FFF;
+	}
+	</style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-mid-4">
+            <form action="#" method="post" class="form" id="myForm">
+            <div class="get-in-touch">
+                <h3 class="text-center">
+                    Test Form</h3>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="name" placeholder="Name" data-validation="required" />
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" id="Email" placeholder="Email" data-validation="email"/>
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" rows="3" placeholder="Message" data-validation="required"></textarea>
+                   
+                </div>
+                <p> <input name="submit" type="submit" class="btn btn-danger" id="submit" value="Submit Form"></p>
+                
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="jquery.form-validator.js"></script>
+<script>
+$(document).ready(function(){
+	// modification to the validation to load a modal progress bar by Miguel
+var sadesApp;
+sadesApp = sadesApp || (function () {
+    var pleaseWaitDiv = $('<div class="modal fade" tabindex="-1" id="pleaseWaitDialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h1>Processing please wait...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="progress-bar"  role="progressbar" style="width: 100%;"></div></div></div></div></div></div>');
+    return {
+        showPleaseWait: function() {
+            pleaseWaitDiv.modal('show');
+        },
+        hidePleaseWait: function () {
+            pleaseWaitDiv.modal('hide');
+        },
+
+    };
+})();
+
+
+  $.validate({
+    form : '#myForm',
+	errorMessagePosition : 'top', // Instead of 'element' which is default
+    scrollToTopOnError : true, // Set this property to true if you have a long form
+
+    onSuccess : function() {
+		sadesApp.showPleaseWait();
+		return false;	// 
+    },
+  });
+});
+</script>
+</body>
+</html>

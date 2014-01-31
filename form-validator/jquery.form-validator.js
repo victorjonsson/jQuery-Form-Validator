@@ -145,7 +145,7 @@
         if(!eventContext)
             eventContext = 'blur';
 
-        language = $.extend($.formUtils.LANG, language || {});
+        language = $.extend({}, $.formUtils.LANG, language || {});
         _removeErrorStyle(this, conf);
 
         var $elem = this,
@@ -209,7 +209,7 @@
      */
     $.fn.validateForm = function(language, conf) {
 
-        language = $.extend($.formUtils.LANG, language || {});
+        language = $.extend({}, $.formUtils.LANG, language || {});
 
         $.formUtils.isValidatingEntireForm = true;
         $.formUtils.haltValidation = false;

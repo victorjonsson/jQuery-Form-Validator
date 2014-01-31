@@ -70,6 +70,26 @@
         return this;
     };
 
+	/*
+	 * Assigns validateInputOnBlur function to elements custom event
+	 * @param {Object} language Optional, will override $.formUtils.LANG
+	 * @param {Object} settings Optional, will override the default settings
+	 * * @return {jQuery}	
+	 */
+	$.fn.validateOnEvent = function(language, settings) {
+        this.find('input[data-validation][data-validation-event],textarea[data-validation][data-validation-event]')
+			.each(function(){
+				var $el = $(this),
+				    etype = $el.attr("data-validation-event");
+				if (etype){
+					$el.bind(etype + ".validation", function(){
+                		$(this).validateInputOnBlur(language, settings, false, etype);
+					});
+				}
+			});
+		return this;
+	};
+
     /**
     * fade in help message when input gains focus
     * fade out when input loses focus
@@ -399,6 +419,10 @@
 
         var defaultConf = $.extend($.formUtils.defaultConfig(), {
             form : 'form',
+			/*
+			 * Enable custom event for validation
+			 */
+            validateOnEvent : true,
             validateOnBlur : true,
             showHelpOnFocus : true,
             addSuggestions : true,
@@ -464,6 +488,10 @@
             if( conf.validateOnBlur ) {
                 $form.validateOnBlur(conf.language, conf);
             }
+			if( conf.validateOnEvent ){
+                $form.validateOnEvent(conf.language, conf);
+			}
+
         });
 
         if( conf.modules != '' ) {

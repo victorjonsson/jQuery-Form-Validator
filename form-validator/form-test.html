@@ -246,12 +246,57 @@
             }
         });
     };
+window.applyFallbackValidation = function(validateOnBlur, forms, messagePosition) {
+        if( !forms )
+            forms = 'form';
+        if( !messagePosition )
+            messagePosition = 'top';
+
+        $(forms).validate({
+            form : forms,
+            language : {
+                requiredFields: 'Du måste bocka för denna'
+            },
+            validateOnBlur : validateOnBlur,
+            errorMessagePosition : messagePosition,
+            scrollToTopOnError : true,
+            borderColorOnError : 'purple',
+            modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev,
+            onModulesLoaded: function() {
+                $('#country-suggestions').suggestCountry();
+                $('#swedish-county-suggestions').suggestSwedishCounty();
+                $('#password').displayPasswordStrength();
+            },
+            onValidate : function($f) {
+
+                console.log('about to validate form '+$f.attr('id'));
+
+                var $callbackInput = $('#callback');
+                if( $callbackInput.val() == 1 ) {
+                    return {
+                        element : $callbackInput,
+                        message : 'This validation was made in a callback'
+                    };
+                }
+            },
+            onError : function($form) {
+                if( !$.formUtils.haltValidation ) {
+                    alert('Invalid '+$form.attr('id'));
+                }
+            },
+            onSuccess : function($form) {
+                alert('Valid '+$form.attr('id'));
+                return false;
+            }
+        });
+    };
 
     $('#text-area').restrictLength($('#max-len'));
 
     window.applyValidation(true);
     window.applyValidation(false, '#form-b');
     window.applyValidation(true, '#form-c', 'element');
+    window.applyFallbackValidation(true);
 
     // Load one module outside $.validate() even though you do not have to
     $.formUtils.loadModules('date'+dev+'.js', false, false);

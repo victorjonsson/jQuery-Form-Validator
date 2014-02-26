@@ -1,0 +1,70 @@
+#!/usr/bin/env node
+
+var fs = require('fs'),
+    sys = require('sys'),
+    exec = require('child_process').exec,
+    jsPath = 'form-validator/',
+    mainScript = jsPath + 'jquery.form-validator.js',
+    mainMinifiedScript = jsPath + 'jquery.form-validator.min.js',
+    newVersion = -1;
+
+/*
+ * Find out new version number
+ */
+var versionParts = fs.readFileSync(mainScript, 'utf-8').split('@version ')[1].split('*/')[0].trim().split('.');
+if(versionParts.length < 3) {
+    // new version number is decided in code
+    newVersion = versionParts.join('.');
+}
+else {
+    // Increase the last number by one
+    var newSubVersion = parseInt(versionParts.splice(versionParts.length-1, 1)[0]) + 1;
+    newVersion = versionParts.join('.') + '.' + newSubVersion.toString();
+}
+
+console.log('Build version: '+newVersion);
+
+/*
+ * Get code docs
+ */
+var documentation = fs.readFileSync(mainScript, 'utf-8').split('*/')[0]+'*/';
+var docParts = documentation.split('@version ');
+documentation = docParts[0] +'@version '+newVersion+'\n'+docParts[1].split('\n')[1];
+
+
+/**
+ * Create new minified version of a file and change
+ * version number
+ * @param {String} path
+ * @param {String} newName
+ */
+function buildFile(path, newName) {
+    var codeParts = fs.readFileSync(path, 'utf-8').split('@version ');
+    var lastCodeParts = codeParts[1].split("\n");
+    var origCode = codeParts[0] + '@version '+newVersion+ "\n" + lastCodeParts.slice(1, lastCodeParts.length).join("\n") + "";
+    fs.writeFileSync(path, origCode);
+    fs.writeFileSync(newName, '');
+    exec('uglifyjs '+path+' >> '+newName, function (error, stdout, stderr) {
+        if(stdout)
+            console.log('stdout: '+stdout);
+        if(error)
+            console.log('error: '+error);
+        if(stderr)
+            console.log('stderror: '+stderr);
+
+        console.log('* '+newName);
+    });
+}
+
+buildFile(mainScript,  mainMinifiedScript);
+fs.readdirSync(jsPath).forEach(function(f) {
+    if(f.substr(-7) == '.dev.js') {
+        var compressedFileName = jsPath + f.substr(0, f.length - 6) + 'js';
+        buildFile(jsPath+f, compressedFileName);
+    }
+});
+
+/*
+ * Add docs to main script
+ */
+fs.writeFileSync(mainMinifiedScript, documentation+"\n"+fs.readFileSync(mainMinifiedScript, 'utf-8'));

@@ -1,23 +1,24 @@
 {
     "name" : "formvalidator",
     "title" : "jQuery Form Validator",
-    "description" : "This plugin was created to minimize javascript logic in the html code when dealing with front-end validation of form data",
+    "description" : "This plugin makes it easy to validate user input while keeping your HTML markup clean from javascript code. Even though this plugin has a wide range of validation functions it's designed to require as little bandwidth as possible. This is achieved by grouping together validation functions in \"modules\", making it possible for the programmer to load only those functions that's needed to validate a particular form.",
     "keywords": [
         "form",
-        "validation"
+        "validation",
+        "validator"
     ],
-    "version" : "1.5.4",
+    "version" : "2.1.38",
     "author" : {
         "name": "Victor Jonsson",
         "url": "http://victorjonsson.se",
         "email" : "kontakt@victorjonsson.se"
     },
-    "homepage" : "https://github.com/victorjonsson/jQuery-Form-Validator",
-    "demo" : "http://victorjonsson.se/51/jquery-form-validator/?from=jQuery",
-    "download" : "https://raw.github.com/victorjonsson/jQuery-Form-Validator/master/jquery.formvalidator.min.js",
+    "homepage" : "http://formvalidator.net",
+    "demo" : "http://formvalidator.net",
+    "download" : "http://formvalidator.net",
     "bugs" : "https://github.com/victorjonsson/jQuery-Form-Validator/issues",
     "licenses" : [{
-        "type": "GPLv2",
+        "type": "Dual licensed under the MIT or GPL Version 2 licenses",
         "url": "http://www.gnu.org/licenses/gpl-2.0.html"
     }],
     "dependencies" : {

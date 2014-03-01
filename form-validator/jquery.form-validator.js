@@ -62,7 +62,7 @@
     * @return {jQuery}
     */
     $.fn.validateOnBlur = function(language, settings) {
-        this.find('input[data-validation],textarea[data-validation]')
+        this.find('input[data-validation],textarea[data-validation],select[data-validation]')
             .bind('blur.validation', function() {
                 $(this).validateInputOnBlur(language, settings);
             });

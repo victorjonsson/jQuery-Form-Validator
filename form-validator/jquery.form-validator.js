@@ -948,9 +948,11 @@
            if (range.length == 2 && (value < parseInt(range[0],10) || value > parseInt(range[1],10) ) )
            {   return [ "out", range[0], range[1] ] ; } // value is out of range
            else if (rangeAllowed.indexOf('min') === 0 && (value < minmax ) ) // min
-                {  return ["min", minmax]; } // value is below min
-                else if (rangeAllowed.indexOf('max') === 0 && (value > minmax ) ) // max
-                     {   return ["max", minmax]; } // value is above max
+           {  return ["min", minmax]; } // value is below min
+           else if (rangeAllowed.indexOf('max') === 0 && (value > minmax ) ) // max
+           {   return ["max", minmax]; } // value is above max
+           else if (range.length == 1 && value != parseInt(range[0],10))
+           {   return ["out", range[0]]; } // value is not met to required length.
            else { return [ "ok" ] ; } // value is in allowed range
         },
 

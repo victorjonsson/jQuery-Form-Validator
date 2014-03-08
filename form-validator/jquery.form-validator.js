@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.40
+* @version 2.1.41
 */
 (function($) {
 
@@ -730,6 +730,9 @@
         * @return {String|Boolean}
         */
         validateInput : function($elem, language, conf, $form, eventContext) {
+
+            if( $elem.attr('disabled') )
+                return null; // returning null will prevent that the valid class gets applied to the element
 
             $elem.trigger('beforeValidation');
 

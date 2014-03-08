@@ -57,7 +57,14 @@
             message = 'Check that input[value='+obj.val.attr('value')+'] is '+(obj.isValid ? 'valid':'invalid');
         }
 
-        if( $el.attr('data-validation-optional') && !$el.val() ) {
+        if( result === null && obj.isValid ) {
+            equal(
+                result,
+                null,
+                message
+            );
+        }
+        else if( $el.attr('data-validation-optional') && !$el.val() ) {
             equal(
                 result,
                 null,
@@ -190,6 +197,17 @@
             $.each(links, function(i, obj) {
                 runTest(obj, 'alphanumeric');
             });
+        });
+
+
+        /*
+         * ALPHANUMERIC VALIDATION
+         */
+        test("Do not validate disabled", function() {
+            clearForm();
+            var $input = input('a--b', {'allowing':'', '':'alphanumeric'});
+            $input.attr('disabled', 'disabled');
+            runTest({val:$input, isValid: true});
         });
 
         /*

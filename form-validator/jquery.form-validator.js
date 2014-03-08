@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.39
+* @version 2.1.40
 */
 (function($) {
 
@@ -940,20 +940,18 @@
         */
         numericRangeCheck : function(value, rangeAllowed) 
         {
-           // split by dash
-           var range = $.split(rangeAllowed, '-');
-           // min or max
-           var minmax = parseInt(rangeAllowed.substr(3),10)
-           // range ?
-           if (range.length == 2 && (value < parseInt(range[0],10) || value > parseInt(range[1],10) ) )
-           {   return [ "out", range[0], range[1] ] ; } // value is out of range
-           else if (rangeAllowed.indexOf('min') === 0 && (value < minmax ) ) // min
-           {  return ["min", minmax]; } // value is below min
-           else if (rangeAllowed.indexOf('max') === 0 && (value > minmax ) ) // max
-           {   return ["max", minmax]; } // value is above max
-           else if (range.length == 1 && value != parseInt(range[0],10))
-           {   return ["out", range[0]]; } // value is not met to required length.
-           else { return [ "ok" ] ; } // value is in allowed range
+            // split by dash
+            var range = $.split(rangeAllowed, '-');
+            // min or max
+            var minmax = parseInt(rangeAllowed.substr(3),10)
+            // range ?
+            if (range.length == 2 && (value < parseInt(range[0],10) || value > parseInt(range[1],10) ) )
+            {   return [ "out", range[0], range[1] ] ; } // value is out of range
+            else if (rangeAllowed.indexOf('min') === 0 && (value < minmax ) ) // min
+            {  return ["min", minmax]; } // value is below min
+            else if (rangeAllowed.indexOf('max') === 0 && (value > minmax ) ) // max
+            {   return ["max", minmax]; } // value is above max
+            else { return [ "ok" ] ; } // value is in allowed range
         },
 
 

@@ -77,7 +77,7 @@
 	 * * @return {jQuery}	
 	 */
 	$.fn.validateOnEvent = function(language, settings) {
-        this.find('input[data-validation][data-validation-event],textarea[data-validation][data-validation-event]')
+        this.find('input[data-validation][data-validation-event],textarea[data-validation][data-validation-event],select[data-validation][data-validation-event]')
 			.each(function(){
 				var $el = $(this),
 				    etype = $el.attr("data-validation-event");

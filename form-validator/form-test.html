@@ -95,6 +95,18 @@
         </div>
 
         <div class="form-group">
+            <label class="control-label">Make a choice</label>
+            <br />
+            <select name="choice" data-validation="required" data-validation-error-msg="Please make a choice">
+                <option value="">- - Choose - -</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label class="control-label">Text</label>
             (<span id="max-len">20</span> chars left)<br />
             <textarea id="text-area" name="some-text"></textarea>

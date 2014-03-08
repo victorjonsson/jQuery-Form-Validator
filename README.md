@@ -370,6 +370,7 @@ calling $.validate()
 <a href="https://github.com/S0L4R1S" target="_blank">@S0L4R1S</a><br />
 <a href="http://lisangan.com/">Erick Lisangan</a><br />
 <a href="https://github.com/kirbs-">@kirbs</a>
+<a href="https://github.com/hslee87">hslee87</a>
 
 #### Additional credits
 

@@ -510,7 +510,7 @@
      */
     $.validationSetup = function(conf) {
         if( typeof console != 'undefined' && console.warn ) {
-            window.console.warn('Using deprecated function $.validationSetup, pls use $.validate instead');
+            console.warn('Using deprecated function $.validationSetup, pls use $.validate instead');
         }
         $.validate(conf);
     };

@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.44
+* @version 2.1.45
 */
 (function($) {
 
@@ -328,9 +328,14 @@
 
         // Run validation callback
         if( typeof conf.onValidate == 'function' ) {
-            var resp = conf.onValidate($form);
-            if( resp && resp.element && resp.message ) {
-                addErrorMessage(resp.message, resp.element);
+            var errors = conf.onValidate($form);
+            if($.isArray(errors) ) {
+                $.each(errors, function(i, err) {
+                    addErrorMessage(err.message, err.element);
+                });
+            }
+            else if( errors && errors.element && errors.message ) {
+                addErrorMessage(errors.message, errors.element);
             }
         }
 

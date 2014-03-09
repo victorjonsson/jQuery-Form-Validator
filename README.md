@@ -298,6 +298,7 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 * Incorrect error-styling when using datepicker or suggestions is now fixed
 * Incorrect error-styling of select elements is now fixed
 * Deprecated function $.validationSetup is now removed, use $.validate() instead
+* You can now return an array with errors using the event `onValidate`
 
 #### 2.1.36
 * Now possible to use the native reset() function to clear error messages and error styling of the input elements

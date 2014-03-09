@@ -85,6 +85,15 @@
                    id="datepicker" />
         </div>
 
+        <div class="form-group">
+            <label class="control-label">Number 0-10 (accepting floats)</label>
+            <input name="floats" class="form-control"
+                   data-validation="number"
+                   data-validation-allowing="range[0;10], float"
+                   data-validation-decimal-separator=","
+                    />
+        </div>
+
         <div class="form-group password-strength">
             <label class="control-label" for="password">Display password strength (only strong)</label>
             <input name="password" type="password" id="password" class="form-control" data-validation="strength" data-validation-strength="3" />

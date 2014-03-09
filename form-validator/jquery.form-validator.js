@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.42
+* @version 2.1.43
 */
 (function($) {
 
@@ -169,7 +169,6 @@
             // This validation has to be postponed 
             var _self = this;
             window.postponedValidation = function() {
-                console.log('running the waiting validation');
                 _self.validateInputOnBlur(language, conf, attachKeyupEvent);
                 window.postponedValidation = false;
             };
@@ -519,17 +518,6 @@
             }
             $.formUtils.loadModules(conf.modules);
         }
-    };
-
-    /**
-     * @deprecated
-     * @param {Object} conf
-     */
-    $.validationSetup = function(conf) {
-        if( typeof console != 'undefined' && console.warn ) {
-            console.warn('Using deprecated function $.validationSetup, pls use $.validate instead');
-        }
-        $.validate(conf);
     };
 
     /**
@@ -1473,10 +1461,15 @@
                     allowsRange = true;
                 }
 
+                if( decimalSeparator == ',' ) {
+                    // Fix for checking range with floats using ,
+                    val = val.replace(',', '.');
+                }
+
                 if(allowing.indexOf('number') > -1 && val.replace(/[0-9]/g, '') === '' && (!allowsRange || (val >= begin && val <= end)) ) {
                     return true;
                 }
-                if(allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9]+)\\'+decimalSeparator+'([0-9]+)$')) !== null && (!allowsRange || (val >= begin && val <= end)) ) {
+                if(allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9]+)\\.([0-9]+)$')) !== null && (!allowsRange || (val >= begin && val <= end)) ) {
                     return true;
                 }
             }

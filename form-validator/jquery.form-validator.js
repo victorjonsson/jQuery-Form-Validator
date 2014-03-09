@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.43
+* @version 2.1.44
 */
 (function($) {
 
@@ -165,9 +165,11 @@
         if(!eventContext)
             eventContext = 'blur';
 
-        if( (this.valAttr('suggestion-nr') || this.hasClass('hasDatepicker') ) && !window.postponedValidation ) {
+        if( (this.valAttr('suggestion-nr') || this.valAttr('postpone') || this.hasClass('hasDatepicker')) && !window.postponedValidation ) {
             // This validation has to be postponed 
-            var _self = this;
+            var _self = this,
+                postponeTime = this.valAttr('postpone') || 200;
+
             window.postponedValidation = function() {
                 _self.validateInputOnBlur(language, conf, attachKeyupEvent);
                 window.postponedValidation = false;
@@ -176,7 +178,7 @@
                 if( window.postponedValidation ) {
                     window.postponedValidation();
                 }
-            }, 200);
+            }, postponeTime);
 
             return this;
         }

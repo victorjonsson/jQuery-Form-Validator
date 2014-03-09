@@ -12,7 +12,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.43
+ * @version 2.1.44
  */
 (function($) {
 

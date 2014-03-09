@@ -1603,5 +1603,19 @@
      //   errorMessage : '', // set above in switch statement
      //   errorMessageKey: '' // not used
     });
+    
+    /**
+     * Function that validate all inputs in a form (provides fallback to preview versions)
+     *
+     * @param [language]
+     * @param [conf]
+     */
+    $.fn.validate = function(language, conf) {
+
+        language = $.extend($.formUtils.LANG, language || {});
+        conf = $.extend($.formUtils.defaultConfig(), conf || {});
+
+        return this.validateForm(language, conf);
+    };
 
 })(jQuery);

@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <title>Form Test</title>
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/black-tie/jquery-ui.css" />
     <style>
 
         /* Form and inputs */
@@ -68,6 +69,22 @@
             <input name="Swedish county suggestion" data-validation="swecounty" type="text" id="swedish-county-suggestions" class="form-control" />
         </div>
 
+        <div class="form-group">
+            <label class="control-label">Year</label>
+            <input name="birth" class="form-control"
+                   data-validation="date"
+                   data-validation-format="yyyy-mm-dd"
+                   data-suggestions="2014-01-15,2014-01-16,2014-01-17" />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Datepicker</label>
+            <input name="birth2" class="form-control"
+                   data-validation="date"
+                   data-validation-format="mm/dd/yyyy"
+                   id="datepicker" />
+        </div>
+
         <div class="form-group password-strength">
             <label class="control-label" for="password">Display password strength (only strong)</label>
             <input name="password" type="password" id="password" class="form-control" data-validation="strength" data-validation-strength="3" />
@@ -109,7 +126,7 @@
         <div class="form-group">
             <label class="control-label">Text</label>
             (<span id="max-len">20</span> chars left)<br />
-            <textarea id="text-area" name="some-text"></textarea>
+            <textarea id="text-area" class="form-control" name="some-text"></textarea>
         </div>
 
         <div class="form-group">
@@ -189,6 +206,15 @@
             <label class="control-label">Country</label>
             <input name="test" data-validation="country" data-validation-error-msg="No valid country given" />
         </div>
+        <div class="form-group">
+            <label class="control-label">Alphanumeric (will only be validated if the checkbox is checked)</label>
+            <input name="test2"
+                    data-validation="alphanumeric"
+                    data-validation-error-msg="Invalid..."
+                    data-validation-if-checked="checker" />
+            <br />
+            <input type="checkbox" name="checker" />
+        </div>
         <p>
             <input type="submit" class="button">
             <input type="reset" class="button">
@@ -196,12 +222,15 @@
     </form>
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
 <script src="jquery.form-validator.js"></script>
 <script>
 (function($, window) {
 
     var dev = window.location.hash.indexOf('dev') > -1 ? '.dev' : '';
 
+    // setup datepicker
+    $("#datepicker").datepicker();
 
     // Add a new validator
     $.formUtils.addValidator({
@@ -273,7 +302,15 @@
             console.log('About to validate input "'+this.name+'"');
         })
         .on('validation', function(evt, isValid) {
-            console.log('Input '+this.name+' is '+( isValid ? 'VALID':'NOT VALID'));
+            var validationResult = '';
+            if( isValid === null ) {
+                validationResult = 'not validated';
+            } else if( isValid ) {
+                validationResult = 'VALID';
+            } else {
+                validationResult = 'INVALID';
+            }
+            console.log('Input '+this.name+' is '+validationResult);
         });
 
 })(jQuery, window);

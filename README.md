@@ -294,7 +294,11 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
-#### 3.1.36
+#### 2.1.40
+* Incorrect error-styling when using datepicker or suggestions is now fixed
+* Incorrect error-styling of select elements is now fixed
+
+#### 2.1.36
 * Now possible to use the native reset() function to clear error messages and error styling of the input elements
 
 #### 2.1.34

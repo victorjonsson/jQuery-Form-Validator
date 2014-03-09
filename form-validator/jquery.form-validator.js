@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.41
+* @version 2.1.42
 */
 (function($) {
 
@@ -165,6 +165,23 @@
         if(!eventContext)
             eventContext = 'blur';
 
+        if( (this.valAttr('suggestion-nr') || this.hasClass('hasDatepicker') ) && !window.postponedValidation ) {
+            // This validation has to be postponed 
+            var _self = this;
+            window.postponedValidation = function() {
+                console.log('running the waiting validation');
+                _self.validateInputOnBlur(language, conf, attachKeyupEvent);
+                window.postponedValidation = false;
+            };
+            setTimeout(function() {
+                if( window.postponedValidation ) {
+                    window.postponedValidation();
+                }
+            }, 200);
+
+            return this;
+        }
+
         language = $.extend({}, $.formUtils.LANG, language || {});
         _removeErrorStyle(this, conf);
 
@@ -179,7 +196,7 @@
                             eventContext
                         );
 
-        $elem.trigger('validation', [validation===true]);
+        $elem.trigger('validation', [validation===null ? null : validation===true]);
 
         if(validation === true) {
             $elem

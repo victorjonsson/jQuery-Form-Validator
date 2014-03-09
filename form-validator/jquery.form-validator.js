@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.46
+* @version 2.1.47
 */
 (function($) {
 
@@ -375,9 +375,6 @@
 
                 // using div instead of P gives better control of css display properties
                 $form.children().eq(0).before('<div class="' + conf.errorMessageClass + ' alert alert-danger">' + messages + '</div>');
-                if(conf.scrollToTopOnError) {
-                    $(window).scrollTop($form.offset().top - 20);
-                }
             }
 
             // Display error message below input field or in defined container
@@ -385,6 +382,10 @@
                 $.each(errorInputs, function(i, $input) {
                     _setInlineErrorMessage($input, $input.attr('current-error'), conf, conf.errorMessagePosition);
                 });
+            }
+
+            if(conf.scrollToTopOnError) {
+                $(window).scrollTop($form.offset().top - 20);
             }
 
             return false;

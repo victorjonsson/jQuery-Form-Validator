@@ -317,7 +317,7 @@
 
     $('#text-area').restrictLength($('#max-len'));
 
-    window.applyValidation(true);
+    window.applyValidation(true, '#form-a', 'element');
     window.applyValidation(false, '#form-b', 'element');
     window.applyValidation(true, '#form-c', $('#error-container'));
 

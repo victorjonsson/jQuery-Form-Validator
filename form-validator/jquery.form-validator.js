@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.45
+* @version 2.1.46
 */
 (function($) {
 
@@ -25,7 +25,7 @@
         },
         _removeErrorStyle = function($elem, conf) {
             $elem.each(function() {
-                _setInlineErrorMessage($(this), '', conf);
+                _setInlineErrorMessage($(this), '', conf, conf.errorMessagePosition);
                 $(this)
                     .removeClass('valid')
                     .removeClass(conf.errorElementClass)
@@ -37,11 +37,32 @@
                             .remove();
             });
         },
-        _setInlineErrorMessage = function($input, mess, conf) {
+        _setInlineErrorMessage = function($input, mess, conf, $messageContainer) {
             var custom = _getInlineErrorElement($input);
             if( custom ) {
                 custom.innerHTML = mess;
-            } else {
+            }
+            else if( typeof $messageContainer == 'object' ) {
+                var $found = false;
+                $messageContainer.find('.'+conf.errorMessageClass).each(function() {
+                    if( this.inputReferer == $input[0] ) {
+                        $found = $(this);
+                        return false;
+                    }
+                });
+                if( $found ) {
+                    if( !mess ) {
+                        $found.remove();
+                    } else {
+                        $found.html(mess);
+                    }
+                } else {
+                    var $mess = $('<div class="'+conf.errorMessageClass+'">'+mess+'</div>');
+                    $mess[0].inputReferer = $input[0];
+                    $messageContainer.prepend($mess);
+                }
+            }
+            else {
                 var $mess = $input.parent().find('.'+conf.errorMessageClass+'.help-block');
                 if( $mess.length == 0 ) {
                     $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
@@ -207,7 +228,7 @@
         } else if(validation !== null) {
 
             _applyErrorStyle($elem, conf);
-            _setInlineErrorMessage($elem, validation, conf);
+            _setInlineErrorMessage($elem, validation, conf, conf.errorMessagePosition);
 
             if(attachKeyupEvent) {
                 $elem.bind('keyup', function() {
@@ -329,7 +350,7 @@
         // Run validation callback
         if( typeof conf.onValidate == 'function' ) {
             var errors = conf.onValidate($form);
-            if($.isArray(errors) ) {
+            if( $.isArray(errors) ) {
                 $.each(errors, function(i, err) {
                     addErrorMessage(err.message, err.element);
                 });
@@ -359,12 +380,13 @@
                 }
             }
 
-            // Display error message below input field
-            else {
+            // Display error message below input field or in defined container
+            else  {
                 $.each(errorInputs, function(i, $input) {
-                    _setInlineErrorMessage($input, $input.attr('current-error'), conf);
+                    _setInlineErrorMessage($input, $input.attr('current-error'), conf, conf.errorMessagePosition);
                 });
             }
+
             return false;
         }
 

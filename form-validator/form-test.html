@@ -49,6 +49,17 @@
             color: #999 !important;
         }
 
+        /* Error container for form C */
+
+        #error-container div {
+            color: red;
+            line-height: 140%;
+        }
+
+        #error-container div:last-child {
+            padding-bottom: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -216,6 +227,10 @@
             <input name="test" data-validation="country" data-validation-error-msg="No valid country given" />
         </div>
         <div class="form-group">
+            <label class="control-label">E-mail</label>
+            <input name="test" data-validation="email" data-validation-error-msg="E-mail is not valid" />
+        </div>
+        <div class="form-group">
             <label class="control-label">Alphanumeric (will only be validated if the checkbox is checked)</label>
             <input name="test2"
                     data-validation="alphanumeric"
@@ -223,6 +238,9 @@
                     data-validation-if-checked="checker" />
             <br />
             <input type="checkbox" name="checker" />
+        </div>
+        <div id="error-container">
+
         </div>
         <p>
             <input type="submit" class="button">
@@ -300,8 +318,8 @@
     $('#text-area').restrictLength($('#max-len'));
 
     window.applyValidation(true);
-    window.applyValidation(false, '#form-b');
-    window.applyValidation(true, '#form-c', 'element');
+    window.applyValidation(false, '#form-b', 'element');
+    window.applyValidation(true, '#form-c', $('#error-container'));
 
     // Load one module outside $.validate() even though you do not have to
     $.formUtils.loadModules('date'+dev+'.js', false, false);

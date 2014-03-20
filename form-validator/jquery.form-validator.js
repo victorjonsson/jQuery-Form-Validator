@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.47
+* @version 2.1.48
 */
 (function($) {
 
@@ -373,7 +373,6 @@
                     messages += '<br />* ' + mess;
                 });
 
-                // using div instead of P gives better control of css display properties
                 $form.children().eq(0).before('<div class="' + conf.errorMessageClass + ' alert alert-danger">' + messages + '</div>');
             }
 
@@ -485,6 +484,8 @@
         $.split(conf.form, function(formQuery) {
 
             var $form  = $(formQuery);
+
+            $(window).trigger('formValidationSetup', [$form]);
 
             // Remove all event listeners previously added
             $form.find('.has-help-txt')
@@ -835,11 +836,14 @@
                     }
 
                     if(!isValid) {
-                        validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute);
+                        validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute+'-'+rule.replace('validate_', ''));
                         if( !validationErrorMsg ) {
-                            validationErrorMsg = language[validator.errorMessageKey];
-                            if( !validationErrorMsg )
-                                validationErrorMsg = validator.errorMessage;
+                            validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute);
+                            if( !validationErrorMsg ) {
+                                validationErrorMsg = language[validator.errorMessageKey];
+                                if( !validationErrorMsg )
+                                    validationErrorMsg = validator.errorMessage;
+                            }
                         }
                         return false; // breaks the iteration
                     }
@@ -1492,6 +1496,9 @@
                 }
 
                 if( decimalSeparator == ',' ) {
+                    if( val.indexOf('.') > -1 ) {
+                        return false;
+                    }
                     // Fix for checking range with floats using ,
                     val = val.replace(',', '.');
                 }

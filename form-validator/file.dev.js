@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.47
+ * @version 2.1.48
  */
 (function($, window) {
 
@@ -45,6 +45,7 @@
                 $.each(files, function(i, file) {
                     valid = false;
                     mime = file.type || '';
+                    alert(mime);
                     $.each(allowedTypes, function(j, type) {
                         valid = mime.indexOf(type) > -1;
                         if( valid ) {

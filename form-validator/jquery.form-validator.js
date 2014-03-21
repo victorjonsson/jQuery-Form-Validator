@@ -74,6 +74,17 @@
         },
         _getInlineErrorElement = function($input, conf) {
             return document.getElementById($input.attr('name')+'_err_msg');
+        },
+        _templateMessage = function($form, title, errorMessages, conf) {
+            var messages = conf.errorMessageTemplate.messages.replace(/\{errorTitle\}/g, title);
+            var fields = [];
+            $.each(errorMessages, function(i, msg) {
+                fields.push(conf.errorMessageTemplate.field.replace(/\{msg\}/g, msg));
+            });
+            messages = messages.replace(/\{fields\}/g, fields.join(''));
+            var container = conf.errorMessageTemplate.container.replace(/\{errorMessageClass\}/g, conf.errorMessageClass);
+            container = container.replace(/\{messages\}/g, messages);
+            $form.children().eq(0).before(container);
         };
 
     /**
@@ -335,6 +346,11 @@
 
                 $elem.trigger('validation', [validation===true]);
 
+                // Run element validation callback
+                if( typeof conf.onElementValidate == 'function' ) {
+                    conf.onElementValidate((validation === true), $elem, $form, validation);
+                }
+
                 if(validation !== true) {
                     addErrorMessage(validation, $elem);
                 } else {
@@ -369,14 +385,14 @@
 
             // display all error messages in top of form
             if (conf.errorMessagePosition === 'top') {
-                var messages = '<strong>' + language.errorTitle + '</strong>';
-                $.each(errorMessages, function(i, mess) {
-                    messages += '<br />* ' + mess;
-                });
-
-                $form.children().eq(0).before('<div class="' + conf.errorMessageClass + ' alert alert-danger">' + messages + '</div>');
+                _templateMessage($form, language.errorTitle, errorMessages, conf);
             }
-
+            // Customize display message
+            else if(conf.errorMessagePosition === 'custom') {
+                if( typeof conf.errorMessageCustom === 'function' ) {
+                    conf.errorMessageCustom($form, language.errorTitle, errorMessages, conf);
+                }
+            }
             // Display error message below input field or in defined container
             else  {
                 $.each(errorInputs, function(i, $input) {
@@ -476,7 +492,8 @@
             onModulesLoaded : null,
             language : false,
             onSuccess : false,
-            onError : false
+            onError : false,
+            onElementValidate : false
         });
 
         conf = $.extend(defaultConf, conf || {});
@@ -568,7 +585,13 @@
                 errorMessageClass : 'form-error', // class name of div containing error messages when validation fails
                 validationRuleAttribute : 'data-validation', // name of the attribute holding the validation rules
                 validationErrorMsgAttribute : 'data-validation-error-msg', // define custom err msg inline with element
-                errorMessagePosition : 'element', // Can be either "top" or "element"
+                errorMessagePosition : 'element', // Can be either "top" or "element" or "custom"
+                errorMessageTemplate : {
+                    container: '<div class="{errorMessageClass} alert alert-danger">{messages}</div>',
+                    messages: '<strong>{errorTitle}</strong><ul>{fields}</ul>',
+                    field: '<li>{msg}</li>'
+                },
+                errorMessageCustom: _templateMessage,
                 scrollToTopOnError : true,
                 dateFormat : 'yyyy-mm-dd',
                 addValidClassOnAll : false, // whether or not to apply class="valid" even if the input wasn't validated

@@ -348,7 +348,7 @@
 
                 // Run element validation callback
                 if( typeof conf.onElementValidate == 'function' ) {
-                    conf.onElementValidate((validation === true), $elem, validation);
+                    conf.onElementValidate((validation === true), $elem, $form, validation);
                 }
 
                 if(validation !== true) {

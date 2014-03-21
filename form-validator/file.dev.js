@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.48
+ * @version 2.1.50
  */
 (function($, window) {
 
@@ -137,8 +137,15 @@
      * This event listener will remove error messages for file
      * inputs when file changes
      */
-    $.formUtils.on('load', function() {
-        $('input[type="file"]').filter('*[data-validation]').bind('change', function() {
+    $(window).one('validatorsLoaded formValidationSetup', function(evt, $form) {
+        var $inputs;
+        if( $form ) {
+            $inputs = $form.find('input[type="file"]');
+        } else {
+            $inputs = $('input[type="file"]');
+        }
+
+        $inputs.filter('*[data-validation]').bind('change', function() {
             $(this)
                 .removeClass('error')
                 .parent()

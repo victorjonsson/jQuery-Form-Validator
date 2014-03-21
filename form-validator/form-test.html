@@ -97,7 +97,7 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label">Number 0-10 (accepting floats)</label>
+            <label class="control-label">Number 0-10 (accepting floats with comma)</label>
             <input name="floats" class="form-control"
                    data-validation="number"
                    data-validation-allowing="range[0;10], float"
@@ -247,6 +247,34 @@
             <input type="reset" class="button">
         </p>
     </form>
+    <hr />
+    <form id="form-d">
+        <h2>HTML5 attributes</h2>
+        <div class="form-group">
+            <label class="control-label">type="email"</label>
+            <input type="email" required="required" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">type="url" (optional)</label>
+            <input type="url" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">type="number"</label>
+            <input type="number" required="required" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">type="number" range[-5;5]</label>
+            <input type="number" min="-5" max="5" required="required" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">pattern="^([a-z]+)$"</label>
+            <input type="text" pattern="^([a-z]+)$" required="required" />
+        </div>
+        <p>
+            <input type="submit" class="button">
+            <input type="reset" class="button">
+        </p>
+    </form>
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
@@ -285,7 +313,7 @@
             errorMessagePosition : messagePosition,
             scrollToTopOnError : true,
             borderColorOnError : 'purple',
-            modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev,
+            modules : 'security'+dev+', location'+dev+', sweden'+dev+', html5'+dev+', file'+dev+', uk'+dev,
             onModulesLoaded: function() {
                 $('#country-suggestions').suggestCountry();
                 $('#swedish-county-suggestions').suggestSwedishCounty();
@@ -320,6 +348,7 @@
     window.applyValidation(true, '#form-a', 'top');
     window.applyValidation(false, '#form-b', 'element');
     window.applyValidation(true, '#form-c', $('#error-container'));
+    window.applyValidation(true, '#form-d', 'element');
 
     // Load one module outside $.validate() even though you do not have to
     $.formUtils.loadModules('date'+dev+'.js', false, false);

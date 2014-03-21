@@ -5,13 +5,14 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.48
+* @version 2.1.50
 */
 (function($) {
 
     'use strict';
 
-    var _applyErrorStyle = function($elem, conf) {
+    var $window = $(window),
+        _applyErrorStyle = function($elem, conf) {
             $elem
                 .addClass(conf.errorElementClass)
                 .removeClass('valid')
@@ -384,7 +385,7 @@
             }
 
             if(conf.scrollToTopOnError) {
-                $(window).scrollTop($form.offset().top - 20);
+                $window.scrollTop($form.offset().top - 20);
             }
 
             return false;
@@ -484,8 +485,7 @@
         $.split(conf.form, function(formQuery) {
 
             var $form  = $(formQuery);
-
-            $(window).trigger('formValidationSetup', [$form]);
+            $window.trigger('formValidationSetup', [$form]);
 
             // Remove all event listeners previously added
             $form.find('.has-help-txt')
@@ -534,6 +534,9 @@
             }
             if( conf.validateOnBlur ) {
                 $form.validateOnBlur(conf.language, conf);
+                $form.bind('html5ValidationAttrsFound', function() {
+                    $form.validateOnBlur(conf.language, conf);
+                })
             }
 			if( conf.validateOnEvent ){
                 $form.validateOnEvent(conf.language, conf);
@@ -543,9 +546,7 @@
 
         if( conf.modules != '' ) {
             if( typeof conf.onModulesLoaded == 'function' ) {
-                $.formUtils.on('load', function() {
-                    conf.onModulesLoaded();
-                });
+                $window.one('validatorsLoaded', conf.onModulesLoaded);
             }
             $.formUtils.loadModules(conf.modules);
         }
@@ -611,32 +612,13 @@
         },
 
         /**
-         * @param {String} evt
-         * @param {Function} callback
-         */
-        on : function(evt, callback) {
-            // Why not use $(document).bind('validators.loaded', func);
-            if( this._events[evt] === undefined )
-                this._events[evt] = [];
-            this._events[evt].push(callback);
-        },
-
-        /**
-         * @param {String} evt
-         * @param [argA]
-         * @param [argB]
-         */
-        trigger : function(evt, argA, argB) {
-            $.each(this._events[evt] || [], function(i, func) {
-                func(argA, argB);
-            });
-        },
-
-        /**
-         * @ {Boolean}
+         * @var {Boolean}
          */
         isLoadingModules : false,
 
+        /**
+         * @var {Object}
+         */
         loadedModules : {},
 
         /**
@@ -676,7 +658,7 @@
                             if( numModules == 0 ) {
                                 $.formUtils.isLoadingModules = false;
                                 if( fireEvent && hasLoadedAnyModule ) {
-                                    $.formUtils.trigger('load', path);
+                                    $window.trigger('validatorsLoaded');
                                 }
                             }
                         };
@@ -1044,7 +1026,7 @@
 
             if( this._numSuggestionElements === 0 ) {
                 // Re-position suggestion container if window size changes
-                $(window).bind('resize', function() {
+                $window.bind('resize', function() {
                     $('.jquery-form-suggestions').each(function() {
                         var $container = $(this),
                             suggestID = $container.attr('data-suggest-container');

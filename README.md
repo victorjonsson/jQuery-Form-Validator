@@ -297,7 +297,7 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 #### 2.2.0 (unreleased)
 * Now possible to define an error message for each validation rule on a certain input (issue #113)
 * This plugin now serves as a html5 fallback. You can now use the native attributes to declare which type
-of validation that should be applied. (**Not yet implemented**)
+of validation that should be applied.
 
 
 #### 2.1.47

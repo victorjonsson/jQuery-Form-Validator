@@ -1,0 +1,6 @@
+{
+    "volo": {
+        "url": "https://raw.githubusercontent.com/lagden/jQuery-Form-Validator/{version}/form-validator/jquery.form-validator.js"
+    },
+    "main": "jquery.form-validator.js"
+}

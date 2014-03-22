@@ -13,7 +13,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.50
+ * @version 2.1.53
  */
 (function($, window) {
 
@@ -66,16 +66,21 @@
                         break;
                 }
 
-                if( validation.length && !isRequired ) {
-                    attrs['data-validation-optional'] = 'true';
-                }
-
                 if( $input.attr('pattern') ) {
                     validation.push('custom');
                     attrs['data-validation-regexp'] = $input.attr('pattern');
                 }
+                if( $input.attr('maxlength') ) {
+                    validation.push('length');
+                    attrs['data-validation-length'] = 'max'+$input.attr('maxlength');
+                }
+
 
                 if( validation.length ) {
+                    if( !isRequired ) {
+                        attrs['data-validation-optional'] = 'true';
+                    }
+
                     foundHtml5Rule = true;
                     $input.attr('data-validation', validation.join(' '));
 

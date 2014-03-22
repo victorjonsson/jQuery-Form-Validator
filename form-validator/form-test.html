@@ -228,7 +228,11 @@
         </div>
         <div class="form-group">
             <label class="control-label">E-mail</label>
-            <input name="test" data-validation="email" data-validation-error-msg="E-mail is not valid" />
+            <input name="testmail" data-validation="email" data-validation-error-msg="E-mail is not valid" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Confirm e-mail</label>
+            <input name="test" data-validation="confirmation" data-validation-confirm="testmail" />
         </div>
         <div class="form-group">
             <label class="control-label">Alphanumeric (will only be validated if the checkbox is checked)</label>
@@ -261,6 +265,10 @@
         <div class="form-group">
             <label class="control-label">type="number"</label>
             <input type="number" required="required" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">type="number"</label>
+            <input type="number" required="required" maxlength="30" />
         </div>
         <div class="form-group">
             <label class="control-label">type="number" range[-5;5]</label>

@@ -298,6 +298,10 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 * Now possible to define an error message for each validation rule on a certain input (issue #113)
 * This plugin now serves as a html5 fallback. You can now use the native attributes to declare which type
 of validation that should be applied.
+* Use a template for error messages when having errorMessagePosition set to top
+* Event onElementValidate added
+* Use the attribute data-validation-confirm to declare which input that should be confirmed when using validation=confirmation (issue #112)
+
 
 
 #### 2.1.47
@@ -371,6 +375,7 @@ calling $.validate()
 
 #### Contributors
 <a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a><br />
+<a href="http://lagden.github.com" target="_blank">Thiago Lagden</a><br />
 <a href="https://github.com/robamaton" target="_blank">Joel Sutherland</a><br />
 <a href="https://github.com/mattclements" target="_blank">Matt Clements</a><br />
 <a href="http://www.joshtoft.com/" target="_blank">Josh Toft</a><br/>

@@ -12,7 +12,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.50
+ * @version 2.1.53
  */
 (function($) {
 
@@ -37,8 +37,9 @@
         name : 'confirmation',
         validatorFunction : function(value, $el, config, language, $form) {
             var conf = '',
-                confInputName = $el.attr('name') + '_confirmation',
+                confInputName = $el.valAttr('confirm') || ($el.attr('name') + '_confirmation'),
                 confInput = $form.find('input[name="' +confInputName+ '"]').eq(0);
+
             if (confInput) {
                 conf = confInput.val();
             } else {

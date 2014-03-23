@@ -7,25 +7,30 @@
  * html5 fallback. It makes older browsers support the following
  *  - validation when type="email"
  *  - validation when type="url"
+ *  - validation when type="time"
  *  - validation when type="number" and max="" min=""
  *  - validation when pattern="REGEXP"
+ *  - Using datalist element for creating suggestions
  *  - placeholders
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.53
+ * @version 2.1.54
  */
 (function($, window) {
 
     "use strict";
 
-    var SUPPORTS_PLACEHOLDER = 'placeholder' in document.createElement('input');
+    var SUPPORTS_PLACEHOLDER = 'placeholder' in document.createElement('input'),
+        SUPPORTS_DATALIST = 'options' in document.createElement('datalist');
 
     $(window).bind('validatorsLoaded formValidationSetup', function(evt, $form) {
 
         if( !$form ) {
             $form = $('form');
         }
+
+        var hasLoadedDateModule = false;
 
         $form.each(function() {
             var $f = $(this),
@@ -39,11 +44,21 @@
                     attrs = {};
 
                 switch ( ($input.attr('type') || '').toLowerCase() ) {
+                    case 'time':
+                        validation.push('time');
+                        if( !$.formUtils.validators.validate_date && !hasLoadedDateModule ) {
+                            hasLoadedDateModule = true;
+                            $.formUtils.loadModules('date');
+                        }
+                        break;
                     case 'url':
                         validation.push('url');
                         break;
                     case 'email':
                         validation.push('email');
+                        break;
+                    case 'date':
+                        validation.push('date');
                         break;
                     case 'number':
                         validation.push('number');
@@ -75,6 +90,13 @@
                     attrs['data-validation-length'] = 'max'+$input.attr('maxlength');
                 }
 
+                if( !SUPPORTS_DATALIST && $input.attr('list') ) {
+                    var suggestions = [];
+                    $('#'+$input.attr('list')+' option').each(function() {
+                        suggestions.push($(this).attr('value'));
+                    });
+                    $.formUtils.suggest( $input, suggestions );
+                }
 
                 if( validation.length ) {
                     if( !isRequired ) {

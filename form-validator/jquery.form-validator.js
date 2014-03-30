@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.54
+* @version 2.1.55
 */
 (function($) {
 
@@ -1396,8 +1396,15 @@
     */
     $.formUtils.addValidator({
         name : 'required',
-        validatorFunction : function(val, $el) {
-            return $el.attr('type') == 'checkbox' ? $el.is(':checked') : $.trim(val) !== '';
+        validatorFunction : function(val, $el, config, language, $form) {
+            switch ( $el.attr('type') ) {
+                case 'checkbox':
+                    return $el.is(':checked');
+                case 'radio':
+                    return $form.find('input[name="'+$el.attr('name')+'"]').filter(':checked').length > 0;
+                default:
+                    $.trim(val) !== '';
+            }
         },
         errorMessage : '',
         errorMessageKey: 'requiredFields'

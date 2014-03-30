@@ -8,14 +8,16 @@
  *  - validation when type="email"
  *  - validation when type="url"
  *  - validation when type="time"
+ *  - validation when type="date"
  *  - validation when type="number" and max="" min=""
  *  - validation when pattern="REGEXP"
+ *  - validation when using maxlength
  *  - Using datalist element for creating suggestions
  *  - placeholders
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.54
+ * @version 2.1.55
  */
 (function($, window) {
 

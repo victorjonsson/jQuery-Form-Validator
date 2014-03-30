@@ -301,7 +301,7 @@ of validation that should be applied.
 * Use a template for error messages when having errorMessagePosition set to top
 * Event onElementValidate added
 * Use the attribute data-validation-confirm to declare which input that should be confirmed when using validation=confirmation (issue #112)
-
+* Validation "required" now supports inputs of type radio
 
 
 #### 2.1.47

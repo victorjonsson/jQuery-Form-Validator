@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.55
+* @version 2.1.56
 */
 (function($) {
 
@@ -1403,7 +1403,7 @@
                 case 'radio':
                     return $form.find('input[name="'+$el.attr('name')+'"]').filter(':checked').length > 0;
                 default:
-                    $.trim(val) !== '';
+                    return $.trim(val) !== '';
             }
         },
         errorMessage : '',

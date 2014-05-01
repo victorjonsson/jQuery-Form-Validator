@@ -9,12 +9,14 @@
  *  - confirmation
  *  - strength
  *  - backend
+ *  - credit card
  *
  * @website http://formvalidator.net/#security-validators
- * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.56
+ * @version 2.1.63
  */
 (function($) {
+
+    'use strict';
 
     /*
      * Simple spam check
@@ -50,6 +52,85 @@
         },
         errorMessage : '',
         errorMessageKey: 'notConfirmed'
+    });
+
+    /*
+     * Credit card
+     */
+    $.formUtils.addValidator({
+        name : 'creditcard',
+        validatorFunction : function(value, $el, config, language, $form) {
+            var cards = {
+                'amex' : [15,15],
+                'diners_club_carte_blanche' : [14,14],
+                'diners_club_international' : [14,14],
+                'cjb' : [16,16],
+                'laser' : [16,19],
+                'visa_electron' : [16,16],
+                'visa' : [16,16],
+                'mastercard' : [16,16],
+                'maestro' : [12,19],
+                'discover' : [16,16]
+            },
+            allowing = $.split( $el.valAttr('allowing') || '' );
+
+
+            // Correct length
+            if( allowing.length > 0 ) {
+                var hasValidLength = false;
+                $.each(allowing, function(i, cardName) {
+                    if( cardName in cards) {
+                        if( value.length >= cards[cardName][0] && value.length <= cards[cardName][1]) {
+                            hasValidLength = true;
+                            return false;
+                        }
+                    } else {
+                        console.warn('Use of unknown credit card "'+cardName+'"');
+                    }
+                });
+
+                if( !hasValidLength )
+                    return false;
+            }
+
+            // only numbers
+            if( value.replace(new RegExp('[0-9]', 'g'), '') !== '' ) {
+                return false
+            }
+
+            // http://en.wikipedia.org/wiki/Luhn_algorithm
+            // http://www.brainjar.com/js/validation/default2.asp
+            var checkSum = 0;
+            $.each(value.split('').reverse(), function(i, digit) {
+                digit = parseInt(digit, 10);
+                if( i%2 === 0 ) {
+                    checkSum += digit;
+                } else {
+                    digit *= 2;
+                    if (digit < 10) {
+                        checkSum += digit;
+                    } else {
+                        checkSum += digit - 9;
+                    }
+                }
+            });
+            return checkSum % 10 === 0;
+        },
+        errorMessage : '',
+        errorMessageKey: 'badCreditCard'
+    });
+
+
+    /*
+     * Credit card number
+     */
+    $.formUtils.addValidator({
+        name : 'cvv',
+        validatorFunction : function(val) {
+            return val.replace(/[0-9]/g, '') === '' && (val + '').length == 3;
+        },
+        errorMessage : '',
+        errorMessageKey: 'badCVV'
     });
 
     /*

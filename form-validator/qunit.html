@@ -218,6 +218,49 @@
             });
         });
 
+        /*
+         * CREDIT CARD VALIDATION
+         */
+        test("Credit card validation", function() {
+
+            clearForm();
+
+            var links = [
+                {val:'4000000000000002', isValid:true},
+                {val:input('4000000000000002', {'allowing':'visa', '':'creditcard'}), isValid:true},
+                {val:input('4000000000000002', {'allowing':'mastercard, discover, visa', '':'creditcard'}), isValid:true},
+                {val:input('501800000009', {'allowing':'maestro', '':'creditcard'}), isValid:true},
+                {val:input('501800000009', {'allowing':'visa', '':'creditcard'}), isValid:false},
+                {val:input('501800000009', {'allowing':'jadajada,maestro,master', '':'creditcard'}), isValid:true},
+                {val:input('5100000000000008', {'allowing':'mastercard', '':'creditcard'}), isValid:true},
+                {val:input('6011000000000004', {'allowing':'discover', '':'creditcard'}), isValid:true},
+                {val:input('6011000000000005', {'allowing':'discover', '':'creditcard'}), isValid:false}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'creditcard');
+            });
+        });
+
+        /*
+         * CVV VALIDATION
+         */
+        test("CVV validation", function() {
+
+            clearForm();
+
+            var links = [
+                {val:'012', isValid:true},
+                {val:'000', isValid:true},
+                {val:'01', isValid:false},
+                {val:'a12', isValid:false}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'cvv');
+            });
+        });
+
 
         /*
          * ALPHANUMERIC VALIDATION
@@ -285,6 +328,7 @@
                 {val:'-01-01', isValid:false},
                 {val:input('01/01/2000', {'format':'dd/mm/yyyy', '':'date'}), isValid:true},
                 {val:input('29/02/2000', {'format':'dd/mm/yyyy', '':'date'}), isValid:true},
+                {val:input('02/2000', {'format':'mm/yyyy', '':'date'}), isValid:true},
                 {val:input('29/02/2013', {'format':'dd/mm/yyyy', '':'date'}), isValid:false},
                 {val:input('29/13/2013', {'format':'dd/mm/yyyy', '':'date'}), isValid:false},
                 {val:input('29/00/2013', {'format':'dd/mm/yyyy', '':'date'}), isValid:false},

@@ -38,18 +38,17 @@ particular form.
 </script>
 ```
 
-### Moving up to version 2.0
+### Support for HTML5
 
-So what has changed since version 1.x?
+Since version 2.2 you can use this plugin as a fallback solution for the validation attributes in the HTML5 spec.
+Add the module `html5` to the module string and you can use the following native features:
 
- * A whole bunch of validation functions have been added (see below).
- * A modular design have been introduced, which means that some validation functions is default and others is
- part of a module. This in turn lowers server and bandwidth costs.
- * You no longer need to prefix the validation rules with "validate_".
- * Error message position now defaults to "element".
- * The optional features (validateOnBlur and showHelpOnFocus) is now enabled by default.
- * The function $.validate(config) is introduced to reduce the amount of code that has to be written when initiating the form validation.
- * Demos and full documentation is now available at http://formvalidator.net/
+**Attributes**: require, pattern, maxlength, min, max, placeholder
+
+**Input types**: url, date, time, email, number
+
+**Elements**: Use the element `datalist` to create input suggestions
+
 
 ### Default validators and features (no module needed)
  * **url**
@@ -75,7 +74,9 @@ Read the documentation for the default features at [http://formvalidator.net/#de
 ### Module: security
  * **spamcheck**
  * **confirmation**
- * **strength** — *Validate the strength of a password (strength strength3)*
+ * **creditcard**
+ * **CVV**
+ * **strength** — *Validate the strength of a password*
  * **backend** — *Validate value of input on server side*
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
@@ -299,9 +300,11 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 * This plugin now serves as a html5 fallback. You can now use the native attributes to declare which type
 of validation that should be applied.
 * Use a template for error messages when having errorMessagePosition set to top
+* Added validation of credit card number and CVV to the security module
 * Event onElementValidate added
 * Use the attribute data-validation-confirm to declare which input that should be confirmed when using validation=confirmation (issue #112)
 * Validation "required" now supports inputs of type radio
+* $.validateForm is now deprecated, use $.isValid instead
 
 
 #### 2.1.47

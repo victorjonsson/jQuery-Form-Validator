@@ -19,6 +19,10 @@
             width: 375px;
         }
 
+        button, input[type="submit"], .button {
+            margin-bottom: 8px;
+        }
+
         /* While server is being requested */
         form.validating-server-side {
             background: #F2F2F2;
@@ -170,6 +174,7 @@
             <label class="control-label">File validation</label>
             <input type="file" name="some-file1" class="form-control"
                    data-validation="size mime required"
+                   data-validation-size-error-msg="The file cant be larger than 100kb"
                    data-validation-error-msg="You must upload an image file"
                    data-validation-allowing="jpg, png, ico"
                    data-validation-max-size="100kb" />
@@ -180,7 +185,9 @@
             <input type="file" multiple="multiple" name="some-file2" class="form-control"
                    data-validation="size mime required length"
                    data-validation-length="min2"
-                   data-validation-error-msg="You must upload at least two image files"
+                   data-validation-size-error-msg="The images may be max 100kb"
+                   data-validation-length-error-msg="You have to upload at least (two) images"
+                   data-validation-error-msg="You have to upload at least two images"
                    data-validation-allowing="jpg, png, ico"
                    data-validation-max-size="100kb" />
         </div>
@@ -213,8 +220,19 @@
                 <input type="checkbox" name="box" value="5" /> 5
             </label>
         </div>
-        <p>
+        <p style="line-height: 200%">
             <input type="submit" class="button">
+            <br />
+            <button class="button" type="button"
+                    onclick="alert('From a is ' + ( $('#form-a').isValid({}, {}, false) ? 'VALID':'NOT VALID'));">
+                Test validation via js (<strong>without error messages</strong>)
+            </button>
+            <br />
+            <button class="button" type="button"
+                    onclick="alert('From a is ' + ( $('#form-a').isValid() ? 'VALID':'NOT VALID'));">
+                Test validation via js (showing error messages)
+            </button>
+            <br />
             <input type="reset" class="button">
         </p>
     </form>
@@ -285,7 +303,14 @@
         </div>
         <div class="form-group">
             <label class="control-label">pattern="^([a-z]+)$"</label>
-            <input type="text" pattern="^([a-z]+)$" required="required" />
+            <input type="text" name="some-colorz" list="some-colorz" pattern="^([a-z]+)$" required="required" />
+            <datalist id="some-colorz" style="display: none">
+                <option value="Green">Green</option>
+                <option value="Blue">Blue</option>
+                <option value="Red">Red</option>
+                <option value="Black">Black</option>
+                <option value="White">White</option>
+            </datalist>
         </div>
         <p>
             <input type="submit" class="button">

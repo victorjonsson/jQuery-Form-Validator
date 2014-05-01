@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.56
+* @version 2.1.63
 */
 (function($) {
 
@@ -273,14 +273,25 @@
     };
 
     /**
-     * Function that validate all inputs in a form
+     * Function that validate all inputs in given element
      *
-     * @param [language]
-     * @param [conf]
+     * @param {Object} [language]
+     * @param {Object} [conf]
+     * @param {Boolean} [displayError] Defaults to true
      */
-    $.fn.validateForm = function(language, conf) {
+    $.fn.isValid = function(language, conf, displayError) {
 
+        if ($.formUtils.isLoadingModules) {
+            var $self = this;
+            setTimeout(function () {
+                $self.isValid(language, conf, displayError);
+            }, 200);
+            return null;
+        }
+
+        conf = $.extend({}, $.formUtils.defaultConfig(), conf || {});
         language = $.extend({}, $.formUtils.LANG, language || {});
+        displayError = displayError !== false;
 
         $.formUtils.isValidatingEntireForm = true;
         $.formUtils.haltValidation = false;
@@ -299,7 +310,8 @@
                 }
                 errorInputs.push($elem);
                 $elem.attr('current-error', mess);
-                _applyErrorStyle($elem, conf);
+                if( displayError )
+                    _applyErrorStyle($elem, conf);
             }
         },
 
@@ -327,8 +339,10 @@
         };
 
         // Reset style and remove error class
-        $form.find('.'+conf.errorMessageClass+'.alert').remove();
-        _removeErrorStyle($form.find('.'+conf.errorElementClass+',.valid'), conf);
+        if( displayError ) {
+            $form.find('.'+conf.errorMessageClass+'.alert').remove();
+            _removeErrorStyle($form.find('.'+conf.errorElementClass+',.valid'), conf);
+        }
 
         // Validate element values
         $form.find('input,textarea,select').filter(':not([type="submit"],[type="button"])').each(function() {
@@ -377,41 +391,52 @@
             }
         }
 
+        // Reset form validation flag
+        $.formUtils.isValidatingEntireForm = false;
+
         // Validation failed
-        if (!$.formUtils.haltValidation && errorInputs.length > 0) {
+        if ( !$.formUtils.haltValidation && errorInputs.length > 0 ) {
 
-            // Reset form validation flag
-            $.formUtils.isValidatingEntireForm = false;
-
-            // display all error messages in top of form
-            if (conf.errorMessagePosition === 'top') {
-                _templateMessage($form, language.errorTitle, errorMessages, conf);
-            }
-            // Customize display message
-            else if(conf.errorMessagePosition === 'custom') {
-                if( typeof conf.errorMessageCustom === 'function' ) {
-                    conf.errorMessageCustom($form, language.errorTitle, errorMessages, conf);
+            if( displayError ) {
+                // display all error messages in top of form
+                if (conf.errorMessagePosition === 'top') {
+                    _templateMessage($form, language.errorTitle, errorMessages, conf);
                 }
-            }
-            // Display error message below input field or in defined container
-            else  {
-                $.each(errorInputs, function(i, $input) {
-                    _setInlineErrorMessage($input, $input.attr('current-error'), conf, conf.errorMessagePosition);
-                });
-            }
+                // Customize display message
+                else if(conf.errorMessagePosition === 'custom') {
+                    if( typeof conf.errorMessageCustom === 'function' ) {
+                        conf.errorMessageCustom($form, language.errorTitle, errorMessages, conf);
+                    }
+                }
+                // Display error message below input field or in defined container
+                else  {
+                    $.each(errorInputs, function(i, $input) {
+                        _setInlineErrorMessage($input, $input.attr('current-error'), conf, conf.errorMessagePosition);
+                    });
+                }
 
-            if(conf.scrollToTopOnError) {
-                $window.scrollTop($form.offset().top - 20);
+                if(conf.scrollToTopOnError) {
+                    $window.scrollTop($form.offset().top - 20);
+                }
             }
 
             return false;
         }
 
-        // Reset form validation flag
-        $.formUtils.isValidatingEntireForm = false;
-
         return !$.formUtils.haltValidation;
     };
+
+    /**
+     * @deprecated
+     * @param language
+     * @param conf
+     */
+    $.fn.validateForm = function(language, conf) {
+        if( window.console && typeof window.console.warn == 'function' ) {
+            window.console.warn('Use of deprecated function $.validateForm, use $.isValid instead');
+        }
+        return this.isValid(language, conf, true);
+    }
 
     /**
     * Plugin for displaying input length restriction
@@ -524,7 +549,7 @@
                     }, 200);
                     return false;
                 }
-                var valid = $form.validateForm(conf.language, conf);
+                var valid = $form.isValid(conf.language, conf);
                 if( valid && typeof conf.onSuccess == 'function') {
                     var callbackResponse = conf.onSuccess($form);
                     if( callbackResponse === false )
@@ -575,7 +600,7 @@
     $.formUtils = {
 
         /**
-         * Default config for $(...).validateForm();
+         * Default config for $(...).isValid();
          */
         defaultConfig :  function() {
             return {
@@ -617,7 +642,7 @@
         haltValidation : false,
 
         /**
-         * This variable will be true $.fn.validateForm() is called
+         * This variable will be true $.fn.isValid() is called
          * and false when $.fn.validateOnBlur is called
          */
         isValidatingEntireForm : false,
@@ -1248,7 +1273,7 @@
             badUrl : 'The answer you gave was not a correct URL',
             badCustomVal : 'You gave an incorrect answer',
             badInt : 'The answer you gave was not a correct number',
-            badSecurityNumber : 'Your social security number was incorrect',
+            badSecurityNumber : 'Your isVsocial security number was incorrect',
             badUKVatAnswer : 'Incorrect UK VAT Number',
             badStrength : 'The password isn\'t strong enough',
             badNumberOfSelectedOptionsStart : 'You have to choose at least ',
@@ -1259,8 +1284,10 @@
             wrongFileType : 'The file you are trying to upload is of wrong type',
             groupCheckedRangeStart : 'Please choose between ',
             groupCheckedTooFewStart : 'Please choose at least ',
-            groupCheckedTooManyStart : 'Please choose a maximum of ',           
-            groupCheckedEnd : ' item(s)'
+            groupCheckedTooManyStart : 'Please choose a maximum of ',
+            groupCheckedEnd : ' item(s)',
+            badCreditCard : 'The credit card number is not correct',
+            badCVV : 'The CVV number was not correct'
         }
     };
 

@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.63
+ * @version 2.1.66
  */
 (function($, window) {
 
@@ -56,7 +56,7 @@
                 return valid;
 
             } else {
-                return $.formUtils.validators.extension.validatorFunction(str, $input);
+                return $.formUtils.validators.validate_extension.validatorFunction(str, $input);
             }
         },
         errorMessage : 'The file you are trying to upload is of wrong type',

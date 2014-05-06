@@ -161,7 +161,6 @@
             (<span id="max-len">20</span> chars left)<br />
             <textarea id="text-area" class="form-control" name="some-text"></textarea>
         </div>
-
         <div class="form-group">
             <label class="control-label">Server validation</label>
             <input class="form-control" name="code"
@@ -169,7 +168,6 @@
                    data-validation="alphanumeric server"
                    data-validation-url="http://formvalidator.net/validate-email.php" />
         </div>
-
         <div class="form-group">
             <label class="control-label">File validation</label>
             <input type="file" name="some-file1" class="form-control"
@@ -179,19 +177,6 @@
                    data-validation-allowing="jpg, png, ico"
                    data-validation-max-size="100kb" />
         </div>
-
-        <div class="form-group">
-            <label class="control-label">File validation (multiple)</label>
-            <input type="file" multiple="multiple" name="some-file2" class="form-control"
-                   data-validation="size mime required length"
-                   data-validation-length="min2"
-                   data-validation-size-error-msg="The images may be max 100kb"
-                   data-validation-length-error-msg="You have to upload at least (two) images"
-                   data-validation-error-msg="You have to upload at least two images"
-                   data-validation-allowing="jpg, png, ico"
-                   data-validation-max-size="100kb" />
-        </div>
-
         <div class="form-group">
             <label class="control-label">
                 Callback validation, set this value to &quot;1&quot; and
@@ -324,7 +309,7 @@
 <script>
 (function($, window) {
 
-    var dev = window.location.hash.indexOf('dev') > -1 ? '.dev' : '';
+    var dev = '.dev'; //window.location.hash.indexOf('dev') > -1 ? '.dev' : '';
 
     // setup datepicker
     $("#datepicker").datepicker();

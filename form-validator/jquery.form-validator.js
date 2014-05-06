@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.63
+* @version 2.1.66
 */
 (function($) {
 
@@ -538,11 +538,12 @@
                 .unbind('submit.validation')
                 .unbind('reset.validation')
                 .find('input[data-validation],textarea[data-validation]')
-                    .unbind('blur.validation')
+                    .unbind('blur.validation');
 
             // Validate when submitted
             $form.bind('submit.validation', function() {
                 var $form = $(this);
+
                 if($.formUtils.isLoadingModules) {
                     setTimeout(function() {
                         $form.trigger('submit.validation');
@@ -699,6 +700,7 @@
 
             var hasLoadedAnyModule = false,
                 loadModuleScripts = function(modules, path) {
+
                     var moduleList = $.split(modules),
                         numModules = moduleList.length,
                         moduleLoadedCallback = function() {
@@ -743,8 +745,11 @@
                                 script.src = scriptUrl + ( scriptUrl.substr(-7) == '.dev.js' ? cacheSuffix:'' );
                                 script.onreadystatechange = function() {
                                     // IE 7 fix
-                                    if( this.readyState == 'complete' ) {
+                                    if( this.readyState == 'complete' || this.readyState == 'loaded' ) {
                                         moduleLoadedCallback();
+                                        // Handle memory leak in IE
+                                        this.onload = null;
+                                        this.onreadystatechange = null;
                                     }
                                 };
                                 appendToElement.appendChild( script );

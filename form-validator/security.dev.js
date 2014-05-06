@@ -10,11 +10,12 @@
  *  - strength
  *  - backend
  *  - credit card
+ *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.1.63
+ * @version 2.1.66
  */
-(function($) {
+(function($, window) {
 
     'use strict';
 
@@ -62,11 +63,9 @@
         validatorFunction : function(value, $el, config, language, $form) {
             var cards = {
                 'amex' : [15,15],
-                'diners_club_carte_blanche' : [14,14],
-                'diners_club_international' : [14,14],
+                'diners_club' : [14,14],
                 'cjb' : [16,16],
                 'laser' : [16,19],
-                'visa_electron' : [16,16],
                 'visa' : [16,16],
                 'mastercard' : [16,16],
                 'maestro' : [12,19],
@@ -324,8 +323,13 @@
             cache : false,
             data : $element.attr('name')+'='+val,
             dataType : 'json',
+            error : function(error) {
+                alert('Server validation failed due to: '+error.statusText);
+                if( window.JSON && window.JSON.stringify ) {
+                    alert(window.JSON.stringify(error));
+                }
+            },
             success : function(response) {
-
                 if(response.valid) {
                     $element.valAttr('backend-valid', 'true');
                 }
@@ -435,4 +439,4 @@
         return this;
     };
 
-})(jQuery);
+})(jQuery, window);

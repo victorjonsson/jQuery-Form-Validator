@@ -524,9 +524,9 @@
         conf = $.extend(defaultConf, conf || {});
 
         // Add validation to forms
-        $.split(conf.form, function(formQuery) {
+        $(conf.form).each(function(i, form) {
 
-            var $form  = $(formQuery);
+            var $form  = $(form);
             $window.trigger('formValidationSetup', [$form]);
 
             // Remove all event listeners previously added

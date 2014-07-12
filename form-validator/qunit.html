@@ -96,7 +96,7 @@
 
             $input = input('sam', {'':'required alphanumeric length', length:'min10', 'error-msg-alphanumeric':'custom for alphanum'}),
             mess = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
-            equal('You have given an answer shorter than 10 characters', mess, 'Incorrect message');
+            equal('The input value is shorter than 10 characters', mess, 'Incorrect message');
 
         });
 
@@ -530,6 +530,27 @@
 
             $inputB.val('hejsan');
             result = $.formUtils.validateInput($inputA, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+            equal(
+                result,
+                true,
+                'Could not validate confirmation'
+            );
+
+            clearForm();
+
+            var $inputC = input('value', {'':'confirmation', 'confirm':'input-D'}, {name:'test'}),
+                $inputD = input('hej', undefined, {name:'input-D'});
+
+            result = $.formUtils.validateInput($inputC, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+
+            equal(
+                typeof(result) == 'string', // Should be an error message
+                true,
+                'Could not check that inputs did not confirmation each other'
+            );
+
+            $inputD.val('value');
+            result = $.formUtils.validateInput($inputC, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
             equal(
                 result,
                 true,

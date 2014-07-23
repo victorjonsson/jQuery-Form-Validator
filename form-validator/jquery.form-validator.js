@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.72
+* @version 2.1.74
 */
 (function($) {
 
@@ -1404,7 +1404,7 @@
                 if (firstChar === '-' || firstChar === '.' || lastChar === '-' || lastChar === '.') {
                     return false;
                 }
-                if (domain.split('.').length > 3 || domain.split('..').length > 1) {
+                if (domain.split('..').length > 1) {
                     return false;
                 }
                 if (domain.replace(/[-\da-z\.]/g, '') !== '') {

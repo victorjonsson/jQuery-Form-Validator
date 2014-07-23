@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.71
+* @version 2.1.72
 */
 (function($) {
 
@@ -807,7 +807,7 @@
 
             $elem.trigger('beforeValidation');
 
-            var value = $.trim( $elem.val() || ''),
+            var value = $elem.val() || '',
                 optional = $elem.valAttr('optional'),
 
                 // test if a checkbox forces this element to be validated

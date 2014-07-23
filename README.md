@@ -7,7 +7,7 @@ in "modules", making it possible for the programmer to load **only those functio
 particular form.
 
 **Form demos and full documentation is available at http://formvalidator.net/**
-
+b
 *Usage example*
 
 ```html
@@ -76,7 +76,7 @@ Read the documentation for the default features at [http://formvalidator.net/#de
  * **creditcard**
  * **CVV**
  * **strength** — *Validate the strength of a password*
- * **backend** — *Validate value of input on server side*
+ * **server** — *Validate value of input on server side*
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
 

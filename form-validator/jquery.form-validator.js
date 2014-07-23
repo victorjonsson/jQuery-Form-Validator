@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.1.67
+* @version 2.1.71
 */
 (function($) {
 
@@ -1396,7 +1396,7 @@
             if (!hasTopDomain) {
                 return false;
             } else if (dot < 2 || dot > 57) {
-                return false;
+                return $.inArray(val, ['i.net', 'q.com', 'q.net', 'x.com', 'x.org', 'z.com', 'w.org']) > -1;
             } else {
                 var firstChar = domain.substring(0, 1),
                     lastChar = domain.substring(domain.length - 1, domain.length);
@@ -1412,7 +1412,6 @@
                 }
             }
 
-            // It's valid, lets update input with trimmed value perhaps??
             if(typeof $input !== 'undefined') {
                 $input.val(val);
             }

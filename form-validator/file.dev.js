@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.67
+ * @version 2.1.71
  */
 (function($, window) {
 
@@ -27,6 +27,15 @@
             else if( $.inArray('jpeg', allowedTypes) > -1 && $.inArray('jpg', allowedTypes) == -1)
                 allowedTypes.push('jpg');
             return allowedTypes;
+        },
+
+        /**
+         * @param {String} msg
+         */
+        _log = function(msg) {
+            if( window.console && window.console.log ) {
+                window.console.log(msg);
+            }
         };
 
     /*
@@ -53,9 +62,14 @@
                     });
                     return valid;
                 });
-                return valid;
 
+                if( !valid ) {
+                    _log('Trying to upload a file with mime type '+mime+' which is not allowed');
+                }
+                return valid;
+                
             } else {
+                _log('FileReader not supported by browser, will check file extension');
                 return $.formUtils.validators.validate_extension.validatorFunction(str, $input);
             }
         },

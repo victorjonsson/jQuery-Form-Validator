@@ -17,7 +17,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.1.67
+ * @version 2.1.71
  */
 (function($, window) {
 
@@ -92,9 +92,7 @@
                     attrs['data-validation-length'] = 'max'+$input.attr('maxlength');
                 }
 
-                console.log($input.html());
                 if( !SUPPORTS_DATALIST && $input.attr('list') ) {
-                    console.log($input.attr('list'));
                     var suggestions = [];
                     $('#'+$input.attr('list')+' option').each(function() {
                         var $opt = $(this);

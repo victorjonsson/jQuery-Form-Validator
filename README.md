@@ -7,7 +7,7 @@ in "modules", making it possible for the programmer to load **only those functio
 particular form.
 
 **Form demos and full documentation is available at http://formvalidator.net/**
-b
+
 *Usage example*
 
 ```html

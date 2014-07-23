@@ -163,7 +163,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">Server validation</label>
-            <input class="form-control" name="code"
+            <input class="form-control" name="code" value="secret"
                    data-validation-help="The word is &quot;secret&quot;"
                    data-validation="alphanumeric server"
                    data-validation-url="http://formvalidator.net/validate-email.php" />
@@ -276,7 +276,12 @@
         <h2>HTML5 attributes</h2>
         <div class="form-group">
             <label class="control-label">type="email"</label>
-            <input type="email" required="required" />
+            <input type="text" required="required" list="mejl" />
+            <datalist id="mejl">
+                <option value="Test">Test</option>
+                <option value="test2">test2</option>
+                <option value="test3">test3</option>
+            </datalist>
         </div>
         <div class="form-group">
             <label class="control-label">type="url" (optional)</label>

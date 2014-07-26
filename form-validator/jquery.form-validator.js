@@ -26,7 +26,7 @@
         },
         _removeErrorStyle = function($elem, conf) {
             $elem.each(function() {
-                _setInlineErrorMessage($(this), '', conf, conf.errorMessagePosition);
+                //_setInlineErrorMessage($(this), '', conf, conf.errorMessagePosition);
                 $(this)
                     .removeClass('valid')
                     .removeClass(conf.errorElementClass)

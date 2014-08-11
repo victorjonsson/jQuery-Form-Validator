@@ -377,6 +377,38 @@
             }
 
         });
+        //Validate if $form IS a form element an not a selection of them
+        if($form.is('input,textarea,select')) {
+	    var $elem = $form;
+            var elementType = $elem.attr('type');
+            if (!ignoreInput($elem.attr('name'), elementType)) {
+
+                var validation = $.formUtils.validateInput(
+                                $elem,
+                                language,
+                                conf,
+                                $form,
+                                'submit'
+                            );
+
+                $elem.trigger('validation', [validation===true]);
+
+                // Run element validation callback
+                if( typeof conf.onElementValidate == 'function' ) {
+                    conf.onElementValidate((validation === true), $elem, $form, validation);
+                }
+
+                if(validation !== true) {
+                    addErrorMessage(validation, $elem);
+                } else {
+                    $elem
+                        .valAttr('current-error', false)
+                        .addClass('valid')
+                        .parent()
+                            .addClass('has-success');
+                }
+            }
+	}
 
         // Run validation callback
         if( typeof conf.onValidate == 'function' ) {

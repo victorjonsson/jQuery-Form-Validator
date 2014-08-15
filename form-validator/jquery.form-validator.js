@@ -13,12 +13,14 @@
 
     var $window = $(window),
         _applyErrorStyle = function($elem, conf) {
+            var $parent = $elem.parent();
             $elem
                 .addClass(conf.errorElementClass)
-                .removeClass('valid')
-                .parent()
-                    .addClass('has-error')
-                    .removeClass('has-success'); // twitter bs
+                .removeClass('valid');
+            if($parent.hasClass("input-group")) $parent = $parent.parent();
+            
+            $parent.addClass('has-error') .removeClass('has-success'); //twitter bs
+                
 
             if(conf.borderColorOnError !== '') {
                 $elem.css('border-color', conf.borderColorOnError);
@@ -27,19 +29,24 @@
         _removeErrorStyle = function($elem, conf) {
             $elem.each(function() {
                 _setInlineErrorMessage($(this), '', conf, conf.errorMessagePosition);
+                var $parent = $(this).parent();
+                
+                if($parent.hasClass("input-group")) $parent = $parent.parent();
                 $(this)
                     .removeClass('valid')
                     .removeClass(conf.errorElementClass)
-                    .css('border-color', '')
-                    .parent()
-                        .removeClass('has-error')
-                        .removeClass('has-success')
-                        .find('.'+conf.errorMessageClass) // remove inline error message
-                            .remove();
+                    .css('border-color', '');
+                $parent
+                    .removeClass('has-error')
+                    .removeClass('has-success')
+                    .find('.'+conf.errorMessageClass) // remove inline error message
+                        .remove();
             });
         },
         _setInlineErrorMessage = function($input, mess, conf, $messageContainer) {
             var custom = _getInlineErrorElement($input);
+            var $parent = $input.parent();
+            if($parent.hasClass("input-group")) $parent = $parent.parent();
             if( custom ) {
                 custom.innerHTML = mess;
             }
@@ -64,10 +71,10 @@
                 }
             }
             else {
-                var $mess = $input.parent().find('.'+conf.errorMessageClass+'.help-block');
+                var $mess = $parent.find('.'+conf.errorMessageClass+'.help-block');
                 if( $mess.length == 0 ) {
                     $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
-                    $mess.appendTo($input.parent());
+                    $mess.appendTo($parent);
                 }
                 $mess.html(mess);
             }

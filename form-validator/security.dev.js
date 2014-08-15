@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.0
+ * @version 2.2.beta.11
  */
 (function($, window) {
 
@@ -388,10 +388,15 @@
                 serverURL = conf.backendUrl;
             }
 
+            console.log('IN HERE:');
+            console.log($.formUtils.eventType);
+            
             if(backendValid)
                 return true;
             else if(backendInvalid)
                 return false;
+            else if($.formUtils.eventType == 'keyup')
+                return null;
 
             if($.formUtils.isValidatingEntireForm) {
                 $form
@@ -410,12 +415,14 @@
                     $form.unbind('submit', disableFormSubmit);
                     $el.removeClass('validating-server-side');
 
+                    $el.valAttr('value-length', val.length);
+
                     // fire submission again!
                     $form.trigger('submit');
                 });
 
                 $.formUtils.haltValidation = true;
-                return false;
+                return null;
 
             } else {
                 // validaiton on blur
@@ -426,7 +433,7 @@
                     $el.removeClass('validating-server-side');
                     $el.trigger('blur');
                 });
-                return true;
+                return null;
             }
         },
         errorMessage : '',

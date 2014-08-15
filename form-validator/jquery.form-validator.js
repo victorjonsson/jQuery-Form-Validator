@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.0
+* @version 2.2.beta.11
 */
 (function($) {
 
@@ -97,7 +97,7 @@
     $.fn.validateOnBlur = function(language, settings) {
         this.find('input[data-validation],textarea[data-validation],select[data-validation]')
             .bind('blur.validation', function() {
-                $(this).validateInputOnBlur(language, settings);
+                $(this).validateInputOnBlur(language, settings, true, 'blur');
             });
 
         return this;
@@ -116,7 +116,7 @@
 				    etype = $el.attr("data-validation-event");
 				if (etype){
 					$el.bind(etype + ".validation", function(){
-                		$(this).validateInputOnBlur(language, settings, false, etype);
+                		$(this).validateInputOnBlur(language, settings, true, etype);
 					});
 				}
 			});
@@ -139,8 +139,6 @@
         // Remove previously added event listeners
         this.find('.has-help-txt')
                 .valAttr('has-keyup-event', false)
-                .valAttr('backend-valid', false)
-                .valAttr('backend-invalid', false)
                 .removeClass('has-help-txt');
 
         // Add help text listeners
@@ -188,23 +186,21 @@
     *
     * @param {Object} [language] Optional, will override $.formUtils.LANG
     * @param {Object} [conf] Optional, will override the default settings
-    * @param {Boolean} [attachKeyupEvent] Optional
-    * @param {String} [eventContext]
+    * @param {Boolean} attachKeyupEvent Optional
+    * @param {String} eventType
     * @return {jQuery}
     */
-    $.fn.validateInputOnBlur = function(language, conf, attachKeyupEvent, eventContext) {
-        if(attachKeyupEvent === undefined)
-            attachKeyupEvent = true;
-        if(!eventContext)
-            eventContext = 'blur';
+    $.fn.validateInputOnBlur = function(language, conf, attachKeyupEvent, eventType) {
+        console.log(eventType);
+        $.formUtils.eventType = eventType;
 
         if( (this.valAttr('suggestion-nr') || this.valAttr('postpone') || this.hasClass('hasDatepicker')) && !window.postponedValidation ) {
-            // This validation has to be postponed 
+            // This validation has to be postponed
             var _self = this,
                 postponeTime = this.valAttr('postpone') || 200;
 
             window.postponedValidation = function() {
-                _self.validateInputOnBlur(language, conf, attachKeyupEvent);
+                _self.validateInputOnBlur(language, conf, attachKeyupEvent, eventType);
                 window.postponedValidation = false;
             };
             setTimeout(function() {
@@ -218,7 +214,6 @@
 
         language = $.extend({}, $.formUtils.LANG, language || {});
         _removeErrorStyle(this, conf);
-
         var $elem = this,
             $form = $elem.closest("form"),
             validationRule = $elem.attr(conf.validationRuleAttribute),
@@ -227,11 +222,9 @@
                             language,
                             $.extend({}, conf, {errorMessagePosition:'element'}),
                             $form,
-                            eventContext
+                            eventType
                         );
-
-        $elem.trigger('validation', [validation===null ? null : validation===true]);
-
+        
         if(validation === true) {
             $elem
                 .addClass('valid')
@@ -243,9 +236,11 @@
             _setInlineErrorMessage($elem, validation, conf, conf.errorMessagePosition);
 
             if(attachKeyupEvent) {
-                $elem.bind('keyup', function() {
-                    $(this).validateInputOnBlur(language, conf, false, 'keyup');
-                });
+                $elem
+                    .unbind('keyup.validation')
+                    .bind('keyup.validation', function() {
+                        $(this).validateInputOnBlur(language, conf, false, 'keyup');
+                    });
             }
         }
 
@@ -357,8 +352,6 @@
                                 $form,
                                 'submit'
                             );
-
-                $elem.trigger('validation', [validation===true]);
 
                 // Run element validation callback
                 if( typeof conf.onElementValidate == 'function' ) {
@@ -790,8 +783,8 @@
 
         /**
         * Validate the value of given element according to the validation rules
-        * found in the attribute data-validation. Will return true if valid,
-        * error message otherwise
+        * found in the attribute data-validation. Will return null if no validation
+        * should take place, returns true if valid or error message if not valid
         *
         * @param {jQuery} $elem
         * @param {Object} language ($.formUtils.LANG)
@@ -865,19 +858,22 @@
                             $elem = $("[name='"+$elem.attr('name')+"']:eq(0)");
                     }
 
-                    var isValid = true;
+                    var isValid = null;
                     if( eventContext != 'keyup' || validator.validateOnKeyUp ) {
                         isValid = validator.validatorFunction(value, $elem, conf, language, $form);
                     }
 
                     if(!isValid) {
-                        validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute+'-'+rule.replace('validate_', ''));
-                        if( !validationErrorMsg ) {
-                            validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute);
+                        validationErrorMsg = null;
+                        if( isValid !== null ) {
+                            validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute+'-'+rule.replace('validate_', ''));
                             if( !validationErrorMsg ) {
-                                validationErrorMsg = language[validator.errorMessageKey];
-                                if( !validationErrorMsg )
-                                    validationErrorMsg = validator.errorMessage;
+                                validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute);
+                                if( !validationErrorMsg ) {
+                                    validationErrorMsg = language[validator.errorMessageKey];
+                                    if( !validationErrorMsg )
+                                        validationErrorMsg = validator.errorMessage;
+                                }
                             }
                         }
                         return false; // breaks the iteration
@@ -890,8 +886,12 @@
             }, ' ');
 
             if( typeof validationErrorMsg == 'string' ) {
+                $elem.trigger('validation', false);
                 return validationErrorMsg;
+            } else if( validationErrorMsg === null && !conf.addValidClassOnAll ) {
+                return null;
             } else {
+                $elem.trigger('validation', true);
                 return true;
             }
         },

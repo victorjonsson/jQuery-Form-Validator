@@ -165,7 +165,7 @@
             <label class="control-label">Server validation</label>
             <input class="form-control" name="code" value="secret"
                    data-validation-help="The word is &quot;secret&quot;"
-                   data-validation="alphanumeric server"
+                   data-validation="server"
                    data-validation-url="http://formvalidator.net/validate-email.php" />
         </div>
         <div class="form-group">
@@ -394,10 +394,10 @@
     $.formUtils.loadModules('date'+dev+'.js', false, false);
 
     $('input')
-        .on('beforeValidation', function() {
+        .on('zbeforeValidation', function() {
             console.log('About to validate input "'+this.name+'"');
         })
-        .on('validation', function(evt, isValid) {
+        .on('validationz', function(evt, isValid) {
             var validationResult = '';
             if( isValid === null ) {
                 validationResult = 'not validated';

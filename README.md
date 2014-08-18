@@ -53,7 +53,7 @@ As of version 2.2 (unreleased) you can use this plugin as a fallback solution fo
  * **url**
  * **email**
  * **domain** — *domain.com*
- * **number** — *float/negative/positive/range*
+ * **number** — *float/negative/positive/range/step*
  * **date** — *yyyy-mm-dd (format can be customized, more information below)*
  * **alphanumeric** — *with support for defining additional characters*
  * **length** — *min/max/range*

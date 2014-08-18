@@ -1529,7 +1529,9 @@
                 var allowing = $el.valAttr('allowing') || '',
                     decimalSeparator = $el.valAttr('decimal-separator') || conf.decimalSeparator,
                     allowsRange = false,
-                    begin, end;
+                    begin, end,
+                    steps = $el.valAttr('step') || '',
+                    allowsSteps = false;
 
                 if(allowing.indexOf('number') == -1)
                     allowing += ',number';
@@ -1544,6 +1546,11 @@
                     end = parseFloat(allowing.substring(allowing.indexOf(";")+1,allowing.indexOf("]")));
                     allowsRange = true;
                 }
+                
+                if(steps != "") 
+		{
+		    allowsSteps = true;
+		}
 
                 if( decimalSeparator == ',' ) {
                     if( val.indexOf('.') > -1 ) {
@@ -1553,10 +1560,10 @@
                     val = val.replace(',', '.');
                 }
 
-                if(allowing.indexOf('number') > -1 && val.replace(/[0-9]/g, '') === '' && (!allowsRange || (val >= begin && val <= end)) ) {
+                if(allowing.indexOf('number') > -1 && val.replace(/[0-9]/g, '') === '' && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val%steps == 0)) ) {
                     return true;
                 }
-                if(allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9]+)\\.([0-9]+)$')) !== null && (!allowsRange || (val >= begin && val <= end)) ) {
+                if(allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9]+)\\.([0-9]+)$')) !== null && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val%steps == 0)) ) {
                     return true;
                 }
             }

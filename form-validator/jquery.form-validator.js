@@ -1035,7 +1035,8 @@
             {  return ["min", minmax]; } // value is below min
             else if (rangeAllowed.indexOf('max') === 0 && (value > minmax ) ) // max
             {   return ["max", minmax]; } // value is above max
-            else { return [ "ok" ] ; } // value is in allowed range
+            // since no other returns executed, value is in allowed range
+            return [ "ok" ] ; 
         },
 
 

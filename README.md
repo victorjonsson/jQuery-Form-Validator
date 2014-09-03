@@ -214,6 +214,10 @@ It is possible to display help information for each input. The information will 
 
 Read about how to customize this plugin over at [http://formvalidator.net/#configuration](http://formvalidator.net/#configuration)
 
+### Validate On Event ###
+You can cause an element to be validated upon the firing of an event, by attaching an attribute to the form input element named `data-validation-event="click"`. When the configuration settings have `validateOnEvent : true`, the click event will trigger the onBlur validaton for that element. Possible use case: Checkboxes. Instead of waiting for the checkbox to lose focus (blur) and waiting for a validation to occurr, you can specify that elements validation should occur as soon as that checkbox element is clicked.
+
+
 ## Localization
 This plugin contains a set of error dialogs. In case you don't define an inline error message the plugin
 will fall back on one of the dialogs below. You can how ever add the attribute *data-validation-error-msg* to an

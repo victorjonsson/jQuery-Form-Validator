@@ -106,6 +106,13 @@
             .bind('blur.validation', function() {
                 $(this).validateInputOnBlur(language, settings, true, 'blur');
             });
+        if(settings.validateCheckboxRadioOnClick) {
+        // bind click event to validate on click for radio & checkboxes for nice UX
+        this.find('input[type=checkbox][data-validation],input[type=radio][data-validation]')
+            .bind('click.validation', function() {
+                $(this).validateInputOnBlur(language, settings, true, 'click');
+            });
+        }
 
         return this;
     };
@@ -511,6 +518,7 @@
 			 */
             validateOnEvent : true,
             validateOnBlur : true,
+            validateCheckboxRadioOnClick : true,
             showHelpOnFocus : true,
             addSuggestions : true,
             modules : '',

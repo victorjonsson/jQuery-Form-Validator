@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.11
+ * @version 2.2.beta.13
  */
 (function($, window) {
 
@@ -388,9 +388,6 @@
                 serverURL = conf.backendUrl;
             }
 
-            console.log('IN HERE:');
-            console.log($.formUtils.eventType);
-            
             if(backendValid)
                 return true;
             else if(backendInvalid)

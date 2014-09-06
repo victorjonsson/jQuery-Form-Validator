@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.11
+ * @version 2.2.beta.13
  */
 (function($, window) {
 
@@ -108,7 +108,7 @@
         validatorFunction : function(val, $input) {
             var maxSize = $input.valAttr('max-size');
             if( !maxSize ) {
-                console.log('Input "'+$input.attr('name')+'" is missing data-validation-max-size attribute');
+                _log('Input "'+$input.attr('name')+'" is missing data-validation-max-size attribute');
                 return true;
             } else if( !SUPPORTS_FILE_READER ) {
                 return true; // no fallback available

@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.11
+* @version 2.2.beta.13
 */
 (function($) {
 
@@ -198,7 +198,6 @@
     * @return {jQuery}
     */
     $.fn.validateInputOnBlur = function(language, conf, attachKeyupEvent, eventType) {
-        console.log(eventType);
         $.formUtils.eventType = eventType;
 
         if( (this.valAttr('suggestion-nr') || this.valAttr('postpone') || this.hasClass('hasDatepicker')) && !window.postponedValidation ) {
@@ -887,7 +886,7 @@
                     }
 
                 } else {
-                    console.warn('Using undefined validator "'+rule+'"');
+                    throw new Error('Using undefined validator "'+rule+'"');
                 }
 
             }, ' ');

@@ -232,10 +232,12 @@
                         );
         
         if(validation === true) {
-            $elem
+            var $parent = $elem
                 .addClass('valid')
-                .parent()
-                    .addClass('has-success'); // twitter bs
+                .parent();
+
+            if($parent.hasClass("input-group")) $parent = $parent.parent();
+            $parent.addClass('has-success'); // twitter bs
         } else if(validation !== null) {
 
             _applyErrorStyle($elem, conf);

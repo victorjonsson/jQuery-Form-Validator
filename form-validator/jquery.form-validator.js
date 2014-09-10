@@ -762,16 +762,11 @@
             } else {
                 var findScriptPathAndLoadModules = function() {
                     var foundPath = false;
-                    $('script').each(function() {
-                        if( this.src ) {
-                            var scriptName = this.src.substr(this.src.lastIndexOf('/')+1, this.src.length);
-                            if(scriptName.indexOf('jquery.form-validator.js') > -1 || scriptName.indexOf('jquery.form-validator.min.js') > -1) {
-                                foundPath = this.src.substr(0, this.src.lastIndexOf('/')) + '/';
-                                if( foundPath == '/' )
-                                    foundPath = '';
-                                return false;
-                            }
-                        }
+                    $('script[src*="form-validator"]').each(function() {
+                        foundPath = this.src.substr(0, this.src.lastIndexOf('/')) + '/';
+                        if( foundPath == '/' )
+                            foundPath = '';
+                        return false;
                     });
 
                     if( foundPath !== false) {

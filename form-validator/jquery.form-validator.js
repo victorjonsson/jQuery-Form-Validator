@@ -829,10 +829,38 @@
                 }
             }
 
+            // Same as below but for unchecked checkbox
+            // test if a checkbox forces this element to be validated
+            var validationDependsOnUncheckedInput = false,
+                validationDependentInputIsUnchecked = false,
+                validateIfUncheckedElement = false,
+
+                // get value of this element's attribute "...if-unchecked"
+                validateIfUncheckedElementName = $elem.valAttr("if-unchecked");
+
+            // make sure we can proceed
+            if (validateIfUncheckedElementName != null) {
+
+                // Set the boolean telling us that the validation depends
+                // on another input being checked
+                validationDependsOnUncheckedInput = true;
+
+                // select the checkbox type element in this form
+                validateIfUncheckedElement = $form.find('input[name="' + validateIfUncheckedElementName + '"]');
+
+                // test if it's property "checked" is checked
+                if ( !validateIfUncheckedElement.prop('checked') ) {
+                    // set value for validation checkpoint
+                    validationDependentInputIsUnchecked = true;
+                }
+            }
+
+
             // validation checkpoint
             // if empty AND optional attribute is present
             // OR depending on a checkbox being checked AND checkbox is checked, return true
-            if ((!value && optional === 'true') || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
+            // OR depending on a checkbox being unchecked AND checkbox is unchecked, return true
+            if ((!value && optional === 'true') || (validationDependsOnCheckedInput && !validationDependentInputIsChecked) || (validationDependsOnUncheckedInput && !validationDependentInputIsUnchecked) ) {
                 return conf.addValidClassOnAll ? true:null;
             }
 

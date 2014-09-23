@@ -337,8 +337,6 @@
                     $element.valAttr('backend-invalid', 'true');
                     if(response.message)
                         $element.attr(conf.validationErrorMsgAttribute, response.message);
-                    else
-                        $element.removeAttr(conf.validationErrorMsgAttribute);
                 }
 
                 if( !$element.valAttr('has-keyup-event') ) {

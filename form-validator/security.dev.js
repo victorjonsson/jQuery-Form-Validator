@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.13
+ * @version 2.2.beta.14
  */
 (function($, window) {
 
@@ -347,7 +347,7 @@
                                 $(this)
                                     .valAttr('backend-valid', false)
                                     .valAttr('backend-invalid', false)
-                                    .removeAttr(conf.validationErrorMsgAttribute);
+                                ;
                             }
                         });
                 }

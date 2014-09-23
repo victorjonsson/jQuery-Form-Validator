@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.13
+* @version 2.2.beta.14
 */
 (function($) {
 
@@ -468,32 +468,34 @@
 
     /**
      * A bit smarter split function
+     * delimiter can be space comma dash or pipe
      * @param {String} val
      * @param {Function|String} [func]
-     * @param {String} [delim]
      * @returns {Array|void}
      */
-    $.split = function(val, func, delim) {
+    $.split = function(val, func) {
         if( typeof func != 'function' ) {
-            // return string
+            // return array
             if( !val )
                 return [];
             var values = [];
-            $.each(val.split(func ? func:','), function(i,str) {
-                str = $.trim(str);
-                if( str.length )
-                    values.push(str);
-            });
+            $.each(val.split(func ? func: /[,|-\s]\s*/g ), 
+            	function(i,str) {
+	                str = $.trim(str);
+	                if( str.length )
+	                    values.push(str);
+	        }
+	    );
             return values;
         } else if( val ) {
-            // use callback on each
-            if( !delim )
-                delim = ',';
-            $.each(val.split(delim), function(i, str) {
-                str = $.trim(str);
-                if( str.length )
-                    return func(str, i);
-            });
+            // exec callback func on each
+            $.each(val.split(/[,|-\s]\s*/g),
+            	function(i, str) {
+	                str = $.trim(str);
+	                if( str.length )
+	                    return func(str, i);
+	        }
+	    );
         }
     };
 
@@ -884,7 +886,7 @@
                     throw new Error('Using undefined validator "'+rule+'"');
                 }
 
-            }, ' ');
+            });
 
             if( typeof validationErrorMsg == 'string' ) {
                 $elem.trigger('validation', false);
@@ -1019,7 +1021,7 @@
         numericRangeCheck : function(value, rangeAllowed) 
         {
             // split by dash
-            var range = $.split(rangeAllowed, '-');
+            var range = $.split(rangeAllowed);
             // min or max
             var minmax = parseInt(rangeAllowed.substr(3),10)
             // range ?

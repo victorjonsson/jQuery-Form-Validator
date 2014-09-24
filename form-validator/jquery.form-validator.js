@@ -1,12 +1,12 @@
 /**
-* jQuery Form Validator
-* ------------------------------------------
-* Created by Victor Jonsson <http://www.victorjonsson.se>
-*
-* @website http://formvalidator.net/
-* @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.14
-*/
+ * jQuery Form Validator
+ * ------------------------------------------
+ * Created by Victor Jonsson <http://www.victorjonsson.se>
+ *
+ * @website http://formvalidator.net/
+ * @license Dual licensed under the MIT or GPL Version 2 licenses
+ * @version 2.2.beta.14
+ */
 (function($) {
 
     'use strict';
@@ -18,9 +18,9 @@
                 .addClass(conf.errorElementClass)
                 .removeClass('valid');
             if($parent.hasClass("input-group")) $parent = $parent.parent();
-            
+
             $parent.addClass('has-error') .removeClass('has-success'); //twitter bs
-                
+
 
             if(conf.borderColorOnError !== '') {
                 $elem.css('border-color', conf.borderColorOnError);
@@ -30,7 +30,7 @@
             $elem.each(function() {
                 _setInlineErrorMessage($(this), '', conf, conf.errorMessagePosition);
                 var $parent = $(this).parent();
-                
+
                 if($parent.hasClass("input-group")) $parent = $parent.parent();
                 $(this)
                     .removeClass('valid')
@@ -40,7 +40,7 @@
                     .removeClass('has-error')
                     .removeClass('has-success')
                     .find('.'+conf.errorMessageClass) // remove inline error message
-                        .remove();
+                    .remove();
             });
         },
         _setInlineErrorMessage = function($input, mess, conf, $messageContainer) {
@@ -95,12 +95,12 @@
         };
 
     /**
-    * Assigns validateInputOnBlur function to elements blur event
-    *
-    * @param {Object} language Optional, will override $.formUtils.LANG
-    * @param {Object} settings Optional, will override the default settings
-    * @return {jQuery}
-    */
+     * Assigns validateInputOnBlur function to elements blur event
+     *
+     * @param {Object} language Optional, will override $.formUtils.LANG
+     * @param {Object} settings Optional, will override the default settings
+     * @return {jQuery}
+     */
     $.fn.validateOnBlur = function(language, settings) {
         this.find('input[data-validation],textarea[data-validation],select[data-validation]')
             .bind('blur.validation', function() {
@@ -110,34 +110,34 @@
         return this;
     };
 
-	/*
-	 * Assigns validateInputOnBlur function to elements custom event
-	 * @param {Object} language Optional, will override $.formUtils.LANG
-	 * @param {Object} settings Optional, will override the default settings
-	 * * @return {jQuery}	
-	 */
-	$.fn.validateOnEvent = function(language, settings) {
+    /*
+     * Assigns validateInputOnBlur function to elements custom event
+     * @param {Object} language Optional, will override $.formUtils.LANG
+     * @param {Object} settings Optional, will override the default settings
+     * * @return {jQuery}
+     */
+    $.fn.validateOnEvent = function(language, settings) {
         this.find('input[data-validation][data-validation-event],textarea[data-validation][data-validation-event],select[data-validation][data-validation-event]')
-			.each(function(){
-				var $el = $(this),
-				    etype = $el.attr("data-validation-event");
-				if (etype){
-					$el.bind(etype + ".validation", function(){
-                		$(this).validateInputOnBlur(language, settings, true, etype);
-					});
-				}
-			});
-		return this;
-	};
+            .each(function(){
+                var $el = $(this),
+                    etype = $el.attr("data-validation-event");
+                if (etype){
+                    $el.bind(etype + ".validation", function(){
+                        $(this).validateInputOnBlur(language, settings, true, etype);
+                    });
+                }
+            });
+        return this;
+    };
 
     /**
-    * fade in help message when input gains focus
-    * fade out when input loses focus
-    * <input data-help="The info that I want to display for the user when input is focused" ... />
-    *
-    * @param {String} attrName - Optional, default is data-help
-    * @return {jQuery}
-    */
+     * fade in help message when input gains focus
+     * fade out when input loses focus
+     * <input data-help="The info that I want to display for the user when input is focused" ... />
+     *
+     * @param {String} attrName - Optional, default is data-help
+     * @return {jQuery}
+     */
     $.fn.showHelpOnFocus = function(attrName) {
         if(!attrName) {
             attrName = 'data-validation-help';
@@ -145,8 +145,8 @@
 
         // Remove previously added event listeners
         this.find('.has-help-txt')
-                .valAttr('has-keyup-event', false)
-                .removeClass('has-help-txt');
+            .valAttr('has-keyup-event', false)
+            .removeClass('has-help-txt');
 
         // Add help text listeners
         this.find('textarea,input').each(function() {
@@ -162,11 +162,11 @@
                         var $help = $elem.parent().find('.'+className);
                         if($help.length == 0) {
                             $help = $('<span />')
-                                        .addClass(className)
-                                        .addClass('help')
-                                        .addClass('help-block') // twitter bs
-                                        .text(help)
-                                        .hide();
+                                .addClass(className)
+                                .addClass('help')
+                                .addClass('help-block') // twitter bs
+                                .text(help)
+                                .hide();
 
                             $elem.after($help);
 
@@ -178,7 +178,7 @@
                         $(this)
                             .parent()
                             .find('.'+className)
-                                .fadeOut('slow');
+                            .fadeOut('slow');
                     });
             }
         });
@@ -187,16 +187,16 @@
     };
 
     /**
-    * Validate single input when it loses focus
-    * shows error message in a span element 
-    * that is appended to the parent element
-    *
-    * @param {Object} [language] Optional, will override $.formUtils.LANG
-    * @param {Object} [conf] Optional, will override the default settings
-    * @param {Boolean} attachKeyupEvent Optional
-    * @param {String} eventType
-    * @return {jQuery}
-    */
+     * Validate single input when it loses focus
+     * shows error message in a span element
+     * that is appended to the parent element
+     *
+     * @param {Object} [language] Optional, will override $.formUtils.LANG
+     * @param {Object} [conf] Optional, will override the default settings
+     * @param {Boolean} attachKeyupEvent Optional
+     * @param {String} eventType
+     * @return {jQuery}
+     */
     $.fn.validateInputOnBlur = function(language, conf, attachKeyupEvent, eventType) {
         $.formUtils.eventType = eventType;
 
@@ -224,18 +224,18 @@
             $form = $elem.closest("form"),
             validationRule = $elem.attr(conf.validationRuleAttribute),
             validation = $.formUtils.validateInput(
-                            $elem,
-                            language,
-                            $.extend({}, conf, {errorMessagePosition:'element'}),
-                            $form,
-                            eventType
-                        );
-        
+                $elem,
+                language,
+                $.extend({}, conf, {errorMessagePosition:'element'}),
+                $form,
+                eventType
+            );
+
         if(validation === true) {
             $elem
                 .addClass('valid')
                 .parent()
-                    .addClass('has-success'); // twitter bs
+                .addClass('has-success'); // twitter bs
         } else if(validation !== null) {
 
             _applyErrorStyle($elem, conf);
@@ -304,40 +304,40 @@
          * @para {jQuery} $elem
          */
         var addErrorMessage = function(mess, $elem) {
-            // validate server side will return null as error message before the server is requested
-            if(mess !== null) {
-                if ($.inArray(mess, errorMessages) < 0) {
-                    errorMessages.push(mess);
+                // validate server side will return null as error message before the server is requested
+                if(mess !== null) {
+                    if ($.inArray(mess, errorMessages) < 0) {
+                        errorMessages.push(mess);
+                    }
+                    errorInputs.push($elem);
+                    $elem.attr('current-error', mess);
+                    if( displayError )
+                        _applyErrorStyle($elem, conf);
                 }
-                errorInputs.push($elem);
-                $elem.attr('current-error', mess);
-                if( displayError )
-                    _applyErrorStyle($elem, conf);
-            }
-        },
+            },
 
-        /** Error messages for this validation */
-        errorMessages = [],
+            /** Error messages for this validation */
+                errorMessages = [],
 
-        /** Input elements which value was not valid */
-        errorInputs = [],
+            /** Input elements which value was not valid */
+                errorInputs = [],
 
-        /** Form instance */
-        $form = this,
+            /** Form instance */
+                $form = this,
 
-        /**
-         * Tells whether or not to validate element with this name and of this type
-         *
-         * @param {String} name
-         * @param {String} type
-         * @return {Boolean}
-         */
-        ignoreInput = function(name, type) {
-            if (type === 'submit' || type === 'button' || type == 'reset') {
-                return true;
-            }
-            return $.inArray(name, conf.ignore || []) > -1;
-        };
+            /**
+             * Tells whether or not to validate element with this name and of this type
+             *
+             * @param {String} name
+             * @param {String} type
+             * @return {Boolean}
+             */
+                ignoreInput = function(name, type) {
+                if (type === 'submit' || type === 'button' || type == 'reset') {
+                    return true;
+                }
+                return $.inArray(name, conf.ignore || []) > -1;
+            };
 
         // Reset style and remove error class
         if( displayError ) {
@@ -352,12 +352,12 @@
             if (!ignoreInput($elem.attr('name'), elementType)) {
 
                 var validation = $.formUtils.validateInput(
-                                $elem,
-                                language,
-                                conf,
-                                $form,
-                                'submit'
-                            );
+                    $elem,
+                    language,
+                    conf,
+                    $form,
+                    'submit'
+                );
 
                 // Run element validation callback
                 if( typeof conf.onElementValidate == 'function' ) {
@@ -371,7 +371,7 @@
                         .valAttr('current-error', false)
                         .addClass('valid')
                         .parent()
-                            .addClass('has-success');
+                        .addClass('has-success');
                 }
             }
 
@@ -438,8 +438,8 @@
     }
 
     /**
-    * Plugin for displaying input length restriction
-    */
+     * Plugin for displaying input length restriction
+     */
     $.fn.restrictLength = function(maxLengthElement) {
         new $.formUtils.lengthRestriction(this, maxLengthElement);
         return this;
@@ -505,9 +505,9 @@
 
         var defaultConf = $.extend($.formUtils.defaultConfig(), {
             form : 'form',
-			/*
-			 * Enable custom event for validation
-			 */
+            /*
+             * Enable custom event for validation
+             */
             validateOnEvent : true,
             validateOnBlur : true,
             showHelpOnFocus : true,
@@ -537,7 +537,7 @@
                 .unbind('submit.validation')
                 .unbind('reset.validation')
                 .find('input[data-validation],textarea[data-validation]')
-                    .unbind('blur.validation');
+                .unbind('blur.validation');
 
             // Validate when submitted
             $form.bind('submit.validation', function() {
@@ -561,12 +561,12 @@
                     return valid;
                 }
             })
-            .bind('reset.validation', function() {
-                // remove messages
-                $(this).find('.'+conf.errorMessageClass+'.alert').remove();
-                _removeErrorStyle($(this).find('.'+conf.errorElementClass+',.valid'), conf);
-            })
-            .addClass('has-validation-callback');
+                .bind('reset.validation', function() {
+                    // remove messages
+                    $(this).find('.'+conf.errorMessageClass+'.alert').remove();
+                    _removeErrorStyle($(this).find('.'+conf.errorElementClass+',.valid'), conf);
+                })
+                .addClass('has-validation-callback');
 
             if( conf.showHelpOnFocus ) {
                 $form.showHelpOnFocus();
@@ -580,9 +580,9 @@
                     $form.validateOnBlur(conf.language, conf);
                 })
             }
-			if( conf.validateOnEvent ){
+            if( conf.validateOnEvent ){
                 $form.validateOnEvent(conf.language, conf);
-			}
+            }
 
         });
 
@@ -625,8 +625,8 @@
         },
 
         /**
-        * Available validators
-        */
+         * Available validators
+         */
         validators : {},
 
         /**
@@ -648,9 +648,9 @@
         isValidatingEntireForm : false,
 
         /**
-        * Function for adding a validator
-        * @param {Object} validator
-        */
+         * Function for adding a validator
+         * @param {Object} validator
+         */
         addValidator : function(validator) {
             // prefix with "validate_" for backward compatibility reasons
             var name = validator.name.indexOf('validate_') === 0 ? validator.name : 'validate_'+validator.name;
@@ -670,21 +670,21 @@
         loadedModules : {},
 
         /**
-        * @example
-        *  $.formUtils.loadModules('date, security.dev');
-        *
-        * Will load the scripts date.js and security.dev.js from the
-        * directory where this script resides. If you want to load
-        * the modules from another directory you can use the
-        * path argument.
-        *
-        * The script will be cached by the browser unless the module
-        * name ends with .dev
-        *
-        * @param {String} modules - Comma separated string with module file names (no directory nor file extension)
-        * @param {String} [path] - Optional, path where the module files is located if their not in the same directory as the core modules
-        * @param {Boolean} [fireEvent] - Optional, whether or not to fire event 'load' when modules finished loading
-        */
+         * @example
+         *  $.formUtils.loadModules('date, security.dev');
+         *
+         * Will load the scripts date.js and security.dev.js from the
+         * directory where this script resides. If you want to load
+         * the modules from another directory you can use the
+         * path argument.
+         *
+         * The script will be cached by the browser unless the module
+         * name ends with .dev
+         *
+         * @param {String} modules - Comma separated string with module file names (no directory nor file extension)
+         * @param {String} [path] - Optional, path where the module files is located if their not in the same directory as the core modules
+         * @param {Boolean} [fireEvent] - Optional, whether or not to fire event 'load' when modules finished loading
+         */
         loadModules : function(modules, path, fireEvent) {
 
             if( fireEvent === undefined )
@@ -783,17 +783,17 @@
         },
 
         /**
-        * Validate the value of given element according to the validation rules
-        * found in the attribute data-validation. Will return null if no validation
-        * should take place, returns true if valid or error message if not valid
-        *
-        * @param {jQuery} $elem
-        * @param {Object} language ($.formUtils.LANG)
-        * @param {Object} conf
-        * @param {jQuery} $form
-        * @param {String} [eventContext]
-        * @return {String|Boolean}
-        */
+         * Validate the value of given element according to the validation rules
+         * found in the attribute data-validation. Will return null if no validation
+         * should take place, returns true if valid or error message if not valid
+         *
+         * @param {jQuery} $elem
+         * @param {Object} language ($.formUtils.LANG)
+         * @param {Object} conf
+         * @param {jQuery} $form
+         * @param {String} [eventContext]
+         * @return {String|Boolean}
+         */
         validateInput : function($elem, language, conf, $form, eventContext) {
 
             if( $elem.attr('disabled') )
@@ -804,12 +804,12 @@
             var value = $elem.val() || '',
                 optional = $elem.valAttr('optional'),
 
-                // test if a checkbox forces this element to be validated
+            // test if a checkbox forces this element to be validated
                 validationDependsOnCheckedInput = false,
                 validationDependentInputIsChecked = false,
                 validateIfCheckedElement = false,
 
-                // get value of this element's attribute "... if-checked"
+            // get value of this element's attribute "... if-checked"
                 validateIfCheckedElementName = $elem.valAttr("if-checked");
 
             // make sure we can proceed
@@ -835,7 +835,7 @@
                 validationDependentInputIsUnchecked = false,
                 validateIfUncheckedElement = false,
 
-                // get value of this element's attribute "...if-unchecked"
+            // get value of this element's attribute "...if-unchecked"
                 validateIfUncheckedElementName = $elem.valAttr("if-unchecked");
 
             // make sure we can proceed
@@ -866,7 +866,7 @@
 
             var validationRules = $elem.attr(conf.validationRuleAttribute),
 
-                // see if form element has inline err msg attribute
+            // see if form element has inline err msg attribute
                 validationErrorMsg = true;
 
             if( !validationRules ) {
@@ -878,38 +878,42 @@
                     rule = 'validate_' + rule;
                 }
 
-                var validator = $.formUtils.validators[rule];
+                if ( rule != 'validate_optional' ) {
 
-                if( validator && typeof validator['validatorFunction'] == 'function' ) {
-                    // special change of element for checkbox_group rule
-                    if ( rule == 'validate_checkbox_group' ) {
-                        // set element to first in group, so error msg is set only once
+                    var validator = $.formUtils.validators[rule];
+
+                    if( validator && typeof validator['validatorFunction'] == 'function' ) {
+                        // special change of element for checkbox_group rule
+                        if ( rule == 'validate_checkbox_group' ) {
+                            // set element to first in group, so error msg is set only once
                             $elem = $("[name='"+$elem.attr('name')+"']:eq(0)");
-                    }
+                        }
 
-                    var isValid = null;
-                    if( eventContext != 'keyup' || validator.validateOnKeyUp ) {
-                        isValid = validator.validatorFunction(value, $elem, conf, language, $form);
-                    }
+                        var isValid = null;
+                        if( eventContext != 'keyup' || validator.validateOnKeyUp ) {
+                            isValid = validator.validatorFunction(value, $elem, conf, language, $form);
+                        }
 
-                    if(!isValid) {
-                        validationErrorMsg = null;
-                        if( isValid !== null ) {
-                            validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute+'-'+rule.replace('validate_', ''));
-                            if( !validationErrorMsg ) {
-                                validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute);
+                        if(!isValid) {
+                            validationErrorMsg = null;
+                            if( isValid !== null ) {
+                                validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute+'-'+rule.replace('validate_', ''));
                                 if( !validationErrorMsg ) {
-                                    validationErrorMsg = language[validator.errorMessageKey];
-                                    if( !validationErrorMsg )
-                                        validationErrorMsg = validator.errorMessage;
+                                    validationErrorMsg =  $elem.attr(conf.validationErrorMsgAttribute);
+                                    if( !validationErrorMsg ) {
+                                        validationErrorMsg = language[validator.errorMessageKey];
+                                        if( !validationErrorMsg )
+                                            validationErrorMsg = validator.errorMessage;
+                                    }
                                 }
                             }
+                            return false; // breaks the iteration
                         }
-                        return false; // breaks the iteration
+
+                    } else {
+                        throw new Error('Using undefined validator "'+rule+'"');
                     }
 
-                } else {
-                    throw new Error('Using undefined validator "'+rule+'"');
                 }
 
             }, ' ');
@@ -925,14 +929,14 @@
             }
         },
 
-       /**
-        * Is it a correct date according to given dateFormat. Will return false if not, otherwise
-        * an array 0=>year 1=>month 2=>day
-        *
-        * @param {String} val
-        * @param {String} dateFormat
-        * @return {Array}|{Boolean}
-        */
+        /**
+         * Is it a correct date according to given dateFormat. Will return false if not, otherwise
+         * an array 0=>year 1=>month 2=>day
+         *
+         * @param {String} val
+         * @param {String} dateFormat
+         * @return {Array}|{Boolean}
+         */
         parseDate : function(val, dateFormat) {
             var divider = dateFormat.replace(/[a-zA-Z]/gi, '').substring(0,1),
                 regexp = '^',
@@ -940,16 +944,16 @@
                 matches, day, month, year;
 
             $.each(formatParts, function(i, part) {
-               regexp += (i > 0 ? '\\'+divider:'') + '(\\d{'+part.length+'})';
+                regexp += (i > 0 ? '\\'+divider:'') + '(\\d{'+part.length+'})';
             });
 
             regexp += '$';
-            
+
             matches = val.match(new RegExp(regexp));
             if (matches === null) {
                 return false;
             }
-        
+
             var findDateUnit = function(unit, formatParts, matches) {
                 for(var i=0; i < formatParts.length; i++) {
                     if(formatParts[i].substring(0,1) === unit) {
@@ -958,29 +962,29 @@
                 }
                 return -1;
             };
-        
+
             month = findDateUnit('m', formatParts, matches);
             day = findDateUnit('d', formatParts, matches);
             year = findDateUnit('y', formatParts, matches);
-        
-            if ((month === 2 && day > 28 && (year % 4 !== 0  || year % 100 === 0 && year % 400 !== 0)) 
-            	|| (month === 2 && day > 29 && (year % 4 === 0 || year % 100 !== 0 && year % 400 === 0))
-            	|| month > 12 || month === 0) {
+
+            if ((month === 2 && day > 28 && (year % 4 !== 0  || year % 100 === 0 && year % 400 !== 0))
+                || (month === 2 && day > 29 && (year % 4 === 0 || year % 100 !== 0 && year % 400 === 0))
+                || month > 12 || month === 0) {
                 return false;
             }
             if ((this.isShortMonth(month) && day > 30) || (!this.isShortMonth(month) && day > 31) || day === 0) {
                 return false;
             }
-        
+
             return [year, month, day];
         },
 
-       /**
-        * skum fix. är talet 05 eller lägre ger parseInt rätt int annars får man 0 när man kör parseInt?
-        *
-        * @param {String} val
-        * @param {Number}
-        */
+        /**
+         * skum fix. är talet 05 eller lägre ger parseInt rätt int annars får man 0 när man kör parseInt?
+         *
+         * @param {String} val
+         * @param {Number}
+         */
         parseDateInt : function(val) {
             if (val.indexOf('0') === 0) {
                 val = val.replace('0', '');
@@ -989,62 +993,62 @@
         },
 
         /**
-        * Has month only 30 days?
-        *
-        * @param {Number} m
-        * @return {Boolean}
-        */
+         * Has month only 30 days?
+         *
+         * @param {Number} m
+         * @return {Boolean}
+         */
         isShortMonth : function(m) {
             return (m % 2 === 0 && m < 7) || (m % 2 !== 0 && m > 7);
         },
 
-       /**
-        * Restrict input length
-        *
-        * @param {jQuery} $inputElement Jquery Html object
-        * @param {jQuery} $maxLengthElement jQuery Html Object
-        * @return void
-        */
+        /**
+         * Restrict input length
+         *
+         * @param {jQuery} $inputElement Jquery Html object
+         * @param {jQuery} $maxLengthElement jQuery Html Object
+         * @return void
+         */
         lengthRestriction : function($inputElement, $maxLengthElement) {
-                // read maxChars from counter display initial text value
-           var maxChars = parseInt($maxLengthElement.text(),10),
+            // read maxChars from counter display initial text value
+            var maxChars = parseInt($maxLengthElement.text(),10),
                 charsLeft = 0,
 
-               // internal function does the counting and sets display value
-               countCharacters = function() {
-                   var numChars = $inputElement.val().length;
-                   if(numChars > maxChars) {
-                       // get current scroll bar position
-                       var currScrollTopPos = $inputElement.scrollTop();
-                       // trim value to max length
-                       $inputElement.val($inputElement.val().substring(0, maxChars));
-                       $inputElement.scrollTop(currScrollTopPos);
-                   }
-                   charsLeft = maxChars - numChars;
-                   if( charsLeft < 0 )
-                       charsLeft = 0;
+            // internal function does the counting and sets display value
+                countCharacters = function() {
+                    var numChars = $inputElement.val().length;
+                    if(numChars > maxChars) {
+                        // get current scroll bar position
+                        var currScrollTopPos = $inputElement.scrollTop();
+                        // trim value to max length
+                        $inputElement.val($inputElement.val().substring(0, maxChars));
+                        $inputElement.scrollTop(currScrollTopPos);
+                    }
+                    charsLeft = maxChars - numChars;
+                    if( charsLeft < 0 )
+                        charsLeft = 0;
 
-                   // set counter text
-                   $maxLengthElement.text(charsLeft);
-               };
+                    // set counter text
+                    $maxLengthElement.text(charsLeft);
+                };
 
-           // bind events to this element
-           // setTimeout is needed, cut or paste fires before val is available
-           $($inputElement).bind('keydown keyup keypress focus blur',  countCharacters )
-               .bind('cut paste', function(){ setTimeout(countCharacters, 100); } ) ;
+            // bind events to this element
+            // setTimeout is needed, cut or paste fires before val is available
+            $($inputElement).bind('keydown keyup keypress focus blur',  countCharacters )
+                .bind('cut paste', function(){ setTimeout(countCharacters, 100); } ) ;
 
-           // count chars on pageload, if there are prefilled input-values
-           $(document).bind("ready", countCharacters);
+            // count chars on pageload, if there are prefilled input-values
+            $(document).bind("ready", countCharacters);
         },
 
         /**
-        * Test numeric against allowed range
-        *
-        * @param $value int
-        * @param $rangeAllowed str; (1-2, min1, max2)
-        * @return array 
-        */
-        numericRangeCheck : function(value, rangeAllowed) 
+         * Test numeric against allowed range
+         *
+         * @param $value int
+         * @param $rangeAllowed str; (1-2, min1, max2)
+         * @return array
+         */
+        numericRangeCheck : function(value, rangeAllowed)
         {
             // split by dash
             var range = $.split(rangeAllowed, '-');
@@ -1058,7 +1062,7 @@
             else if (rangeAllowed.indexOf('max') === 0 && (value > minmax ) ) // max
             {   return ["max", minmax]; } // value is above max
             // since no other returns executed, value is in allowed range
-            return [ "ok" ] ; 
+            return [ "ok" ] ;
         },
 
 
@@ -1076,29 +1080,29 @@
          */
         suggest : function($elem, suggestions, settings) {
             var conf =  {
-                css : {
-                    maxHeight: '150px',
-                    background: '#FFF',
-                    lineHeight:'150%',
-                    textDecoration : 'underline',
-                    overflowX : 'hidden',
-                    overflowY : 'auto',
-                    border : '#CCC solid 1px',
-                    borderTop : 'none',
-                    cursor: 'pointer'
+                    css : {
+                        maxHeight: '150px',
+                        background: '#FFF',
+                        lineHeight:'150%',
+                        textDecoration : 'underline',
+                        overflowX : 'hidden',
+                        overflowY : 'auto',
+                        border : '#CCC solid 1px',
+                        borderTop : 'none',
+                        cursor: 'pointer'
+                    },
+                    activeSuggestionCSS : {
+                        background : '#E9E9E9'
+                    }
                 },
-                activeSuggestionCSS : {
-                    background : '#E9E9E9'
-                }
-            },
-            setSuggsetionPosition = function($suggestionContainer, $input) {
-                var offset = $input.offset();
-                $suggestionContainer.css({
-                    width : $input.outerWidth(),
-                    left : offset.left + 'px',
-                    top : (offset.top + $input.outerHeight()) +'px'
-                });
-            };
+                setSuggsetionPosition = function($suggestionContainer, $input) {
+                    var offset = $input.offset();
+                    $suggestionContainer.css({
+                        width : $input.outerWidth(),
+                        left : offset.left + 'px',
+                        top : (offset.top + $input.outerHeight()) +'px'
+                    });
+                };
 
             if(settings)
                 $.extend(conf, settings);
@@ -1270,8 +1274,8 @@
                                 .removeClass('active-suggestion')
                                 .css('background', 'none')
                                 .eq($.formUtils._selectedSuggestion)
-                                    .addClass('active-suggestion')
-                                    .css(conf.activeSuggestionCSS);
+                                .addClass('active-suggestion')
+                                .css(conf.activeSuggestionCSS);
 
                             e.preventDefault();
                             return false;
@@ -1286,11 +1290,11 @@
             return $elem;
         },
 
-       /**
-        * Error dialogs
-        *
-        * @var {Object}
-        */
+        /**
+         * Error dialogs
+         *
+         * @var {Object}
+         */
         LANG : {
             errorTitle : 'Form submission failed!',
             requiredFields : 'You have not answered all required fields',
@@ -1328,13 +1332,13 @@
 
 
     /* * * * * * * * * * * * * * * * * * * * * *
-      CORE VALIDATORS
-    * * * * * * * * * * * * * * * * * * * * */
+     CORE VALIDATORS
+     * * * * * * * * * * * * * * * * * * * * */
 
 
     /*
-    * Validate email
-    */
+     * Validate email
+     */
     $.formUtils.addValidator({
         name : 'email',
         validatorFunction : function(email) {
@@ -1342,7 +1346,7 @@
             var emailParts = email.toLowerCase().split('@');
             if( emailParts.length == 2 ) {
                 return $.formUtils.validators.validate_domain.validatorFunction(emailParts[1]) &&
-                        !(/[^\w\+\.\-]/.test(emailParts[0]));
+                    !(/[^\w\+\.\-]/.test(emailParts[0]));
             }
 
             return false;
@@ -1352,48 +1356,48 @@
     });
 
     /*
-    * Validate domain name
-    */
+     * Validate domain name
+     */
     $.formUtils.addValidator({
         name : 'domain',
         validatorFunction : function(val, $input) {
 
             var topDomains =  ['.ac', '.ad', '.ae', '.aero', '.af', '.ag', '.ai', '.al', '.am', '.an', '.ao',
-                        '.aq', '.ar', '.arpa', '.as', '.asia', '.at', '.au', '.aw', '.ax', '.az', '.ba', '.bb',
-                        '.bd', '.be', '.bf', '.bg', '.bh', '.bi', '.bike', '.biz', '.bj', '.bm', '.bn', '.bo',
-                        '.br', '.bs', '.bt', '.bv', '.bw', '.by', '.bz', '.ca', '.camera', '.cat', '.cc', '.cd',
-                        '.cf', '.cg', '.ch', '.ci', '.ck', '.cl', '.clothing', '.cm', '.cn', '.co', '.com',
-                        '.construction', '.contractors', '.coop', '.cr', '.cu', '.cv', '.cw', '.cx', '.cy', '.cz',
-                        '.de', '.diamonds', '.directory', '.dj', '.dk', '.dm', '.do', '.dz', '.ec', '.edu', '.ee',
-                        '.eg', '.enterprises', '.equipment', '.er', '.es', '.estate', '.et', '.eu', '.fi', '.fj',
-                        '.fk', '.fm', '.fo', '.fr', '.ga', '.gallery', '.gb', '.gd', '.ge', '.gf', '.gg', '.gh',
-                        '.gi', '.gl', '.gm', '.gn', '.gov', '.gp', '.gq', '.gr', '.graphics', '.gs', '.gt', '.gu',
-                        '.guru', '.gw', '.gy', '.hk', '.hm', '.hn', '.holdings', '.hr', '.ht', '.hu', '.id', '.ie',
-                        '.il', '.im', '.in', '.info', '.int', '.io', '.iq', '.ir', '.is', '.it', '.je', '.jm', '.jo',
-                        '.jobs', '.jp', '.ke', '.kg', '.kh', '.ki', '.kitchen', '.km', '.kn', '.kp', '.kr', '.kw',
-                        '.ky', '.kz', '.la', '.land', '.lb', '.lc', '.li', '.lighting', '.lk', '.lr', '.ls', '.lt',
-                        '.lu', '.lv', '.ly', '.ma', '.mc', '.md', '.me', '.menu', '.mg', '.mh', '.mil', '.mk', '.ml',
-                        '.mm', '.mn', '.mo', '.mobi', '.mp', '.mq', '.mr', '.ms', '.mt', '.mu', '.museum', '.mv',
-                        '.mw', '.mx', '.my', '.mz', '.na', '.name', '.nc', '.ne', '.net', '.nf', '.ng', '.ni',
-                        '.nl', '.no', '.np', '.nr', '.nu', '.nz', '.om', '.org', '.pa', '.pe', '.pf', '.pg', '.ph',
-                        '.photography', '.pk', '.pl', '.plumbing', '.pm', '.pn', '.post', '.pr', '.pro', '.ps', '.pt',
-                        '.pw', '.py', '.qa', '.re', '.ro', '.rs', '.ru', '.rw', '.sa', '.sb', '.sc', '.sd', '.se',
-                        '.sexy', '.sg', '.sh', '.si', '.singles', '.sj', '.sk', '.sl', '.sm', '.sn', '.so', '.sr',
-                        '.st', '.su', '.sv', '.sx', '.sy', '.sz', '.tattoo', '.tc', '.td', '.technology', '.tel', '.tf',
-                        '.tg', '.th', '.tips', '.tj', '.tk', '.tl', '.tm', '.tn', '.to', '.today', '.tp', '.tr', '.travel',
-                        '.tt', '.tv', '.tw', '.tz', '.ua', '.ug', '.uk', '.uno', '.us', '.uy', '.uz', '.va', '.vc', '.ve',
-                        '.ventures', '.vg', '.vi', '.vn', '.voyage', '.vu', '.wf', '.ws', '.xn--3e0b707e', '.xn--45brj9c',
-                        '.xn--80ao21a', '.xn--80asehdb', '.xn--80aswg', '.xn--90a3ac', '.xn--clchc0ea0b2g2a9gcd', '.xn--fiqs8s',
-                        '.xn--fiqz9s', '.xn--fpcrj9c3d', '.xn--fzc2c9e2c', '.xn--gecrj9c', '.xn--h2brj9c', '.xn--j1amh',
-                        '.xn--j6w193g', '.xn--kprw13d', '.xn--kpry57d', '.xn--l1acc', '.xn--lgbbat1ad8j', '.xn--mgb9awbf',
-                        '.xn--mgba3a4f16a', '.xn--mgbaam7a8h', '.xn--mgbayh7gpa', '.xn--mgbbh1a71e', '.xn--mgbc0a9azcg',
-                        '.xn--mgberp4a5d4ar', '.xn--mgbx4cd0ab', '.xn--ngbc5azd', '.xn--o3cw4h', '.xn--ogbpf8fl', '.xn--p1ai',
-                        '.xn--pgbs0dh', '.xn--q9jyb4c', '.xn--s9brj9c', '.xn--unup4y', '.xn--wgbh1c', '.xn--wgbl6a',
-                        '.xn--xkc2al3hye2a', '.xn--xkc2dl3a5ee0h', '.xn--yfro4i67o', '.xn--ygbi2ammx', '.xxx', '.ye',
-                        '.yt', '.za', '.zm', '.zw'],
+                    '.aq', '.ar', '.arpa', '.as', '.asia', '.at', '.au', '.aw', '.ax', '.az', '.ba', '.bb',
+                    '.bd', '.be', '.bf', '.bg', '.bh', '.bi', '.bike', '.biz', '.bj', '.bm', '.bn', '.bo',
+                    '.br', '.bs', '.bt', '.bv', '.bw', '.by', '.bz', '.ca', '.camera', '.cat', '.cc', '.cd',
+                    '.cf', '.cg', '.ch', '.ci', '.ck', '.cl', '.clothing', '.cm', '.cn', '.co', '.com',
+                    '.construction', '.contractors', '.coop', '.cr', '.cu', '.cv', '.cw', '.cx', '.cy', '.cz',
+                    '.de', '.diamonds', '.directory', '.dj', '.dk', '.dm', '.do', '.dz', '.ec', '.edu', '.ee',
+                    '.eg', '.enterprises', '.equipment', '.er', '.es', '.estate', '.et', '.eu', '.fi', '.fj',
+                    '.fk', '.fm', '.fo', '.fr', '.ga', '.gallery', '.gb', '.gd', '.ge', '.gf', '.gg', '.gh',
+                    '.gi', '.gl', '.gm', '.gn', '.gov', '.gp', '.gq', '.gr', '.graphics', '.gs', '.gt', '.gu',
+                    '.guru', '.gw', '.gy', '.hk', '.hm', '.hn', '.holdings', '.hr', '.ht', '.hu', '.id', '.ie',
+                    '.il', '.im', '.in', '.info', '.int', '.io', '.iq', '.ir', '.is', '.it', '.je', '.jm', '.jo',
+                    '.jobs', '.jp', '.ke', '.kg', '.kh', '.ki', '.kitchen', '.km', '.kn', '.kp', '.kr', '.kw',
+                    '.ky', '.kz', '.la', '.land', '.lb', '.lc', '.li', '.lighting', '.lk', '.lr', '.ls', '.lt',
+                    '.lu', '.lv', '.ly', '.ma', '.mc', '.md', '.me', '.menu', '.mg', '.mh', '.mil', '.mk', '.ml',
+                    '.mm', '.mn', '.mo', '.mobi', '.mp', '.mq', '.mr', '.ms', '.mt', '.mu', '.museum', '.mv',
+                    '.mw', '.mx', '.my', '.mz', '.na', '.name', '.nc', '.ne', '.net', '.nf', '.ng', '.ni',
+                    '.nl', '.no', '.np', '.nr', '.nu', '.nz', '.om', '.org', '.pa', '.pe', '.pf', '.pg', '.ph',
+                    '.photography', '.pk', '.pl', '.plumbing', '.pm', '.pn', '.post', '.pr', '.pro', '.ps', '.pt',
+                    '.pw', '.py', '.qa', '.re', '.ro', '.rs', '.ru', '.rw', '.sa', '.sb', '.sc', '.sd', '.se',
+                    '.sexy', '.sg', '.sh', '.si', '.singles', '.sj', '.sk', '.sl', '.sm', '.sn', '.so', '.sr',
+                    '.st', '.su', '.sv', '.sx', '.sy', '.sz', '.tattoo', '.tc', '.td', '.technology', '.tel', '.tf',
+                    '.tg', '.th', '.tips', '.tj', '.tk', '.tl', '.tm', '.tn', '.to', '.today', '.tp', '.tr', '.travel',
+                    '.tt', '.tv', '.tw', '.tz', '.ua', '.ug', '.uk', '.uno', '.us', '.uy', '.uz', '.va', '.vc', '.ve',
+                    '.ventures', '.vg', '.vi', '.vn', '.voyage', '.vu', '.wf', '.ws', '.xn--3e0b707e', '.xn--45brj9c',
+                    '.xn--80ao21a', '.xn--80asehdb', '.xn--80aswg', '.xn--90a3ac', '.xn--clchc0ea0b2g2a9gcd', '.xn--fiqs8s',
+                    '.xn--fiqz9s', '.xn--fpcrj9c3d', '.xn--fzc2c9e2c', '.xn--gecrj9c', '.xn--h2brj9c', '.xn--j1amh',
+                    '.xn--j6w193g', '.xn--kprw13d', '.xn--kpry57d', '.xn--l1acc', '.xn--lgbbat1ad8j', '.xn--mgb9awbf',
+                    '.xn--mgba3a4f16a', '.xn--mgbaam7a8h', '.xn--mgbayh7gpa', '.xn--mgbbh1a71e', '.xn--mgbc0a9azcg',
+                    '.xn--mgberp4a5d4ar', '.xn--mgbx4cd0ab', '.xn--ngbc5azd', '.xn--o3cw4h', '.xn--ogbpf8fl', '.xn--p1ai',
+                    '.xn--pgbs0dh', '.xn--q9jyb4c', '.xn--s9brj9c', '.xn--unup4y', '.xn--wgbh1c', '.xn--wgbl6a',
+                    '.xn--xkc2al3hye2a', '.xn--xkc2dl3a5ee0h', '.xn--yfro4i67o', '.xn--ygbi2ammx', '.xxx', '.ye',
+                    '.yt', '.za', '.zm', '.zw'],
 
                 ukTopDomains = ['co', 'me', 'ac', 'gov', 'judiciary','ltd', 'mod', 'net', 'nhs', 'nic',
-                        'org', 'parliament', 'plc', 'police', 'sch', 'bl', 'british-library', 'jet','nls'],
+                    'org', 'parliament', 'plc', 'police', 'sch', 'bl', 'british-library', 'jet','nls'],
 
                 dot = val.lastIndexOf('.'),
                 domain = val.substring(0, dot),
@@ -1453,8 +1457,8 @@
     });
 
     /*
-    * Validate required
-    */
+     * Validate required
+     */
     $.formUtils.addValidator({
         name : 'required',
         validatorFunction : function(val, $el, config, language, $form) {
@@ -1472,8 +1476,8 @@
     });
 
     /*
-    * Validate length range
-    */
+     * Validate length range
+     */
     $.formUtils.addValidator({
         name : 'length',
         validatorFunction : function(val, $el, conf, lang) {
@@ -1511,7 +1515,7 @@
                 default:
                     checkResult = true;
             }
-            
+
             return checkResult;
         },
         errorMessage : '',
@@ -1519,8 +1523,8 @@
     });
 
     /*
-    * Validate url
-    */
+     * Validate url
+     */
     $.formUtils.addValidator({
         name : 'url',
         validatorFunction : function(url) {
@@ -1543,8 +1547,8 @@
     });
 
     /*
-    * Validate number (floating or integer)
-    */
+     * Validate number (floating or integer)
+     */
     $.formUtils.addValidator({
         name : 'number',
         validatorFunction : function(val, $el, conf) {
@@ -1569,11 +1573,11 @@
                     end = parseFloat(allowing.substring(allowing.indexOf(";")+1,allowing.indexOf("]")));
                     allowsRange = true;
                 }
-                
-                if(steps != "") 
-		{
-		    allowsSteps = true;
-		}
+
+                if(steps != "")
+                {
+                    allowsSteps = true;
+                }
 
                 if( decimalSeparator == ',' ) {
                     if( val.indexOf('.') > -1 ) {
@@ -1627,8 +1631,8 @@
     });
 
     /*
-    * Validate against regexp
-    */
+     * Validate against regexp
+     */
     $.formUtils.addValidator({
         name : 'custom',
         validatorFunction : function(val, $el, conf) {
@@ -1640,8 +1644,8 @@
     });
 
     /*
-    * Validate date
-    */
+     * Validate date
+     */
     $.formUtils.addValidator({
         name : 'date',
         validatorFunction : function(date, $el, conf) {
@@ -1661,13 +1665,13 @@
 
 
     /*
-    * Validate group of checkboxes, validate qty required is checked
-    * written by Steve Wasiura : http://stevewasiura.waztech.com
-    * element attrs
-    *    data-validation="checkbox_group"
-    *    data-validation-qty="1-2"  // min 1 max 2
-    *    data-validation-error-msg="chose min 1, max of 2 checkboxes"
-    */
+     * Validate group of checkboxes, validate qty required is checked
+     * written by Steve Wasiura : http://stevewasiura.waztech.com
+     * element attrs
+     *    data-validation="checkbox_group"
+     *    data-validation-qty="1-2"  // min 1 max 2
+     *    data-validation-error-msg="chose min 1, max of 2 checkboxes"
+     */
     $.formUtils.addValidator({
         name : 'checkbox_group',
         validatorFunction : function(val, $el, conf, lang, $form)
@@ -1686,7 +1690,7 @@
             // call Utility function to check if count is above min, below max, within range etc.
             var qtyCheckResults = $.formUtils.numericRangeCheck(checkedCount, qtyAllowed) ;
             // results will be array, [0]=result str, [1]=qty int
-            switch(qtyCheckResults[0] ) {   
+            switch(qtyCheckResults[0] ) {
                 // outside allowed range
                 case "out":
                     this.errorMessage = lang.groupCheckedRangeStart + qtyAllowed + lang.groupCheckedEnd;
@@ -1706,12 +1710,12 @@
                 default:
                     checkResult = true;
             }
-            
-        return checkResult;
-        
+
+            return checkResult;
+
         }
-     //   errorMessage : '', // set above in switch statement
-     //   errorMessageKey: '' // not used
+        //   errorMessage : '', // set above in switch statement
+        //   errorMessageKey: '' // not used
     });
 
 })(jQuery);

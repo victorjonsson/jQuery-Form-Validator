@@ -878,7 +878,8 @@
                     rule = 'validate_' + rule;
                 }
 
-                if ( rule != 'validate_optional' ) {
+                // Todo : find a better way to do this with right validation rules.
+                if ( rule != 'validate_optional' && rule != 'validate_if-unchecked' ) {
 
                     var validator = $.formUtils.validators[rule];
 

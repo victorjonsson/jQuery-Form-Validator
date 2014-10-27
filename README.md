@@ -40,7 +40,7 @@ particular form.
 
 ### Support for HTML5
 
-As of version 2.2 (unreleased) you can use this plugin as a fallback solution for the validation attributes in the HTML5 spec. Add the module `html5` to the module string and you can use the following native features:
+As of version 2.2 (unreleased) you can use this plugin as a fallback solution for the validation attributes in the HTML5 spec. Add the module `html5` to the module declaration and you can use the following native features:
 
 **Attributes**: require, pattern, maxlength, min, max, placeholder
 

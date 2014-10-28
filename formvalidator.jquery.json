@@ -1,5 +1,5 @@
 {
-    "name" : "formvalidator",
+    "name" : "myformvalidator",
     "title" : "jQuery Form Validator",
     "description" : "This plugin makes it easy to validate user input while keeping your HTML markup clean from javascript code. Even though this plugin has a wide range of validation functions it's designed to require as little bandwidth as possible. This is achieved by grouping together validation functions in \"modules\", making it possible for the programmer to load only those functions that's needed to validate a particular form.",
     "keywords": [
@@ -7,7 +7,7 @@
         "validation",
         "validator"
     ],
-    "version" : "2.1.47",
+    "version" : "2.1.48",
     "author" : {
         "name": "Victor Jonsson",
         "url": "http://victorjonsson.se",

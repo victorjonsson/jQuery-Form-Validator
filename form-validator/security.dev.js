@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.13
+ * @version 2.2.beta.14
  */
 (function($, window) {
 
@@ -337,8 +337,6 @@
                     $element.valAttr('backend-invalid', 'true');
                     if(response.message)
                         $element.attr(conf.validationErrorMsgAttribute, response.message);
-                    else
-                        $element.removeAttr(conf.validationErrorMsgAttribute);
                 }
 
                 if( !$element.valAttr('has-keyup-event') ) {
@@ -349,7 +347,7 @@
                                 $(this)
                                     .valAttr('backend-valid', false)
                                     .valAttr('backend-invalid', false)
-                                    .removeAttr(conf.validationErrorMsgAttribute);
+                                ;
                             }
                         });
                 }

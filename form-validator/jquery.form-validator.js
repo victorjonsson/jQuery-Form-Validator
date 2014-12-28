@@ -933,7 +933,7 @@
         parseDate : function(val, dateFormat) {
             var divider = dateFormat.replace(/[a-zA-Z]/gi, '').substring(0,1),
                 regexp = '^',
-                formatParts = dateFormat.split(divider),
+                formatParts = dateFormat.split(divider || null),
                 matches, day, month, year;
 
             $.each(formatParts, function(i, part) {

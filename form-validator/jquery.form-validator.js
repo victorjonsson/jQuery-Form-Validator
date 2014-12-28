@@ -13,14 +13,15 @@
 
     var $window = $(window),
         _applyErrorStyle = function($elem, conf) {
-            var $parent = $elem.parent();
             $elem
                 .addClass(conf.errorElementClass)
                 .removeClass('valid');
-            if($parent.hasClass("input-group")) $parent = $parent.parent();
+            var $parent = $elem.parent();
+                if($parent.hasClass("input-group")) $parent = $parent.parent();
             
-            $parent.addClass('has-error') .removeClass('has-success'); //twitter bs
-                
+            $parent
+            	.addClass(conf.inputParentClassOnError)
+	        .removeClass(conf.inputParentClassOnSuccess); 
 
             if(conf.borderColorOnError !== '') {
                 $elem.css('border-color', conf.borderColorOnError);
@@ -29,24 +30,26 @@
         _removeErrorStyle = function($elem, conf) {
             $elem.each(function() {
                 _setInlineErrorMessage($(this), '', conf, conf.errorMessagePosition);
-                var $parent = $(this).parent();
                 
-                if($parent.hasClass("input-group")) $parent = $parent.parent();
                 $(this)
                     .removeClass('valid')
                     .removeClass(conf.errorElementClass)
                     .css('border-color', '');
+                
+                var $parent = $(this).parent();
+                if($parent.hasClass("input-group"))
+                    $parent = $parent.parent();
+                
                 $parent
-                    .removeClass('has-error')
-                    .removeClass('has-success')
-                    .find('.'+conf.errorMessageClass) // remove inline error message
+                    .removeClass(conf.inputParentClassOnError)
+		            .removeClass(conf.inputParentClassOnSuccess)
+                    .find('.'+conf.errorMessageClass) // remove inline span holding error message
                         .remove();
             });
         },
         _setInlineErrorMessage = function($input, mess, conf, $messageContainer) {
             var custom = _getInlineErrorElement($input);
-            var $parent = $input.parent();
-            if($parent.hasClass("input-group")) $parent = $parent.parent();
+            
             if( custom ) {
                 custom.innerHTML = mess;
             }
@@ -71,6 +74,8 @@
                 }
             }
             else {
+            	var $parent = $input.parent();
+	            if($parent.hasClass("input-group")) $parent = $parent.parent();
                 var $mess = $parent.find('.'+conf.errorMessageClass+'.help-block');
                 if( $mess.length == 0 ) {
                     $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
@@ -236,7 +241,8 @@
             $elem
                 .addClass('valid')
                 .parent()
-                    .addClass('has-success'); // twitter bs
+                    .addClass(conf.inputParentClassOnSuccess); 
+                    
         } else if(validation !== null) {
 
             _applyErrorStyle($elem, conf);
@@ -351,42 +357,36 @@
 
         // Validate element values
         $form.find('input,textarea,select').filter(':not([type="submit"],[type="button"])').each(function() {
-            var $elem = $(this);
-            var elementType = $elem.attr('type');
-            var elementName = $elem.attr('name');
-            if (!ignoreInput(elementName, elementType)) {
-            	
-		// do not recheck multiple elements with same name, i.e. checkboxes, radios
-		if ($.inArray(elementName, checkedInputs) < 0 ) {
-		    checkedInputs.push(elementName);
+            var $elem = $(this),
+                elementType = $elem.attr('type'),
+                elementName = $elem.attr('name');
 
-	            var validation = $.formUtils.validateInput(
-	                            $elem,
-	                            language,
-	                            conf,
-	                            $form,
-	                            'submit'
-	                        );
-	
-	            // Run element validation callback
-	            if( typeof conf.onElementValidate == 'function' ) {
-	                conf.onElementValidate((validation === true), $elem, $form, validation);
-	            }
-	
-	            if(validation !== true) {
-	                addErrorMessage(validation, $elem);
-	            } else {
-	                $elem
-	                    .valAttr('current-error', false)
-	                    .addClass('valid')
-	                    .parent()
-	                        .addClass('has-success');
-	            }
-                
-		}
-		
+            if (!ignoreInput(elementName, elementType) && $.inArray(elementName, checkedInputs) < 0 ) {
+
+                checkedInputs.push(elementName);
+                var validation = $.formUtils.validateInput(
+                                $elem,
+                                language,
+                                conf,
+                                $form,
+                                'submit'
+                            );
+
+                // Run element validation callback
+                if( typeof conf.onElementValidate == 'function' ) {
+                    conf.onElementValidate((validation === true), $elem, $form, validation);
+                }
+
+                if(validation !== true) {
+                    addErrorMessage(validation, $elem);
+                } else {
+                    $elem
+                        .valAttr('current-error', false)
+                        .addClass('valid')
+                        .parent()
+                            .addClass('has-success');
+                }
             }
-
         });
 
         // Run validation callback
@@ -632,7 +632,9 @@
                 scrollToTopOnError : true,
                 dateFormat : 'yyyy-mm-dd',
                 addValidClassOnAll : false, // whether or not to apply class="valid" even if the input wasn't validated
-                decimalSeparator : '.'
+                decimalSeparator : '.',
+                inputParentClassOnError : 'has-error', // twitter-bootstrap default class name
+                inputParentClassOnSuccess : 'has-success' // twitter-bootstrap default class name
             }
         },
 

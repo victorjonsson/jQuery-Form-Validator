@@ -44,11 +44,11 @@
             });
         },
         _setInlineErrorMessage = function($input, mess, conf, $messageContainer) {
-            var custom = _getInlineErrorElement($input);
             var $parent = $input.parent();
             if($parent.hasClass("input-group")) $parent = $parent.parent();
-            if( custom ) {
-                custom.innerHTML = mess;
+            var customContainer = _getElementErrMsgContainer($input, conf);
+            if( customContainer ) {
+                customContainer.innerHTML = mess;
             }
             else if( typeof $messageContainer == 'object' ) {
                 var $found = false;
@@ -79,8 +79,8 @@
                 $mess.html(mess);
             }
         },
-        _getInlineErrorElement = function($input, conf) {
-            return document.getElementById($input.attr('name')+'_err_msg');
+        _getElementErrMsgContainer = function($input, conf) {
+            return document.getElementById($input.attr('name')+'_'+conf.elementErrorMsgContainerIdSuffix);
         },
         _templateMessage = function($form, title, errorMessages, conf) {
             var messages = conf.errorMessageTemplate.messages.replace(/\{errorTitle\}/g, title);
@@ -622,6 +622,10 @@
                 errorMessageClass : 'form-error', // class name of div containing error messages when validation fails
                 validationRuleAttribute : 'data-validation', // name of the attribute holding the validation rules
                 validationErrorMsgAttribute : 'data-validation-error-msg', // define custom err msg inline with element
+                
+                // to display per element err msg in specific container with id = [elementName]_errMsgContainer
+                elementErrorMsgContainerIdSuffix : 'errMsgContainer', 
+
                 errorMessagePosition : 'element', // Can be either "top" or "element" or "custom"
                 errorMessageTemplate : {
                     container: '<div class="{errorMessageClass} alert alert-danger">{messages}</div>',

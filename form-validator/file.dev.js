@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.15
+ * @version 2.2.beta.16
  */
 (function($, window) {
 
@@ -87,7 +87,7 @@
                 types = _getTypes($input);
 
             $.each($input.get(0).files || [], function(i, file) {
-                var val = file.value,
+                var val = file.value || file.name,
                     ext = val.substr( val.lastIndexOf('.')+1 );
                 if( $.inArray(ext.toLowerCase(), types) == -1 ) {
                     valid = false;

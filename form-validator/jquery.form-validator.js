@@ -198,6 +198,7 @@
     * @return {jQuery}
     */
     $.fn.validateInputOnBlur = function(language, conf, attachKeyupEvent, eventType) {
+
         $.formUtils.eventType = eventType;
 
         if( (this.valAttr('suggestion-nr') || this.valAttr('postpone') || this.hasClass('hasDatepicker')) && !window.postponedValidation ) {
@@ -274,7 +275,7 @@
     };
 
     /**
-     * Function that validate all inputs in given element
+     * Function that validates all inputs in active form
      *
      * @param {Object} [language]
      * @param {Object} [conf]
@@ -316,6 +317,9 @@
             }
         },
 
+	/** HoldsInputs already validated, to prevent recheck of mulitple checkboxes & radios */
+	checkedInputs = [],
+	
         /** Error messages for this validation */
         errorMessages = [],
 
@@ -349,30 +353,38 @@
         $form.find('input,textarea,select').filter(':not([type="submit"],[type="button"])').each(function() {
             var $elem = $(this);
             var elementType = $elem.attr('type');
-            if (!ignoreInput($elem.attr('name'), elementType)) {
+            var elementName = $elem.attr('name');
+            if (!ignoreInput(elementName, elementType)) {
+            	
+		// do not recheck multiple elements with same name, i.e. checkboxes, radios
+		if ($.inArray(elementName, checkedInputs) < 0 ) {
+		    checkedInputs.push(elementName);
 
-                var validation = $.formUtils.validateInput(
-                                $elem,
-                                language,
-                                conf,
-                                $form,
-                                'submit'
-                            );
-
-                // Run element validation callback
-                if( typeof conf.onElementValidate == 'function' ) {
-                    conf.onElementValidate((validation === true), $elem, $form, validation);
-                }
-
-                if(validation !== true) {
-                    addErrorMessage(validation, $elem);
-                } else {
-                    $elem
-                        .valAttr('current-error', false)
-                        .addClass('valid')
-                        .parent()
-                            .addClass('has-success');
-                }
+	            var validation = $.formUtils.validateInput(
+	                            $elem,
+	                            language,
+	                            conf,
+	                            $form,
+	                            'submit'
+	                        );
+	
+	            // Run element validation callback
+	            if( typeof conf.onElementValidate == 'function' ) {
+	                conf.onElementValidate((validation === true), $elem, $form, validation);
+	            }
+	
+	            if(validation !== true) {
+	                addErrorMessage(validation, $elem);
+	            } else {
+	                $elem
+	                    .valAttr('current-error', false)
+	                    .addClass('valid')
+	                    .parent()
+	                        .addClass('has-success');
+	            }
+                
+		}
+		
             }
 
         });
@@ -853,12 +865,13 @@
                 var validator = $.formUtils.validators[rule];
 
                 if( validator && typeof validator['validatorFunction'] == 'function' ) {
+                    
                     // special change of element for checkbox_group rule
                     if ( rule == 'validate_checkbox_group' ) {
-                        // set element to first in group, so error msg is set only once
+                        // set element to first in group, so error msg attr doesn't need to be set on all elements in group
                             $elem = $("[name='"+$elem.attr('name')+"']:eq(0)");
                     }
-
+                    
                     var isValid = null;
                     if( eventContext != 'keyup' || validator.validateOnKeyUp ) {
                         isValid = validator.validatorFunction(value, $elem, conf, language, $form);

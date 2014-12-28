@@ -9,7 +9,7 @@
  *
  * @website http://formvalidator.net/#uk-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.16
+ * @version 2.2.beta.17
  */
 $.formUtils.addValidator({
     name : 'ukvatnumber',

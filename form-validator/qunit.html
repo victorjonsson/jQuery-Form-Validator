@@ -253,6 +253,7 @@
 
             var links = [
                 {val:'012', isValid:true},
+                {val:'0124', isValid:false},
                 {val:'000', isValid:true},
                 {val:'01', isValid:false},
                 {val:'a12', isValid:false}
@@ -261,6 +262,28 @@
             $.each(links, function(i, obj) {
                 runTest(obj, 'cvv');
             });
+
+            // check with amex only
+            var $cCard = input('', {'allowing':'amex', '':'creditcard'}),
+                $cvv = input('1234', 'cvv'),
+                result;
+
+            // let the validator know which type of card we're validating
+            $.formUtils.validateInput($cCard, $.formUtils.LANG, $.formUtils.defaultConfig(), $form)
+
+            result = $.formUtils.validateInput($cvv, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+            equal(
+                true,
+                result
+            );
+
+            $cvv.val('123');
+            result = $.formUtils.validateInput($cvv, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+            equal(
+                'string',
+                typeof result
+            );
+
         });
 
 

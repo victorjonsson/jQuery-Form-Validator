@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.17
+ * @version 2.2.beta.18
  */
 (function($, window) {
 
@@ -333,11 +333,19 @@
     });
 
     var requestServer = function(serverURL, $element, val, conf, callback) {
+        var reqParams = $element.valAttr('req-params');
+        if( !reqParams )
+            reqParams = {};
+        if( typeof reqParams == 'string' ) {
+            reqParams = $.parseJSON(reqParams);
+        }
+        reqParams[$element.attr('name')] = val;
+
         $.ajax({
             url : serverURL,
             type : 'POST',
             cache : false,
-            data : $element.attr('name')+'='+val,
+            data : reqParams,
             dataType : 'json',
             error : function(error) {
                 alert('Server validation failed due to: '+error.statusText);

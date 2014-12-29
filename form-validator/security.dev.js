@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.22
+ * @version 2.2.beta.25
  */
 (function($, window) {
 
@@ -347,7 +347,7 @@
             cache : false,
             data : reqParams,
             dataType : 'json',
-            error : function(error) {
+            error : function(error, err) {
                 alert('Server validation failed due to: '+error.statusText);
                 if( window.JSON && window.JSON.stringify ) {
                     alert(window.JSON.stringify(error));
@@ -417,12 +417,14 @@
                 return null;
 
             if($.formUtils.isValidatingEntireForm) {
+
                 $form
                     .bind('submit', disableFormSubmit)
                     .addClass('validating-server-side')
                     .addClass('on-blur');
 
                 $el.addClass('validating-server-side');
+                $.formUtils.haltValidation = true;
 
                 requestServer(serverURL, $el, val, conf, function() {
                     $form
@@ -436,10 +438,10 @@
                     $el.valAttr('value-length', val.length);
 
                     // fire submission again!
+                    $.formUtils.haltValidation = false;
                     $form.trigger('submit');
                 });
 
-                $.formUtils.haltValidation = true;
                 return null;
 
             } else {

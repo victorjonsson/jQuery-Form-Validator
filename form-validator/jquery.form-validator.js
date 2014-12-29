@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.22
+* @version 2.2.beta.25
 */
 (function($) {
 
@@ -308,6 +308,14 @@
         language = $.extend({}, $.formUtils.LANG, language || {});
         displayError = displayError !== false;
 
+        if($.formUtils.errorDisplayPreventedWhenHalted) {
+            // isValid() was called programmatically with argument displayError set
+            // to false when the validation was halted by any of the validators
+            delete $.formUtils.errorDisplayPreventedWhenHalted
+            displayError = false;
+        }
+
+
         $.formUtils.isValidatingEntireForm = true;
         $.formUtils.haltValidation = false;
 
@@ -330,8 +338,8 @@
             }
         },
 
-	/** HoldsInputs already validated, to prevent recheck of mulitple checkboxes & radios */
-	checkedInputs = [],
+        /** HoldsInputs already validated, to prevent recheck of mulitple checkboxes & radios */
+        checkedInputs = [],
 	
         /** Error messages for this validation */
         errorMessages = [],
@@ -371,6 +379,7 @@
             if (!ignoreInput(elementName, elementType) && $.inArray(elementName, checkedInputs) < 0 ) {
 
                 checkedInputs.push(elementName);
+
                 var validation = $.formUtils.validateInput(
                                 $elem,
                                 language,
@@ -379,19 +388,21 @@
                                 'submit'
                             );
 
-                // Run element validation callback
-                if( typeof conf.onElementValidate == 'function' ) {
-                    conf.onElementValidate((validation === true), $elem, $form, validation);
-                }
+                if(validation != null) {
+                    // Run element validation callback
+                    if( typeof conf.onElementValidate == 'function' ) {
+                        conf.onElementValidate((validation === true), $elem, $form, validation);
+                    }
 
-                if(validation !== true) {
-                    addErrorMessage(validation, $elem);
-                } else {
-                    $elem
-                        .valAttr('current-error', false)
-                        .addClass('valid')
-                        .parent()
+                    if(validation !== true) {
+                        addErrorMessage(validation, $elem);
+                    } else {
+                        $elem
+                            .valAttr('current-error', false)
+                            .addClass('valid')
+                            .parent()
                             .addClass('has-success');
+                    }
                 }
             }
         });
@@ -439,6 +450,10 @@
             }
 
             return false;
+        }
+
+        if( !displayError && $.formUtils.haltValidation ) {
+            $.formUtils.errorDisplayPreventedWhenHalted = true;
         }
 
         return !$.formUtils.haltValidation;
@@ -565,22 +580,34 @@
             $form.bind('submit.validation', function() {
                 var $form = $(this);
 
+                if( $.formUtils.haltValidation ) {
+                    // pressing several times on submit button while validation is halted
+                    return false;
+                }
+
                 if($.formUtils.isLoadingModules) {
                     setTimeout(function() {
                         $form.trigger('submit.validation');
                     }, 200);
                     return false;
                 }
+
                 var valid = $form.isValid(conf.language, conf);
-                if( valid && typeof conf.onSuccess == 'function') {
-                    var callbackResponse = conf.onSuccess($form);
-                    if( callbackResponse === false )
-                        return false;
-                } else if ( !valid && typeof conf.onError == 'function' ) {
-                    conf.onError($form);
+
+                if( $.formUtils.haltValidation ) {
+                    // Validation got halted by one of the validators
                     return false;
                 } else {
-                    return valid;
+                    if( valid && typeof conf.onSuccess == 'function') {
+                        var callbackResponse = conf.onSuccess($form);
+                        if( callbackResponse === false )
+                            return false;
+                    } else if ( !valid && typeof conf.onError == 'function' ) {
+                        conf.onError($form);
+                        return false;
+                    } else {
+                        return valid;
+                    }
                 }
             })
             .bind('reset.validation', function() {

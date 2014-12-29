@@ -71,7 +71,7 @@
     <form action="" id="form-a" role="form">
         <div class="form-group">
             <label class="control-label" for="inline-suggestions">Inline suggestions</label>
-            <input name="inline suggestions" type="text" id="inline-suggestions" class="form-control" data-suggestions="Monkey, Horse, Fox, Tiger, Elephant" />
+            <input name="inline suggestions" type="text" id="inline-suggestions" class="form-control" data-suggestions="Monkey, Horse, Hound, Fox, Tiger, Elephant" />
         </div>
 
         <div class="form-group">
@@ -88,8 +88,8 @@
             <label class="control-label">Year</label>
             <input name="birth" class="form-control"
                    data-validation="date"
-                   data-validation-format="yyyy-mm-dd"
-                   data-suggestions="2014-01-15,2014-01-16,2014-01-17" />
+                   data-validation-format="yyyy/mm/dd"
+                   data-suggestions="2014/01/15,2014/01/16,2014/01/17" />
         </div>
 
         <div class="form-group">
@@ -209,12 +209,12 @@
             <input type="submit" class="button">
             <br />
             <button class="button" type="button"
-                    onclick="alert('From a is ' + ( $('#form-a').isValid({}, {}, false) ? 'VALID':'NOT VALID'));">
+                    onclick="alert('Form a is ' + ( $('#form-a').isValid({}, {}, false) ? 'VALID':'NOT VALID'));">
                 Test validation via js (<strong>without error messages</strong>)
             </button>
             <br />
             <button class="button" type="button"
-                    onclick="alert('From a is ' + ( $('#form-a').isValid() ? 'VALID':'NOT VALID'));">
+                    onclick="alert('Form a is ' + ( $('#form-a').isValid() ? 'VALID':'NOT VALID'));">
                 Test validation via js (showing error messages)
             </button>
             <br />
@@ -372,9 +372,7 @@
                 }
             },
             onError : function($form) {
-                if( !$.formUtils.haltValidation ) {
-                    alert('Invalid '+$form.attr('id'));
-                }
+                alert('Invalid '+$form.attr('id'));
             },
             onSuccess : function($form) {
                 alert('Valid '+$form.attr('id'));
@@ -394,10 +392,10 @@
     $.formUtils.loadModules('date'+dev+'.js', false, false);
 
     $('input')
-        .on('zbeforeValidation', function() {
+        .on('beforeValidation', function() {
             console.log('About to validate input "'+this.name+'"');
         })
-        .on('validationz', function(evt, isValid) {
+        .on('validation', function(evt, isValid) {
             var validationResult = '';
             if( isValid === null ) {
                 validationResult = 'not validated';

@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.25
+* @version 2.2.beta.26
 */
 (function($) {
 
@@ -132,7 +132,7 @@
         this.find('input[data-validation][data-validation-event],textarea[data-validation][data-validation-event],select[data-validation][data-validation-event]')
 			.each(function(){
 				var $el = $(this),
-				    etype = $el.attr("data-validation-event");
+				    etype = $el.valAttr("event");
 				if (etype){
 					$el.bind(etype + ".validation", function(){
                 		$(this).validateInputOnBlur(language, settings, true, etype);
@@ -1628,7 +1628,7 @@
         validatorFunction : function(val, $el, conf, language) {
             var patternStart = '^([a-zA-Z0-9',
                 patternEnd = ']+)$',
-                additionalChars = $el.attr('data-validation-allowing'),
+                additionalChars = $el.valAttr('allowing'),
                 pattern = '';
 
             if( additionalChars ) {

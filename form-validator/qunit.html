@@ -211,6 +211,9 @@
                 {val:'asdXAvs1', isValid:true},
                 {val:'a  b', isValid:false},
                 {val:'a-_ bäöåA', isValid:false},
+                {val:'abbb', isValid:true},
+                {val:'a,bbb', isValid:false},
+                {val:input('a,bbb', {'allowing':',', '':'alphanumeric'}), isValid:true},
                 {val:input('a b', {'allowing':' ', '':'alphanumeric'}), isValid:true},
                 {val:input('a-_ bäöåÖA', {'allowing':' -_öäåÄÖÅ', '':'alphanumeric'}), isValid:true}
             ];
@@ -288,7 +291,7 @@
 
 
         /*
-         * ALPHANUMERIC VALIDATION
+         * DISABLED VALIDATION
          */
         test("Do not validate disabled", function() {
             clearForm();

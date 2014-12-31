@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.30
+ * @version 2.2.beta.31
  */
 (function($, window) {
 
@@ -19,7 +19,7 @@
         /**
          * @return {Array}
          */
-        _getTypes = function($input) {
+            _getTypes = function($input) {
             var allowedTypes = $.split( ($input.valAttr('allowing') || '').toLowerCase() );
 
             if( $.inArray('jpg', allowedTypes) > -1 && $.inArray('jpeg', allowedTypes) == -1)
@@ -30,9 +30,21 @@
         },
 
         /**
+         * @param {Object} obj
+         * @param {String} key
+         * @param {String} insert
+         * @param {Object} lang
+         */
+            _generateErrorMsg = function(obj, key, insert, lang) {
+            var msg = lang[key];
+            obj.errorMessageKey = ''; // only use message attached to this object
+            obj.errorMessage = msg.replace('\%s', insert);
+        },
+
+        /**
          * @param {String} msg
          */
-        _log = function(msg) {
+            _log = function(msg) {
             if( window.console && window.console.log ) {
                 window.console.log(msg);
             }
@@ -43,7 +55,7 @@
      */
     $.formUtils.addValidator({
         name : 'mime',
-        validatorFunction : function(str, $input) {
+        validatorFunction : function(str, $input, conf, language) {
 
             if( SUPPORTS_FILE_READER ) {
                 var valid = true,
@@ -66,17 +78,18 @@
 
                     if( !valid ) {
                         _log('Trying to upload a file with mime type '+mime+' which is not allowed');
+                        _generateErrorMsg(this, 'wrongFileType', allowedTypes.join(', '), language);
                     }
                 }
 
                 return valid;
-                
+
             } else {
                 _log('FileReader not supported by browser, will check file extension');
                 return $.formUtils.validators.validate_extension.validatorFunction(str, $input);
             }
         },
-        errorMessage : 'The file you are trying to upload is of wrong type',
+        errorMessage : '',
         errorMessageKey: 'wrongFileType'
     });
 
@@ -95,12 +108,13 @@
 
                 if( $.inArray(ext.toLowerCase(), types) == -1 ) {
                     valid = false;
+                    _generateErrorMsg(this, 'wrongFileType', allowedTypes.join(', '), language);
                     return false;
                 }
             });
             return valid;
         },
-        errorMessage : 'The file you are trying to upload is of wrong type',
+        errorMessage : '',
         errorMessageKey: 'wrongFileType'
     });
 
@@ -109,7 +123,7 @@
      */
     $.formUtils.addValidator({
         name : 'size',
-        validatorFunction : function(val, $input) {
+        validatorFunction : function(val, $input, conf, language) {
             var maxSize = $input.valAttr('max-size');
             if( !maxSize ) {
                 _log('Input "'+$input.attr('name')+'" is missing data-validation-max-size attribute');
@@ -120,13 +134,18 @@
 
             var maxBytes = $.formUtils.convertSizeNameToBytes(maxSize),
                 valid = true;
+
             $.each($input.get(0).files || [], function(i, file) {
                 valid = file.size <= maxBytes;
                 return valid;
             });
+
+            if( !valid ) {
+                _generateErrorMsg(this, 'wrongFileSize', maxSize, language);
+            }
             return valid;
         },
-        errorMessage : 'The file you are trying to upload is too large',
+        errorMessage : '',
         errorMessageKey: 'wrongFileSize'
     });
 
@@ -166,7 +185,7 @@
             $(this)
                 .removeClass('error')
                 .parent()
-                    .find('.form-error').remove();
+                .find('.form-error').remove();
         });
     });
 

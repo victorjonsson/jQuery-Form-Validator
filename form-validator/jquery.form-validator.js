@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.30
+* @version 2.2.beta.31
 */
 (function($) {
 
@@ -1338,8 +1338,8 @@
             badNumberOfSelectedOptionsEnd : ' answers',
             badAlphaNumeric : 'The input value can only contain alphanumeric characters ',
             badAlphaNumericExtra: ' and ',
-            wrongFileSize : 'The file you are trying to upload is too large',
-            wrongFileType : 'The file you are trying to upload is of wrong type',
+            wrongFileSize : 'The file you are trying to upload is too large (max %s)',
+            wrongFileType : 'Only files of type %s is allowed',
             groupCheckedRangeStart : 'Please choose between ',
             groupCheckedTooFewStart : 'Please choose at least ',
             groupCheckedTooManyStart : 'Please choose a maximum of ',

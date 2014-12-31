@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.29
+* @version 2.2.beta.30
 */
 (function($) {
 
@@ -326,19 +326,16 @@
          * @para {jQuery} $elem
          */
         var addErrorMessage = function(mess, $elem) {
-            // validate server side will return null as error message before the server is requested
-            if(mess !== null) {
-                if ($.inArray(mess, errorMessages) < 0) {
-                    errorMessages.push(mess);
-                }
-                errorInputs.push($elem);
-                $elem.attr('current-error', mess);
-                if( displayError )
-                    _applyErrorStyle($elem, conf);
+            if ($.inArray(mess, errorMessages) < 0) {
+                errorMessages.push(mess);
             }
+            errorInputs.push($elem);
+            $elem.attr('current-error', mess);
+            if( displayError )
+                _applyErrorStyle($elem, conf);
         },
 
-        /** HoldsInputs already validated, to prevent recheck of mulitple checkboxes & radios */
+        /** Holds inputs (of type checkox or radio) already validated, to prevent recheck of mulitple checkboxes & radios */
         checkedInputs = [],
 	
         /** Error messages for this validation */
@@ -374,11 +371,13 @@
         $form.find('input,textarea,select').filter(':not([type="submit"],[type="button"])').each(function() {
             var $elem = $(this),
                 elementType = $elem.attr('type'),
+                isCheckboxOrRadioBtn = elementType == 'radio' || elementType == 'checkbox',
                 elementName = $elem.attr('name');
 
-            if (!ignoreInput(elementName, elementType) && $.inArray(elementName, checkedInputs) < 0 ) {
+            if (!ignoreInput(elementName, elementType) && (!isCheckboxOrRadioBtn || $.inArray(elementName, checkedInputs) < 0) ) {
 
-                checkedInputs.push(elementName);
+                if( isCheckboxOrRadioBtn )
+                    checkedInputs.push(elementName);
 
                 var validation = $.formUtils.validateInput(
                                 $elem,

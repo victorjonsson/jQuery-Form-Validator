@@ -52,9 +52,9 @@
 
         var message;
         if( typeof obj.val == 'string' ) {
-            message  = 'Check that '+obj.val+' is '+(obj.isValid ? 'valid':'invalid');
+            message  = 'Check that "'+obj.val+'" is '+(obj.isValid ? 'valid':'invalid');
         } else {
-            message = 'Check that input[value='+obj.val.attr('value')+'] is '+(obj.isValid ? 'valid':'invalid');
+            message = 'Check that input[value="'+obj.val.attr('value')+'"] is '+(obj.isValid ? 'valid':'invalid');
         }
 
         if( result === null && obj.isValid ) {
@@ -215,6 +215,7 @@
                 {val:'a,bbb', isValid:false},
                 {val:input('a,bbb', {'allowing':',', '':'alphanumeric'}), isValid:true},
                 {val:input('a b', {'allowing':' ', '':'alphanumeric'}), isValid:true},
+                {val:input('', {'allowing':' ', length:'3-12', '':'length alphanumeric'}), isValid:false},
                 {val:input('a-_ bäöåÖA', {'allowing':' -_öäåÄÖÅ', '':'alphanumeric'}), isValid:true}
             ];
 

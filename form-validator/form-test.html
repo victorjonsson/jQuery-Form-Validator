@@ -178,6 +178,14 @@
                    data-validation-max-size="400kb" />
         </div>
         <div class="form-group">
+            <label class="control-label">File name</label>
+            <input type="text" name="some-file2" class="form-control"
+                   data-validation="extension required"
+                   data-validation-error-msg="You must write a file name with extension jpg|png|ico"
+                   data-validation-allowing="jpg, png, ico"
+                    />
+        </div>
+        <div class="form-group">
             <label class="control-label">
                 Callback validation, set this value to &quot;1&quot; and
                 validation will fail

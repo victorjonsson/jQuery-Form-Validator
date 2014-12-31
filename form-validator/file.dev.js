@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.26
+ * @version 2.2.beta.29
  */
 (function($, window) {
 
@@ -44,28 +44,31 @@
     $.formUtils.addValidator({
         name : 'mime',
         validatorFunction : function(str, $input) {
-            var files = $input.get(0).files || [];
 
             if( SUPPORTS_FILE_READER ) {
                 var valid = true,
+                    files = $input.get(0).files || [],
                     mime = '',
                     allowedTypes = _getTypes($input);
 
-                $.each(files, function(i, file) {
-                    valid = false;
-                    mime = file.type || '';
-                    $.each(allowedTypes, function(j, type) {
-                        valid = mime.indexOf(type) > -1;
-                        if( valid ) {
-                            return false;
-                        }
+                if( files.length ) {
+                    $.each(files, function(i, file) {
+                        valid = false;
+                        mime = file.type || '';
+                        $.each(allowedTypes, function(j, type) {
+                            valid = mime.indexOf(type) > -1;
+                            if( valid ) {
+                                return false;
+                            }
+                        });
+                        return valid;
                     });
-                    return valid;
-                });
 
-                if( !valid ) {
-                    _log('Trying to upload a file with mime type '+mime+' which is not allowed');
+                    if( !valid ) {
+                        _log('Trying to upload a file with mime type '+mime+' which is not allowed');
+                    }
                 }
+
                 return valid;
                 
             } else {
@@ -86,9 +89,10 @@
             var valid = true,
                 types = _getTypes($input);
 
-            $.each($input.get(0).files || [], function(i, file) {
-                var val = file.value || file.fileName || file.name,
+            $.each($input.get(0).files || [value], function(i, file) {
+                var val = typeof file == 'string' ? file : (file.value || file.fileName || file.name),
                     ext = val.substr( val.lastIndexOf('.')+1 );
+
                 if( $.inArray(ext.toLowerCase(), types) == -1 ) {
                     valid = false;
                     return false;

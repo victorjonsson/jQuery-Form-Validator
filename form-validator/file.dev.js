@@ -10,9 +10,11 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.31
+ * @version 2.2.beta.33
  */
 (function($, window) {
+
+    'use strict';
 
     var SUPPORTS_FILE_READER = typeof window.FileReader != 'undefined',
 
@@ -98,17 +100,18 @@
      */
     $.formUtils.addValidator({
         name : 'extension',
-        validatorFunction : function(value, $input) {
+        validatorFunction : function(value, $input, conf, language) {
             var valid = true,
-                types = _getTypes($input);
+                _this = this,
+                allowedTypes = _getTypes($input);
 
             $.each($input.get(0).files || [value], function(i, file) {
                 var val = typeof file == 'string' ? file : (file.value || file.fileName || file.name),
                     ext = val.substr( val.lastIndexOf('.')+1 );
 
-                if( $.inArray(ext.toLowerCase(), types) == -1 ) {
+                if( $.inArray(ext.toLowerCase(), allowedTypes) == -1 ) {
                     valid = false;
-                    _generateErrorMsg(this, 'wrongFileType', allowedTypes.join(', '), language);
+                    _generateErrorMsg(_this, 'wrongFileType', allowedTypes.join(', '), language);
                     return false;
                 }
             });

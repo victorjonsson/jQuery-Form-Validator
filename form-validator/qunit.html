@@ -248,6 +248,32 @@
             });
         });
 
+        test('isValid()', function() {
+
+            $form.empty();
+            $form.append(input('4000000000000002', {'allowing':'visa', '':'creditcard'}));
+            $form.append(input('', {'optional':'true', '':'alphanumeric'}));
+            $form.append(input('', 'alphanumeric'));
+            $form.append(input('4000000000000002', 'alphanumeric'));
+
+            equal(
+                $form.isValid(false, false, false),
+                false
+            );
+
+            $form.empty();
+            $form.append(input('4000000000000002', {'allowing':'visa', '':'creditcard'}));
+            $form.append(input('', {'optional':'true', '':'alphanumeric'}));
+            $form.append(input('fff', 'alphanumeric'));
+            $form.append(input('4000000000000002', 'alphanumeric'));
+
+            equal(
+                $form.isValid(false, false, false),
+                true
+            );
+
+        });
+
         /*
          * CVV VALIDATION
          */

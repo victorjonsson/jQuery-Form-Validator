@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.33
+* @version 2.2.beta.39
 */
 (function($) {
 
@@ -16,12 +16,14 @@
             $elem
                 .addClass(conf.errorElementClass)
                 .removeClass('valid');
+
             var $parent = $elem.parent();
-                if($parent.hasClass("input-group")) $parent = $parent.parent();
+            if($parent.hasClass("input-group"))
+                $parent = $parent.parent();
             
             $parent
             	.addClass(conf.inputParentClassOnError)
-	        .removeClass(conf.inputParentClassOnSuccess); 
+                .removeClass(conf.inputParentClassOnSuccess);
 
             if(conf.borderColorOnError !== '') {
                 $elem.css('border-color', conf.borderColorOnError);
@@ -29,17 +31,19 @@
         },
         _removeErrorStyle = function($elem, conf) {
             $elem.each(function() {
-                _setInlineErrorMessage($(this), '', conf, conf.errorMessagePosition);
-                
-                $(this)
+                var $this = $(this),
+                    $parent = $this.parent();
+
+                if($parent.hasClass("input-group"))
+                    $parent = $parent.parent();
+
+                _setInlineErrorMessage($this, '', conf, conf.errorMessagePosition);
+
+                $this
                     .removeClass('valid')
                     .removeClass(conf.errorElementClass)
                     .css('border-color', '');
-                
-                var $parent = $(this).parent();
-                if($parent.hasClass("input-group"))
-                    $parent = $parent.parent();
-                
+
                 $parent
                     .removeClass(conf.inputParentClassOnError)
 		            .removeClass(conf.inputParentClassOnSuccess)
@@ -501,7 +505,7 @@
 
     /**
      * A bit smarter split function
-     * delimiter can be space comma dash or pipe
+     * delimiter can be space, comma, dash or pipe
      * @param {String} val
      * @param {Function|String} [func]
      * @returns {Array|void}
@@ -1381,80 +1385,48 @@
         name : 'domain',
         validatorFunction : function(val, $input) {
 
-            var topDomains =  ['.ac', '.ad', '.ae', '.aero', '.af', '.ag', '.ai', '.al', '.am', '.an', '.ao',
-                        '.aq', '.ar', '.arpa', '.as', '.asia', '.at', '.au', '.aw', '.ax', '.az', '.ba', '.bb',
-                        '.bd', '.be', '.bf', '.bg', '.bh', '.bi', '.bike', '.biz', '.bj', '.bm', '.bn', '.bo',
-                        '.br', '.bs', '.bt', '.bv', '.bw', '.by', '.bz', '.ca', '.camera', '.cat', '.cc', '.cd',
-                        '.cf', '.cg', '.ch', '.ci', '.ck', '.cl', '.clothing', '.cm', '.cn', '.co', '.com',
-                        '.construction', '.contractors', '.coop', '.cr', '.cu', '.cv', '.cw', '.cx', '.cy', '.cz',
-                        '.de', '.diamonds', '.directory', '.dj', '.dk', '.dm', '.do', '.dz', '.ec', '.edu', '.ee',
-                        '.eg', '.enterprises', '.equipment', '.er', '.es', '.estate', '.et', '.eu', '.fi', '.fj',
-                        '.fk', '.fm', '.fo', '.fr', '.ga', '.gallery', '.gb', '.gd', '.ge', '.gf', '.gg', '.gh',
-                        '.gi', '.gl', '.gm', '.gn', '.gov', '.gp', '.gq', '.gr', '.graphics', '.gs', '.gt', '.gu',
-                        '.guru', '.gw', '.gy', '.hk', '.hm', '.hn', '.holdings', '.hr', '.ht', '.hu', '.id', '.ie',
-                        '.il', '.im', '.in', '.info', '.int', '.io', '.iq', '.ir', '.is', '.it', '.je', '.jm', '.jo',
-                        '.jobs', '.jp', '.ke', '.kg', '.kh', '.ki', '.kitchen', '.km', '.kn', '.kp', '.kr', '.kw',
-                        '.ky', '.kz', '.la', '.land', '.lb', '.lc', '.li', '.lighting', '.lk', '.lr', '.ls', '.lt',
-                        '.lu', '.lv', '.ly', '.ma', '.mc', '.md', '.me', '.menu', '.mg', '.mh', '.mil', '.mk', '.ml',
-                        '.mm', '.mn', '.mo', '.mobi', '.mp', '.mq', '.mr', '.ms', '.mt', '.mu', '.museum', '.mv',
-                        '.mw', '.mx', '.my', '.mz', '.na', '.name', '.nc', '.ne', '.net', '.nf', '.ng', '.ni',
-                        '.nl', '.no', '.np', '.nr', '.nu', '.nz', '.om', '.org', '.pa', '.pe', '.pf', '.pg', '.ph',
-                        '.photography', '.pk', '.pl', '.plumbing', '.pm', '.pn', '.post', '.pr', '.pro', '.ps', '.pt',
-                        '.pw', '.py', '.qa', '.re', '.ro', '.rs', '.ru', '.rw', '.sa', '.sb', '.sc', '.sd', '.se',
-                        '.sexy', '.sg', '.sh', '.si', '.singles', '.sj', '.sk', '.sl', '.sm', '.sn', '.so', '.sr',
-                        '.st', '.su', '.sv', '.sx', '.sy', '.sz', '.tattoo', '.tc', '.td', '.technology', '.tel', '.tf',
-                        '.tg', '.th', '.tips', '.tj', '.tk', '.tl', '.tm', '.tn', '.to', '.today', '.tp', '.tr', '.travel',
-                        '.tt', '.tv', '.tw', '.tz', '.ua', '.ug', '.uk', '.uno', '.us', '.uy', '.uz', '.va', '.vc', '.ve',
-                        '.ventures', '.vg', '.vi', '.vn', '.voyage', '.vu', '.wf', '.ws', '.xn--3e0b707e', '.xn--45brj9c',
-                        '.xn--80ao21a', '.xn--80asehdb', '.xn--80aswg', '.xn--90a3ac', '.xn--clchc0ea0b2g2a9gcd', '.xn--fiqs8s',
-                        '.xn--fiqz9s', '.xn--fpcrj9c3d', '.xn--fzc2c9e2c', '.xn--gecrj9c', '.xn--h2brj9c', '.xn--j1amh',
-                        '.xn--j6w193g', '.xn--kprw13d', '.xn--kpry57d', '.xn--l1acc', '.xn--lgbbat1ad8j', '.xn--mgb9awbf',
-                        '.xn--mgba3a4f16a', '.xn--mgbaam7a8h', '.xn--mgbayh7gpa', '.xn--mgbbh1a71e', '.xn--mgbc0a9azcg',
-                        '.xn--mgberp4a5d4ar', '.xn--mgbx4cd0ab', '.xn--ngbc5azd', '.xn--o3cw4h', '.xn--ogbpf8fl', '.xn--p1ai',
-                        '.xn--pgbs0dh', '.xn--q9jyb4c', '.xn--s9brj9c', '.xn--unup4y', '.xn--wgbh1c', '.xn--wgbl6a',
-                        '.xn--xkc2al3hye2a', '.xn--xkc2dl3a5ee0h', '.xn--yfro4i67o', '.xn--ygbi2ammx', '.xxx', '.ye',
-                        '.yt', '.za', '.zm', '.zw'],
+            var topDomains = [".com",".org",".net",".int",".edu",".gov",".mil",".ac",".ad",".ae",".af",".ag",".ai",".al",".am",".an",".ao",".aq",".ar",".as",".at",".au",".aw",".ax",".az",".ba",".bb",".bd",".be",".bf",".bg",".bh",".bi",".bj",".bm",".bn",".bo",".bq",".br",".bs",".bt",".bv",".bw",".by",".bz",".ca",".cc",".cd",".cf",".cg",".ch",".ci",".ck",".cl",".cm",".cn",".co",".cr",".cs",".cu",".cv",".cw",".cx",".cy",".cz",".dd",".de",".dj",".dk",".dm",".do",".dz",".ec",".ee",".eg",".eh",".er",".es",".et",".eu",".fi",".fj",".fk",".fm",".fo",".fr",".ga",".gb",".gd",".ge",".gf",".gg",".gh",".gi",".gl",".gm",".gn",".gp",".gq",".gr",".gs",".gt",".gu",".gw",".gy",".hk",".hm",".hn",".hr",".ht",".hu",".id",".ie",".il",".im",".in",".io",".iq",".ir",".is",".it",".je",".jm",".jo",".jp",".ke",".kg",".kh",".ki",".km",".kn",".kp",".kr",".kw",".ky",".kz",".la",".lb",".lc",".li",".lk",".lr",".ls",".lt",".lu",".lv",".ly",".ma",".mc",".md",".me",".mg",".mh",".mk",".ml",".mm",".mn",".mo",".mp",".mq",".mr",".ms",".mt",".mu",".mv",".mw",".mx",".my",".mz",".na",".nc",".ne",".nf",".ng",".ni",".nl",".no",".np",".nr",".nu",".nz",".om",".pa",".pe",".pf",".pg",".ph",".pk",".pl",".pm",".pn",".pr",".ps",".pt",".pw",".py",".qa",".re",".ro",".rs",".ru",".rw",".sa",".sb",".sc",".sd",".se",".sg",".sh",".si",".sj",".sk",".sl",".sm",".sn",".so",".sr",".ss",".st",".su",".sv",".sx",".sy",".sz",".tc",".td",".tf",".tg",".th",".tj",".tk",".tl",".tm",".tn",".to",".tp",".tr",".tt",".tv",".tw",".tz",".ua",".ug",".uk",".us",".uy",".uz",".va",".vc",".ve",".vg",".vi",".vn",".vu",".wf",".ws",".ye",".yt",".yu",".za",".zm",".zr",".zw",".academy",".accountants",".active",".actor",".aero",".agency",".airforce",".archi",".army",".associates",".attorney",".auction",".audio",".autos",".band",".bargains",".beer",".best",".bid",".bike",".bio",".biz",".black",".blackfriday",".blue",".boo",".boutique",".build",".builders",".business",".buzz",".cab",".camera",".camp",".cancerresearch",".capital",".cards",".care",".career",".careers",".cash",".catering",".center",".ceo",".channel",".cheap",".christmas",".church",".city",".claims",".cleaning",".click",".clinic",".clothing",".club",".coach",".codes",".coffee",".college",".community",".company",".computer",".condos",".construction",".consulting",".contractors",".cooking",".cool",".country",".credit",".creditcard",".cricket",".cruises",".dad",".dance",".dating",".day",".deals",".degree",".delivery",".democrat",".dental",".dentist",".diamonds",".diet",".digital",".direct",".directory",".discount",".domains",".eat",".education",".email",".energy",".engineer",".engineering",".equipment",".esq",".estate",".events",".exchange",".expert",".exposed",".fail",".farm",".feedback",".finance",".financial",".fish",".fishing",".fitness",".flights",".florist",".fly",".foo",".forsale",".foundation",".fund",".furniture",".futbol",".gallery",".gift",".gifts",".gives",".glass",".global",".gop",".graphics",".green",".gripe",".guide",".guitars",".guru",".healthcare",".help",".here",".hiphop",".hiv",".holdings",".holiday",".homes",".horse",".host",".hosting",".house",".how",".info",".ing",".ink",".insure",".international",".investments",".jobs",".kim",".kitchen",".land",".lawyer",".legal",".lease",".lgbt",".life",".lighting",".limited",".limo",".link",".loans",".lotto",".luxe",".luxury",".management",".market",".marketing",".media",".meet",".meme",".memorial",".menu",".mobi",".moe",".money",".mortgage",".motorcycles",".mov",".museum",".name",".navy",".network",".new",".ngo",".ninja",".ong",".onl",".ooo",".organic",".partners",".parts",".party",".pharmacy",".photo",".photography",".photos",".physio",".pics",".pictures",".pink",".pizza",".place",".plumbing",".poker",".post",".press",".pro",".productions",".prof",".properties",".property",".qpon",".recipes",".red",".rehab",".ren",".rentals",".repair",".report",".republican",".reviews",".rich",".rip",".rocks",".rodeo",".rsvp",".science",".services",".sexy",".shoes",".singles",".social",".software",".solar",".solutions",".space",".supplies",".supply",".support",".surf",".surgery",".systems",".tattoo",".tax",".technology",".tel",".tips",".tires",".today",".tools",".top",".town",".toys",".trade",".training",".travel",".university",".vacations",".vet",".villas",".vision",".vodka",".vote",".voting",".voyage",".wang",".watch",".webcam",".website",".wed",".wiki",".works",".world",".wtf",".xxx",".xyz",".zone",".maison",".abogado",".casa",".gratis",".juegos",".soy",".tienda",".uno",".viajes",".haus",".immobilien",".jetzt",".kaufen",".reise",".reisen",".schule",".versicherung",".desi",".shiksha",".immo",".moda",".voto",".bar",".coop",".enterprises",".industries",".institute",".ltda",".pub",".realtor",".reit",".rest",".restaurant",".sarl",".ventures",".capetown",".durban",".joburg",".miami",".nyc",".quebec",".rio",".vegas",".asia",".krd",".nagoya",".okinawa",".ryukyu",".taipei",".tatar",".tokyo",".yokohama",".alsace",".bayern",".berlin",".brussels",".budapest",".bzh",".cat",".cologne",".cymru",".eus",".frl",".gal",".gent",".hamburg",".koeln",".london",".madrid",".moscow",".nrw",".paris",".ruhr",".saarland",".scot",".tirol",".vlaanderen",".wales",".wien",".kiwi",".melbourne",".sydney",".allfinanz",".android",".aquarelle",".axa",".bloomberg",".bmw",".bnpparibas",".cal",".caravan",".cern",".chrome",".citic",".crs",".cuisinella",".dnp",".dvag",".emerck",".everbank",".firmdale",".flsmidth",".frogans",".gbiz",".gle",".globo",".gmail",".gmo",".gmx",".google",".ibm",".kred",".lacaixa",".latrobe",".lds",".mango",".mini",".monash",".mormon",".neustar",".nexus",".nhk",".nra",".otsuka",".ovh",".pohl",".praxi",".prod",".sca",".scb",".schmidt",".sohu",".spiegel",".suzuki",".tui",".uol",".williamhill",".wme",".wtc",".yandex",".youtube"],
+                ukTopDomains = ['co', 'me', 'ac', 'gov', 'judiciary','ltd', 'mod', 'net', 'nhs', 'nic', 'org', 'parliament', 'plc', 'police', 'sch', 'bl', 'british-library', 'jet','nls'],
+                dotPos = val.lastIndexOf('.'),
+                domain = val.substring(0, dotPos),
+                topDomain = val.substring(dotPos, val.length),
+                isXN = topDomain.indexOf('.xn--') == 0,
+                hasTopDomain = isXN;
 
-                ukTopDomains = ['co', 'me', 'ac', 'gov', 'judiciary','ltd', 'mod', 'net', 'nhs', 'nic',
-                        'org', 'parliament', 'plc', 'police', 'sch', 'bl', 'british-library', 'jet','nls'],
-
-                dot = val.lastIndexOf('.'),
-                domain = val.substring(0, dot),
-                ext = val.substring(dot, val.length),
-                hasTopDomain = false;
-
-            for (var i = 0; i < topDomains.length; i++) {
-                if (topDomains[i] === ext) {
-                    if(ext==='.uk') {
-                        //Run Extra Checks for UK Domain Names
-                        var domainParts = val.split('.');
-                        var tld2 = domainParts[domainParts.length-2];
-                        for(var j = 0; j < ukTopDomains.length; j++) {
-                            if(ukTopDomains[j] === tld2) {
-                                hasTopDomain = true;
-                                break;
+            if( !isXN ) {
+                for (var i = 0; i < topDomains.length; i++) {
+                    if (topDomains[i] === topDomain) {
+                        if(topDomain==='.uk') {
+                            //Run Extra Checks for UK Domain Names
+                            var domainParts = val.split('.');
+                            var tld2 = domainParts[domainParts.length-2];
+                            for(var j = 0; j < ukTopDomains.length; j++) {
+                                if(ukTopDomains[j] === tld2) {
+                                    hasTopDomain = true;
+                                    break;
+                                }
                             }
-                        }
 
-                        if(hasTopDomain)
+                            if(hasTopDomain)
+                                break;
+
+                        } else {
+                            hasTopDomain = true;
                             break;
-
-                    } else {
-                        hasTopDomain = true;
-                        break;
+                        }
                     }
                 }
             }
 
             if (!hasTopDomain) {
                 return false;
-            } else if (dot < 2 || dot > 57) {
+            } else if (dotPos < 2 || dotPos > 57) {
                 return $.inArray(val, ['i.net', 'q.com', 'q.net', 'x.com', 'x.org', 'z.com', 'w.org']) > -1;
             } else {
                 var firstChar = domain.substring(0, 1),
                     lastChar = domain.substring(domain.length - 1, domain.length);
 
-                if (firstChar === '-' || firstChar === '.' || lastChar === '-' || lastChar === '.') {
+                if ( firstChar === '-' || firstChar === '.' || lastChar === '-' || lastChar === '.') {
                     return false;
                 }
                 if (domain.split('..').length > 1) {
@@ -1463,10 +1435,6 @@
                 if (domain.replace(/[-\da-z\.]/g, '') !== '') {
                     return false;
                 }
-            }
-
-            if(typeof $input !== 'undefined') {
-                $input.val(val);
             }
 
             return true;
@@ -1504,8 +1472,7 @@
                 type = $el.attr('type');
 
             if(lengthAllowed == undefined) {
-                var elementType = $el.get(0).nodeName;
-                alert('Please add attribute "data-validation-length" to '+elementType+' named '+$el.attr('name'));
+                alert('Please add attribute "data-validation-length" to '+$el[0].nodeName+' named '+$el.attr('name'));
                 return true;
             }
 
@@ -1552,8 +1519,9 @@
             // - General improvements made by Stéphane Moureau <https://github.com/TraderStf>
             var urlFilter = /^(https?|ftp):\/\/((((\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])(\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])(\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/(((\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/((\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|\[|\]|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#(((\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
             if( urlFilter.test(url) ) {
-                var domain = url.split('://')[1];
-                var domainSlashPos = domain.indexOf('/');
+                var domain = url.split('://')[1],
+                    domainSlashPos = domain.indexOf('/');
+
                 if(domainSlashPos > -1)
                     domain = domain.substr(0, domainSlashPos);
 
@@ -1594,9 +1562,7 @@
                 }
                 
                 if(steps != "") 
-		{
-		    allowsSteps = true;
-		}
+		        allowsSteps = true;
 
                 if( decimalSeparator == ',' ) {
                     if( val.indexOf('.') > -1 ) {
@@ -1668,14 +1634,7 @@
     $.formUtils.addValidator({
         name : 'date',
         validatorFunction : function(date, $el, conf) {
-            var dateFormat = 'yyyy-mm-dd';
-            if($el.valAttr('format')) {
-                dateFormat = $el.valAttr('format');
-            }
-            else if( conf.dateFormat ) {
-                dateFormat = conf.dateFormat;
-            }
-
+            var dateFormat = $el.valAttr('format') || conf.dateFormat || 'yyyy-mm-dd';
             return $.formUtils.parseDate(date, dateFormat) !== false;
         },
         errorMessage : '',
@@ -1694,20 +1653,24 @@
     $.formUtils.addValidator({
         name : 'checkbox_group',
         validatorFunction : function(val, $el, conf, lang, $form)
-        {   // preset return var
-            var checkResult = true;
-            // get name of element. since it is a checkbox group, all checkboxes will have same name
-            var elname = $el.attr('name');
-            // get count of checked checkboxes with this name
-            var checkedCount = $("input[type=checkbox][name^='"+elname+"']:checked", $form).length;
-            // get el attr that specs qty required / allowed
-            var qtyAllowed = $el.valAttr('qty');
+        {
+            // preset return var
+            var checkResult = true,
+                // get name of element. since it is a checkbox group, all checkboxes will have same name
+                elname = $el.attr('name'),
+                // get count of checked checkboxes with this name
+                checkedCount = $("input[type=checkbox][name^='"+elname+"']:checked", $form).length,
+                // get el attr that specs qty required / allowed
+                qtyAllowed = $el.valAttr('qty');
+
             if (qtyAllowed == undefined) {
                 var elementType = $el.get(0).nodeName;
                 alert('Attribute "data-validation-qty" is missing from '+elementType+' named '+$el.attr('name'));
             }
+
             // call Utility function to check if count is above min, below max, within range etc.
             var qtyCheckResults = $.formUtils.numericRangeCheck(checkedCount, qtyAllowed) ;
+
             // results will be array, [0]=result str, [1]=qty int
             switch(qtyCheckResults[0] ) {   
                 // outside allowed range
@@ -1730,8 +1693,7 @@
                     checkResult = true;
             }
             
-        return checkResult;
-        
+            return checkResult;
         }
      //   errorMessage : '', // set above in switch statement
      //   errorMessageKey: '' // not used

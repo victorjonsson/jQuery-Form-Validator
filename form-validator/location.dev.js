@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#location-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.39
+ * @version 2.2.beta.40
  */
 (function($) {
 

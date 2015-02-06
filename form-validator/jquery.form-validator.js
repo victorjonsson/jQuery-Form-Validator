@@ -259,6 +259,11 @@
             _applyErrorStyle($elem, conf);
             _setInlineErrorMessage($elem, validation, conf, conf.errorMessagePosition);
 
+            // Run inline error callback
+            if( typeof conf.onInlineError == 'function' ) {
+                conf.onInlineError($elem, validation, conf);
+            }
+
             if(attachKeyupEvent) {
                 $elem
                     .unbind('keyup.validation')
@@ -557,7 +562,8 @@
             language : false,
             onSuccess : false,
             onError : false,
-            onElementValidate : false
+            onElementValidate : false,
+            onInlineError : false
         });
 
         conf = $.extend(defaultConf, conf || {});

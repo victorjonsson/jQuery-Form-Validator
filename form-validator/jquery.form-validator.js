@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.48
+* @version 2.2.beta.49
 */
 (function($) {
 
@@ -259,11 +259,6 @@
             _applyErrorStyle($elem, conf);
             _setInlineErrorMessage($elem, validation, conf, conf.errorMessagePosition);
 
-            // Run inline error callback
-            if( typeof conf.onInlineError == 'function' ) {
-                conf.onInlineError($elem, validation, conf);
-            }
-
             if(attachKeyupEvent) {
                 $elem
                     .unbind('keyup.validation')
@@ -397,11 +392,6 @@
                             );
 
                 if(validation != null) {
-                    // Run element validation callback
-                    if( typeof conf.onElementValidate == 'function' ) {
-                        conf.onElementValidate((validation === true), $elem, $form, validation);
-                    }
-
                     if(validation !== true) {
                         addErrorMessage(validation, $elem);
                     } else {
@@ -563,7 +553,6 @@
             onSuccess : false,
             onError : false,
             onElementValidate : false,
-            onInlineError : false
         });
 
         conf = $.extend(defaultConf, conf || {});
@@ -947,15 +936,24 @@
 
             }, ' ');
 
+            var result;
+
             if( typeof validationErrorMsg == 'string' ) {
                 $elem.trigger('validation', false);
-                return validationErrorMsg;
+                result = validationErrorMsg;
             } else if( validationErrorMsg === null && !conf.addValidClassOnAll ) {
-                return null;
+                result = null;
             } else {
                 $elem.trigger('validation', true);
-                return true;
+                result = true;
             }
+
+            // Run element validation callback
+            if( typeof conf.onElementValidate == 'function' && result !== null ) {
+                conf.onElementValidate((result === true), $elem, $form, validation);
+            }
+
+            return result;
         },
 
        /**

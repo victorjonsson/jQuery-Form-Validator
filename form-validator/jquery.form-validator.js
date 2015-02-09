@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.49
+* @version 2.2.beta.50
 */
 (function($) {
 
@@ -950,7 +950,7 @@
 
             // Run element validation callback
             if( typeof conf.onElementValidate == 'function' && result !== null ) {
-                conf.onElementValidate((result === true), $elem, $form, validation);
+                conf.onElementValidate((result === true), $elem, $form, validationErrorMsg);
             }
 
             return result;

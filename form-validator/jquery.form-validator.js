@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.40
+* @version 2.2.beta.47
 */
 (function($) {
 
@@ -1369,7 +1369,7 @@
             var emailParts = email.toLowerCase().split('@');
             if( emailParts.length == 2 ) {
                 return $.formUtils.validators.validate_domain.validatorFunction(emailParts[1]) &&
-                        !(/[^\w\+\.\-]/.test(emailParts[0]));
+                        !(/[^\w\+\.\-]/.test(emailParts[0])) && emailParts[0].length > 0;
             }
 
             return false;
@@ -1383,61 +1383,14 @@
     */
     $.formUtils.addValidator({
         name : 'domain',
-        validatorFunction : function(val, $input) {
-
-            var topDomains = [".com",".org",".net",".int",".edu",".gov",".mil",".ac",".ad",".ae",".af",".ag",".ai",".al",".am",".an",".ao",".aq",".ar",".as",".at",".au",".aw",".ax",".az",".ba",".bb",".bd",".be",".bf",".bg",".bh",".bi",".bj",".bm",".bn",".bo",".bq",".br",".bs",".bt",".bv",".bw",".by",".bz",".ca",".cc",".cd",".cf",".cg",".ch",".ci",".ck",".cl",".cm",".cn",".co",".cr",".cs",".cu",".cv",".cw",".cx",".cy",".cz",".dd",".de",".dj",".dk",".dm",".do",".dz",".ec",".ee",".eg",".eh",".er",".es",".et",".eu",".fi",".fj",".fk",".fm",".fo",".fr",".ga",".gb",".gd",".ge",".gf",".gg",".gh",".gi",".gl",".gm",".gn",".gp",".gq",".gr",".gs",".gt",".gu",".gw",".gy",".hk",".hm",".hn",".hr",".ht",".hu",".id",".ie",".il",".im",".in",".io",".iq",".ir",".is",".it",".je",".jm",".jo",".jp",".ke",".kg",".kh",".ki",".km",".kn",".kp",".kr",".kw",".ky",".kz",".la",".lb",".lc",".li",".lk",".lr",".ls",".lt",".lu",".lv",".ly",".ma",".mc",".md",".me",".mg",".mh",".mk",".ml",".mm",".mn",".mo",".mp",".mq",".mr",".ms",".mt",".mu",".mv",".mw",".mx",".my",".mz",".na",".nc",".ne",".nf",".ng",".ni",".nl",".no",".np",".nr",".nu",".nz",".om",".pa",".pe",".pf",".pg",".ph",".pk",".pl",".pm",".pn",".pr",".ps",".pt",".pw",".py",".qa",".re",".ro",".rs",".ru",".rw",".sa",".sb",".sc",".sd",".se",".sg",".sh",".si",".sj",".sk",".sl",".sm",".sn",".so",".sr",".ss",".st",".su",".sv",".sx",".sy",".sz",".tc",".td",".tf",".tg",".th",".tj",".tk",".tl",".tm",".tn",".to",".tp",".tr",".tt",".tv",".tw",".tz",".ua",".ug",".uk",".us",".uy",".uz",".va",".vc",".ve",".vg",".vi",".vn",".vu",".wf",".ws",".ye",".yt",".yu",".za",".zm",".zr",".zw",".academy",".accountants",".active",".actor",".aero",".agency",".airforce",".archi",".army",".associates",".attorney",".auction",".audio",".autos",".band",".bargains",".beer",".best",".bid",".bike",".bio",".biz",".black",".blackfriday",".blue",".boo",".boutique",".build",".builders",".business",".buzz",".cab",".camera",".camp",".cancerresearch",".capital",".cards",".care",".career",".careers",".cash",".catering",".center",".ceo",".channel",".cheap",".christmas",".church",".city",".claims",".cleaning",".click",".clinic",".clothing",".club",".coach",".codes",".coffee",".college",".community",".company",".computer",".condos",".construction",".consulting",".contractors",".cooking",".cool",".country",".credit",".creditcard",".cricket",".cruises",".dad",".dance",".dating",".day",".deals",".degree",".delivery",".democrat",".dental",".dentist",".diamonds",".diet",".digital",".direct",".directory",".discount",".domains",".eat",".education",".email",".energy",".engineer",".engineering",".equipment",".esq",".estate",".events",".exchange",".expert",".exposed",".fail",".farm",".feedback",".finance",".financial",".fish",".fishing",".fitness",".flights",".florist",".fly",".foo",".forsale",".foundation",".fund",".furniture",".futbol",".gallery",".gift",".gifts",".gives",".glass",".global",".gop",".graphics",".green",".gripe",".guide",".guitars",".guru",".healthcare",".help",".here",".hiphop",".hiv",".holdings",".holiday",".homes",".horse",".host",".hosting",".house",".how",".info",".ing",".ink",".insure",".international",".investments",".jobs",".kim",".kitchen",".land",".lawyer",".legal",".lease",".lgbt",".life",".lighting",".limited",".limo",".link",".loans",".lotto",".luxe",".luxury",".management",".market",".marketing",".media",".meet",".meme",".memorial",".menu",".mobi",".moe",".money",".mortgage",".motorcycles",".mov",".museum",".name",".navy",".network",".new",".ngo",".ninja",".ong",".onl",".ooo",".organic",".partners",".parts",".party",".pharmacy",".photo",".photography",".photos",".physio",".pics",".pictures",".pink",".pizza",".place",".plumbing",".poker",".post",".press",".pro",".productions",".prof",".properties",".property",".qpon",".recipes",".red",".rehab",".ren",".rentals",".repair",".report",".republican",".reviews",".rich",".rip",".rocks",".rodeo",".rsvp",".science",".services",".sexy",".shoes",".singles",".social",".software",".solar",".solutions",".space",".supplies",".supply",".support",".surf",".surgery",".systems",".tattoo",".tax",".technology",".tel",".tips",".tires",".today",".tools",".top",".town",".toys",".trade",".training",".travel",".university",".vacations",".vet",".villas",".vision",".vodka",".vote",".voting",".voyage",".wang",".watch",".webcam",".website",".wed",".wiki",".works",".world",".wtf",".xxx",".xyz",".zone",".maison",".abogado",".casa",".gratis",".juegos",".soy",".tienda",".uno",".viajes",".haus",".immobilien",".jetzt",".kaufen",".reise",".reisen",".schule",".versicherung",".desi",".shiksha",".immo",".moda",".voto",".bar",".coop",".enterprises",".industries",".institute",".ltda",".pub",".realtor",".reit",".rest",".restaurant",".sarl",".ventures",".capetown",".durban",".joburg",".miami",".nyc",".quebec",".rio",".vegas",".asia",".krd",".nagoya",".okinawa",".ryukyu",".taipei",".tatar",".tokyo",".yokohama",".alsace",".bayern",".berlin",".brussels",".budapest",".bzh",".cat",".cologne",".cymru",".eus",".frl",".gal",".gent",".hamburg",".koeln",".london",".madrid",".moscow",".nrw",".paris",".ruhr",".saarland",".scot",".tirol",".vlaanderen",".wales",".wien",".kiwi",".melbourne",".sydney",".allfinanz",".android",".aquarelle",".axa",".bloomberg",".bmw",".bnpparibas",".cal",".caravan",".cern",".chrome",".citic",".crs",".cuisinella",".dnp",".dvag",".emerck",".everbank",".firmdale",".flsmidth",".frogans",".gbiz",".gle",".globo",".gmail",".gmo",".gmx",".google",".ibm",".kred",".lacaixa",".latrobe",".lds",".mango",".mini",".monash",".mormon",".neustar",".nexus",".nhk",".nra",".otsuka",".ovh",".pohl",".praxi",".prod",".sca",".scb",".schmidt",".sohu",".spiegel",".suzuki",".tui",".uol",".williamhill",".wme",".wtc",".yandex",".youtube"],
-                ukTopDomains = ['co', 'me', 'ac', 'gov', 'judiciary','ltd', 'mod', 'net', 'nhs', 'nic', 'org', 'parliament', 'plc', 'police', 'sch', 'bl', 'british-library', 'jet','nls'],
-                dotPos = val.lastIndexOf('.'),
-                domain = val.substring(0, dotPos),
-                topDomain = val.substring(dotPos, val.length),
-                isXN = topDomain.indexOf('.xn--') == 0,
-                hasTopDomain = isXN;
-
-            if( !isXN ) {
-                for (var i = 0; i < topDomains.length; i++) {
-                    if (topDomains[i] === topDomain) {
-                        if(topDomain==='.uk') {
-                            //Run Extra Checks for UK Domain Names
-                            var domainParts = val.split('.');
-                            var tld2 = domainParts[domainParts.length-2];
-                            for(var j = 0; j < ukTopDomains.length; j++) {
-                                if(ukTopDomains[j] === tld2) {
-                                    hasTopDomain = true;
-                                    break;
-                                }
-                            }
-
-                            if(hasTopDomain)
-                                break;
-
-                        } else {
-                            hasTopDomain = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!hasTopDomain) {
-                return false;
-            } else if (dotPos < 2 || dotPos > 57) {
-                return $.inArray(val, ['i.net', 'q.com', 'q.net', 'x.com', 'x.org', 'z.com', 'w.org']) > -1;
-            } else {
-                var firstChar = domain.substring(0, 1),
-                    lastChar = domain.substring(domain.length - 1, domain.length);
-
-                if ( firstChar === '-' || firstChar === '.' || lastChar === '-' || lastChar === '.') {
-                    return false;
-                }
-                if (domain.split('..').length > 1) {
-                    return false;
-                }
-                if (encodeURI(domain.replace(/%/g, '&')).toLowerCase().replace(/[-%\da-z\.]/g, '') !== '') {
-                    return false;
-                }
-            }
-
-            return true;
+        validatorFunction : function(val) {
+            return val.length > 0 &&
+                    val.length <= 253 && // Including sub domains
+                    !(/[^a-zA-Z0-9]/.test(val.substr(-2))) &&
+                    !(/[^a-zA-Z]/.test(val.substr(0,1))) &&
+                    !(/[^a-zA-Z0-9\.\-]/.test(val)) &&
+                    val.split('..').length == 1 &&
+                    val.split('.').length > 1;
         },
         errorMessage : '',
         errorMessageKey: 'badDomain'

@@ -116,7 +116,7 @@
                 {val: 'valid-domain@website.COM', isValid : true},
                 {val: 'asdsdsd@sdsd.co.uk', isValid : true},
                 {val: 'sasas@sdsd.xxx', isValid : true},
-                {val: 'sasas@sdsd.xxz', isValid : false},
+                {val: 'sasas@sdsd.xxz', isValid : true},
                 {val: '@sdsd.xxz', isValid : false},
                 {val: 'sasas@', isValid : false},
                 {val: 'sasas.se', isValid : false},
@@ -139,13 +139,9 @@
                 {val: 'klsdmfklsmdf', isValid: false},
                 {val: 'http://google.se', isValid: true},
                 {val: 'https://google.se/test/?arge=hej_&arg[]=123', isValid: true},
-                {val: 'http://google.xxx/test/test.jsp', isValid: true},
-                {val: 'http://google.xxy', isValid: false},
-                {val: 'http://google.xxy/test/test.jsp', isValid: false},
                 {val: 'http://google.test.de', isValid: true},
                 {val: 'http://test.xn--fiqz9s', isValid: true},
                 {val: 'http://test.youtube', isValid: true},
-                {val: 'http://test.youtubez', isValid: false},
                 {val: 'http://google.test.co.uk/', isValid: true}
             ];
 
@@ -166,15 +162,17 @@
                 {val:'domain.xxx', isValid:true},
                 {val:'domain.com', isValid:true},
                 {val:'www.domain.com', isValid:true},
+                {val:'test.xn--fiqz9s', isValid:true},
+                {val:'test..xn--fiqz9s', isValid:false},
                 {val:'q.com', isValid:true},
-                {val:'v.com', isValid:false},
                 {val:'amazone.website.tippit.de', isValid:true},
                 {val:'amazone.website.co.uk', isValid:true},
                 {val:'http://domain.se', isValid:false},
                 {val:'http://www.domain.se', isValid:false},
                 {val:'http://www.domain.se/', isValid:false},
                 {val:'domain.com/', isValid:false},
-                {val:'', isValid:false}
+                {val:'', isValid:false},
+                {val:'asdfasdf', isValid:false}
             ];
 
             $.each(links, function(i, obj) {

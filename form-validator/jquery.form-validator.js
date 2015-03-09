@@ -511,7 +511,7 @@
             if( !val )
                 return [];
             var values = [];
-            $.each(val.split(func ? func: /[,|-\s]\s*/g ),
+            $.each(val.split(func ? func: /[,|\-\s]\s*/g ),
                 function(i,str) {
                     str = $.trim(str);
                     if( str.length )
@@ -521,7 +521,7 @@
             return values;
         } else if( val ) {
             // exec callback func on each
-            $.each(val.split(/[,|-\s]\s*/g),
+            $.each(val.split(/[,|\-\s]\s*/g),
                 function(i, str) {
                     str = $.trim(str);
                     if( str.length )

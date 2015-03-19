@@ -7,7 +7,7 @@
  *
  * @website http://formvalidator.net/#location-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.56
+ * @version 2.2.beta.57
  */
 (function($) {
 
@@ -16,8 +16,6 @@
   $.setupValidation = function(conf) {
     var $forms = $(conf.form || 'form');
     $.each(conf.validate || conf.validation || {}, function(elemRef, attr) {
-      if( elemRef != 'form' ) {
-
         var $elem;
         if( elemRef[0] == '#' ) {
           $elem = $(elemRef);
@@ -31,11 +29,9 @@
 
         $.each(attr, function(name, val) {
           if( name != 'validation' ) {
-            $elem.attr('data-validation-'+name, val);
+            $elem.attr('data-validation-'+name, typeof val == 'string' ? val : 'true');
           }
         });
-
-      }
     });
 
     $.validate(conf);

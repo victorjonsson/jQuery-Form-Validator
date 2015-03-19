@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.55
+* @version 2.2.beta.56
 */
 (function($) {
 
@@ -627,10 +627,9 @@
                     $form.validateOnBlur(conf.language, conf);
                 })
             }
-			if( conf.validateOnEvent ){
-                $form.validateOnEvent(conf.language, conf);
-			}
-
+            if( conf.validateOnEvent ){
+              $form.validateOnEvent(conf.language, conf);
+			      }
         });
 
         if( conf.modules != '' ) {

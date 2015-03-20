@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.57
+ * @version 2.2.beta.58
  */
 (function($, window) {
 
@@ -339,7 +339,7 @@
         if( typeof reqParams == 'string' ) {
             reqParams = $.parseJSON(reqParams);
         }
-        reqParams[$element.attr('name')] = val;
+        reqParams[$element.valAttr('param-name') || $element.attr('name')] = val;
 
         $.ajax({
             url : serverURL,

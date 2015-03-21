@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.58
+ * @version 2.2.beta.60
  */
 (function($, window) {
 
@@ -154,7 +154,7 @@
     $.formUtils.addValidator({
         name : 'strength',
         validatorFunction : function(val, $el, conf) {
-            var requiredStrength = $el.valAttr('strength')
+            var requiredStrength = $el.valAttr('strength') || 2;
             if(requiredStrength && requiredStrength > 3)
                 requiredStrength = 3;
 
@@ -278,9 +278,22 @@
             }
 
             $el.bind('keyup', function() {
-                var val = $(this).val();
-                var $parent = typeof config.parent == 'undefined' ? $(this).parent() : $(config.parent);
-                var $displayContainer = $parent.find('.strength-meter');
+                var val = $(this).val(),
+                    $parent = typeof config.parent == 'undefined' ? $(this).parent() : $(config.parent),
+                    $displayContainer = $parent.find('.strength-meter'),
+                    strength = $.formUtils.validators.validate_strength.calculatePasswordStrength(val),
+                    css = {
+                      background: 'pink',
+                      color : '#FF0000',
+                      fontWeight : 'bold',
+                      border : 'red solid 1px',
+                      borderWidth : '0px 0px 4px',
+                      display : 'inline-block',
+                      fontSize : config.fontSize,
+                      padding : config.padding
+                    },
+                    text = config.bad;
+
                 if($displayContainer.length == 0) {
                     $displayContainer = $('<span></span>');
                     $displayContainer
@@ -293,20 +306,6 @@
                 } else {
                     $displayContainer.show();
                 }
-
-                var strength = $.formUtils.validators.validate_strength.calculatePasswordStrength(val);
-                var css = {
-                    background: 'pink',
-                    color : '#FF0000',
-                    fontWeight : 'bold',
-                    border : 'red solid 1px',
-                    borderWidth : '0px 0px 4px',
-                    display : 'inline-block',
-                    fontSize : config.fontSize,
-                    padding : config.padding
-                };
-
-                var text = config.bad;
 
                 if(strength == 1) {
                     text = config.weak;
@@ -324,7 +323,6 @@
                     text = config.strong;
                 }
 
-
                 $displayContainer
                     .css(css)
                     .text(text);
@@ -333,7 +331,7 @@
     });
 
     var requestServer = function(serverURL, $element, val, conf, callback) {
-        var reqParams = $element.valAttr('req-params');
+        var reqParams = $element.valAttr('req-params') || {};
         if( !reqParams )
             reqParams = {};
         if( typeof reqParams == 'string' ) {

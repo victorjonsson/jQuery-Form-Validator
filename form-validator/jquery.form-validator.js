@@ -1506,8 +1506,8 @@
                 if(allowing.indexOf('number') == -1)
                     allowing += ',number';
 
-                if(allowing.indexOf('negative') > -1 && val.indexOf('-') === 0) {
-                    val = val.substr(1);
+                if(allowing.indexOf('negative') == -1 && val.indexOf('-') === 0) {
+                    return false;
                 }
 
                 if (allowing.indexOf('range') > -1)
@@ -1528,10 +1528,10 @@
                     val = val.replace(',', '.');
                 }
 
-                if(allowing.indexOf('number') > -1 && val.replace(/[0-9]/g, '') === '' && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val%steps == 0)) ) {
+                if(allowing.indexOf('number') > -1 && val.replace(/[0-9-]/g, '') === '' && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val%steps == 0)) ) {
                     return true;
                 }
-                if(allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9]+)\\.([0-9]+)$')) !== null && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val%steps == 0)) ) {
+                if(allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9-]+)\\.([0-9]+)$')) !== null && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val%steps == 0)) ) {
                     return true;
                 }
             }

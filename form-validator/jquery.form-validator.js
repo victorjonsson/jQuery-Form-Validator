@@ -5,24 +5,30 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.62
+* @version 2.2.beta.65
 */
 (function($) {
 
     'use strict';
 
     var $window = $(window),
+        _getInputParentContainer = function($elem) {
+            var $parent = $elem.parent();
+            if( !$parent.hasClass('form-group') ) {
+                var $formGroup = $parent.closest('.form-group');
+                if( $formGroup.length ) {
+                  return $formGroup.eq(0);
+                }
+            }
+            return $parent;
+        },
         _applyErrorStyle = function($elem, conf) {
             $elem
                 .addClass(conf.errorElementClass)
                 .removeClass('valid');
 
-            var $parent = $elem.parent();
-            if($parent.hasClass("input-group"))
-                $parent = $parent.parent();
-            
-            $parent
-            	.addClass(conf.inputParentClassOnError)
+            _getInputParentContainer($elem)
+                .addClass(conf.inputParentClassOnError)
                 .removeClass(conf.inputParentClassOnSuccess);
 
             if(conf.borderColorOnError !== '') {
@@ -31,11 +37,7 @@
         },
         _removeErrorStyle = function($elem, conf) {
             $elem.each(function() {
-                var $this = $(this),
-                    $parent = $this.parent();
-
-                if($parent.hasClass("input-group"))
-                    $parent = $parent.parent();
+                var $this = $(this);
 
                 _setInlineErrorMessage($this, '', conf, conf.errorMessagePosition);
 
@@ -44,9 +46,9 @@
                     .removeClass(conf.errorElementClass)
                     .css('border-color', '');
 
-                $parent
+                _getInputParentContainer($this)
                     .removeClass(conf.inputParentClassOnError)
-		            .removeClass(conf.inputParentClassOnSuccess)
+                    .removeClass(conf.inputParentClassOnSuccess)
                     .find('.'+conf.errorMessageClass) // remove inline span holding error message
                         .remove();
             });
@@ -78,14 +80,15 @@
                 }
             }
             else {
-            	var $parent = $input.parent();
-	            if($parent.hasClass("input-group")) $parent = $parent.parent();
-                var $mess = $parent.find('.'+conf.errorMessageClass+'.help-block');
-                if( $mess.length == 0 ) {
-                    $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
-                    $mess.appendTo($parent);
-                }
-                $mess.html(mess);
+
+            	var $parent = _getInputParentContainer($input),
+                  $mess = $parent.find('.'+conf.errorMessageClass+'.help-block');
+
+              if( $mess.length == 0 ) {
+                  $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
+                  $mess.appendTo($parent);
+              }
+              $mess.html(mess);
             }
         },
         _getInlineErrorElement = function($input, conf) {
@@ -249,11 +252,8 @@
                         );
         
         if(validation === true) {
-            $elem
-                .addClass('valid')
-                .parent()
-                    .addClass(conf.inputParentClassOnSuccess); 
-                    
+            $elem.addClass('valid');
+            _getInputParentContainer($elem).addClass(conf.inputParentClassOnSuccess);
         } else if(validation !== null) {
 
             _applyErrorStyle($elem, conf);
@@ -397,9 +397,9 @@
                     } else {
                         $elem
                             .valAttr('current-error', false)
-                            .addClass('valid')
-                            .parent()
-                            .addClass('has-success');
+                            .addClass('valid');
+
+                        _getInputParentContainer($elem).addClass(conf.inputParentClassOnSuccess);
                     }
                 }
             }

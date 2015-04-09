@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.65
+ * @version 2.2.beta.66
  */
 (function($, window) {
 
@@ -364,7 +364,7 @@
                 if( !$element.valAttr('has-keyup-event') ) {
                     $element
                         .valAttr('has-keyup-event', '1')
-                        .bind('keyup', function(evt) {
+                        .bind('keyup change', function(evt) {
                             if( evt.keyCode != 9 && evt.keyCode != 16 ) {
                                 $(this)
                                     .valAttr('backend-valid', false)

@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.60
+* @version 2.2.beta.62
 */
 (function($) {
 
@@ -1337,6 +1337,7 @@
             badDomain : 'Incorrect domain value',
             badUrl : 'The input value is not a correct URL',
             badCustomVal : 'The input value is incorrect',
+            andSpaces : ' and spaces ',
             badInt : 'The input value was not a correct number',
             badSecurityNumber : 'Your social security number was incorrect',
             badUKVatAnswer : 'Incorrect UK VAT Number',
@@ -1557,7 +1558,7 @@
                 var extra = additionalChars.replace(/\\/g, '');
                 if( extra.indexOf(' ') > -1 ) {
                     extra = extra.replace(' ', '');
-                    extra += ' and spaces ';
+                    extra += language.andSpaces || $.formUtils.LANG.andSpaces;
                 }
                 this.errorMessage = language.badAlphaNumeric + language.badAlphaNumericExtra + extra;
             } else {

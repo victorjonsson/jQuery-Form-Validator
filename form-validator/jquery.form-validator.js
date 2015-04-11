@@ -5,7 +5,7 @@
 *
 * @website http://formvalidator.net/
 * @license Dual licensed under the MIT or GPL Version 2 licenses
-* @version 2.2.beta.66
+* @version 2.2.beta.68
 */
 (function($) {
 
@@ -13,14 +13,18 @@
 
     var $window = $(window),
         _getInputParentContainer = function($elem) {
-            var $parent = $elem.parent();
-            if( !$parent.hasClass('form-group') ) {
-                var $formGroup = $parent.closest('.form-group');
-                if( $formGroup.length ) {
-                  return $formGroup.eq(0);
+            if( $elem.valAttr('error-msg-container') ) {
+                return $( $elem.valAttr('error-msg-container') );
+            } else {
+                var $parent = $elem.parent();
+                if( !$parent.hasClass('form-group') ) {
+                    var $formGroup = $parent.closest('.form-group');
+                    if( $formGroup.length ) {
+                        return $formGroup.eq(0);
+                    }
                 }
+                return $parent;
             }
-            return $parent;
         },
         _applyErrorStyle = function($elem, conf) {
             $elem

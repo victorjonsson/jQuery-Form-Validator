@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.69
+ * @version 2.2.beta.85
  */
 (function($, window) {
 
@@ -37,8 +37,8 @@
          * @param {String} insert
          * @param {Object} lang
          */
-            _generateErrorMsg = function(obj, key, insert, lang) {
-            var msg = lang[key];
+        _generateErrorMsg = function(obj, key, insert, lang) {
+            var msg = lang[key] || '';
             obj.errorMessageKey = ''; // only use message attached to this object
             obj.errorMessage = msg.replace('\%s', insert);
         },
@@ -46,7 +46,7 @@
         /**
          * @param {String} msg
          */
-            _log = function(msg) {
+          _log = function(msg) {
             if( window.console && window.console.log ) {
                 window.console.log(msg);
             }
@@ -88,7 +88,7 @@
 
             } else {
                 _log('FileReader not supported by browser, will check file extension');
-                return $.formUtils.validators.validate_extension.validatorFunction(str, $input);
+                return $.formUtils.validators.validate_extension.validatorFunction(str, $input, conf, language);
             }
         },
         errorMessage : '',

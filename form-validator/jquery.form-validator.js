@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.69
+ * @version 2.2.beta.85
  */
 (function ($) {
 
@@ -77,6 +77,8 @@
             $found.html(mess);
           }
         } else {
+          console.log(mess);
+          alert('This is mess da '+ mess );
           var $mess = $('<div class="' + conf.errorMessageClass + '">' + mess + '</div>');
           $mess[0].inputReferer = $input[0];
           $messageContainer.prepend($mess);
@@ -247,23 +249,25 @@
     var $elem = this,
         $form = $elem.closest("form"),
         validationRule = $elem.attr(conf.validationRuleAttribute),
-        validation = $.formUtils.validateInput(
-          $elem,
-          language,
-          $.extend({}, conf, {errorMessagePosition: 'element'}),
-          $form,
-          eventType
-        );
+        result = $.formUtils.validateInput(
+                    $elem,
+                    language,
+                    conf, //$.extend({}, conf, {errorMessagePosition: 'element'}),
+                    $form,
+                    eventType
+                  );
 
-    if (validation === true) {
-      $elem.addClass('valid');
-      _getInputParentContainer($elem)
-        .addClass(conf.inputParentClassOnSuccess);
+    if ( result.isValid ) {
+      if( result.shouldChangeDisplay ) {
+          $elem.addClass('valid');
+          _getInputParentContainer($elem)
+            .addClass(conf.inputParentClassOnSuccess);
+      }
     }
-    else if (validation !== null) {
+    else if (!result.isValid) {
 
       _applyErrorStyle($elem, conf);
-      _setInlineErrorMessage($elem, validation, conf, conf.errorMessagePosition);
+      _setInlineErrorMessage($elem, result.errorMsg, conf, conf.errorMessagePosition);
 
       if (attachKeyupEvent) {
         $elem
@@ -273,6 +277,7 @@
           });
       }
     }
+
     return this;
   };
 
@@ -324,7 +329,6 @@
       displayError = false;
     }
 
-
     $.formUtils.isValidatingEntireForm = true;
     $.formUtils.haltValidation = false;
 
@@ -335,25 +339,25 @@
      * @para {jQuery} $elem
      */
     var addErrorMessage = function (mess, $elem) {
-        if ($.inArray(mess, errorMessages) < 0) {
-          errorMessages.push(mess);
-        }
-        errorInputs.push($elem);
-        $elem.attr('current-error', mess);
-        if (displayError)
-          _applyErrorStyle($elem, conf);
-      },
+          if ($.inArray(mess, errorMessages) < 0) {
+            errorMessages.push(mess);
+          }
+          errorInputs.push($elem);
+          $elem.attr('current-error', mess);
+          if (displayError)
+            _applyErrorStyle($elem, conf);
+        },
 
-      /** Holds inputs (of type checkox or radio) already validated, to prevent recheck of mulitple checkboxes & radios */
+        /** Holds inputs (of type checkox or radio) already validated, to prevent recheck of mulitple checkboxes & radios */
         checkedInputs = [],
 
-      /** Error messages for this validation */
+        /** Error messages for this validation */
         errorMessages = [],
 
-      /** Input elements which value was not valid */
+        /** Input elements which value was not valid */
         errorInputs = [],
 
-      /** Form instance */
+        /** Form instance */
         $form = this,
 
       /**
@@ -388,23 +392,24 @@
         if (isCheckboxOrRadioBtn)
           checkedInputs.push(elementName);
 
-        var validation = $.formUtils.validateInput(
-          $elem,
-          language,
-          conf,
-          $form,
-          'submit'
-        );
+        var result = $.formUtils.validateInput(
+                              $elem,
+                              language,
+                              conf,
+                              $form,
+                              'submit'
+                            );
 
-        if (validation != null) {
-          if (validation !== true) {
-            addErrorMessage(validation, $elem);
-          } else {
+        if( result.shouldChangeDisplay ) {
+          if ( !result.isValid ) {
+            addErrorMessage(result.errorMsg, $elem);
+          } else if( result.isValid ) {
             $elem
               .valAttr('current-error', false)
               .addClass('valid');
 
-            _getInputParentContainer($elem).addClass(conf.inputParentClassOnSuccess);
+            _getInputParentContainer($elem)
+              .addClass(conf.inputParentClassOnSuccess);
           }
         }
       }
@@ -507,16 +512,16 @@
    * A bit smarter split function
    * delimiter can be space, comma, dash or pipe
    * @param {String} val
-   * @param {Function|String} [func]
+   * @param {Function|String} [callback]
    * @returns {Array|void}
    */
-  $.split = function (val, func) {
-    if (typeof func != 'function') {
+  $.split = function (val, callback) {
+    if (typeof callback != 'function') {
       // return array
       if (!val)
         return [];
       var values = [];
-      $.each(val.split(func ? func : /[,|\-\s]\s*/g),
+      $.each(val.split(callback ? callback : /[,|\-\s]\s*/g),
         function (i, str) {
           str = $.trim(str);
           if (str.length)
@@ -530,7 +535,7 @@
         function (i, str) {
           str = $.trim(str);
           if (str.length)
-            return func(str, i);
+            return callback(str, i);
         }
       );
     }
@@ -570,14 +575,15 @@
 
       // Remove all event listeners previously added
       $form.find('.has-help-txt')
-        .unbind('focus.validation')
-        .unbind('blur.validation');
+          .unbind('focus.validation')
+          .unbind('blur.validation');
+
       $form
         .removeClass('has-validation-callback')
         .unbind('submit.validation')
         .unbind('reset.validation')
         .find('input[data-validation],textarea[data-validation]')
-        .unbind('blur.validation');
+          .unbind('blur.validation');
 
       // Validate when submitted
       $form.bind('submit.validation', function () {
@@ -613,12 +619,12 @@
           }
         }
       })
-        .bind('reset.validation', function () {
-          // remove messages
-          $(this).find('.' + conf.errorMessageClass + '.alert').remove();
-          _removeErrorStyle($(this).find('.' + conf.errorElementClass + ',.valid'), conf);
-        })
-        .addClass('has-validation-callback');
+      .bind('reset.validation', function () {
+        // remove messages
+        $(this).find('.' + conf.errorMessageClass + '.alert').remove();
+        _removeErrorStyle($(this).find('.' + conf.errorElementClass + ',.valid'), conf);
+      })
+      .addClass('has-validation-callback');
 
       if (conf.showHelpOnFocus) {
         $form.showHelpOnFocus();
@@ -778,7 +784,7 @@
               moduleLoadedCallback();
             }
             else {
-              var scriptUrl = path + modName + (modName.substr(-3) == '.js' ? '' : '.js'),
+              var scriptUrl = path + modName + (modName.slice(-3) == '.js' ? '' : '.js'),
                 script = document.createElement('SCRIPT');
 
               if (scriptUrl in $.formUtils.loadedModules) {
@@ -794,7 +800,7 @@
                 // Load the script
                 script.type = 'text/javascript';
                 script.onload = moduleLoadedCallback;
-                script.src = scriptUrl + ( scriptUrl.substr(-7) == '.dev.js' ? cacheSuffix : '' );
+                script.src = scriptUrl + ( scriptUrl.slice(-7) == '.dev.js' ? cacheSuffix : '' );
                 script.onreadystatechange = function () {
                   // IE 7 fix
                   if (this.readyState == 'complete' || this.readyState == 'loaded') {
@@ -845,25 +851,29 @@
      * @param {Object} conf
      * @param {jQuery} $form
      * @param {String} [eventContext]
-     * @return {String|Boolean}
+     * @return {Object} REtur
      */
     validateInput: function ($elem, language, conf, $form, eventContext) {
-
-      if ($elem.attr('disabled'))
-        return null; // returning null will prevent that the valid class gets applied to the element
 
       $elem.trigger('beforeValidation');
 
       var value = $elem.val() || '',
-        optional = $elem.valAttr('optional'),
+          result = {isValid: true, shouldChangeDisplay:true, errorMsg:''},
+          optional = $elem.valAttr('optional'),
 
-      // test if a checkbox forces this element to be validated
-        validationDependsOnCheckedInput = false,
-        validationDependentInputIsChecked = false,
-        validateIfCheckedElement = false,
+          // test if a checkbox forces this element to be validated
+          validationDependsOnCheckedInput = false,
+          validationDependentInputIsChecked = false,
+          validateIfCheckedElement = false,
 
-      // get value of this element's attribute "... if-checked"
-        validateIfCheckedElementName = $elem.valAttr("if-checked");
+          // get value of this element's attribute "... if-checked"
+          validateIfCheckedElementName = $elem.valAttr('if-checked');
+
+
+      if ($elem.attr('disabled')) {
+        result.shouldChangeDisplay = false;
+        return result;
+      }
 
       // make sure we can proceed
       if (validateIfCheckedElementName != null) {
@@ -886,16 +896,18 @@
       // if empty AND optional attribute is present
       // OR depending on a checkbox being checked AND checkbox is checked, return true
       if ((!value && optional === 'true') || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
-        return conf.addValidClassOnAll ? true : null;
+        result.shouldChangeDisplay = conf.addValidClassOnAll;
+        return result;
       }
 
       var validationRules = $elem.attr(conf.validationRuleAttribute),
 
-      // see if form element has inline err msg attribute
+        // see if form element has inline err msg attribute
         validationErrorMsg = true;
 
       if (!validationRules) {
-        return conf.addValidClassOnAll ? true : null;
+        result.shouldChangeDisplay = conf.addValidClassOnAll;
+        return result;
       }
 
       $.split(validationRules, function (rule) {
@@ -910,7 +922,7 @@
           // special change of element for checkbox_group rule
           if (rule == 'validate_checkbox_group') {
             // set element to first in group, so error msg attr doesn't need to be set on all elements in group
-            $elem = $("[name='" + $elem.attr('name') + "']:eq(0)");
+            $elem = $form.find("[name='" + $elem.attr('name') + "']:eq(0)");
           }
 
           var isValid = null;
@@ -931,7 +943,7 @@
                 }
               }
             }
-            return false; // breaks the iteration
+            return false; // break iteration
           }
 
         } else {
@@ -940,16 +952,16 @@
 
       }, ' ');
 
-      var result;
-
       if (typeof validationErrorMsg == 'string') {
         $elem.trigger('validation', false);
-        result = validationErrorMsg;
-      } else if (validationErrorMsg === null && !conf.addValidClassOnAll) {
-        result = null;
+        result.errorMsg = validationErrorMsg;
+        result.isValid = false;
+        result.shouldChangeDisplay = true;
+      } else if (validationErrorMsg === null) {
+        result.shouldChangeDisplay = false;
       } else {
         $elem.trigger('validation', true);
-        result = true;
+        result.shouldChangeDisplay = conf.addValidClassOnAll;
       }
 
       // Run element validation callback
@@ -1400,7 +1412,7 @@
     validatorFunction: function (val) {
       return val.length > 0 &&
         val.length <= 253 && // Including sub domains
-        !(/[^a-zA-Z0-9]/.test(val.substr(-2))) && !(/[^a-zA-Z]/.test(val.substr(0, 1))) && !(/[^a-zA-Z0-9\.\-]/.test(val)) &&
+        !(/[^a-zA-Z0-9]/.test(val.slice(-2))) && !(/[^a-zA-Z]/.test(val.substr(0, 1))) && !(/[^a-zA-Z0-9\.\-]/.test(val)) &&
         val.split('..').length == 1 &&
         val.split('.').length > 1;
     },
@@ -1617,7 +1629,7 @@
     name: 'checkbox_group',
     validatorFunction: function (val, $el, conf, lang, $form) {
       // preset return var
-      var checkResult = true,
+      var isValid = true,
         // get name of element. since it is a checkbox group, all checkboxes will have same name
         elname = $el.attr('name'),
         // get checkboxes and count the checked ones
@@ -1639,32 +1651,33 @@
         // outside allowed range
         case "out":
           this.errorMessage = lang.groupCheckedRangeStart + qtyAllowed + lang.groupCheckedEnd;
-          checkResult = false;
+          isValid = false;
           break;
         // below min qty
         case "min":
           this.errorMessage = lang.groupCheckedTooFewStart + qtyCheckResults[1] + lang.groupCheckedEnd;
-          checkResult = false;
+          isValid = false;
           break;
         // above max qty
         case "max":
           this.errorMessage = lang.groupCheckedTooManyStart + qtyCheckResults[1] + lang.groupCheckedEnd;
-          checkResult = false;
+          isValid = false;
           break;
         // ok
         default:
-          checkResult = true;
+          isValid = true;
       }
 
-      if( !checkResult ) {
+      if( !isValid ) {
         var _triggerOnBlur = function() {
           $checkBoxes.unbind('click', _triggerOnBlur);
-          $checkBoxes.filter('*[data-validation]').trigger('blur');
+          console.log('in heresss');
+          $checkBoxes.filter('*[data-validation]').eq(0).validateInputOnBlur(lang, conf, false, 'blur');
         };
-        $checkBoxes.bind('click', _triggerOnBlur);
+        //$checkBoxes.bind('click', _triggerOnBlur);
       }
 
-      return checkResult;
+      return isValid;
     }
     //   errorMessage : '', // set above in switch statement
     //   errorMessageKey: '' // not used

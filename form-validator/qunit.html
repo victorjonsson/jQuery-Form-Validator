@@ -57,23 +57,23 @@
             message = 'Check that input[value="'+obj.val.attr('value')+'"] is '+(obj.isValid ? 'valid':'invalid');
         }
 
-        if( result === null && obj.isValid ) {
+        if( !result.shouldChangeDisplay && obj.isValid ) {
             equal(
-                result,
+                null,
                 null,
                 message
             );
         }
         else if( $el.attr('data-validation-optional') && !$el.val() ) {
             equal(
-                result,
+                null,
                 null,
                 message
             );
         } else {
             equal(
-                typeof(result),
-                obj.isValid ? 'boolean':'string', // returns true if valid, error message otherwise
+                result.isValid,
+                obj.isValid,
                 message
             );
         }
@@ -86,17 +86,17 @@
          */
         test('Error messages', function() {
             var $input = input('', {'':'required'}),
-                mess = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+                result = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
 
-            equal('You have not answered all required fields', mess, 'Incorrect message');
+            equal('You have not answered all required fields', result.errorMsg, 'Incorrect message');
 
             $input = input('--', {'':'required alphanumeric', 'error-msg-alphanumeric':'custom for alphanum'}),
-            mess = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
-            equal('custom for alphanum', mess, 'Incorrect message');
+            result = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+            equal('custom for alphanum', result.errorMsg, 'Incorrect message');
 
             $input = input('sam', {'':'required alphanumeric length', length:'min10', 'error-msg-alphanumeric':'custom for alphanum'}),
-            mess = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
-            equal('The input value is shorter than 10 characters', mess, 'Incorrect message');
+            result = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+            equal('The input value is shorter than 10 characters', result.errorMsg, 'Incorrect message');
 
         });
 
@@ -300,19 +300,19 @@
                 result;
 
             // let the validator know which type of card we're validating
-            $.formUtils.validateInput($cCard, $.formUtils.LANG, $.formUtils.defaultConfig(), $form)
+            $.formUtils.validateInput($cCard, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
 
             result = $.formUtils.validateInput($cvv, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
             equal(
                 true,
-                result
+                result.isValid
             );
 
             $cvv.val('123');
             result = $.formUtils.validateInput($cvv, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
             equal(
-                'string',
-                typeof result
+                false,
+                result.isValid
             );
 
         });
@@ -579,15 +579,15 @@
                 result = $.formUtils.validateInput($inputA, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
 
             equal(
-                typeof(result) == 'string', // Should be an error message
-                true,
+                false,
+                result.isValid,
                 'Could not check that inputs did not confirmation each other'
             );
 
             $inputB.val('hejsan');
             result = $.formUtils.validateInput($inputA, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
             equal(
-                result,
+                result.isValid,
                 true,
                 'Could not validate confirmation'
             );
@@ -600,15 +600,15 @@
             result = $.formUtils.validateInput($inputC, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
 
             equal(
-                typeof(result) == 'string', // Should be an error message
-                true,
+                result.isValid,
+                false,
                 'Could not check that inputs did not confirmation each other'
             );
 
             $inputD.val('value');
             result = $.formUtils.validateInput($inputC, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
             equal(
-                result,
+                result.isValid,
                 true,
                 'Could not validate confirmation'
             );
@@ -623,7 +623,9 @@
     $.validate({
         modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', date'+dev+', uk'+dev,
         onModulesLoaded: function( $form ) {
-            console.log('About to run all tests');
+            if( window.console && window.console.log )
+                console.log('About to run all tests');
+
             runAllTests();
         }
     });

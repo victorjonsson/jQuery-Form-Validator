@@ -227,37 +227,38 @@ object into the validation function.
 
 ```javascript
 var enErrorDialogs = {
-    errorTitle : 'Form submission failed!',
-    requiredFields : 'You have not answered all required fields',
-    badTime : 'You have not given a correct time',
-    badEmail : 'You have not given a correct e-mail address',
-    badTelephone : 'You have not given a correct phone number',
-    badSecurityAnswer : 'You have not given a correct answer to the security question',
-    badDate : 'You have not given a correct date',
-    lengthBadStart : 'The input value must be between ',
-    lengthBadEnd : ' characters',
-    lengthTooLongStart : 'The input value is longer than ',
-    lengthTooShortStart : 'The input value is shorter than ',
-    notConfirmed : 'Input values could not be confirmed',
-    badDomain : 'Incorrect domain value',
-    badUrl : 'The input value is not a correct URL',
-    badCustomVal : 'The input value is incorrect',
-    badInt : 'The input value was not a correct number',
-    badSecurityNumber : 'Your social security number was incorrect',
-    badUKVatAnswer : 'Incorrect UK VAT Number',
-    badStrength : 'The password isn\'t strong enough',
-    badNumberOfSelectedOptionsStart : 'You have to choose at least ',
-    badNumberOfSelectedOptionsEnd : ' answers',
-    badAlphaNumeric : 'The input value can only contain alphanumeric characters ',
+    errorTitle: 'Form submission failed!',
+    requiredFields: 'You have not answered all required fields',
+    badTime: 'You have not given a correct time',
+    badEmail: 'You have not given a correct e-mail address',
+    badTelephone: 'You have not given a correct phone number',
+    badSecurityAnswer: 'You have not given a correct answer to the security question',
+    badDate: 'You have not given a correct date',
+    lengthBadStart: 'The input value must be between ',
+    lengthBadEnd: ' characters',
+    lengthTooLongStart: 'The input value is longer than ',
+    lengthTooShortStart: 'The input value is shorter than ',
+    notConfirmed: 'Input values could not be confirmed',
+    badDomain: 'Incorrect domain value',
+    badUrl: 'The input value is not a correct URL',
+    badCustomVal: 'The input value is incorrect',
+    andSpaces: ' and spaces ',
+    badInt: 'The input value was not a correct number',
+    badSecurityNumber: 'Your social security number was incorrect',
+    badUKVatAnswer: 'Incorrect UK VAT Number',
+    badStrength: 'The password isn\'t strong enough',
+    badNumberOfSelectedOptionsStart: 'You have to choose at least ',
+    badNumberOfSelectedOptionsEnd: ' answers',
+    badAlphaNumeric: 'The input value can only contain alphanumeric characters ',
     badAlphaNumericExtra: ' and ',
-    wrongFileSize : 'The file you are trying to upload is too large (max %s)',
-    wrongFileType : 'Only files of type %s is allowed',
-    groupCheckedRangeStart : 'Please choose between ',
-    groupCheckedTooFewStart : 'Please choose at least ',
-    groupCheckedTooManyStart : 'Please choose a maximum of ',
-    groupCheckedEnd : ' item(s)',
-    badCreditCard : 'The credit card number is not correct',
-    badCVV : 'The CVV number was not correct'
+    wrongFileSize: 'The file you are trying to upload is too large (max %s)',
+    wrongFileType: 'Only files of type %s is allowed',
+    groupCheckedRangeStart: 'Please choose between ',
+    groupCheckedTooFewStart: 'Please choose at least ',
+    groupCheckedTooManyStart: 'Please choose a maximum of ',
+    groupCheckedEnd: ' item(s)',
+    badCreditCard: 'The credit card number is not correct',
+    badCVV: 'The CVV number was not correct'
 };
 ```
 
@@ -311,7 +312,13 @@ of validation that should be applied.
 * Use the attribute data-validation-confirm to declare which input that should be confirmed when using validation=confirmation (issue #112)
 * Validation "required" now supports inputs of type radio
 * $.validateForm is now deprecated, use $.isValid instead
-
+* Possible to check if form is valid programmatically without showing error messages
+* Select elements can now be validated server-side
+* Cleaned up dialog object
+* Various IE8 fixes
+* Possible to send along parameters to the server when using server side validation
+* Improved/simplified URL validation
+* ... and a whole lot more small improvements
 
 #### 2.1.47
 * Incorrect error-styling when using datepicker or suggestions is now fixed

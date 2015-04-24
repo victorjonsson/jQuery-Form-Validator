@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.69
+ * @version 2.2.beta.85
  */
 (function($, window) {
 
@@ -331,7 +331,32 @@
     });
 
     var requestServer = function(serverURL, $element, val, conf, callback) {
-        var reqParams = $element.valAttr('req-params') || {};
+        var reqParams = $element.valAttr('req-params') || {},
+            handleResponse = function(response, callback) {
+              if(response.valid) {
+                $element.valAttr('backend-valid', 'true');
+              }
+              else {
+                $element.valAttr('backend-invalid', 'true');
+                if(response.message)
+                  $element.attr(conf.validationErrorMsgAttribute, response.message);
+              }
+
+              if( !$element.valAttr('has-keyup-event') ) {
+                $element
+                  .valAttr('has-keyup-event', '1')
+                  .bind('keyup change', function(evt) {
+                    if( evt.keyCode != 9 && evt.keyCode != 16 ) {
+                      $(this)
+                        .valAttr('backend-valid', false)
+                        .valAttr('backend-invalid', false);
+                    }
+                  });
+              }
+
+              callback();
+            };
+
         if( !reqParams )
             reqParams = {};
         if( typeof reqParams == 'string' ) {
@@ -346,34 +371,11 @@
             data : reqParams,
             dataType : 'json',
             error : function(error, err) {
-                alert('Server validation failed due to: '+error.statusText);
-                if( window.JSON && window.JSON.stringify ) {
-                    alert(window.JSON.stringify(error));
-                }
+              handleResponse({valid: false, message:'Connection failed with status: '+error.statusText}, callback);
+              return false;
             },
             success : function(response) {
-                if(response.valid) {
-                    $element.valAttr('backend-valid', 'true');
-                }
-                else {
-                    $element.valAttr('backend-invalid', 'true');
-                    if(response.message)
-                        $element.attr(conf.validationErrorMsgAttribute, response.message);
-                }
-
-                if( !$element.valAttr('has-keyup-event') ) {
-                    $element
-                        .valAttr('has-keyup-event', '1')
-                        .bind('keyup change', function(evt) {
-                            if( evt.keyCode != 9 && evt.keyCode != 16 ) {
-                                $(this)
-                                    .valAttr('backend-valid', false)
-                                    .valAttr('backend-invalid', false);
-                            }
-                        });
-                }
-
-                callback();
+              handleResponse(response, callback);
             }
         });
     },

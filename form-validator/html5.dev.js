@@ -17,7 +17,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.86
+ * @version 2.2.beta.88
  */
 (function($, window) {
 
@@ -93,11 +93,23 @@
                 }
 
                 if( !SUPPORTS_DATALIST && $input.attr('list') ) {
-                    var suggestions = [];
-                    $('#'+$input.attr('list')+' option').each(function() {
-                        var $opt = $(this);
-                        suggestions.push($opt.attr('value') || $opt.text());
-                    });
+                    var suggestions = [],
+                      $list = $('#'+$input.attr('list'));
+
+                    $list.find('option').each(function() {
+                          suggestions.push($(this).text());
+                      });
+
+                    if( suggestions.length == 0 ) {
+                      // IE fix
+                      var opts = $.trim($('#'+$input.attr('list')).text()).split('\n')
+                      $.each(opts, function(i, option) {
+                        suggestions.push($.trim(option));
+                      });
+                    }
+
+                    $list.remove();
+
                     $.formUtils.suggest( $input, suggestions );
                 }
 

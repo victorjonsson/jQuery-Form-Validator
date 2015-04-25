@@ -13,7 +13,7 @@
  *
  * @website http://formvalidator.net/#swedish-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.86
+ * @version 2.2.beta.88
  */
 (function($, window) {
 

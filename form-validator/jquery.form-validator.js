@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.beta.85
+ * @version 2.2.beta.86
  */
 (function ($) {
 
@@ -77,8 +77,6 @@
             $found.html(mess);
           }
         } else {
-          console.log(mess);
-          alert('This is mess da '+ mess );
           var $mess = $('<div class="' + conf.errorMessageClass + '">' + mess + '</div>');
           $mess[0].inputReferer = $input[0];
           $messageContainer.prepend($mess);
@@ -1671,7 +1669,6 @@
       if( !isValid ) {
         var _triggerOnBlur = function() {
           $checkBoxes.unbind('click', _triggerOnBlur);
-          console.log('in heresss');
           $checkBoxes.filter('*[data-validation]').eq(0).validateInputOnBlur(lang, conf, false, 'blur');
         };
         //$checkBoxes.bind('click', _triggerOnBlur);

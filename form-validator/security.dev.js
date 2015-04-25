@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.85
+ * @version 2.2.beta.86
  */
 (function($, window) {
 
@@ -46,7 +46,7 @@
             if (confInput) {
                 conf = confInput.val();
             } else {
-                console.warn('Could not find an input with name "'+confInputName+'"');
+                alert('Could not find an input with name "'+confInputName+'"');
             }
 
             return value === conf;
@@ -89,7 +89,7 @@
                             hasValidLength = true;
                             return false;
                         }
-                    } else {
+                    } else if( window.console ) {
                         console.warn('Use of unknown credit card "'+cardName+'"');
                     }
                 });

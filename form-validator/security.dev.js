@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.beta.88
+ * @version 2.2.beta.89
  */
 (function($, window) {
 
@@ -331,7 +331,7 @@
     });
 
     var requestServer = function(serverURL, $element, val, conf, callback) {
-        var reqParams = $element.valAttr('req-params') || {},
+        var reqParams = $element.valAttr('req-params') || $element.data('validation-req-params') || {},
             handleResponse = function(response, callback) {
               if(response.valid) {
                 $element.valAttr('backend-valid', 'true');

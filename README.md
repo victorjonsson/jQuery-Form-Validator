@@ -302,7 +302,7 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
-#### 2.2.0 (unreleased)
+#### 2.2.0
 * Now possible to define an error message for each validation rule on a certain input (issue #113)
 * This plugin now serves as a html5 fallback. You can now use the native attributes to declare which type
 of validation that should be applied.
@@ -314,9 +314,10 @@ of validation that should be applied.
 * $.validateForm is now deprecated, use $.isValid instead
 * Possible to check if form is valid programmatically without showing error messages
 * Select elements can now be validated server-side
-* Cleaned up dialog object
+* Cleaned up dialog messages
 * Various IE8 fixes
 * Possible to send along parameters to the server when using server side validation
+* Now possible to set your own parameter name when using server side validation
 * Improved/simplified URL validation
 * ... and a whole lot more small improvements
 

@@ -956,10 +956,10 @@
         result.isValid = false;
         result.shouldChangeDisplay = true;
       } else if (validationErrorMsg === null) {
-        result.shouldChangeDisplay = false;
+        result.shouldChangeDisplay = conf.addValidClassOnAll;
       } else {
         $elem.trigger('validation', true);
-        result.shouldChangeDisplay = conf.addValidClassOnAll;
+        result.shouldChangeDisplay = true;
       }
 
       // Run element validation callback

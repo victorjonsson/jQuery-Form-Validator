@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.0
+ * @version 2.2.1
  */
 (function($, window) {
 
@@ -427,6 +427,7 @@
                 $.formUtils.haltValidation = true;
 
                 requestServer(serverURL, $el, val, conf, function() {
+
                     $form
                         .removeClass('validating-server-side')
                         .removeClass('on-blur')

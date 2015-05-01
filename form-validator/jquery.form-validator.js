@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.1
+ * @version 2.2.12
  */
 (function ($) {
 
@@ -58,9 +58,14 @@
       });
     },
     _setInlineErrorMessage = function ($input, mess, conf, $messageContainer) {
-      var custom = document.getElementById($input.attr('name') + '_err_msg');
+      var custom = document.getElementById($input.attr('name') + '_err_msg'),
+          setErrorMessage = function($elem) {
+            $window.trigger('validationErrorDisplay', [$input, $elem])
+            $elem.html(mess);
+          };
+
       if (custom) {
-        custom.innerHTML = mess;
+        setErrorMessage($(custom));
       }
       else if (typeof $messageContainer == 'object') {
         var $found = false;
@@ -74,10 +79,11 @@
           if (!mess) {
             $found.remove();
           } else {
-            $found.html(mess);
+            setErrorMessage($found);
           }
         } else {
-          var $mess = $('<div class="' + conf.errorMessageClass + '">' + mess + '</div>');
+          var $mess = $('<div class="' + conf.errorMessageClass + '"></div>');
+          setErrorMessage($mess);
           $mess[0].inputReferer = $input[0];
           $messageContainer.prepend($mess);
         }
@@ -91,7 +97,8 @@
           $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
           $mess.appendTo($parent);
         }
-        $mess.html(mess);
+
+        setErrorMessage($mess);
       }
     },
     _templateMessage = function ($form, title, errorMessages, conf) {
@@ -113,19 +120,19 @@
    * Assigns validateInputOnBlur function to elements blur event
    *
    * @param {Object} language Optional, will override $.formUtils.LANG
-   * @param {Object} settings Optional, will override the default settings
+   * @param {Object} conf Optional, will override the default settings
    * @return {jQuery}
    */
-  $.fn.validateOnBlur = function (language, settings) {
-    this.find('input[data-validation],textarea[data-validation],select[data-validation]')
+  $.fn.validateOnBlur = function (language, conf) {
+    this.find('*[data-validation]')
       .bind('blur.validation', function () {
-        $(this).validateInputOnBlur(language, settings, true, 'blur');
+        $(this).validateInputOnBlur(language, conf, true, 'blur');
       });
-    if (settings.validateCheckboxRadioOnClick) {
+    if (conf.validateCheckboxRadioOnClick) {
       // bind click event to validate on click for radio & checkboxes for nice UX
       this.find('input[type=checkbox][data-validation],input[type=radio][data-validation]')
         .bind('click.validation', function () {
-          $(this).validateInputOnBlur(language, settings, true, 'click');
+          $(this).validateInputOnBlur(language, conf, true, 'click');
         });
     }
 
@@ -139,14 +146,16 @@
    * * @return {jQuery}
    */
   $.fn.validateOnEvent = function (language, settings) {
-    this.find('input[data-validation][data-validation-event],textarea[data-validation][data-validation-event],select[data-validation][data-validation-event]')
+    this.find('*[data-validation-event]')
       .each(function () {
         var $el = $(this),
             etype = $el.valAttr("event");
         if (etype) {
-          $el.bind(etype + ".validation", function () {
-            $(this).validateInputOnBlur(language, settings, true, etype);
-          });
+          $el
+            .unbind(etype + ".validation")
+            .bind(etype + ".validation", function () {
+              $(this).validateInputOnBlur(language, settings, true, etype);
+            });
         }
       });
     return this;
@@ -550,7 +559,7 @@
       /*
        * Enable custom event for validation
        */
-      validateOnEvent: true,
+      validateOnEvent: false,
       validateOnBlur: true,
       validateCheckboxRadioOnClick: true,
       showHelpOnFocus: true,
@@ -569,7 +578,7 @@
     $(conf.form).each(function (i, form) {
 
       var $form = $(form);
-      $window.trigger('formValidationSetup', [$form]);
+      $window.trigger('formValidationSetup', [$form, conf]);
 
       // Remove all event listeners previously added
       $form.find('.has-help-txt')
@@ -642,10 +651,12 @@
     });
 
     if (conf.modules != '') {
-      if (typeof conf.onModulesLoaded == 'function') {
-        $window.one('validatorsLoaded', conf.onModulesLoaded);
-      }
-      $.formUtils.loadModules(conf.modules);
+      $.formUtils.loadModules(conf.modules, false, function() {
+        if (typeof conf.onModulesLoaded == 'function') {
+          conf.onModulesLoaded();
+        }
+        $window.trigger('validatorsLoaded', [typeof conf.form == 'string' ? $(conf.form) : conf.form, conf]);
+      });
     }
   };
 
@@ -740,7 +751,7 @@
      *
      * @param {String} modules - Comma separated string with module file names (no directory nor file extension)
      * @param {String} [path] - Optional, path where the module files is located if their not in the same directory as the core modules
-     * @param {Boolean} [fireEvent] - Optional, whether or not to fire event 'load' when modules finished loading
+     * @param {Boolean|function} [fireEvent] - Optional, whether or not to fire event 'load' when modules finished loading
      */
     loadModules: function (modules, path, fireEvent) {
 
@@ -764,7 +775,11 @@
               if (numModules == 0) {
                 $.formUtils.isLoadingModules = false;
                 if (fireEvent && hasLoadedAnyModule) {
-                  $window.trigger('validatorsLoaded');
+                  if( typeof fireEvent == 'function' ) {
+                    fireEvent();
+                  } else {
+                    $window.trigger('validatorsLoaded');
+                  }
                 }
               }
             };
@@ -841,15 +856,15 @@
 
     /**
      * Validate the value of given element according to the validation rules
-     * found in the attribute data-validation. Will return null if no validation
-     * should take place, returns true if valid or error message if not valid
-     *
+     * found in the attribute data-validation. Will return an object representing
+     * a validation result, having the props shouldChangeDisplay, isValid and errorMsg
+     * 8420-2 8430 97 99 1-7
      * @param {jQuery} $elem
      * @param {Object} language ($.formUtils.LANG)
      * @param {Object} conf
      * @param {jQuery} $form
      * @param {String} [eventContext]
-     * @return {Object} REtur
+     * @return {Object}
      */
     validateInput: function ($elem, language, conf, $form, eventContext) {
 
@@ -1374,7 +1389,13 @@
       groupCheckedTooManyStart: 'Please choose a maximum of ',
       groupCheckedEnd: ' item(s)',
       badCreditCard: 'The credit card number is not correct',
-      badCVV: 'The CVV number was not correct'
+      badCVV: 'The CVV number was not correct',
+      wrongFileDim : 'Incorrect image dimensions,',
+      imageTooTall : 'the image can not be taller than',
+      imageTooWide : 'the image can not be wider than',
+      imageTooSmall : 'the image was too small',
+      min : 'min',
+      max : 'max'
     }
   };
 

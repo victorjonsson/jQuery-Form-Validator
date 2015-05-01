@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#file-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.12
+ * @version 2.2.13
  */
 (function($, window) {
 
@@ -306,7 +306,6 @@
 
               $form.unbind('submit', disableFormSubmit);
               $form.trigger('submit'); // fire submit once more
-              console.log('in here');
 
             } else {
               $input.trigger('blur'); // triggers the validation once more

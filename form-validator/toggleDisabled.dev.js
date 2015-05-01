@@ -3,11 +3,12 @@
  * ------------------------------------------
  * Created by Victor Jonsson <http://www.victorjonsson.se>
  *
- * This module will take care of disabling/enabling form submission
+ * This module will take care of disabling/enabling submit buttons
+ * in forms, depending on if the inputs of the form is valid or not.
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.12
+ * @version 2.2.13
  */
 (function($, window) {
 

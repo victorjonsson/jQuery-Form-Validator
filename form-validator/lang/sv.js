@@ -14,7 +14,7 @@
 
   $(window).bind('validatorsLoaded', function() {
 
-    $.formUtils.LANG = $.extend({}, $.formUtils.LANG, {
+    $.formUtils.LANG = {
       errorTitle: 'Formuläret kunde inte skickas!',
       requiredFields: 'Du har inte besvarat alla frågor',
       badTime: 'Du har inte angett en korrekt tidpunkt',
@@ -53,7 +53,7 @@
       imageTooSmall : 'bilden är för liten',
       min : 'minst',
       max : 'max'
-    });
+    };
 
   });
 

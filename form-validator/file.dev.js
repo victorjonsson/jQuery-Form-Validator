@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#file-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.14
+ * @version 2.2.15
  */
 (function($, window) {
 
@@ -141,6 +141,7 @@
                     return false;
                 }
             });
+
             return valid;
         },
         errorMessage : '',
@@ -221,7 +222,7 @@
             alert('Validating image dimensions does not support inputs allowing multiple files');
             return false;
           } else if( file.length == 0) {
-            return false;
+            return true;
           }
 
           if( $input.valAttr('has-valid-dim') ) {

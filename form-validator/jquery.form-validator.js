@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.14
+ * @version 2.2.15
  */
 (function ($) {
 
@@ -599,6 +599,7 @@
 
       // Validate when submitted
       $form.bind('submit.validation', function () {
+
         var $form = $(this);
 
         if ($.formUtils.haltValidation) {
@@ -621,8 +622,9 @@
         } else {
           if (valid && typeof conf.onSuccess == 'function') {
             var callbackResponse = conf.onSuccess($form);
-            if (callbackResponse === false)
+            if (callbackResponse === false) {
               return false;
+            }
           } else if (!valid && typeof conf.onError == 'function') {
             conf.onError($form);
             return false;

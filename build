@@ -57,11 +57,13 @@ function buildFile(path, newName) {
 }
 
 buildFile(mainScript,  mainMinifiedScript);
-fs.readdirSync(jsPath).forEach(function(f) {
-    if(f.substr(-7) == '.dev.js') {
-        var compressedFileName = jsPath + f.substr(0, f.length - 6) + 'js';
-        buildFile(jsPath+f, compressedFileName);
+[jsPath, jsPath+'lang/'].forEach(function(path) {
+  fs.readdirSync(path).forEach(function(fileName) {
+    if(fileName.substr(-7) == '.dev.js') {
+      var compressedFileName = path + fileName.substr(0, fileName.length - 6) + 'js';
+      buildFile(path+fileName, compressedFileName);
     }
+  });
 });
 
 /*

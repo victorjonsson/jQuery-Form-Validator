@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.15
+ * @version 2.2.17
  */
 (function ($) {
 
@@ -574,7 +574,7 @@
 
     conf = $.extend(defaultConf, conf || {});
 
-    if( conf.lang ) {
+    if( conf.lang && conf.lang != 'en' ) {
       var langModule = 'lang/'+conf.lang+'.js';
       conf.modules += conf.modules.length ? ','+langModule : langModule;
     }

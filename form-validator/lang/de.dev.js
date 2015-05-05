@@ -6,7 +6,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.17
+ * @version 2.2.18
  */
 (function($, window) {
 
@@ -39,8 +39,8 @@
       badNumberOfSelectedOptionsEnd: " Antwort",
       badAlphaNumeric: "Sie können nur mit alfanumersika Zeichen (az und Zahlen) zu reagieren",
       badAlphaNumericExtra: " und",
-      wrongFileSize: "Die Datei, die Sie hochzuladen versuchen, zu groß ist (max% s)",
-      wrongFileType: "Nur Dateien vom Typ% s ist zulässig",
+      wrongFileSize: "Die Datei, die Sie hochzuladen versuchen, zu groß ist (max %s)",
+      wrongFileType: "Nur Dateien vom Typ %s ist zulässig",
       groupCheckedRangeStart: "Wählen Sie zwischen",
       groupCheckedTooFewStart: "Dann müssen Sie zumindest sicher,",
       groupCheckedTooManyStart: "Sie können nicht mehr als zu machen",

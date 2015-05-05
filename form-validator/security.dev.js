@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.17
+ * @version 2.2.18
  */
 (function($, window) {
 

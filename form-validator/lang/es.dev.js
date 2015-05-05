@@ -6,7 +6,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.17
+ * @version 2.2.18
  */
 (function($, window) {
 
@@ -39,8 +39,8 @@
       badNumberOfSelectedOptionsEnd: ' respuesta',
       badAlphaNumeric: 'Sólo se puede responder con alfanumersika caracteres (az y números)',
       badAlphaNumericExtra: ' y',
-      wrongFileSize: 'El archivo que está tratando de subir es demasiado grande (máx% s)',
-      wrongFileType: 'Sólo los archivos de tipo% s está permitido',
+      wrongFileSize: 'El archivo que está tratando de subir es demasiado grande (máx %s)',
+      wrongFileType: 'Sólo los archivos de tipo %s está permitido',
       groupCheckedRangeStart: 'Elegir entre',
       groupCheckedTooFewStart: 'Entonces usted debe hacer por lo menos',
       groupCheckedTooManyStart: 'Usted no puede hacer más de',

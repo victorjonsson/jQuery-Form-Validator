@@ -6,7 +6,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.17
+ * @version 2.2.18
  */
 (function($, window) {
 
@@ -39,8 +39,8 @@
       badNumberOfSelectedOptionsEnd: " réponse",
       badAlphaNumeric: "Vous ne pouvez répondre avec alfanumersika caractères (az) et des chiffres",
       badAlphaNumericExtra: " et",
-      wrongFileSize: "Le fichier que vous essayez de télécharger est trop grand (max% s)",
-      wrongFileType: "Seuls les fichiers de type% s est autorisée",
+      wrongFileSize: "Le fichier que vous essayez de télécharger est trop grand (max %s)",
+      wrongFileType: "Seuls les fichiers de type %s est autorisée",
       groupCheckedRangeStart: "Choisissez entre",
       groupCheckedTooFewStart: "Ensuite, vous devez faire au moins",
       groupCheckedTooManyStart: "Vous ne pouvez pas faire plus de",

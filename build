@@ -24,17 +24,14 @@ else {
 
 console.log('Build version: '+newVersion);
 
-/*
- * Get code docs
- */
+// Get code docs
 var documentation = fs.readFileSync(mainScript, 'utf-8').split('*/')[0]+'*/';
 var docParts = documentation.split('@version ');
 documentation = docParts[0] +'@version '+newVersion+'\n'+docParts[1].split('\n')[1];
 
 
 /**
- * Create new minified version of a file and change
- * version number
+ * Create new minified version of a file and change version number
  * @param {String} path
  * @param {String} newName
  */
@@ -56,7 +53,13 @@ function buildFile(path, newName) {
     });
 }
 
+// Minify main script
 buildFile(mainScript,  mainMinifiedScript);
+
+// Put top documentation back into minified main script
+fs.writeFileSync(mainMinifiedScript, documentation+"\n"+fs.readFileSync(mainMinifiedScript, 'utf-8'));
+
+// Minify modules and language files
 [jsPath, jsPath+'lang/'].forEach(function(path) {
   fs.readdirSync(path).forEach(function(fileName) {
     if(fileName.substr(-7) == '.dev.js') {
@@ -66,7 +69,3 @@ buildFile(mainScript,  mainMinifiedScript);
   });
 });
 
-/*
- * Add docs to main script
- */
-fs.writeFileSync(mainMinifiedScript, documentation+"\n"+fs.readFileSync(mainMinifiedScript, 'utf-8'));

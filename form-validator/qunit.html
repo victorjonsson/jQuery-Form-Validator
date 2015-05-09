@@ -116,6 +116,8 @@
                 {val: 'valid-domain@website.COM', isValid : true},
                 {val: 'asdsdsd@sdsd.co.uk', isValid : true},
                 {val: 'sasas@sdsd.xxx', isValid : true},
+                {val: 'sasas@9gag.com', isValid : true},
+                {val: 'sasas@.9gag.com', isValid : false},
                 {val: 'sasas@sdsd.xxz', isValid : true},
                 {val: '@sdsd.xxz', isValid : false},
                 {val: 'sasas@', isValid : false},
@@ -217,11 +219,40 @@
                 {val:input('a,bbb', {'allowing':',', '':'alphanumeric'}), isValid:true},
                 {val:input('a b', {'allowing':' ', '':'alphanumeric'}), isValid:true},
                 {val:input('', {'allowing':' ', length:'3-12', '':'length alphanumeric'}), isValid:false},
-                {val:input('a-_ bäöåÖA', {'allowing':' -_öäåÄÖÅ', '':'alphanumeric'}), isValid:true}
+                {val:input('a-_ bäöåÖA', {'allowing':' -_öäåÄÖÅ', '':'alphanumeric'}), isValid:true},
+                {val:'bäöåA', isValid:false},
+                {val:'ë', isValid:false}
             ];
 
             $.each(links, function(i, obj) {
                 runTest(obj, 'alphanumeric');
+            });
+        });
+
+        /*
+         * LETTER-NUMERIC VALIDATION
+         */
+        test("Letter-numeric validation", function() {
+
+            clearForm();
+
+            var links = [
+                {val:'a', isValid:true},
+                {val:'asdXAvs1', isValid:true},
+                {val:'a  b', isValid:false},
+                {val:'a-_ bäöåA', isValid:false},
+                {val:'abbb', isValid:true},
+                {val:'a,bbb', isValid:false},
+                {val:input('abbbé', {'allowing':',', '':'letternumeric'}), isValid:true},
+                {val:input('a b', {'allowing':' ', '':'alphanumeric'}), isValid:true},
+                {val:input('', {'allowing':' ', length:'3-12', '':'length letternumeric'}), isValid:false},
+                {val:'bäöåA', isValid:true},
+                {val:'bäöåA®', isValid:false},
+                {val:'ë', isValid:true}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'letternumeric');
             });
         });
 

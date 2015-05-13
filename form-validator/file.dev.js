@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#file-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.19
+ * @version 2.2.23
  */
 (function($, window) {
 
@@ -65,8 +65,6 @@
 
         reader.onload = function(fileObj) {
 
-          image.src = fileObj.target.result;
-
           image.onload = function() {
             successCallback(this);
           };
@@ -74,6 +72,8 @@
           image.onerror= function() {
             errCallback();
           };
+
+          image.src = fileObj.target.result;
 
         };
       };

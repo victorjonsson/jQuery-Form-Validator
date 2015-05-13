@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.19
+ * @version 2.2.23
  */
 (function ($) {
 
@@ -1110,14 +1110,19 @@
      * Test numeric against allowed range
      *
      * @param $value int
-     * @param $rangeAllowed str; (1-2, min1, max2)
+     * @param $rangeAllowed str; (1-2, min1, max2, 10)
      * @return array
      */
     numericRangeCheck: function (value, rangeAllowed) {
       // split by dash
-      var range = $.split(rangeAllowed);
-      // min or max
-      var minmax = parseInt(rangeAllowed.substr(3), 10)
+      var range = $.split(rangeAllowed),
+          // min or max
+          minmax = parseInt(rangeAllowed.substr(3), 10);
+
+      if( range.length == 1 && rangeAllowed.indexOf('min') == -1 && rangeAllowed.indexOf('min') == -1 ) {
+        range = [rangeAllowed, rangeAllowed]; // only a number, checking agains an exact number of characters
+      }
+
       // range ?
       if (range.length == 2 && (value < parseInt(range[0], 10) || value > parseInt(range[1], 10) )) {
         return [ "out", range[0], range[1] ];
@@ -1402,7 +1407,8 @@
       imageTooWide : 'the image can not be wider than',
       imageTooSmall : 'the image was too small',
       min : 'min',
-      max : 'max'
+      max : 'max',
+
     }
   };
 

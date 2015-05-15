@@ -6,7 +6,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.24
+ * @version 2.2.34
  */
 (function($, window) {
 
@@ -52,7 +52,8 @@
       imageTooWide: 'el cuadro no puede ser más amplio que',
       imageTooSmall: 'la imagen es demasiado pequeña',
       min: 'menos',
-      max: 'max'
+      max: 'max',
+      imageRatioNotAccepted : 'Cociente de la imagen no es ser aceptado'
     };
 
   });

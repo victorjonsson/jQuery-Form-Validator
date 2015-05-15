@@ -82,6 +82,81 @@
     function runAllTests() {
 
         /*
+         * Image dimension checks
+         */
+        var imgDimensionChecks = {
+                'square100x100.png' : {
+                    'min100x100' : false,
+                    'min100x10' : false,
+                    'min100' : false,
+                    'min200x500' : true,
+                    'min200x10': true,
+                    'min200' : true,
+                    'min100x200' : true,
+
+                    'max100x100' : false,
+                    'max100x10' : true,
+                    'max100' : false,
+                    'max200x500' : false,
+                    'max200x10': true,
+                    'max200' : false,
+                    'max90x200' : true,
+
+                    '100x100-500x500' : false,
+                    '100x200-500x500' : true,
+                    '200x100-500x500' : true,
+                    '50x50-90x500' : true,
+                    '30-200x200' : false,
+                    '30-100' : false,
+                    '30-50' : true
+                },
+                'rectangle100x50.png' : {
+                    'min100x100' : true,
+                    'min100x10' : false,
+                    'min100' : true,
+                    'min200x500' : true,
+                    'min200x10': true,
+                    'min200' : true,
+                    'min10x50' : false
+                }
+            },
+            imageRatioChecks = {
+                'square100x100.png' : {
+                    '1:1' : false,
+                    '1:2-1:1' : false,
+                    '8:10-12:10' : false,
+                    '1:2' : true,
+                    '2:1': true
+                },
+                'rectangle100x50.png' : {
+                    '1:1' : true,
+                    '1:2-1:1' : true,
+                    '8:10-12:10' : true,
+                    '1:2' : true,
+                    '2:1': false
+                }
+            };
+
+
+        $.each(imgDimensionChecks, function(imgFileName, assertions) {
+            var img = document.createElement('IMG');
+            img.onload = function() {
+                console.log('Check image dim on '+imgFileName);
+                test('Check image dim on '+imgFileName, function() {
+                    $.each(assertions, function(valRule, shouldFail) {
+                        var didFail = $.formUtils.checkImageDimension(img, valRule, {}) ? true:false;
+                        equal(didFail, shouldFail, valRule+' should '+(shouldFail ? 'fail':'NOT fail')+' validation');
+                    });
+                    $.each(imageRatioChecks[imgFileName], function(ratioDeclaration, shouldFail) {
+                       var didFail =  $.formUtils.checkImageRatio(img, ratioDeclaration, {imageRatioNotAccepted:'errorr...'}) ? true:false;
+                        equal(didFail, shouldFail, ratioDeclaration+' should '+(shouldFail ? 'fail':'NOT fail')+' validation');
+                    });
+                });
+            };
+            img.src = document.location.href.substr(0, document.location.href.lastIndexOf('/')) +'/test-data/'+imgFileName;
+        });
+
+        /*
          * Test error message
          */
         test('Error messages', function() {

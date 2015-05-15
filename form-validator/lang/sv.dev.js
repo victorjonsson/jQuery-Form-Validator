@@ -6,7 +6,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.24
+ * @version 2.2.34
  */
 (function($, window) {
 
@@ -51,8 +51,10 @@
       imageTooTall : 'bilden får inte vara högre än',
       imageTooWide : 'bilden får inte vara bredare än',
       imageTooSmall : 'bilden är för liten',
+      genericBadInputValue : 'The input value can be accepted',
       min : 'minst',
-      max : 'max'
+      max : 'max',
+      imageRatioNotAccepted : 'Bildens dimensioner (förhållandet mellan höjd och längd) kan inte accepteras'
     };
 
   });

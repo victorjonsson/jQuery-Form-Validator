@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.24
+ * @version 2.2.34
  */
 (function ($) {
 
@@ -679,7 +679,7 @@
       return {
         ignore: [], // Names of inputs not to be validated even though node attribute containing the validation rules tells us to
         errorElementClass: 'error', // Class that will be put on elements which value is invalid
-        borderColorOnError: 'red', // Border color of elements which value is invalid, empty string to not change border color
+        borderColorOnError: '#b94a48', // Border color of elements which value is invalid, empty string to not change border color
         errorMessageClass: 'form-error', // class name of div containing error messages when validation fails
         validationRuleAttribute: 'data-validation', // name of the attribute holding the validation rules
         validationErrorMsgAttribute: 'data-validation-error-msg', // define custom err msg inline with element
@@ -795,7 +795,7 @@
             $.formUtils.isLoadingModules = true;
           }
 
-          var cacheSuffix = '?__=' + ( new Date().getTime() ),
+          var cacheSuffix = '?_=' + ( new Date().getTime() ),
             appendToElement = document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0];
 
           $.each(moduleList, function (i, modName) {
@@ -821,6 +821,11 @@
                 script.type = 'text/javascript';
                 script.onload = moduleLoadedCallback;
                 script.src = scriptUrl + ( scriptUrl.slice(-7) == '.dev.js' ? cacheSuffix : '' );
+                script.onerror = function() {
+                  if( 'console' in window && window.console.log ) {
+                    window.console.log('Unable to load form validation module '+scriptUrl);
+                  }
+                };
                 script.onreadystatechange = function () {
                   // IE 7 fix
                   if (this.readyState == 'complete' || this.readyState == 'loaded') {
@@ -1119,7 +1124,7 @@
           // min or max
           minmax = parseInt(rangeAllowed.substr(3), 10);
 
-      if( range.length == 1 && rangeAllowed.indexOf('min') == -1 && rangeAllowed.indexOf('min') == -1 ) {
+      if( range.length == 1 && rangeAllowed.indexOf('min') == -1 && rangeAllowed.indexOf('max') == -1 ) {
         range = [rangeAllowed, rangeAllowed]; // only a number, checking agains an exact number of characters
       }
 
@@ -1408,7 +1413,7 @@
       imageTooSmall : 'the image was too small',
       min : 'min',
       max : 'max',
-
+      imageRatioNotAccepted : 'Image ratio is not be accepted'
     }
   };
 

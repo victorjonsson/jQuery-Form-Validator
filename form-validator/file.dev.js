@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#file-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.24
+ * @version 2.2.34
  */
 (function($, window) {
 
@@ -66,6 +66,7 @@
         reader.onload = function(fileObj) {
 
           image.onload = function() {
+            $(window).trigger('imageValidation', [this]);
             successCallback(this);
           };
 
@@ -203,6 +204,91 @@
       return false;
     };
 
+   /**
+    * Attach dimension check onto formUtils only for unit testing purpose
+    * @param {HTMLImageElement} img
+    * @param {String} dimDeclaration
+    * @param {Boolean|String} Returns error message if image was invalid, false otherwise
+    */
+    $.formUtils.checkImageDimension = function(img, dimDeclaration, language) {
+      var error = false,
+          restrictedDim = {width:0, height:0},
+          getDimRestriction = function(dimDeclaration) {
+            dimDeclaration = dimDeclaration.replace('min', '').replace('max', '');
+            var chunks = dimDeclaration.split('x');
+            restrictedDim.width = chunks[0];
+            restrictedDim.height = chunks[1] ? chunks[1] : chunks[0];
+          },
+          minDeclaration = false,
+          maxDeclaration = false,
+          declarationParts = dimDeclaration.split('-');
+
+      if( declarationParts.length == 1 ) {
+        if( declarationParts[0].indexOf('min') === 0 ) {
+          minDeclaration = declarationParts[0];
+        } else {
+          maxDeclaration = declarationParts[0];
+        }
+      } else {
+        minDeclaration = declarationParts[0];
+        maxDeclaration = declarationParts[1];
+      }
+
+      if( minDeclaration ) {
+        // check min
+        getDimRestriction(minDeclaration);
+        if( img.width < restrictedDim.width || img.height < restrictedDim.height )  {
+          error = language.imageTooSmall + ' ('+language.min+' '+restrictedDim.width+'x'+restrictedDim.height+'px)';
+        }
+      }
+
+      if( !error && maxDeclaration ) {
+        // Check max
+        getDimRestriction(maxDeclaration);
+        if( img.width > restrictedDim.width || img.height > restrictedDim.height ) {
+          if( img.width > restrictedDim.width ) {
+            error = language.imageTooWide +' '+restrictedDim.width+'px';
+          } else {
+            error = language.imageTooTall +' '+restrictedDim.height+'px';
+          }
+          error += ' ('+language.max+' '+restrictedDim.width+'x'+restrictedDim.height+'px)';
+        }
+      }
+
+      return error;
+    };
+
+    /**
+     * Attach ratio validation onto formUtils only for unit testing purpose
+     * @param {HTMLImageElement} img
+     * @param {String} dimDeclaration
+     * @param {Boolean|String} Returns error message if image was invalid, false otherwise
+     */
+    $.formUtils.checkImageRatio = function(img, ratioDeclaration, language) {
+      var ratio = img.width / img.height,
+          minRatio = false,
+          maxRatio = false,
+          calculateRatio = function(declaration) {
+            var dims = declaration.replace('max', '').replace('min', '').split(':');
+            return dims[0] / dims[1];
+          },
+          declarationParts = ratioDeclaration.split('-'),
+          isWithin = function(val, min, max) {
+            console.log(val+ '>='+min +' && '+val+' <= '+max);
+            return val >= min && val <= max;
+          };
+
+        if( declarationParts.length == 1 ) {
+          if( ratio !== calculateRatio(declarationParts[0]) )
+            return language.imageRatioNotAccepted;
+        }
+        else if( declarationParts.length == 2 && !isWithin(ratio, calculateRatio(declarationParts[0]), calculateRatio(declarationParts[1])) ) {
+          return language.imageRatioNotAccepted;
+        }
+
+        return false;
+    };
+
     /**
      * Validate image dimension
      */
@@ -247,36 +333,13 @@
           }
 
           _loadImage(file[0], function(img) {
-            var error = false,
-              restrictedDim = {width:0, height:0},
-              getDimRestriction = function(attrVal) {
-                var chunks = attrVal.split('x');
-                restrictedDim.width = chunks[0];
-                restrictedDim.height = chunks[1] ? chunks[1] : chunks[0];
-              },
-              minDeclaration = ($input.valAttr('min-dimension') || '').replace('px', ''),
-              maxDeclaration = ($input.valAttr('max-dimension') || '').replace('px', '');
+            var error = false;
 
-            if( minDeclaration ) {
-              // check min
-              getDimRestriction(minDeclaration);
-              if( img.width < restrictedDim.width || img.height < restrictedDim.height )  {
-                error = language.imageTooSmall + ' ('+language.min+' '+restrictedDim.width+'x'+restrictedDim.height+'px)';
-              }
-            }
+            if( $input.valAttr('dimension') )
+              error = $.formUtils.checkImageDimension(img, $input.valAttr('dimension'), language);
 
-            if( !error && maxDeclaration ) {
-              // Check max
-              getDimRestriction(maxDeclaration);
-              if( img.width > restrictedDim.width || img.height > restrictedDim.height ) {
-                if( img.width > restrictedDim.width ) {
-                  error = language.imageTooWide +' '+restrictedDim.width+'px';
-                } else {
-                  error = language.imageTooTall +' '+restrictedDim.height+'px';
-                }
-                error += ' ('+language.max+' '+restrictedDim.width+'x'+restrictedDim.height+'px)';
-              }
-            }
+            if( !error && $input.valAttr('ratio') )
+              error = $.formUtils.checkImageRatio(img, $input.valAttr('ratio'), language);
 
             // Set validation result flag on input
             if( error ) {

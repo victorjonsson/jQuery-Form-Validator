@@ -8,9 +8,7 @@ var fs = require('fs'),
     mainMinifiedScript = jsPath + 'jquery.form-validator.min.js',
     newVersion = -1;
 
-/*
- * Find out new version number
- */
+// Find out new version number
 var versionParts = fs.readFileSync(mainScript, 'utf-8').split('@version ')[1].split('*/')[0].trim().split('.');
 if(versionParts.length < 3) {
     // new version number is decided in code
@@ -32,16 +30,22 @@ documentation = docParts[0] +'@version '+newVersion+'\n'+docParts[1].split('\n')
 
 /**
  * Create new minified version of a file and change version number
- * @param {String} path
- * @param {String} newName
+ * @param {String} sourceFile
+ * @param {String} targetFile
+ * @param {String} [bin]
  */
-function buildFile(path, newName) {
-    var codeParts = fs.readFileSync(path, 'utf-8').split('@version ');
-    var lastCodeParts = codeParts[1].split("\n");
-    var origCode = codeParts[0] + '@version '+newVersion+ "\n" + lastCodeParts.slice(1, lastCodeParts.length).join("\n") + "";
-    fs.writeFileSync(path, origCode);
-    fs.writeFileSync(newName, '');
-    exec('uglifyjs '+path+' >> '+newName, function (error, stdout, stderr) {
+function buildFile(sourceFile, targetFile, bin) {
+    var codeParts = fs.readFileSync(sourceFile, 'utf-8').split('@version '),
+      lastCodeParts = codeParts[1].split("\n"),
+      origCode = codeParts[0] + '@version '+newVersion+ "\n" + lastCodeParts.slice(1, lastCodeParts.length).join("\n") + "";
+
+    fs.writeFileSync(sourceFile, origCode);
+    fs.writeFileSync(targetFile, '');
+
+    if(!bin)
+      bin = 'uglifyjs %source% >> %target%';
+
+    exec(bin.replace('%source%', sourceFile).replace('%target%', targetFile), function (error, stdout, stderr) {
         if(stdout)
             console.log('stdout: '+stdout);
         if(error)
@@ -49,7 +53,7 @@ function buildFile(path, newName) {
         if(stderr)
             console.log('stderror: '+stderr);
 
-        console.log('* '+newName);
+        console.log('* '+targetFile);
     });
 }
 
@@ -69,3 +73,5 @@ fs.writeFileSync(mainMinifiedScript, documentation+"\n"+fs.readFileSync(mainMini
   });
 });
 
+// Minify default theme css
+buildFile(jsPath+'theme-default.css', jsPath+'theme-default.min.css', 'sqwish %source%');

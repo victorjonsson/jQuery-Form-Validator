@@ -8,9 +8,9 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.24
+ * @version 2.2.34
  */
-(function($, window) {
+(function($, window, undefined) {
 
   "use strict";
 
@@ -30,11 +30,12 @@
 
   $(window).bind('validatorsLoaded formValidationSetup', function(evt, $forms, conf) {
 
-      var $formsToDisable = conf.disabledFormFilter ? $forms.filter(conf.disabledFormFilter) : $forms;
+      var $formsToDisable = conf.disabledFormFilter ? $forms.filter(conf.disabledFormFilter) : $forms,
+          showErrorDialogs = conf.showErrorDialogs === undefined || conf.showErrorDialogs;
 
       // Toggle form state depending on if it has only valid inputs or not.
       $formsToDisable
-        .addClass('disabled-by-default')
+        .addClass(showErrorDialogs ? 'disabled-with-errors' : 'disabled-without-errors')
         .find('*[data-validation]')
           .attr('data-validation-event','keyup')
           .on('validation', function(evt, valid) {
@@ -58,7 +59,7 @@
 
   })
   .on('validationErrorDisplay', function(evt, $input, $elem) {
-      if( $input.closest('form').hasClass('disabled-by-default') )
+      if( $input.closest('form').hasClass('disabled-without-errors') )
         $elem.hide();
   });
 

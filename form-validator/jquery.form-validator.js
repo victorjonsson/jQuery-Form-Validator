@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.34
+ * @version 2.2.35
  */
 (function ($) {
 
@@ -870,7 +870,6 @@
      * Validate the value of given element according to the validation rules
      * found in the attribute data-validation. Will return an object representing
      * a validation result, having the props shouldChangeDisplay, isValid and errorMsg
-     * 8420-2 8430 97 99 1-7
      * @param {jQuery} $elem
      * @param {Object} language ($.formUtils.LANG)
      * @param {Object} conf

@@ -17,7 +17,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.34
+ * @version 2.2.35
  */
 (function($, window) {
 
@@ -102,7 +102,7 @@
 
                     if( suggestions.length == 0 ) {
                       // IE fix
-                      var opts = $.trim($('#'+$input.attr('list')).text()).split('\n')
+                      var opts = $.trim($('#'+$input.attr('list')).text()).split('\n');
                       $.each(opts, function(i, option) {
                         suggestions.push($.trim(option));
                       });
@@ -112,6 +112,9 @@
 
                     $.formUtils.suggest( $input, suggestions );
                 }
+
+                if( isRequired && validation.length == 0 )
+                  validation.push('required');
 
                 if( validation.length ) {
                     if( !isRequired ) {

@@ -13,7 +13,7 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.34
+ * @version 2.2.35
  */
 (function($, window) {
 
@@ -491,8 +491,8 @@
 
         return new RegExp(pattern).test(val);
       },
-      errorMessage : 'aaaa',
-      errorMessageKey: ''
+      errorMessage : '',
+      errorMessageKey: 'requiredFields'
     });
 
 

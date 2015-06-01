@@ -80,7 +80,8 @@
         <div class="form-group">
             <label class="control-label">Year</label>
             <input name="birth" class="form-control"
-                   data-validation="date"
+                   data-validation="length date"
+                   data-validation-length="min5"
                    data-validation-format="yyyy/mm/dd"
                    data-suggestions="2014/01/15,2014/01/16,2014/01/17" />
         </div>
@@ -158,16 +159,19 @@
             <label class="control-label">Server validation</label>
             <input class="form-control" name="code" value="secret"
                    data-validation-helssp="The word is &quot;secret&quot;"
-                   data-validation="server"
+                   data-validation="length server"
+                   data-validation-length="min2"
                    data-validation-url="http://formvalidator.net/validate-email.php" />
         </div>
         <div class="form-group">
             <label class="control-label">File validation</label>
             <input type="file" name="some-file1" class="form-control"
-                   data-validation="size mime required"
+                   data-validation="size mime required dimension"
                    data-validation-error-msg-size="The file cant be larger than 400kb"
                    data-validation-error-msg="You must upload an image file (max 400 kb)"
                    data-validation-allowing="jpg, png, ico"
+                   data-validation-dimension="100-800"
+                   data-validation-ratio="8:10-12:10"
                    data-validation-max-size="400kb" />
         </div>
         <div class="form-group">

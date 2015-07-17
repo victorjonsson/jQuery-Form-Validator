@@ -17,7 +17,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.35
+ * @version 2.2.36
  */
 (function($, window) {
 
@@ -68,9 +68,9 @@
                             min = $input.attr('min');
                         if( min || max ) {
                             if( !min )
-                                min = 0;
+                                min = '0';
                             if( !max )
-                                max = 9007199254740992; // js max int
+                                max = '9007199254740992'; // js max int
 
                             attrs['data-validation-allowing'] = 'range['+min+';'+max+']';
                             if( min.indexOf('-') === 0 || max.indexOf('-') === 0 ) {

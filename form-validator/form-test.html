@@ -282,7 +282,7 @@
         <h2>HTML5 attributes</h2>
         <div class="form-group">
             <label class="control-label">type="email"</label>
-            <input type="text" required="required" list="da-mejl" />
+            <input type="email" required="required" list="da-mejl" />
             <datalist id="da-mejl">
                 <option value="Test">Test</option>
                 <option value="test2">test2</option>
@@ -344,7 +344,7 @@
         errorMessageKey: 'badEvenNumber'
     });
 
-    window.applyValidation = function(validateOnBlur, forms, messagePosition) {
+    window.applyValidation = function(validateOnBlur, forms, messagePosition, xtraModule) {
         if( !forms )
             forms = 'form';
         if( !messagePosition )
@@ -360,7 +360,7 @@
             scrollToTopOnError : true,
             lang : 'sv',
            // borderColorOnError : 'purple',
-            modules : 'security'+dev+', location'+dev+', sweden'+dev+', html5'+dev+', file'+dev+', uk'+dev,
+            modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev +( xtraModule ? ','+xtraModule:''),
             onModulesLoaded: function() {
                 $('#country-suggestions').suggestCountry();
                 $('#swedish-county-suggestions').suggestSwedishCounty();
@@ -393,7 +393,7 @@
     window.applyValidation(true, '#form-a', 'top');
     window.applyValidation(false, '#form-b', 'element');
     window.applyValidation(true, '#form-c', $('#error-container'));
-    window.applyValidation(true, '#form-d', 'element');
+    window.applyValidation(true, '#form-d', 'element', 'html5'+dev);
 
     // Load one module outside $.validate() even though you do not have to
     $.formUtils.loadModules('date'+dev+'.js', false, false);

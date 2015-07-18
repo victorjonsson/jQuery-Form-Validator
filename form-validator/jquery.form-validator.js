@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.37
+ * @version 2.2.39
  */
 (function ($) {
 
@@ -17,7 +17,7 @@
         return $($elem.valAttr('error-msg-container'));
       } else {
         var $parent = $elem.parent();
-        if (!$parent.hasClass('form-group')) {
+        if ( !$parent.hasClass('form-group') && !$parent.closest('form').hasClass('form-horizontal') ) {
           var $formGroup = $parent.closest('.form-group');
           if ($formGroup.length) {
             return $formGroup.eq(0);
@@ -790,6 +790,7 @@
                 }
               }
             };
+
 
           if (numModules > 0) {
             $.formUtils.isLoadingModules = true;

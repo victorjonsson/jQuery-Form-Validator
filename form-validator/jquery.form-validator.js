@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.39
+ * @version 2.2.40
  */
 (function ($) {
 
@@ -1708,9 +1708,9 @@
       if( !isValid ) {
         var _triggerOnBlur = function() {
           $checkBoxes.unbind('click', _triggerOnBlur);
-          $checkBoxes.filter('*[data-validation]').eq(0).validateInputOnBlur(lang, conf, false, 'blur');
+          $checkBoxes.filter('*[data-validation]').validateInputOnBlur(lang, conf, false, 'blur');
         };
-        //$checkBoxes.bind('click', _triggerOnBlur);
+        $checkBoxes.bind('click', _triggerOnBlur);
       }
 
       return isValid;

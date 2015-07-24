@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.40
+ * @version 2.2.42
  */
 (function ($) {
 
@@ -881,6 +881,8 @@
     validateInput: function ($elem, language, conf, $form, eventContext) {
 
       $elem.trigger('beforeValidation');
+      conf = conf || $.formUtils.defaultConfig();
+      language = language || $.formUtils.LANG;
 
       var value = $elem.val() || '',
           result = {isValid: true, shouldChangeDisplay:true, errorMsg:''},
@@ -893,7 +895,6 @@
 
           // get value of this element's attribute "... if-checked"
           validateIfCheckedElementName = $elem.valAttr('if-checked');
-
 
       if ($elem.attr('disabled')) {
         result.shouldChangeDisplay = false;
@@ -920,7 +921,8 @@
       // validation checkpoint
       // if empty AND optional attribute is present
       // OR depending on a checkbox being checked AND checkbox is checked, return true
-      if ((!value && optional === 'true') || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
+      var isInvalidNumberInput = !value && $elem[0].type == 'number';
+      if ((!value && optional === 'true' && !isInvalidNumberInput) || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
         result.shouldChangeDisplay = conf.addValidClassOnAll;
         return result;
       }

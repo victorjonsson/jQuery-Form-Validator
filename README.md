@@ -276,9 +276,14 @@ var enErrorDialogs = {
 </script>
 ...
 ```
+### Input Specific Error Messages ###
+It's also possible to override the default validation error message. If you add the attribute `data-validation-error-msg` to a form input element, the value of
+that attribute will be used as the validation error message.
 
-It's also possible to add inline error messages. If you add attribute `data-validation-error-msg` to an element the value of
-that attribute will be displayed instead of the error dialog that the validation function refers to.
+### Input Specific Error Message Container ###
+It's also possible to use a separate container (div, etc) to hold a specific error message for a specific form input element. A text input with `name=profilephoto` can have a separate container with `id=profilephoto_errMsgContainer`.
+The default value of this suffix `errMsgContainer` is defined in the default config, and can be overwritten to fit your nomenclature preferences.
+
 
 ## Input length restriction
 ```html

@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#file-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.42
+ * @version 2.2.43
  */
 (function($, window) {
 

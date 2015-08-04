@@ -6,7 +6,7 @@ it's designed to require as little bandwidth as possible. This is achieved by gr
 in "modules", making it possible for the programmer to load **only those functions that's needed** to validate a
 particular form.
 
-**Form demos and full documentation is available at http://formvalidator.net/**
+**Form demos and full documentation available at http://formvalidator.net/**
 
 *Usage example*
 
@@ -78,6 +78,7 @@ Read the documentation for the default features at [http://formvalidator.net/#de
  * **CVV**
  * **strength** — *Validate the strength of a password*
  * **server** — *Validate value of input on server side*
+ * **letternumeric** — *Validate that the input value consists out of only letters and/or numbers*
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
 
@@ -99,7 +100,8 @@ Read the documentation for the location module at [http://formvalidator.net/#loc
 ### Module: file
  * **mime**
  * **extension**
- * **size**
+ * **size** (file size)
+ * **dimension** ()
 
 Read the documentation for the file module at [http://formvalidator.net/#file-validators](http://formvalidator.net/#file-validators)
 
@@ -218,78 +220,10 @@ Read about how to customize this plugin over at [http://formvalidator.net/#confi
 ### Validate On Event ###
 You can cause an element to be validated upon the firing of an event, by attaching an attribute to the form input element named `data-validation-event="click"`. When the configuration settings have `validateOnEvent : true`, the click event will trigger the onBlur validaton for that element. Possible use case: Checkboxes. Instead of waiting for the checkbox to lose focus (blur) and waiting for a validation to occurr, you can specify that elements validation should occur as soon as that checkbox element is clicked.
 
-
 ## Localization
-This plugin contains a set of error dialogs. In case you don't define an inline error message the plugin
-will fall back on one of the dialogs below. You can how ever add the attribute *data-validation-error-msg* to an
-element, and that message will be displayed instead. All error dialogs can be overwritten by passing an
-object into the validation function.
 
-```javascript
-var enErrorDialogs = {
-    errorTitle: 'Form submission failed!',
-    requiredFields: 'You have not answered all required fields',
-    badTime: 'You have not given a correct time',
-    badEmail: 'You have not given a correct e-mail address',
-    badTelephone: 'You have not given a correct phone number',
-    badSecurityAnswer: 'You have not given a correct answer to the security question',
-    badDate: 'You have not given a correct date',
-    lengthBadStart: 'The input value must be between ',
-    lengthBadEnd: ' characters',
-    lengthTooLongStart: 'The input value is longer than ',
-    lengthTooShortStart: 'The input value is shorter than ',
-    notConfirmed: 'Input values could not be confirmed',
-    badDomain: 'Incorrect domain value',
-    badUrl: 'The input value is not a correct URL',
-    badCustomVal: 'The input value is incorrect',
-    andSpaces: ' and spaces ',
-    badInt: 'The input value was not a correct number',
-    badSecurityNumber: 'Your social security number was incorrect',
-    badUKVatAnswer: 'Incorrect UK VAT Number',
-    badStrength: 'The password isn\'t strong enough',
-    badNumberOfSelectedOptionsStart: 'You have to choose at least ',
-    badNumberOfSelectedOptionsEnd: ' answers',
-    badAlphaNumeric: 'The input value can only contain alphanumeric characters ',
-    badAlphaNumericExtra: ' and ',
-    wrongFileSize: 'The file you are trying to upload is too large (max %s)',
-    wrongFileType: 'Only files of type %s is allowed',
-    groupCheckedRangeStart: 'Please choose between ',
-    groupCheckedTooFewStart: 'Please choose at least ',
-    groupCheckedTooManyStart: 'Please choose a maximum of ',
-    groupCheckedEnd: ' item(s)',
-    badCreditCard: 'The credit card number is not correct',
-    badCVV: 'The CVV number was not correct'
-};
-```
-
-```html
-<form action="script.php">
-    ...
-</form>
-<script src="js/jquery.min.js"></script>
-<script src="js/form-validator/jquery.form-validator.min.js"></script>
-<script src="js/form-validator/locale.en.js"></script>
-<script>
-  $.validate({
-    language : enErrorDialogs
-  });
-</script>
-...
-```
-
-It's also possible to add inline error messages. If you add attribute `data-validation-error-msg` to an element the value of
-that attribute will be displayed instead of the error dialog that the validation function refers to.
-
-## Input length restriction
-```html
-<p>
-  History (<span id="maxlength">50</span> characters left)
-  <textarea rows="3" id="area"></textarea>
-</p>
-<script type="text/javascript">
-  $('#area').restrictLength( $('#maxlength') );
-</script>
-```
+This plugin comes with translations for English, German, French Spanish and Swedish. You can also choose to override the error
+dialogs yourself. Here you can read more about [localization](http://formvalidator.net/#localization)
 
 ## Program Flow
 Form submit() event is bound to jQ func **validateForm()** when the form is submitted, it calls
@@ -301,6 +235,17 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 
 ## Changelog
+
+
+#### 2.2.43
+- Fixed min/max parse error in HTML5 module
+- Now also supports Twitter bootstraps horizontal forms
+- This plugin now also distributes a default CSS theme including success/fail icons (used on formvalidator.net)
+- Email validation now won't fail if email begins with a number
+- This plugin now comes with error dialogs translated to English, French, German, Spanish and English.
+- New validator `letternumeric`. Validates that input consists out of any type of letter (not only alphanumeric) and/or numbers
+- You can now validate image dimension and ratio
+- ... and a bunch of other smaller bug fixes and improvements.
 
 #### 2.2.0
 * Now possible to define an error message for each validation rule on a certain input (issue #113)
@@ -359,7 +304,7 @@ calling $.validate()
  the $.validationSetup but it's considered deprecated.
 
 #### 2.1.6
- * Modules can now be loaded from remote website
+ * Modules can now be loaded from remote websites
 
 #### 2.1.5
  * Fixed language bug (issue #43 on github)

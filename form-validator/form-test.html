@@ -359,6 +359,7 @@
             errorMessagePosition : messagePosition,
             scrollToTopOnError : true,
             lang : 'sv',
+            sanitizeAll : 'trim', // only used on form C
            // borderColorOnError : 'purple',
             modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev +( xtraModule ? ','+xtraModule:''),
             onModulesLoaded: function() {
@@ -392,7 +393,7 @@
 
     window.applyValidation(true, '#form-a', 'top');
     window.applyValidation(false, '#form-b', 'element');
-    window.applyValidation(true, '#form-c', $('#error-container'));
+    window.applyValidation(true, '#form-c', $('#error-container'), 'sanitize'+dev);
     window.applyValidation(true, '#form-d', 'element', 'html5'+dev);
 
     // Load one module outside $.validate() even though you do not have to

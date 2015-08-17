@@ -679,6 +679,84 @@
              */
         });
 
+        test('Sanitation', function() {
+            clearForm();
+
+            var data = {
+                trim : {
+                    val : ' apa ',
+                    expected : 'apa'
+                },
+                trimLeft : {
+                    val : ' apa ',
+                    expected: 'apa '
+                },
+                trimRight : {
+                    val : ' apa ',
+                    expected:  ' apa'
+                },
+                capitalize : {
+                    val : 'En groda som Önskar sig öl',
+                    expected:  'En Groda Som Önskar Sig Öl'
+                },
+                'capitalize trim' : {
+                    val : ' En groda som Önskar sig öl ',
+                    expected:  'En Groda Som Önskar Sig Öl'
+                },
+                upper : {
+                    val : ' apa ',
+                    expected:  ' APA '
+                },
+                lower : {
+                    val : ' aPA ',
+                    expected:  ' apa '
+                },
+                insertLeft : {
+                    val : ' apa ',
+                    expected:  'left... apa ',
+                    attr : {
+                        'data-sanitize-insert-right' : 'right...',
+                        'data-sanitize-insert-left' : 'left...'
+                    }
+                },
+                insertRight : {
+                    val : ' apa ',
+                    expected:  ' apa right...',
+                    attr : {
+                        'data-sanitize-insert-right' : 'right...',
+                        'data-sanitize-insert-left' : 'left...'
+                    }
+                },
+                'trim insertRight' : {
+                    val : ' apa ',
+                    expected:  'aparight...',
+                    attr : {
+                        'data-sanitize-insert-right' : 'right...'
+                    }
+                },
+                escape : {
+                    val : '<p style="color: pink">hejsan & så\' vidare</p>',
+                    expected:  '&lt;p style=&quot;color: pink&quot;&gt;hejsan &amp; så&#8217; vidare&lt;/p&gt;'                }
+            };
+
+            $.each(data, function(sanitation, data) {
+                var $input = input('hejsan', {'':''}, {name:'test'});
+                $input.attr('data-sanitize', sanitation);
+                $.each(data.attr || {}, function(attrName, attrVal) {
+                    $input.attr(attrName, attrVal);
+                });
+                $.formUtils.setupSanitation($form, $.formUtils.defaultConfig());
+                $input.val(data.val);
+                $input.trigger('blur');
+                equal(
+                    $input.val(),
+                    data.expected,
+                    'Sanitize with "'+sanitation+'"'
+                );
+            });
+
+        });
+
         test('Confirmation', function() {
 
             clearForm();
@@ -730,7 +808,7 @@
     var dev = window.location.hash.indexOf('dev') > -1 ? '.dev' : '';
 
     $.validate({
-        modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', date'+dev+', uk'+dev,
+        modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', date'+dev+', sanitize'+dev+', uk'+dev,
         onModulesLoaded: function( $form ) {
             if( window.console && window.console.log )
                 console.log('About to run all tests');

@@ -22,7 +22,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.48
+ * @version 2.2.51
  */
 (function($, window) {
 
@@ -64,15 +64,23 @@
           });
           return words.join(' ');
         },
+        insert : function(val, $input, pos) {
+          var extra = ($input.attr('data-sanitize-insert-'+pos) || '').replace(/\[SPACE\]/g, ' ');
+          if( (pos == 'left' && val.indexOf(extra) == 0) ||
+              (pos == 'right' && val.substring(val.length - extra.length) == extra)) {
+            return val;
+          }
+          return (pos == 'left' ? extra:'') + val + (pos == 'right' ? extra : '');
+        },
         insertRight : function(val, $input) {
-         return val + ($input.attr('data-sanitize-insert-right') || '').replace(/\[SPACE\]/g, ' ');
+          return this.insert(val, $input, 'right');
         },
         insertLeft : function(val, $input) {
-         return ($input.attr('data-sanitize-insert-left') || '').replace(/\[SPACE\]/g, ' ') + val;
+          return this.insert(val, $input, 'left');
         },
         numberFormat : function(val, $input, config) {
           if( 'numeral' in window ) {
-            val = numeral(val).format( $input.attr('data-sanitation-format') );
+            val = numeral(val).format( $input.attr('data-number-format') );
           } else {
             throw new Error('Using sanitation function "numberFormat" requires that you include numeraljs (http://http://numeraljs.com/)');
           }
@@ -97,6 +105,8 @@
         if( !$forms ) {
           $forms = $('form');
         }
+        if( !$forms.each )
+          $forms = $($forms);
 
         var execSanitationCommands = function() {
           var $input = $(this),

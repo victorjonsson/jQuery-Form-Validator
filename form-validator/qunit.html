@@ -682,7 +682,7 @@
         test('Sanitation', function() {
             clearForm();
 
-            var data = {
+            var sanitationTests = {
                 trim : {
                     val : ' apa ',
                     expected : 'apa'
@@ -727,11 +727,27 @@
                         'data-sanitize-insert-left' : 'left...'
                     }
                 },
+                insertRightOmitted : {
+                    val : ' apa $',
+                    expected:  ' apa $',
+                    sanitize : 'insertRight',
+                    attr : {
+                        'data-sanitize-insert-right' : ' $'
+                    }
+                },
+                insertLeftOmitted : {
+                    val : '$ apa $',
+                    expected:  '$ apa $',
+                    sanitize : 'insertRight',
+                    attr : {
+                        'data-sanitize-insert-left' : '$ '
+                    }
+                },
                 'trim insertRight' : {
                     val : ' apa ',
-                    expected:  'aparight...',
+                    expected:  'apa right...',
                     attr : {
-                        'data-sanitize-insert-right' : 'right...'
+                        'data-sanitize-insert-right' : ' right...'
                     }
                 },
                 escape : {
@@ -739,13 +755,13 @@
                     expected:  '&lt;p style=&quot;color: pink&quot;&gt;hejsan &amp; så&#8217; vidare&lt;/p&gt;'                }
             };
 
-            $.each(data, function(sanitation, data) {
+            $.each(sanitationTests, function(sanitation, data) {
                 var $input = input('hejsan', {'':''}, {name:'test'});
-                $input.attr('data-sanitize', sanitation);
+                $input.attr('data-sanitize', data.sanitize || sanitation);
                 $.each(data.attr || {}, function(attrName, attrVal) {
                     $input.attr(attrName, attrVal);
                 });
-                $.formUtils.setupSanitation($form, $.formUtils.defaultConfig());
+                $.formUtils.setupSanitation({}, $form, $.formUtils.defaultConfig());
                 $input.val(data.val);
                 $input.trigger('blur');
                 equal(

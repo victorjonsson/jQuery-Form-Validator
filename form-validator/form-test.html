@@ -321,6 +321,26 @@
             <input type="reset" class="button">
         </p>
     </form>
+    <hr />
+    <form id="form-e">
+        <h2>Validation Module: Brazil</h2>
+        <div class="form-group">
+            <label class="control-label">Telephone</label>
+            <input name="brazil_telephone" data-validation="brphone" type="text" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">CEP</label>
+            <input name="brazil_cep" data-validation="cep" type="text" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">CPF</label>
+            <input name="brazil_cpf" data-validation="cpf" type="text" />
+        </div>
+        <p>
+            <input type="submit" class="button">
+            <input type="reset" class="button">
+        </p>
+    </form>
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
@@ -361,7 +381,7 @@
             lang : 'sv',
             sanitizeAll : 'trim', // only used on form C
            // borderColorOnError : 'purple',
-            modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev +( xtraModule ? ','+xtraModule:''),
+            modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev+' , brazil'+dev +( xtraModule ? ','+xtraModule:''),
             onModulesLoaded: function() {
                 $('#country-suggestions').suggestCountry();
                 $('#swedish-county-suggestions').suggestSwedishCounty();
@@ -395,6 +415,7 @@
     window.applyValidation(false, '#form-b', 'element');
     window.applyValidation(true, '#form-c', $('#error-container'), 'sanitize'+dev);
     window.applyValidation(true, '#form-d', 'element', 'html5'+dev);
+    window.applyValidation(true, '#form-e');
 
     // Load one module outside $.validate() even though you do not have to
     $.formUtils.loadModules('date'+dev+'.js', false, false);

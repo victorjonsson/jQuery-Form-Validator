@@ -80,7 +80,7 @@
         },
         numberFormat : function(val, $input, config) {
           if( 'numeral' in window ) {
-            val = numeral(val).format( $input.attr('data-number-format') );
+            val = numeral(val).format( $input.attr('data-sanitize-number-format') );
           } else {
             throw new Error('Using sanitation function "numberFormat" requires that you include numeraljs (http://http://numeraljs.com/)');
           }

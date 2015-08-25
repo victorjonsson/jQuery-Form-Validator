@@ -582,10 +582,15 @@
     // Add validation to forms
     $(conf.form).each(function (i, form) {
 
+      // Make a reference to the config for this form
+      form.validationConfig = conf;
+
+      // Trigger jQuery event that we're about to setup va
       var $form = $(form);
       $window.trigger('formValidationSetup', [$form, conf]);
 
-      // Remove all event listeners previously added
+      // Remove classes and event handlers that might have been
+      // added by a previous call to $.validate
       $form.find('.has-help-txt')
           .unbind('focus.validation')
           .unbind('blur.validation');

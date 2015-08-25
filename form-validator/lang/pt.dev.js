@@ -6,7 +6,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.51
+ * @version 2.2.52
  */
 (function($, window) {
 
@@ -53,7 +53,10 @@
       imageTooSmall: 'a imagem é muito pequena',
       min: 'min',
       max: 'max',
-      imageRatioNotAccepted : 'A proporção da imagem (largura x altura) não é válida'
+      imageRatioNotAccepted : 'A proporção da imagem (largura x altura) não é válida',
+      badBrazilTelephoneAnswer: 'O número de telefone digitado é inválido',
+      badBrazilCEPAnswer: 'O CEP digitado é inválido',
+      badBrazilCPFAnswer: 'O CPF digitado é inválido'
     };
 
   });

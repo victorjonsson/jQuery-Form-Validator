@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.51
+ * @version 2.2.52
  */
 (function ($) {
 
@@ -1420,7 +1420,10 @@
       imageTooSmall : 'the image was too small',
       min : 'min',
       max : 'max',
-      imageRatioNotAccepted : 'Image ratio is not be accepted'
+      imageRatioNotAccepted : 'Image ratio is not be accepted',
+      badBrazilTelephoneAnswer: 'The phone number entered is invalid',
+      badBrazilCEPAnswer: 'The CEP entered is invalid',
+      badBrazilCPFAnswer: 'The CPF entered is invalid'
     }
   };
 

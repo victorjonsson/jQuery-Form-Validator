@@ -22,7 +22,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.59
+ * @version 2.2.60
  */
 (function($, window) {
 
@@ -126,7 +126,7 @@
           var $form = $(this);
           if( config.sanitizeAll ) {
             $form.find('input,textarea').not(inputsThatCantBeSanitized).each(function() {
-              $(this).attr('data-sanitize', config.sanitizeAll+ ' '+ $(this).attr('data-sanitize'));
+              $(this).attr('data-sanitize', config.sanitizeAll+ ' '+ ($(this).attr('data-sanitize') || ''));
             });
           }
 

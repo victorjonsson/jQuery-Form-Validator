@@ -1,6 +1,5 @@
 {
   "name": "jQuery-Form-Validator",
-  "version": "2.2.43",
   "homepage": "http://formvalidator.net/",
   "authors": [
     "victorjonsson"
@@ -12,7 +11,10 @@
     "validator",
     "jquery"
   ],
-  "license": "MIT",
+  "dependencies": {
+    "jquery": ">1.8.0"
+  },
+  "license": "Dual licensed under the MIT or GPL Version 2 licenses",
   "ignore": [
     "**/.*",
     "node_modules",

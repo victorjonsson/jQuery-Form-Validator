@@ -17,7 +17,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.59
+ * @version 2.2.60
  */
 (function($, window) {
 

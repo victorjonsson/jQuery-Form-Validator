@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#file-validators
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.53
+ * @version 2.2.55
  */
 (function($, window) {
 
@@ -274,7 +274,6 @@
           },
           declarationParts = ratioDeclaration.split('-'),
           isWithin = function(val, min, max) {
-            console.log(val+ '>='+min +' && '+val+' <= '+max);
             return val >= min && val <= max;
           };
 

@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.53
+ * @version 2.2.55
  */
 (function ($) {
 
@@ -901,7 +901,7 @@
           // get value of this element's attribute "... if-checked"
           validateIfCheckedElementName = $elem.valAttr('if-checked');
 
-      if ($elem.attr('disabled')) {
+      if ($elem.attr('disabled') || !$elem.is(':visible')) {
         result.shouldChangeDisplay = false;
         return result;
       }

@@ -22,7 +22,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.57
+ * @version 2.2.59
  */
 (function($, window) {
 
@@ -117,13 +117,17 @@
             else
               throw new Error('Use of unknown sanitize command "'+command+'"');
           });
-          $input.val(value);
+          $input
+            .val(value)
+            .trigger('keyup.validation'); // we need to re-validate in case it gets validated on blur
         };
         
         $forms.each(function() {
           var $form = $(this);
           if( config.sanitizeAll ) {
-            $form.find('input,textarea').not(inputsThatCantBeSanitized).attr('data-sanitize', config.sanitizeAll);
+            $form.find('input,textarea').not(inputsThatCantBeSanitized).each(function() {
+              $(this).attr('data-sanitize', config.sanitizeAll+ ' '+ $(this).attr('data-sanitize'));
+            });
           }
 
           $form.find('[data-sanitize]')

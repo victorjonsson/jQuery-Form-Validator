@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.55
+ * @version 2.2.57
  */
 (function ($) {
 
@@ -1440,9 +1440,25 @@
     name: 'email',
     validatorFunction: function (email) {
 
-      var emailParts = email.toLowerCase().split('@');
-      if (emailParts.length == 2) {
-        return $.formUtils.validators.validate_domain.validatorFunction(emailParts[1]) && !(/[^\w\+\.\-]/.test(emailParts[0])) && emailParts[0].length > 0;
+      var emailParts = email.toLowerCase().split('@'),
+          localPart = emailParts[0],
+          domain = emailParts[1];
+
+      if (localPart && domain) {
+
+        if( localPart.indexOf('"') == 0 ) {
+          var len = localPart.length;
+          localPart = localPart.replace(/\"/g, '');
+          if( localPart.length != (len-2) ) {
+            return false; // It was not allowed to have more than two apostrophes
+          }
+        }
+
+        return $.formUtils.validators.validate_domain.validatorFunction(emailParts[1]) &&
+              localPart.indexOf('.') != 0 &&
+              localPart.substring(localPart.length-1, localPart.length) != '.' &&
+              localPart.indexOf('..') == -1 &&
+              !(/[^\w\+\.\-\#\-\_\~\!\$\&\'\(\)\*\+\,\;\=\:]/.test(localPart));
       }
 
       return false;

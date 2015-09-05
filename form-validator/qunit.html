@@ -197,7 +197,10 @@
                 {val: '@sdsd.xxz', isValid : false},
                 {val: 'sasas@', isValid : false},
                 {val: 'sasas.se', isValid : false},
-                {val: 'sasas-sdsd.com', isValid : false}
+                {val: 'sasas-sdsd.com', isValid : false},
+                {val: '"sasas-sdsd"@monkey.com', isValid : true},
+                {val: '"sasas-sdsd"sdfsdf.sdff@monkey.com', isValid : true},
+                {val: 'sdf"sasas-sdsd"@monkey.com', isValid : false}
             ];
 
             $.each(values, function(i, obj) {

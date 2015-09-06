@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.62
+ * @version 2.2.63
  */
 (function ($) {
 
@@ -231,9 +231,10 @@
           cb(isValid, this, evt);
       });
       $elem.validateInputOnBlur(
-        language,
-        $.extend({}, $elem.closest('form').get(0).validationConfig, conf || {})
-      );
+          language,
+          $.extend({}, $elem.closest('form').get(0).validationConfig, conf || {}),
+          true
+        );
     });
   };
 

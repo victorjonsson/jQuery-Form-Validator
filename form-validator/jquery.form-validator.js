@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.60
+ * @version 2.2.61
  */
 (function ($) {
 
@@ -116,6 +116,7 @@
       $form.children().eq(0).before(container);
     };
 
+
   /**
    * Assigns validateInputOnBlur function to elements blur event
    *
@@ -217,6 +218,36 @@
   };
 
   /**
+   * @param {Function} cb
+   * @param {Object} [conf]
+   * @param {Object} [lang]
+   */
+  $.fn.validate = function(cb, conf, lang) {
+    var language = $.extend({}, $.formUtils.LANG, lang || {});
+    this.each(function() {
+      var $elem = $(this);
+      $elem.one('validation', function(evt, isValid) {
+        cb(isValid, this, evt);
+      });
+      $elem.validateInputOnBlur(
+        language,
+        $.extend({}, $elem.closest('form').get(0).validationConfig, conf || {})
+      );
+    });
+  };
+
+  /**
+   * Tells whether or not validation of this input will have to postpone the form submit ()
+   * @returns {Boolean}
+   */
+  $.fn.willPostponeValidation = function() {
+    return (this.valAttr('suggestion-nr') ||
+            this.valAttr('postpone') ||
+            this.hasClass('hasDatepicker'))
+          && !window.postponedValidation;
+  };
+
+  /**
    * Validate single input when it loses focus
    * shows error message in a span element
    * that is appended to the parent element
@@ -231,7 +262,7 @@
 
     $.formUtils.eventType = eventType;
 
-    if ((this.valAttr('suggestion-nr') || this.valAttr('postpone') || this.hasClass('hasDatepicker')) && !window.postponedValidation) {
+    if ( this.willPostponeValidation() ) {
       // This validation has to be postponed
       var _self = this,
           postponeTime = this.valAttr('postpone') || 200;

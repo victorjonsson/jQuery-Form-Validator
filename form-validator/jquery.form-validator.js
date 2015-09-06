@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.61
+ * @version 2.2.62
  */
 (function ($) {
 
@@ -227,7 +227,8 @@
     this.each(function() {
       var $elem = $(this);
       $elem.one('validation', function(evt, isValid) {
-        cb(isValid, this, evt);
+        if( typeof cb == 'function' )
+          cb(isValid, this, evt);
       });
       $elem.validateInputOnBlur(
         language,

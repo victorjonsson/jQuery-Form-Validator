@@ -37,23 +37,23 @@ $.formUtils.addValidator({
         for (i=1; i<=9; i++) {
             sum1 += parseInt(cpf.substring(i - 1, i)) * (11 - i);
         }
-        remainder1 = (sum * 10) % 11;
+        remainder1 = (sum1 * 10) % 11;
         if (remainder1 >= 10) {
             remainder1 = 0;
         }
-        if (remainder != parseInt(cpf.substring(9, 10))) {
+        if (remainder1 != parseInt(cpf.substring(9, 10))) {
             return false;
         }
 
         // check 2nd verification digit
         for (i = 1; i <= 10; i++) {
-            sum2 += parseInt(strCPF.substring(i - 1, i)) * (12 - i);
+            sum2 += parseInt(cpf.substring(i - 1, i)) * (12 - i);
         }
         remainder2 = (sum2 * 10) % 11;
         if (remainder2 >= 10) {
             remainder2 = 0;
         }
-        if (remainder2 != parseInt(strCPF.substring(10, 11))) {
+        if (remainder2 != parseInt(cpf.substring(10, 11))) {
             return false;
         }
 

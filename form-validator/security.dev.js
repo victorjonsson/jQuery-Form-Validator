@@ -41,7 +41,7 @@
         validatorFunction : function(value, $el, config, language, $form) {
             var conf = '',
                 confInputName = $el.valAttr('confirm') || ($el.attr('name') + '_confirmation'),
-                confInput = $form.find('input[name="' +confInputName+ '"]').eq(0);
+                confInput = $form.find('[name="' +confInputName+ '"]').eq(0);
 
             if (confInput) {
                 conf = confInput.val();

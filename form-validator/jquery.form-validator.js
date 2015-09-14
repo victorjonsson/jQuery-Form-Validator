@@ -1445,6 +1445,10 @@
       groupCheckedTooFewStart: 'Please choose at least ',
       groupCheckedTooManyStart: 'Please choose a maximum of ',
       groupCheckedEnd: ' item(s)',
+      multiSelectRangeStart: 'Please choose between ',
+      multiSelectTooFewStart: 'Please choose at least ',
+      multiSelectTooManyStart: 'Please choose a maximum of ',
+      multiSelectEnd: ' option(s)',
       badCreditCard: 'The credit card number is not correct',
       badCVV: 'The CVV number was not correct',
       wrongFileDim : 'Incorrect image dimensions,',
@@ -1770,6 +1774,68 @@
           $checkBoxes.filter('*[data-validation]').validateInputOnBlur(lang, conf, false, 'blur');
         };
         $checkBoxes.bind('click', _triggerOnBlur);
+      }
+
+      return isValid;
+    }
+    //   errorMessage : '', // set above in switch statement
+    //   errorMessageKey: '' // not used
+  });
+  
+  /*
+   * Validate multi selectable selects, validate qty required is checked
+   *    data-validation="multi_select"
+   *    data-validation-qty="1-2"  // min 1 max 2
+   *    data-validation-error-msg="chose min 1, max of 2 options"
+   */
+  $.formUtils.addValidator({
+    name: 'multi_select',
+    validatorFunction: function (val, $el, conf, lang, $form) {
+      // preset return var
+      var isValid = true,
+        // get name of element
+        elname = $el.attr('name'),
+        // get options and count the selected ones
+        selectedCount = $el.find(':selected').length,
+        // get el attr that specs qty required / allowed
+        qtyAllowed = $el.valAttr('qty');
+
+      if (qtyAllowed == undefined) {
+        var elementType = $el.get(0).nodeName;
+        alert('Attribute "data-validation-qty" is missing from ' + elementType + ' named ' + $el.attr('name'));
+      }
+
+      // call Utility function to check if count is above min, below max, within range etc.
+      var qtyCheckResults = $.formUtils.numericRangeCheck(selectedCount, qtyAllowed);
+
+      // results will be array, [0]=result str, [1]=qty int
+      switch (qtyCheckResults[0]) {
+        // outside allowed range
+        case "out":
+          this.errorMessage = lang.multiSelectRangeStart + qtyAllowed + lang.multiSelectEnd;
+          isValid = false;
+          break;
+        // below min qty
+        case "min":
+          this.errorMessage = lang.multiSelectTooFewStart + qtyCheckResults[1] + lang.multiSelectEnd;
+          isValid = false;
+          break;
+        // above max qty
+        case "max":
+          this.errorMessage = lang.multiSelectTooManyStart + qtyCheckResults[1] + lang.multiSelectEnd;
+          isValid = false;
+          break;
+        // ok
+        default:
+          isValid = true;
+      }
+
+      if( !isValid ) {
+        var _triggerOnBlur = function() {
+          $el.unbind('click', _triggerOnBlur);
+          $el.filter('*[data-validation]').validateInputOnBlur(lang, conf, false, 'blur');
+        };
+        $el.bind('click', _triggerOnBlur);
       }
 
       return isValid;

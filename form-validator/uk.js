@@ -1,1 +1,8 @@
-$.formUtils.addValidator({name:"ukvatnumber",validatorFunction:function(number){number=number.replace(/[^0-9]/g,"");if(number.length<9){return false}var valid=false;var VATsplit=[];VATsplit=number.split("");var checkDigits=Number(VATsplit[7]+VATsplit[8]);var firstDigit=VATsplit[0];var secondDigit=VATsplit[1];if(firstDigit==0&&secondDigit>0){return false}var total=0;for(var i=0;i<7;i++){total+=VATsplit[i]*(8-i)}var c=0;var i=0;for(var m=8;m>=2;m--){c+=VATsplit[i]*m;i++}while(total>0){total-=97}total=Math.abs(total);if(checkDigits==total){valid=true}if(!valid){total=total%97;if(total>=55){total=total-55}else{total=total+42}if(total==checkDigits){valid=true}}return valid},errorMessage:"",errorMessageKey:"badUKVatAnswer"});
+/**
+ *  jquery-form-validator %>
+ *
+ *  @website by 
+ *  @license MIT
+ *  @version 2.2.70
+ */
+$.formUtils.addValidator({name:"ukvatnumber",validatorFunction:function(a){if(a=a.replace(/[^0-9]/g,""),a.length<9)return!1;var b=!1,c=[];c=a.split("");var d=Number(c[7]+c[8]),e=c[0],f=c[1];if(0==e&&f>0)return!1;for(var g=0,h=0;7>h;h++)g+=c[h]*(8-h);for(var i=0,h=0,j=8;j>=2;j--)i+=c[h]*j,h++;for(;g>0;)g-=97;return g=Math.abs(g),d==g&&(b=!0),b||(g%=97,g>=55?g-=55:g+=42,g==d&&(b=!0)),b},errorMessage:"",errorMessageKey:"badUKVatAnswer"});

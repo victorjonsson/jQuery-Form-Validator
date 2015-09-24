@@ -1,1 +1,8 @@
-(function($){"use strict";$.setupValidation=function(conf){var $forms=$(conf.form||"form");$.each(conf.validate||conf.validation||{},function(elemRef,attr){var $elem;if(elemRef[0]=="#"){$elem=$(elemRef)}else if(elemRef[0]=="."){$elem=$forms.find(elemRef)}else{$elem=$forms.find('*[name="'+elemRef+'"]')}$elem.attr("data-validation",attr.validation);$.each(attr,function(name,val){if(name!="validation"&&val!==false){if(val===true)val="true";$elem.valAttr(name,val)}})});$.validate(conf)}})(jQuery);
+/**
+ *  jquery-form-validator %>
+ *
+ *  @website by 
+ *  @license MIT
+ *  @version 2.2.70
+ */
+!function(a){"use strict";a.setupValidation=function(b){var c=a(b.form||"form");a.each(b.validate||b.validation||{},function(b,d){var e;e="#"==b[0]?a(b):c.find("."==b[0]?b:'*[name="'+b+'"]'),e.attr("data-validation",d.validation),a.each(d,function(a,b){"validation"!=a&&b!==!1&&(b===!0&&(b="true"),e.valAttr(a,b))})}),a.validate(b)}}(jQuery);

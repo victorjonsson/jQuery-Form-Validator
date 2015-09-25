@@ -81,7 +81,11 @@ module.exports = function(grunt) {
 		watch: {
 		    files: ['form-validator/*'],
 		    tasks: ['default']
-		}
+		},
+
+    qunit: {
+      all: ['test/qunit.html']
+    }
 
 	});
 
@@ -124,8 +128,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks('grunt-contrib-qunit');
 
-	grunt.registerTask("build", ["version", "concat", "uglify"]);
+	grunt.registerTask("build", ["qunit", "version", "concat", "uglify"]);
 	grunt.registerTask("default", ["jshint", "build"]);
 
 };

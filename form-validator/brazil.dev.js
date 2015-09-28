@@ -10,8 +10,8 @@
  *  - brphone
  *
  * @website http://formvalidator.net/#brazil-validators
- * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.71
+ * @license MIT
+ * @version 2.2.8
  */
 
 $.formUtils.addValidator({
@@ -22,7 +22,7 @@ $.formUtils.addValidator({
         // http://www.devmedia.com.br/validar-cpf-com-javascript/23916
 
         // clean up the input (digits only) and set some support vars
-        var cpf = string.replace(/\D/g,""); 
+        var cpf = string.replace(/\D/g,"");
         var sum1 = 0;
         var sum2 = 0;
         var remainder1 = 0;

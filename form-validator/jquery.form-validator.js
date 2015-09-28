@@ -4,8 +4,8 @@
  * Created by Victor Jonsson <http://www.victorjonsson.se>
  *
  * @website http://formvalidator.net/
- * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.71
+ * @license MIT
+ * @version 2.2.8
  */
 (function ($) {
 
@@ -225,14 +225,17 @@
   $.fn.validate = function(cb, conf, lang) {
     var language = $.extend({}, $.formUtils.LANG, lang || {});
     this.each(function() {
-      var $elem = $(this);
+      var $elem = $(this),
+          formDefaultConfig = $elem.closest('form').get(0).validationConfig || {};
+
       $elem.one('validation', function(evt, isValid) {
         if( typeof cb == 'function' )
           cb(isValid, this, evt);
       });
+
       $elem.validateInputOnBlur(
           language,
-          $.extend({}, $elem.closest('form').get(0).validationConfig, conf || {}),
+          $.extend({}, formDefaultConfig, conf || {}),
           true
         );
     });
@@ -285,14 +288,13 @@
 
     language = $.extend({}, $.formUtils.LANG, language || {});
     _removeErrorStyle(this, conf);
-
     var $elem = this,
         $form = $elem.closest("form"),
         validationRule = $elem.attr(conf.validationRuleAttribute),
         result = $.formUtils.validateInput(
                     $elem,
                     language,
-                    conf, //$.extend({}, conf, {errorMessagePosition: 'element'}),
+                    conf,
                     $form,
                     eventType
                   );
@@ -733,7 +735,8 @@
         addValidClassOnAll: false, // whether or not to apply class="valid" even if the input wasn't validated
         decimalSeparator: '.',
         inputParentClassOnError: 'has-error', // twitter-bootstrap default class name
-        inputParentClassOnSuccess: 'has-success' // twitter-bootstrap default class name
+        inputParentClassOnSuccess: 'has-success', // twitter-bootstrap default class name
+        validateHiddenInputs: false, // whether or not hidden inputs should be validated
       }
     },
 
@@ -934,7 +937,7 @@
           // get value of this element's attribute "... if-checked"
           validateIfCheckedElementName = $elem.valAttr('if-checked');
 
-      if ($elem.attr('disabled') || !$elem.is(':visible')) {
+      if ($elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs)) {
         result.shouldChangeDisplay = false;
         return result;
       }
@@ -1030,7 +1033,7 @@
       }
 
       // Run element validation callback
-      if (typeof conf.onElementValidate == 'function' && result !== null) {
+      if (typeof conf.onElementValidate == 'function' && validationErrorMsg !== null) {
         conf.onElementValidate(result.isValid, $elem, $form, validationErrorMsg);
       }
 

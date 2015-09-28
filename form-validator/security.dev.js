@@ -13,7 +13,8 @@
  *  - cvv
  *
  * @website http://formvalidator.net/#security-validators
- * @version 2.2.71
+ * @license MIT
+ * @version 2.2.8
  */
 (function($, window) {
 

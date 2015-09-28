@@ -21,8 +21,8 @@
  *  - escape (replace <, >, &, ' and " with HTML entities)
  *
  * @website http://formvalidator.net/
- * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.71
+ * @license MIT
+ * @version 2.2.8
  */
 (function($, window) {
 
@@ -121,7 +121,7 @@
             .val(value)
             .trigger('keyup.validation'); // we need to re-validate in case it gets validated on blur
         };
-        
+
         $forms.each(function() {
           var $form = $(this);
           if( config.sanitizeAll ) {

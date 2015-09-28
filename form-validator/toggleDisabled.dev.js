@@ -7,8 +7,8 @@
  * in forms, depending on if the inputs of the form is valid or not.
  *
  * @website http://formvalidator.net/
- * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.71
+ * @license MIT
+ * @version 2.2.8
  */
 (function($, window, undefined) {
 

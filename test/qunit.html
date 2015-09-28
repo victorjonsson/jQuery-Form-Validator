@@ -13,7 +13,7 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="../form-validator/jquery.form-validator.js"></script>
-<script src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+<script src="https://code.jquery.com/qunit/qunit-1.19.0.js"></script>
 <script>
 (function($) {
 
@@ -155,6 +155,36 @@
             };
             img.src = document.location.href.substr(0, document.location.href.lastIndexOf('/')) +'/test-data/'+imgFileName;
         });
+
+        /*
+         * Test validation of hidden inputs
+         */
+         test('Validation of hidden inputs', function(assert) {
+          assert.expect(3);
+          var $input = input('--', {'':'required alphanumeric'});
+          equal(false, $input.closest('form').isValid({}, {}, false));
+          $input.hide();
+          equal(true, $input.closest('form').isValid({}, {}, false));
+          $input.validate(function(valid) {
+            console.log('in here');
+            assert.equal(false, valid);
+          }, {validateHiddenInputs: true});
+
+
+                       /*
+          $input
+            .validate(function(valid) {
+              assert.equal(false, valid, 'Should not be valid');
+
+                .
+                .validate(function(valid) {
+                  alert('Serry?');
+                  assert.equal(valid, true, 'Should be');
+                });
+
+            }); */
+
+         });
 
         /*
          * Test error message

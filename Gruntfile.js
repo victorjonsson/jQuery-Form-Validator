@@ -51,7 +51,7 @@ module.exports = function(grunt) {
 		// Banner definitions
 		meta: {
 			banner: "/**\n" +
-				" *  <%= pkg.title || pkg.name %> %>\n" +
+				" *  <%= (pkg.title || pkg.name).toUpperCase() %>\n" +
 				" *\n" +
 				" *  @website by <%= pkg.author.homepage %>\n" +
 				" *  @license <%= pkg.license %>\n" +

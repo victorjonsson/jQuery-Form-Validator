@@ -236,6 +236,14 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
+#### 2.2.8 (unreleased)
+- The plugin is now again possible to install via bower.
+- Portoguese language pack and validators
+- New module used for data-sanitiation
+- E-mail addresses now validated in accordance to rfc 6531
+- Now possible to use $.fn.validate to programmatically validate inputs
+- Hidden inputs won't get validated by default (can be overriden using option validateHiddenInputs)
+
 
 #### 2.2.43
 - Fixed min/max parse error in HTML5 module

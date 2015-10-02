@@ -10,7 +10,26 @@
  * @license MIT
  * @version 2.2.8
  */
-(function($, window, undefined) {
+
+(function (factory) {
+
+  'use strict';
+
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // Node/CommonJS
+    module.exports = factory(require('jquery'));
+  } else {
+    // Browser globals
+    factory(jQuery);
+  }
+}(function ($) {
+
+    "use strict";
+
+    var window = typeof window !== 'undefined' ? window : global;
 
   "use strict";
 
@@ -63,4 +82,4 @@
         $elem.hide();
   });
 
-})(jQuery, window);
+}));

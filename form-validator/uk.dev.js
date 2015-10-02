@@ -11,75 +11,95 @@
  * @license MIT
  * @version 2.2.8
  */
-$.formUtils.addValidator({
-    name : 'ukvatnumber',
-    validatorFunction : function(number) {
 
-        // Code Adapted from http://www.codingforums.com/showthread.php?t=211967
-        // TODO: Extra Checking for other VAT Numbers (Other countries and UK Government/Health Authorities)
+(function (factory) {
 
-    	number = number.replace(/[^0-9]/g, '');
+  'use strict';
 
-    	//Check Length
-    	if(number.length < 9) {
-    		return false;
-    	}
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // Node/CommonJS
+    module.exports = factory(require('jquery'));
+  } else {
+    // Browser globals
+    factory(jQuery);
+  }
+}(function ($) {
 
-    	var valid = false;
+  'use strict';
 
-    	var VATsplit = [];
-    	VATsplit = number.split("");
+  $.formUtils.addValidator({
+      name : 'ukvatnumber',
+      validatorFunction : function(number) {
 
-    	var checkDigits = Number(VATsplit[7] + VATsplit[8]);  // two final digits as a number
+          // Code Adapted from http://www.codingforums.com/showthread.php?t=211967
+          // TODO: Extra Checking for other VAT Numbers (Other countries and UK Government/Health Authorities)
 
-    	var firstDigit = VATsplit[0];
-    	var secondDigit = VATsplit[1];
-    	if ((firstDigit == 0) && (secondDigit >0)) {
-    		return false;
-    	}
+      	number = number.replace(/[^0-9]/g, '');
 
-    	var total = 0;
-    	for (var i=0; i<7; i++) {  // first 7 digits
-    		total += VATsplit[i]* (8-i);  // sum weighted cumulative total
-    	}
+      	//Check Length
+      	if(number.length < 9) {
+      		return false;
+      	}
 
-    	var c = 0;
-    	var i = 0;
+      	var valid = false;
 
-    	for (var m = 8; m>=2; m--) {
-    		c += VATsplit[i]* m;
-    		i++;
-    	}
+      	var VATsplit = [];
+      	VATsplit = number.split("");
 
-    	// Traditional Algorithm for VAT numbers issued before 2010
+      	var checkDigits = Number(VATsplit[7] + VATsplit[8]);  // two final digits as a number
 
-    	while (total > 0) {
-    		total -= 97; // deduct 97 repeatedly until total is negative
-    	}
-    	total = Math.abs(total);  // make positive
+      	var firstDigit = VATsplit[0];
+      	var secondDigit = VATsplit[1];
+      	if ((firstDigit == 0) && (secondDigit >0)) {
+      		return false;
+      	}
 
-    	if (checkDigits == total) {
-    		valid = true;
-    	}
+      	var total = 0;
+      	for (var i=0; i<7; i++) {  // first 7 digits
+      		total += VATsplit[i]* (8-i);  // sum weighted cumulative total
+      	}
 
-    	// If not valid try the new method (introduced November 2009) by subtracting 55 from the mod 97 check digit if we can - else add 42
+      	var c = 0;
+      	var i = 0;
 
-    	if (!valid) {
-    		total = total%97  // modulus 97
+      	for (var m = 8; m>=2; m--) {
+      		c += VATsplit[i]* m;
+      		i++;
+      	}
 
-    		if (total >= 55) {
-    			total = total - 55
-    		} else {
-    			total = total + 42
-    		}
+      	// Traditional Algorithm for VAT numbers issued before 2010
 
-    		if (total == checkDigits) {
-    			valid = true;
-    		}
-    	}
+      	while (total > 0) {
+      		total -= 97; // deduct 97 repeatedly until total is negative
+      	}
+      	total = Math.abs(total);  // make positive
 
-    	return valid;
-    },
-    errorMessage : '',
-    errorMessageKey: 'badUKVatAnswer'
-});
+      	if (checkDigits == total) {
+      		valid = true;
+      	}
+
+      	// If not valid try the new method (introduced November 2009) by subtracting 55 from the mod 97 check digit if we can - else add 42
+
+      	if (!valid) {
+      		total = total%97  // modulus 97
+
+      		if (total >= 55) {
+      			total = total - 55
+      		} else {
+      			total = total + 42
+      		}
+
+      		if (total == checkDigits) {
+      			valid = true;
+      		}
+      	}
+
+      	return valid;
+      },
+      errorMessage : '',
+      errorMessageKey: 'badUKVatAnswer'
+  });
+}));

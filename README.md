@@ -118,6 +118,18 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
 ### Module: uk
  * **ukvatnumber**
 
+### Module: sanitation
+ * **trim**
+ * **trimLeft**
+ * **trimRight**
+ * **upper** (convert all letters to upper case)
+ * **lower** (convert all letters to lower case)
+ * **capitalize** (convert the first letter in all words to upper case)
+ * **insertRight** (declare a text that should be inserted at the end of the value, attribute data-sanitize-insert-right)
+ * **insertLeft** (declare a text that should be inserted at the beginning of the value, attribute data-sanitize-insert-left)
+ * **escape** (convert < > & ' " to html entities)
+ * **numberFormat** (declare the attribute data-sanitize-number-format with any of the formats described on http://numeraljs.com/. Note that this rule requires that numeral.js is included in the page)
+
 Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://formvalidator.net/#uk-validators)
 
 
@@ -236,7 +248,7 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
-#### 2.2.8 (unreleased)
+#### 2.2.8
 - The plugin is now again possible to install via bower.
 - Portoguese language pack and validators
 - New module used for data-sanitiation

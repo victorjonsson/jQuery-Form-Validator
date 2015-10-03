@@ -125,8 +125,6 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
  * **cpf** 
 
 ### Module: sanitation
-
-### Module: sanitation
  * **trim**
  * **trimLeft**
  * **trimRight**

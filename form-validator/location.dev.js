@@ -12,7 +12,22 @@
  * @license MIT
  * @version 2.2.81
  */
-(function($) {
+
+(function (factory) {
+
+  'use strict';
+
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // Node/CommonJS
+    module.exports = factory(require('jquery'));
+  } else {
+    // Browser globals
+    factory(jQuery);
+  }
+}(function ($) {
 
     /*
      * Validate that country exists
@@ -75,4 +90,4 @@
         return $.formUtils.suggest(this, states, settings);
     };
 
-})(jQuery);
+}));

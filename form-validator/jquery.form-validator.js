@@ -3,11 +3,28 @@
  * ------------------------------------------
  * Created by Victor Jonsson <http://www.victorjonsson.se>
  *
+ * Module Boilerplate by UMD Contributors
+ *
  * @website http://formvalidator.net/
  * @license MIT
  * @version 2.2.81
  */
-(function ($) {
+
+(function (factory) {
+
+  'use strict';
+
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // Node/CommonJS
+    module.exports = factory(require('jquery'));
+  } else {
+    // Browser globals
+    factory(jQuery);
+  }
+}(function ($) {
 
   'use strict';
 
@@ -1781,4 +1798,4 @@
     //   errorMessageKey: '' // not used
   });
 
-})(jQuery);
+}));

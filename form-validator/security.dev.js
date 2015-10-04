@@ -14,7 +14,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license MIT
- * @version 2.2.81
+ * @version 2.2.82
  */
 (function($, window) {
 

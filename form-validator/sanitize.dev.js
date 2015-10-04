@@ -22,17 +22,13 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.81
+ * @version 2.2.82
  */
 (function($, window) {
 
   "use strict";
 
   var inputsThatCantBeSanitized = '[type="button"], [type="submit"], [type="radio"], [type="checkbox"], [type="reset"], [type="search"]',
-      splitStringInHalf = function(str) {
-        var firstHalf = Math.floor(str.length / 2);
-        return [str.substr(0, firstHalf), str.substr(firstHalf, str.length - firstHalf)];
-      },
       sanitizeCommands = {
         upper : function(val) {
           return val.toLocaleUpperCase();
@@ -44,18 +40,10 @@
           return $.trim(val);
         },
         trimLeft : function(val) {
-          if( val.length > 1 ) {
-            var parts = splitStringInHalf(val);
-            val = $.trim(parts[0]) + parts[1];
-          }
-          return val;
+          return val.replace(/^\s+/,"");
         },
         trimRight : function(val) {
-          if( val.length > 1 ) {
-            var parts = splitStringInHalf(val);
-            val = parts[0] + $.trim(parts[1]);
-          }
-          return val;
+          return val.replace(/\s+$/,"");
         },
         capitalize : function(val) {
           var words = val.split(' ');

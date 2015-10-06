@@ -21,7 +21,7 @@
  */
 (function($, window) {
 
-    "use strict";
+  'use strict';
 
     var SUPPORTS_PLACEHOLDER = 'placeholder' in document.createElement('INPUT'),
         SUPPORTS_DATALIST = 'options' in document.createElement('DATALIST'),
@@ -61,10 +61,12 @@
                   var max = $input.attr('max'),
                     min = $input.attr('min');
                   if( min || max ) {
-                    if( !min )
+                    if ( !min ) {
                       min = '0';
-                    if( !max )
+                    }
+                    if ( !max ) {
                       max = '9007199254740992'; // js max int
+                    }
 
                     attrs['data-validation-allowing'] = 'range['+min+';'+max+']';
                     if( min.indexOf('-') === 0 || max.indexOf('-') === 0 ) {
@@ -94,7 +96,7 @@
                   suggestions.push($(this).text());
                 });
 
-                if( suggestions.length == 0 ) {
+                if( suggestions.length === 0 ) {
                   // IE fix
                   var opts = $.trim($('#'+$input.attr('list')).text()).split('\n');
                   $.each(opts, function(i, option) {
@@ -107,8 +109,9 @@
                 $.formUtils.suggest( $input, suggestions );
               }
 
-              if( isRequired && validation.length == 0 )
+              if ( isRequired && validation.length === 0 ) {
                 validation.push('required');
+              }
 
               if( validation.length ) {
                 if( !isRequired ) {
@@ -133,13 +136,13 @@
                 this.defaultValue = this.getAttribute('placeholder');
                 $(this)
                   .bind('focus', function() {
-                    if(this.value == this.defaultValue) {
+                    if(this.value === this.defaultValue) {
                       this.value = '';
                       $(this).removeClass('showing-placeholder');
                     }
                   })
                   .bind('blur', function() {
-                    if($.trim(this.value) == '') {
+                    if($.trim(this.value) === '') {
                       this.value = this.defaultValue;
                       $(this).addClass('showing-placeholder');
                     }

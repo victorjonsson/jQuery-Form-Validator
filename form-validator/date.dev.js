@@ -45,7 +45,7 @@
             if($el.valAttr('format')) {
                 dateFormat = $el.valAttr('format');
             }
-            else if(typeof conf.dateFormat != 'undefined') {
+            else if(typeof conf.dateFormat !== 'undefined') {
                 dateFormat = conf.dateFormat;
             }
 

@@ -22,26 +22,26 @@ $.formUtils.addValidator({
         // http://www.devmedia.com.br/validar-cpf-com-javascript/23916
 
         // clean up the input (digits only) and set some support vars
-        var cpf = string.replace(/\D/g,"");
+        var cpf = string.replace(/\D/g,'');
         var sum1 = 0;
         var sum2 = 0;
         var remainder1 = 0;
         var remainder2 = 0;
 
         // skip special cases
-        if (cpf.length != 11 || cpf == "00000000000") {
+        if (cpf.length !== 11 || cpf === '00000000000') {
             return false;
         }
 
         // check 1st verification digit
-        for (i=1; i<=9; i++) {
+        for (i = 1; i<= 9; i++) {
             sum1 += parseInt(cpf.substring(i - 1, i)) * (11 - i);
         }
         remainder1 = (sum1 * 10) % 11;
         if (remainder1 >= 10) {
             remainder1 = 0;
         }
-        if (remainder1 != parseInt(cpf.substring(9, 10))) {
+        if (remainder1 !== parseInt(cpf.substring(9, 10))) {
             return false;
         }
 
@@ -53,7 +53,7 @@ $.formUtils.addValidator({
         if (remainder2 >= 10) {
             remainder2 = 0;
         }
-        if (remainder2 != parseInt(cpf.substring(10, 11))) {
+        if (remainder2 !== parseInt(cpf.substring(10, 11))) {
             return false;
         }
 

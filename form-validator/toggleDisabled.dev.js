@@ -12,11 +12,11 @@
  */
 (function($, window, undefined) {
 
-  "use strict";
+  'use strict';
 
   // Function that can enable/disable form
   var toggleFormState = function($form, state) {
-      if( state == 'disabled' ) {
+      if( state === 'disabled' ) {
         $form.find('*[type="submit"]')
           .addClass('disabled')
           .attr('disabled', 'disabled');
@@ -59,8 +59,9 @@
 
   })
   .on('validationErrorDisplay', function(evt, $input, $elem) {
-      if( $input.closest('form').hasClass('disabled-without-errors') )
+      if ( $input.closest('form').hasClass('disabled-without-errors') ) {
         $elem.hide();
+      }
   });
 
 })(jQuery, window);

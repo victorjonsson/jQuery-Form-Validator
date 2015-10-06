@@ -28,7 +28,7 @@
 
             if( $input.valAttr('use-hyphen') ) {
                 ssnParts = securityNumber.split('-');
-                if( ssnParts.length != 2 ) {
+                if( ssnParts.length !== 2 ) {
                     return false;
                 }
                 securityNumber = ssnParts.join('');
@@ -72,15 +72,16 @@
         name : 'swecounty',
         validatorFunction : function(str) {
             str = str.toLowerCase();
-            if($.inArray(str, this.counties) == -1) {
-                if(str.substr(-3).toLocaleLowerCase() != 'län') {
+            if($.inArray(str, this.counties) === -1) {
+                if(str.substr(-3).toLocaleLowerCase() !== 'län') {
                     return $.inArray(str + 's län', this.counties) > -1;
                 }
 
                 return false;
             }
-            else
+            else {
                 return true;
+            }
         },
         errorMessage: '',
         errorMessageKey: 'badCustomVal',
@@ -111,23 +112,25 @@
         name : 'swemunicipality',
         validatorFunction : function(str) {
             str = str.toLowerCase();
-            if($.inArray(str, this.municipalities) == -1) {
+            if ($.inArray(str, this.municipalities) === -1) {
 
                 // First check (dont return)
-                if(str.substr(-8) == 's kommun') {
-                    if($.inArray( str.substr(0, str.length-8), this.municipalities ) > -1)
+                if (str.substr(-8) === 's kommun') {
+                    if ($.inArray( str.substr(0, str.length-8), this.municipalities ) > -1) {
                         return true;
+                    }
                 }
 
                 // Second check
-                if(str.substr(-7) == ' kommun') {
+                if (str.substr(-7) === ' kommun') {
                     return $.inArray( str.substr(0, str.length-7), this.municipalities ) > -1;
                 }
 
                 return false;
             }
-            else
+            else {
                 return true;
+            }
         },
         errorMessage : '',
         errorMessageKey: 'badCustomVal',
@@ -172,9 +175,9 @@
             number = number.replace(/[^0-9]/g, '');
             var begin = number.substring(0, 3);
 
-            if (number.length != 10 && begin !== '467') {
+            if (number.length !== 10 && begin !== '467') {
                 return false;
-            } else if (number.length != 11 && begin === '467') {
+            } else if (number.length !== 11 && begin === '467') {
                 return false;
             }
             return (/07[0-9{1}]/).test(begin) || begin === '467';

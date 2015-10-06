@@ -79,7 +79,7 @@
 
             // Setup for cvv validation
             allowsAmex = $.inArray('amex', allowing) > -1;
-            checkOnlyAmex = allowsAmex && allowing.length == 1;
+            checkOnlyAmex = allowsAmex && allowing.length === 1;
 
             // Correct length
             if( allowing.length > 0 ) {
@@ -95,13 +95,14 @@
                     }
                 });
 
-                if( !hasValidLength )
+                if ( !hasValidLength ) {
                     return false;
+                }
             }
 
             // only numbers
-            if( value.replace(new RegExp('[0-9]', 'g'), '') !== '' ) {
-                return false
+            if ( value.replace(new RegExp('[0-9]', 'g'), '') !== '' ) {
+                return false;
             }
 
             // http://en.wikipedia.org/wiki/Luhn_algorithm
@@ -136,11 +137,11 @@
             if( val.replace(/[0-9]/g, '') === '' ) {
                 val = val + '';
                 if( checkOnlyAmex ) {
-                    return val.length == 4;
+                    return val.length === 4;
                 } else if( allowsAmex ) {
-                    return val.length == 3 || val.length == 4;
+                    return val.length === 3 || val.length === 4;
                 } else {
-                    return val.length == 3;
+                    return val.length === 3;
                 }
             }
             return false;
@@ -156,8 +157,9 @@
         name : 'strength',
         validatorFunction : function(val, $el, conf) {
             var requiredStrength = $el.valAttr('strength') || 2;
-            if(requiredStrength && requiredStrength > 3)
+            if (requiredStrength && requiredStrength > 3) {
                 requiredStrength = 3;
+            }
 
             return $.formUtils.validators.validate_strength.calculatePasswordStrength(val) >= requiredStrength;
         },
@@ -179,12 +181,12 @@
             var score = 0;
 
             var checkRepetition = function (pLen, str) {
-                var res = "";
+                var res = '';
                 for (var i = 0; i < str.length; i++) {
                     var repeated = true;
 
                     for (var j = 0; j < pLen && (j + i + pLen) < str.length; j++) {
-                        repeated = repeated && (str.charAt(j + i) == str.charAt(j + i + pLen));
+                        repeated = repeated && (str.charAt(j + i) === str.charAt(j + i + pLen));
                     }
                     if (j < pLen) {
                         repeated = false;
@@ -280,7 +282,7 @@
 
             $el.bind('keyup', function() {
                 var val = $(this).val(),
-                    $parent = typeof config.parent == 'undefined' ? $(this).parent() : $(config.parent),
+                    $parent = typeof config.parent === 'undefined' ? $(this).parent() : $(config.parent),
                     $displayContainer = $parent.find('.strength-meter'),
                     strength = $.formUtils.validators.validate_strength.calculatePasswordStrength(val),
                     css = {
@@ -295,7 +297,7 @@
                     },
                     text = config.bad;
 
-                if($displayContainer.length == 0) {
+                if($displayContainer.length === 0) {
                     $displayContainer = $('<span></span>');
                     $displayContainer
                         .addClass('strength-meter')
@@ -308,10 +310,10 @@
                     $displayContainer.show();
                 }
 
-                if(strength == 1) {
+                if(strength === 1) {
                     text = config.weak;
                 }
-                else if(strength == 2) {
+                else if(strength === 2) {
                     css.background = 'lightyellow';
                     css.borderColor = 'yellow';
                     css.color = 'goldenrod';
@@ -339,15 +341,16 @@
               }
               else {
                 $element.valAttr('backend-invalid', 'true');
-                if(response.message)
+                if (response.message) {
                   $element.attr(conf.validationErrorMsgAttribute, response.message);
+                }
               }
 
               if( !$element.valAttr('has-keyup-event') ) {
                 $element
                   .valAttr('has-keyup-event', '1')
                   .bind('keyup change', function(evt) {
-                    if( evt.keyCode != 9 && evt.keyCode != 16 ) {
+                    if( evt.keyCode !== 9 && evt.keyCode !== 16 ) {
                       $(this)
                         .valAttr('backend-valid', false)
                         .valAttr('backend-invalid', false);
@@ -358,9 +361,10 @@
               callback();
             };
 
-        if( !reqParams )
+        if ( !reqParams ) {
             reqParams = {};
-        if( typeof reqParams == 'string' ) {
+        }
+        if ( typeof reqParams === 'string' ) {
             reqParams = $.parseJSON(reqParams);
         }
         reqParams[$element.valAttr('param-name') || $element.attr('name')] = val;
@@ -371,8 +375,8 @@
             cache : false,
             data : reqParams,
             dataType : 'json',
-            error : function(error, err) {
-              handleResponse({valid: false, message:'Connection failed with status: '+error.statusText}, callback);
+            error : function(error) {
+              handleResponse({valid: false, message:'Connection failed with status: ' + error.statusText}, callback);
               return false;
             },
             success : function(response) {
@@ -410,14 +414,17 @@
                 serverURL = conf.backendUrl;
             }
 
-            if(backendValid)
+            if (backendValid) {
                 return true;
-            else if(backendInvalid)
+            }
+            else if (backendInvalid) {
                 return false;
-            else if($.formUtils.eventType == 'keyup')
+            }
+            else if($.formUtils.eventType === 'keyup') {
                 return null;
+            }
 
-            if($.formUtils.isValidatingEntireForm) {
+            if ($.formUtils.isValidatingEntireForm) {
 
                 $form
                     .bind('submit', disableFormSubmit)

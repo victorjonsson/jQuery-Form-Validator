@@ -16,17 +16,19 @@
 
     'use strict';
 
-    var SUPPORTS_FILE_READER = typeof window.FileReader != 'undefined',
+    var SUPPORTS_FILE_READER = typeof window.FileReader !== 'undefined',
 
       /**
       * @return {Array}
       */
       _getTypes = function($input) {
         var allowedTypes = $.split( ($input.valAttr('allowing') || '').toLowerCase() );
-        if( $.inArray('jpg', allowedTypes) > -1 && $.inArray('jpeg', allowedTypes) == -1)
+        if ($.inArray('jpg', allowedTypes) > -1 && $.inArray('jpeg', allowedTypes) === -1) {
           allowedTypes.push('jpeg');
-        else if( $.inArray('jpeg', allowedTypes) > -1 && $.inArray('jpg', allowedTypes) == -1)
+        }
+        else if ($.inArray('jpeg', allowedTypes) > -1 && $.inArray('jpg', allowedTypes) === -1) {
           allowedTypes.push('jpg');
+        }
         return allowedTypes;
       },
 
@@ -133,10 +135,10 @@
                 allowedTypes = _getTypes($input);
 
             $.each($input.get(0).files || [value], function(i, file) {
-                var val = typeof file == 'string' ? file : (file.value || file.fileName || file.name),
+                var val = typeof file === 'string' ? file : (file.value || file.fileName || file.name),
                     ext = val.substr( val.lastIndexOf('.')+1 );
 
-                if( $.inArray(ext.toLowerCase(), allowedTypes) == -1 ) {
+                if( $.inArray(ext.toLowerCase(), allowedTypes) === -1 ) {
                     valid = false;
                     _generateErrorMsg(_this, 'wrongFileType', allowedTypes.join(', '), language);
                     return false;
@@ -187,13 +189,13 @@
      */
     $.formUtils.convertSizeNameToBytes = function(sizeName) {
         sizeName = sizeName.toUpperCase();
-        if( sizeName.substr(sizeName.length-1, 1) == 'M' ) {
+        if( sizeName.substr(sizeName.length-1, 1) === 'M' ) {
             return parseInt(sizeName.substr(0, sizeName.length-1), 10) * 1024 * 1024;
-        } else if( sizeName.substr(sizeName.length-2, 2) == 'MB' ) {
+        } else if( sizeName.substr(sizeName.length-2, 2) === 'MB' ) {
             return parseInt(sizeName.substr(0, sizeName.length-2), 10) * 1024 * 1024;
-        } else if( sizeName.substr(sizeName.length-2, 2) == 'KB' ) {
+        } else if( sizeName.substr(sizeName.length-2, 2) === 'KB' ) {
             return parseInt(sizeName.substr(0, sizeName.length-2), 10) * 1024;
-        } else if( sizeName.substr(sizeName.length-1, 1) == 'B' ) {
+        } else if( sizeName.substr(sizeName.length-1, 1) === 'B' ) {
             return parseInt(sizeName.substr(0, sizeName.length-1), 10);
         } else {
             return parseInt(sizeName, 10);
@@ -223,7 +225,7 @@
           maxDeclaration = false,
           declarationParts = dimDeclaration.split('-');
 
-      if( declarationParts.length == 1 ) {
+      if( declarationParts.length === 1 ) {
         if( declarationParts[0].indexOf('min') === 0 ) {
           minDeclaration = declarationParts[0];
         } else {
@@ -266,8 +268,6 @@
      */
     $.formUtils.checkImageRatio = function(img, ratioDeclaration, language) {
       var ratio = img.width / img.height,
-          minRatio = false,
-          maxRatio = false,
           calculateRatio = function(declaration) {
             var dims = declaration.replace('max', '').replace('min', '').split(':');
             return dims[0] / dims[1];
@@ -277,15 +277,15 @@
             return val >= min && val <= max;
           };
 
-        if( declarationParts.length == 1 ) {
-          if( ratio !== calculateRatio(declarationParts[0]) )
-            return language.imageRatioNotAccepted;
-        }
-        else if( declarationParts.length == 2 && !isWithin(ratio, calculateRatio(declarationParts[0]), calculateRatio(declarationParts[1])) ) {
+      if ( declarationParts.length === 1 ) {
+        if ( ratio !== calculateRatio(declarationParts[0]) ) {
           return language.imageRatioNotAccepted;
         }
-
-        return false;
+      }
+      else if( declarationParts.length === 2 && !isWithin(ratio, calculateRatio(declarationParts[0]), calculateRatio(declarationParts[1])) ) {
+        return language.imageRatioNotAccepted;
+      }
+      return false;
     };
 
     /**
@@ -294,19 +294,19 @@
     $.formUtils.addValidator({
       name : 'dimension',
       validatorFunction : function(val, $input, conf, language, $form) {
-
+        var hasCorrectDim = false;
         if( SUPPORTS_FILE_READER ) {
-          var hasCorrectDim = true,
-            file = $input.get(0).files || [];
+          var file = $input.get(0).files || [];
+          hasCorrectDim = true;
 
-          if( $input.attr('data-validation').indexOf('mime') == -1) {
+          if( $input.attr('data-validation').indexOf('mime') === -1) {
             alert('You should validate file type being jpg, gif or png on input '+$input[0].name);
             return false;
           }
           else if( file.length > 1 ) {
             alert('Validating image dimensions does not support inputs allowing multiple files');
             return false;
-          } else if( file.length == 0) {
+          } else if( file.length === 0) {
             return true;
           }
 
@@ -314,10 +314,10 @@
             return true;
           }
           else if( $input.valAttr('has-not-valid-dim') ) {
-            this.errorMessage = language['wrongFileDim'] + ' '+$input.valAttr('has-not-valid-dim');
+            this.errorMessage = language.wrongFileDim + ' ' + $input.valAttr('has-not-valid-dim');
             return false;
           }
-          else if($.formUtils.eventType == 'keyup') {
+          else if($.formUtils.eventType === 'keyup') {
             return null;
           }
 
@@ -334,11 +334,13 @@
           _loadImage(file[0], function(img) {
             var error = false;
 
-            if( $input.valAttr('dimension') )
+            if ( $input.valAttr('dimension') ) {
               error = $.formUtils.checkImageDimension(img, $input.valAttr('dimension'), language);
+            }
 
-            if( !error && $input.valAttr('ratio') )
+            if ( !error && $input.valAttr('ratio') ) {
               error = $.formUtils.checkImageRatio(img, $input.valAttr('ratio'), language);
+            }
 
             // Set validation result flag on input
             if( error ) {
@@ -353,7 +355,7 @@
               $input
                 .valAttr('has-keyup-event', '1')
                 .bind('keyup change', function(evt) {
-                  if( evt.keyCode != 9 && evt.keyCode != 16 ) {
+                  if( evt.keyCode !== 9 && evt.keyCode !== 16 ) {
                     $(this)
                       .valAttr('has-not-valid-dim', false)
                       .valAttr('has-valid-dim', false);

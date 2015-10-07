@@ -26,7 +26,7 @@
  */
 (function($, window) {
 
-  "use strict";
+  'use strict';
 
   var inputsThatCantBeSanitized = '[type="button"], [type="submit"], [type="radio"], [type="checkbox"], [type="reset"], [type="search"]',
       sanitizeCommands = {
@@ -40,10 +40,10 @@
           return $.trim(val);
         },
         trimLeft : function(val) {
-          return val.replace(/^\s+/,"");
+          return val.replace(/^\s+/,'');
         },
         trimRight : function(val) {
-          return val.replace(/\s+$/,"");
+          return val.replace(/\s+$/,'');
         },
         capitalize : function(val) {
           var words = val.split(' ');
@@ -54,11 +54,10 @@
         },
         insert : function(val, $input, pos) {
           var extra = ($input.attr('data-sanitize-insert-'+pos) || '').replace(/\[SPACE\]/g, ' ');
-          if( (pos == 'left' && val.indexOf(extra) == 0) ||
-              (pos == 'right' && val.substring(val.length - extra.length) == extra)) {
+          if ( (pos === 'left' && val.indexOf(extra) === 0) || (pos === 'right' && val.substring(val.length - extra.length) === extra)) {
             return val;
           }
-          return (pos == 'left' ? extra:'') + val + (pos == 'right' ? extra : '');
+          return (pos === 'left' ? extra:'') + val + (pos === 'right' ? extra : '');
         },
         insertRight : function(val, $input) {
           return this.insert(val, $input, 'right');
@@ -66,10 +65,11 @@
         insertLeft : function(val, $input) {
           return this.insert(val, $input, 'left');
         },
-        numberFormat : function(val, $input, config) {
-          if( 'numeral' in window ) {
+        numberFormat : function(val, $input) {
+          if ( 'numeral' in window ) {
             val = numeral(val).format( $input.attr('data-sanitize-number-format') );
-          } else {
+          }
+          else {
             throw new Error('Using sanitation function "numberFormat" requires that you include numeraljs (http://http://numeraljs.com/)');
           }
           return val;
@@ -90,20 +90,23 @@
       },
       setupSanitation = function(evt, $forms, config) {
 
-        if( !$forms ) {
+        if ( !$forms ) {
           $forms = $('form');
         }
-        if( !$forms.each )
+        if ( !$forms.each ) {
           $forms = $($forms);
+        }
 
         var execSanitationCommands = function() {
           var $input = $(this),
             value = $input.val();
           $.split($input.attr('data-sanitize'), function(command) {
-            if( command in sanitizeCommands )
+            if ( command in sanitizeCommands ) {
               value = sanitizeCommands[command](value, $input, config);
-            else
+            }
+            else {
               throw new Error('Use of unknown sanitize command "'+command+'"');
+            }
           });
           $input
             .val(value)

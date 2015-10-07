@@ -60,17 +60,18 @@
     _setInlineErrorMessage = function ($input, mess, conf, $messageContainer) {
       var custom = document.getElementById($input.attr('name') + '_err_msg'),
           setErrorMessage = function($elem) {
-            $window.trigger('validationErrorDisplay', [$input, $elem])
+            $window.trigger('validationErrorDisplay', [$input, $elem]);
             $elem.html(mess);
-          };
+          },
+          $mess = {};
 
       if (custom) {
         setErrorMessage($(custom));
       }
-      else if (typeof $messageContainer == 'object') {
+      else if (typeof $messageContainer === 'object') {
         var $found = false;
         $messageContainer.find('.' + conf.errorMessageClass).each(function () {
-          if (this.inputReferer == $input[0]) {
+          if (this.inputReferer === $input[0]) {
             $found = $(this);
             return false;
           }
@@ -82,18 +83,17 @@
             setErrorMessage($found);
           }
         } else {
-          var $mess = $('<div class="' + conf.errorMessageClass + '"></div>');
+          $mess = $('<div class="' + conf.errorMessageClass + '"></div>');
           setErrorMessage($mess);
           $mess[0].inputReferer = $input[0];
           $messageContainer.prepend($mess);
         }
       }
       else {
+        var $parent = _getInputParentContainer($input);
+        $mess = $parent.find('.' + conf.errorMessageClass + '.help-block');
 
-        var $parent = _getInputParentContainer($input),
-            $mess = $parent.find('.' + conf.errorMessageClass + '.help-block');
-
-        if ($mess.length == 0) {
+        if ($mess.length === 0) {
           $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
           $mess.appendTo($parent);
         }
@@ -150,11 +150,11 @@
     this.find('*[data-validation-event]')
       .each(function () {
         var $el = $(this),
-            etype = $el.valAttr("event");
+            etype = $el.valAttr('event');
         if (etype) {
           $el
-            .unbind(etype + ".validation")
-            .bind(etype + ".validation", function () {
+            .unbind(etype + '.validation')
+            .bind(etype + '.validation', function () {
               $(this).validateInputOnBlur(language, settings, true, etype);
             });
         }
@@ -183,7 +183,7 @@
     // Add help text listeners
     this.find('textarea,input').each(function () {
       var $elem = $(this),
-          className = 'jquery_form_help_' + ($elem.attr('name') || '').replace(/(:|\.|\[|\])/g, ""),
+          className = 'jquery_form_help_' + ($elem.attr('name') || '').replace(/(:|\.|\[|\])/g, ''),
           help = $elem.attr(attrName);
 
       if (help) {
@@ -192,7 +192,7 @@
           .unbind('focus.help')
           .bind('focus.help', function () {
             var $help = $elem.parent().find('.' + className);
-            if ($help.length == 0) {
+            if ($help.length === 0) {
               $help = $('<span />')
                         .addClass(className)
                         .addClass('help')
@@ -229,8 +229,9 @@
           formDefaultConfig = $elem.closest('form').get(0).validationConfig || {};
 
       $elem.one('validation', function(evt, isValid) {
-        if( typeof cb == 'function' )
+        if ( typeof cb === 'function' ) {
           cb(isValid, this, evt);
+        }
       });
 
       $elem.validateInputOnBlur(
@@ -248,8 +249,8 @@
   $.fn.willPostponeValidation = function() {
     return (this.valAttr('suggestion-nr') ||
             this.valAttr('postpone') ||
-            this.hasClass('hasDatepicker'))
-          && !window.postponedValidation;
+            this.hasClass('hasDatepicker')) &&
+            !window.postponedValidation;
   };
 
   /**
@@ -289,7 +290,7 @@
     language = $.extend({}, $.formUtils.LANG, language || {});
     _removeErrorStyle(this, conf);
     var $elem = this,
-        $form = $elem.closest("form"),
+        $form = $elem.closest('form'),
         validationRule = $elem.attr(conf.validationRuleAttribute),
         result = $.formUtils.validateInput(
                     $elem,
@@ -338,7 +339,7 @@
     } else if (val === false || val === null) {
       return this.removeAttr('data-validation-' + name);
     } else {
-      if (name.length > 0) name = '-' + name;
+      name = ((name.length > 0) ? '-' + name : '');
       return this.attr('data-validation' + name, val);
     }
   };
@@ -367,7 +368,7 @@
     if ($.formUtils.errorDisplayPreventedWhenHalted) {
       // isValid() was called programmatically with argument displayError set
       // to false when the validation was halted by any of the validators
-      delete $.formUtils.errorDisplayPreventedWhenHalted
+      delete $.formUtils.errorDisplayPreventedWhenHalted;
       displayError = false;
     }
 
@@ -386,8 +387,9 @@
           }
           errorInputs.push($elem);
           $elem.attr('current-error', mess);
-          if (displayError)
+          if (displayError) {
             _applyErrorStyle($elem, conf);
+          }
         },
 
         /** Holds inputs (of type checkox or radio) already validated, to prevent recheck of mulitple checkboxes & radios */
@@ -410,7 +412,7 @@
        * @return {Boolean}
        */
         ignoreInput = function (name, type) {
-        if (type === 'submit' || type === 'button' || type == 'reset') {
+        if (type === 'submit' || type === 'button' || type === 'reset') {
           return true;
         }
         return $.inArray(name, conf.ignore || []) > -1;
@@ -426,13 +428,14 @@
     $form.find('input,textarea,select').filter(':not([type="submit"],[type="button"])').each(function () {
       var $elem = $(this),
         elementType = $elem.attr('type'),
-        isCheckboxOrRadioBtn = elementType == 'radio' || elementType == 'checkbox',
+        isCheckboxOrRadioBtn = elementType === 'radio' || elementType === 'checkbox',
         elementName = $elem.attr('name');
 
       if (!ignoreInput(elementName, elementType) && (!isCheckboxOrRadioBtn || $.inArray(elementName, checkedInputs) < 0)) {
 
-        if (isCheckboxOrRadioBtn)
+        if (isCheckboxOrRadioBtn) {
           checkedInputs.push(elementName);
+        }
 
         var result = $.formUtils.validateInput(
                               $elem,
@@ -458,7 +461,7 @@
     });
 
     // Run validation callback
-    if (typeof conf.onValidate == 'function') {
+    if (typeof conf.onValidate === 'function') {
       var errors = conf.onValidate($form);
       if ($.isArray(errors)) {
         $.each(errors, function (i, err) {
@@ -515,11 +518,11 @@
    * @param conf
    */
   $.fn.validateForm = function (language, conf) {
-    if (window.console && typeof window.console.warn == 'function') {
+    if (window.console && typeof window.console.warn === 'function') {
       window.console.warn('Use of deprecated function $.validateForm, use $.isValid instead');
     }
     return this.isValid(language, conf, true);
-  }
+  };
 
   /**
    * Plugin for displaying input length restriction
@@ -558,16 +561,18 @@
    * @returns {Array|void}
    */
   $.split = function (val, callback) {
-    if (typeof callback != 'function') {
+    if (typeof callback !== 'function') {
       // return array
-      if (!val)
+      if (!val) {
         return [];
+      }
       var values = [];
       $.each(val.split(callback ? callback : /[,|\-\s]\s*/g),
         function (i, str) {
           str = $.trim(str);
-          if (str.length)
+          if (str.length) {
             values.push(str);
+          }
         }
       );
       return values;
@@ -576,8 +581,9 @@
       $.each(val.split(/[,|\-\s]\s*/g),
         function (i, str) {
           str = $.trim(str);
-          if (str.length)
+          if (str.length) {
             return callback(str, i);
+          }
         }
       );
     }
@@ -609,7 +615,7 @@
 
     conf = $.extend(defaultConf, conf || {});
 
-    if( conf.lang && conf.lang != 'en' ) {
+    if( conf.lang && conf.lang !== 'en' ) {
       var langModule = 'lang/'+conf.lang+'.js';
       conf.modules += conf.modules.length ? ','+langModule : langModule;
     }
@@ -660,12 +666,12 @@
           // Validation got halted by one of the validators
           return false;
         } else {
-          if (valid && typeof conf.onSuccess == 'function') {
+          if (valid && typeof conf.onSuccess === 'function') {
             var callbackResponse = conf.onSuccess($form);
             if (callbackResponse === false) {
               return false;
             }
-          } else if (!valid && typeof conf.onError == 'function') {
+          } else if (!valid && typeof conf.onError === 'function') {
             conf.onError($form);
             return false;
           } else {
@@ -690,19 +696,19 @@
         $form.validateOnBlur(conf.language, conf);
         $form.bind('html5ValidationAttrsFound', function () {
           $form.validateOnBlur(conf.language, conf);
-        })
+        });
       }
       if (conf.validateOnEvent) {
         $form.validateOnEvent(conf.language, conf);
       }
     });
 
-    if (conf.modules != '') {
+    if (conf.modules !== '') {
       $.formUtils.loadModules(conf.modules, false, function() {
-        if (typeof conf.onModulesLoaded == 'function') {
+        if (typeof conf.onModulesLoaded === 'function') {
           conf.onModulesLoaded();
         }
-        $window.trigger('validatorsLoaded', [typeof conf.form == 'string' ? $(conf.form) : conf.form, conf]);
+        $window.trigger('validatorsLoaded', [typeof conf.form === 'string' ? $(conf.form) : conf.form, conf]);
       });
     }
   };
@@ -737,7 +743,7 @@
         inputParentClassOnError: 'has-error', // twitter-bootstrap default class name
         inputParentClassOnSuccess: 'has-success', // twitter-bootstrap default class name
         validateHiddenInputs: false, // whether or not hidden inputs should be validated
-      }
+      };
     },
 
     /**
@@ -770,8 +776,9 @@
     addValidator: function (validator) {
       // prefix with "validate_" for backward compatibility reasons
       var name = validator.name.indexOf('validate_') === 0 ? validator.name : 'validate_' + validator.name;
-      if (validator.validateOnKeyUp === undefined)
+      if (validator.validateOnKeyUp === undefined) {
         validator.validateOnKeyUp = true;
+      }
       this.validators[name] = validator;
     },
 
@@ -803,8 +810,9 @@
      */
     loadModules: function (modules, path, fireEvent) {
 
-      if (fireEvent === undefined)
+      if (fireEvent === undefined) {
         fireEvent = true;
+      }
 
       if ($.formUtils.isLoadingModules) {
         setTimeout(function () {
@@ -820,10 +828,10 @@
             numModules = moduleList.length,
             moduleLoadedCallback = function () {
               numModules--;
-              if (numModules == 0) {
+              if (numModules === 0) {
                 $.formUtils.isLoadingModules = false;
                 if (fireEvent && hasLoadedAnyModule) {
-                  if( typeof fireEvent == 'function' ) {
+                  if( typeof fireEvent === 'function' ) {
                     fireEvent();
                   } else {
                     $window.trigger('validatorsLoaded');
@@ -842,11 +850,11 @@
 
           $.each(moduleList, function (i, modName) {
             modName = $.trim(modName);
-            if (modName.length == 0) {
+            if (modName.length === 0) {
               moduleLoadedCallback();
             }
             else {
-              var scriptUrl = path + modName + (modName.slice(-3) == '.js' ? '' : '.js'),
+              var scriptUrl = path + modName + (modName.slice(-3) === '.js' ? '' : '.js'),
                 script = document.createElement('SCRIPT');
 
               if (scriptUrl in $.formUtils.loadedModules) {
@@ -862,7 +870,7 @@
                 // Load the script
                 script.type = 'text/javascript';
                 script.onload = moduleLoadedCallback;
-                script.src = scriptUrl + ( scriptUrl.slice(-7) == '.dev.js' ? cacheSuffix : '' );
+                script.src = scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' );
                 script.onerror = function() {
                   if( 'console' in window && window.console.log ) {
                     window.console.log('Unable to load form validation module '+scriptUrl);
@@ -870,7 +878,7 @@
                 };
                 script.onreadystatechange = function () {
                   // IE 7 fix
-                  if (this.readyState == 'complete' || this.readyState == 'loaded') {
+                  if (this.readyState === 'complete' || this.readyState === 'loaded') {
                     moduleLoadedCallback();
                     // Handle memory leak in IE
                     this.onload = null;
@@ -890,8 +898,9 @@
           var foundPath = false;
           $('script[src*="form-validator"]').each(function () {
             foundPath = this.src.substr(0, this.src.lastIndexOf('/')) + '/';
-            if (foundPath == '/')
+            if (foundPath === '/') {
               foundPath = '';
+            }
             return false;
           });
 
@@ -962,7 +971,7 @@
       // validation checkpoint
       // if empty AND optional attribute is present
       // OR depending on a checkbox being checked AND checkbox is checked, return true
-      var isInvalidNumberInput = !value && $elem[0].type == 'number';
+      var isInvalidNumberInput = !value && $elem[0].type === 'number';
       if ((!value && optional === 'true' && !isInvalidNumberInput) || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
         result.shouldChangeDisplay = conf.addValidClassOnAll;
         return result;
@@ -985,16 +994,16 @@
 
         var validator = $.formUtils.validators[rule];
 
-        if (validator && typeof validator['validatorFunction'] == 'function') {
+        if (validator && typeof validator.validatorFunction === 'function') {
 
           // special change of element for checkbox_group rule
-          if (rule == 'validate_checkbox_group') {
+          if (rule === 'validate_checkbox_group') {
             // set element to first in group, so error msg attr doesn't need to be set on all elements in group
-            $elem = $form.find("[name='" + $elem.attr('name') + "']:eq(0)");
+            $elem = $form.find('[name="' + $elem.attr('name') + '"]:eq(0)');
           }
 
           var isValid = null;
-          if (eventContext != 'keyup' || validator.validateOnKeyUp) {
+          if (eventContext !== 'keyup' || validator.validateOnKeyUp) {
             isValid = validator.validatorFunction(value, $elem, conf, language, $form);
           }
 
@@ -1006,8 +1015,9 @@
                 validationErrorMsg = $elem.attr(conf.validationErrorMsgAttribute);
                 if (!validationErrorMsg) {
                   validationErrorMsg = language[validator.errorMessageKey];
-                  if (!validationErrorMsg)
+                  if (!validationErrorMsg) {
                     validationErrorMsg = validator.errorMessage;
+                  }
                 }
               }
             }
@@ -1020,7 +1030,7 @@
 
       }, ' ');
 
-      if (typeof validationErrorMsg == 'string') {
+      if (typeof validationErrorMsg === 'string') {
         $elem.trigger('validation', false);
         result.errorMsg = validationErrorMsg;
         result.isValid = false;
@@ -1033,7 +1043,7 @@
       }
 
       // Run element validation callback
-      if (typeof conf.onElementValidate == 'function' && validationErrorMsg !== null) {
+      if (typeof conf.onElementValidate === 'function' && validationErrorMsg !== null) {
         conf.onElementValidate(result.isValid, $elem, $form, validationErrorMsg);
       }
 
@@ -1078,9 +1088,9 @@
       day = findDateUnit('d', formatParts, matches);
       year = findDateUnit('y', formatParts, matches);
 
-      if ((month === 2 && day > 28 && (year % 4 !== 0 || year % 100 === 0 && year % 400 !== 0))
-        || (month === 2 && day > 29 && (year % 4 === 0 || year % 100 !== 0 && year % 400 === 0))
-        || month > 12 || month === 0) {
+      if ((month === 2 && day > 28 && (year % 4 !== 0 || year % 100 === 0 && year % 400 !== 0)) ||
+      (month === 2 && day > 29 && (year % 4 === 0 || year % 100 !== 0 && year % 400 === 0)) ||
+      month > 12 || month === 0) {
         return false;
       }
       if ((this.isShortMonth(month) && day > 30) || (!this.isShortMonth(month) && day > 31) || day === 0) {
@@ -1136,8 +1146,9 @@
             $inputElement.scrollTop(currScrollTopPos);
           }
           charsLeft = maxChars - numChars;
-          if (charsLeft < 0)
+          if (charsLeft < 0) {
             charsLeft = 0;
+          }
 
           // set counter text
           $maxLengthElement.text(charsLeft);
@@ -1151,7 +1162,7 @@
         });
 
       // count chars on pageload, if there are prefilled input-values
-      $(document).bind("ready", countCharacters);
+      $(document).bind('ready', countCharacters);
     },
 
     /**
@@ -1167,24 +1178,24 @@
           // min or max
           minmax = parseInt(rangeAllowed.substr(3), 10);
 
-      if( range.length == 1 && rangeAllowed.indexOf('min') == -1 && rangeAllowed.indexOf('max') == -1 ) {
+      if( range.length === 1 && rangeAllowed.indexOf('min') === -1 && rangeAllowed.indexOf('max') === -1 ) {
         range = [rangeAllowed, rangeAllowed]; // only a number, checking agains an exact number of characters
       }
 
       // range ?
-      if (range.length == 2 && (value < parseInt(range[0], 10) || value > parseInt(range[1], 10) )) {
-        return [ "out", range[0], range[1] ];
+      if (range.length === 2 && (value < parseInt(range[0], 10) || value > parseInt(range[1], 10) )) {
+        return [ 'out', range[0], range[1] ];
       } // value is out of range
       else if (rangeAllowed.indexOf('min') === 0 && (value < minmax )) // min
       {
-        return ["min", minmax];
+        return ['min', minmax];
       } // value is below min
       else if (rangeAllowed.indexOf('max') === 0 && (value > minmax )) // max
       {
-        return ["max", minmax];
+        return ['max', minmax];
       } // value is above max
       // since no other returns executed, value is in allowed range
-      return [ "ok" ];
+      return [ 'ok' ];
     },
 
 
@@ -1226,10 +1237,11 @@
           });
         };
 
-      if (settings)
+      if (settings) {
         $.extend(conf, settings);
+      }
 
-      conf.css['position'] = 'absolute';
+      conf.css.position = 'absolute';
       conf.css['z-index'] = 9999;
       $elem.attr('autocomplete', 'off');
 
@@ -1267,7 +1279,7 @@
             foundSuggestions = [],
             val = $.trim($input.val()).toLocaleLowerCase();
 
-          if (val == $.formUtils._previousTypedVal) {
+          if (val === $.formUtils._previousTypedVal) {
             return;
           }
           else {
@@ -1281,11 +1293,11 @@
           $suggestionContainer.scrollTop(0);
 
           // Find the right suggestions
-          if (val != '') {
+          if (val !== '') {
             var findPartial = val.length > 2;
             $.each($input.data('suggestions'), function (i, suggestion) {
               var lowerCaseVal = suggestion.toLocaleLowerCase();
-              if (lowerCaseVal == val) {
+              if (lowerCaseVal === val) {
                 foundSuggestions.push('<strong>' + suggestion + '</strong>');
                 hasTypedSuggestion = true;
                 return false;
@@ -1296,12 +1308,12 @@
           }
 
           // Hide suggestion container
-          if (hasTypedSuggestion || (foundSuggestions.length == 0 && $suggestionContainer.length > 0)) {
+          if (hasTypedSuggestion || (foundSuggestions.length === 0 && $suggestionContainer.length > 0)) {
             $suggestionContainer.hide();
           }
 
           // Create suggestion container if not already exists
-          else if (foundSuggestions.length > 0 && $suggestionContainer.length == 0) {
+          else if (foundSuggestions.length > 0 && $suggestionContainer.length === 0) {
             $suggestionContainer = $('<div></div>').css(conf.css).appendTo('body');
             $elem.addClass('suggestions-' + suggestionId);
             $suggestionContainer
@@ -1316,7 +1328,7 @@
           }
 
           // add suggestions
-          if (foundSuggestions.length > 0 && val.length != foundSuggestions[0].length) {
+          if (foundSuggestions.length > 0 && val.length !== foundSuggestions[0].length) {
 
             // put container in place every time, just in case
             setSuggsetionPosition($suggestionContainer, $input);
@@ -1349,7 +1361,7 @@
             $suggestionContainer,
             $input = $(this);
 
-          if (code == 13 && $.formUtils._selectedSuggestion !== null) {
+          if (code === 13 && $.formUtils._selectedSuggestion !== null) {
             suggestionId = $input.valAttr('suggestion-nr');
             $suggestionContainer = $('.jquery-form-suggestion-' + suggestionId);
             if ($suggestionContainer.length > 0) {
@@ -1364,22 +1376,27 @@
             $suggestionContainer = $('.jquery-form-suggestion-' + suggestionId);
             var $suggestions = $suggestionContainer.children();
             if ($suggestions.length > 0 && $.inArray(code, [38, 40]) > -1) {
-              if (code == 38) { // key up
-                if ($.formUtils._selectedSuggestion === null)
+              if (code === 38) { // key up
+                if ($.formUtils._selectedSuggestion === null) {
                   $.formUtils._selectedSuggestion = $suggestions.length - 1;
-                else
+                }
+                else{
                   $.formUtils._selectedSuggestion--;
-                if ($.formUtils._selectedSuggestion < 0)
+                }
+                if ($.formUtils._selectedSuggestion < 0) {
                   $.formUtils._selectedSuggestion = $suggestions.length - 1;
+                }
               }
-              else if (code == 40) { // key down
-                if ($.formUtils._selectedSuggestion === null)
+              else if (code === 40) { // key down
+                if ($.formUtils._selectedSuggestion === null) {
                   $.formUtils._selectedSuggestion = 0;
-                else
+                }
+                else {
                   $.formUtils._selectedSuggestion++;
-                if ($.formUtils._selectedSuggestion > ($suggestions.length - 1))
+                }
+                if ($.formUtils._selectedSuggestion > ($suggestions.length - 1)) {
                   $.formUtils._selectedSuggestion = 0;
-
+                }
               }
 
               // Scroll in suggestion window
@@ -1482,18 +1499,18 @@
 
       if (localPart && domain) {
 
-        if( localPart.indexOf('"') == 0 ) {
+        if( localPart.indexOf('"') === 0 ) {
           var len = localPart.length;
           localPart = localPart.replace(/\"/g, '');
-          if( localPart.length != (len-2) ) {
+          if( localPart.length !== (len-2) ) {
             return false; // It was not allowed to have more than two apostrophes
           }
         }
 
         return $.formUtils.validators.validate_domain.validatorFunction(emailParts[1]) &&
-              localPart.indexOf('.') != 0 &&
-              localPart.substring(localPart.length-1, localPart.length) != '.' &&
-              localPart.indexOf('..') == -1 &&
+              localPart.indexOf('.') !== 0 &&
+              localPart.substring(localPart.length-1, localPart.length) !== '.' &&
+              localPart.indexOf('..') === -1 &&
               !(/[^\w\+\.\-\#\-\_\~\!\$\&\'\(\)\*\+\,\;\=\:]/.test(localPart));
       }
 
@@ -1512,7 +1529,7 @@
       return val.length > 0 &&
         val.length <= 253 && // Including sub domains
         !(/[^a-zA-Z0-9]/.test(val.slice(-2))) && !(/[^a-zA-Z0-9]/.test(val.substr(0, 1))) && !(/[^a-zA-Z0-9\.\-]/.test(val)) &&
-        val.split('..').length == 1 &&
+        val.split('..').length === 1 &&
         val.split('.').length > 1;
     },
     errorMessage: '',
@@ -1547,28 +1564,28 @@
       var lengthAllowed = $el.valAttr('length'),
         type = $el.attr('type');
 
-      if (lengthAllowed == undefined) {
+      if (lengthAllowed === undefined) {
         alert('Please add attribute "data-validation-length" to ' + $el[0].nodeName + ' named ' + $el.attr('name'));
         return true;
       }
 
       // check if length is above min, below max or within range.
-      var len = type == 'file' && $el.get(0).files !== undefined ? $el.get(0).files.length : val.length,
+      var len = type === 'file' && $el.get(0).files !== undefined ? $el.get(0).files.length : val.length,
         lengthCheckResults = $.formUtils.numericRangeCheck(len, lengthAllowed),
         checkResult;
 
       switch (lengthCheckResults[0]) {   // outside of allowed range
-        case "out":
+        case 'out':
           this.errorMessage = lang.lengthBadStart + lengthAllowed + lang.lengthBadEnd;
           checkResult = false;
           break;
         // too short
-        case "min":
+        case 'min':
           this.errorMessage = lang.lengthTooShortStart + lengthCheckResults[1] + lang.lengthBadEnd;
           checkResult = false;
           break;
         // too long
-        case "max":
+        case 'max':
           this.errorMessage = lang.lengthTooLongStart + lengthCheckResults[1] + lang.lengthBadEnd;
           checkResult = false;
           break;
@@ -1592,13 +1609,15 @@
       // written by Scott Gonzalez: http://projects.scottsplayground.com/iri/
       // - Victor Jonsson added support for arrays in the url ?arg[]=sdfsdf
       // - General improvements made by Stéphane Moureau <https://github.com/TraderStf>
+
       var urlFilter = /^(https?|ftp):\/\/((((\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])(\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])(\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/(((\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/((\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|\[|\]|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#(((\w|-|\.|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
       if (urlFilter.test(url)) {
         var domain = url.split('://')[1],
           domainSlashPos = domain.indexOf('/');
 
-        if (domainSlashPos > -1)
+        if (domainSlashPos > -1) {
           domain = domain.substr(0, domainSlashPos);
+        }
 
         return $.formUtils.validators.validate_domain.validatorFunction(domain); // todo: add support for IP-addresses
       }
@@ -1622,23 +1641,25 @@
           steps = $el.valAttr('step') || '',
           allowsSteps = false;
 
-        if (allowing.indexOf('number') == -1)
+        if (allowing.indexOf('number') === -1) {
           allowing += ',number';
+        }
 
-        if (allowing.indexOf('negative') == -1 && val.indexOf('-') === 0) {
+        if (allowing.indexOf('negative') === -1 && val.indexOf('-') === 0) {
           return false;
         }
 
         if (allowing.indexOf('range') > -1) {
-          begin = parseFloat(allowing.substring(allowing.indexOf("[") + 1, allowing.indexOf(";")));
-          end = parseFloat(allowing.substring(allowing.indexOf(";") + 1, allowing.indexOf("]")));
+          begin = parseFloat(allowing.substring(allowing.indexOf('[') + 1, allowing.indexOf(';')));
+          end = parseFloat(allowing.substring(allowing.indexOf(';') + 1, allowing.indexOf(']')));
           allowsRange = true;
         }
 
-        if (steps != "")
+        if (steps !== '') {
           allowsSteps = true;
+        }
 
-        if (decimalSeparator == ',') {
+        if (decimalSeparator === ',') {
           if (val.indexOf('.') > -1) {
             return false;
           }
@@ -1646,10 +1667,10 @@
           val = val.replace(',', '.');
         }
 
-        if (allowing.indexOf('number') > -1 && val.replace(/[0-9-]/g, '') === '' && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val % steps == 0))) {
+        if (allowing.indexOf('number') > -1 && val.replace(/[0-9-]/g, '') === '' && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val % steps === 0))) {
           return true;
         }
-        if (allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9-]+)\\.([0-9]+)$')) !== null && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val % steps == 0))) {
+        if (allowing.indexOf('float') > -1 && val.match(new RegExp('^([0-9-]+)\\.([0-9]+)$')) !== null && (!allowsRange || (val >= begin && val <= end)) && (!allowsSteps || (val % steps === 0))) {
           return true;
         }
       }
@@ -1732,12 +1753,12 @@
         // get name of element. since it is a checkbox group, all checkboxes will have same name
         elname = $el.attr('name'),
         // get checkboxes and count the checked ones
-        $checkBoxes = $("input[type=checkbox][name^='" + elname + "']", $form),
+        $checkBoxes = $('input[type=checkbox][name^="' + elname + '"]', $form),
         checkedCount = $checkBoxes.filter(':checked').length,
         // get el attr that specs qty required / allowed
         qtyAllowed = $el.valAttr('qty');
 
-      if (qtyAllowed == undefined) {
+      if (qtyAllowed === undefined) {
         var elementType = $el.get(0).nodeName;
         alert('Attribute "data-validation-qty" is missing from ' + elementType + ' named ' + $el.attr('name'));
       }
@@ -1748,17 +1769,17 @@
       // results will be array, [0]=result str, [1]=qty int
       switch (qtyCheckResults[0]) {
         // outside allowed range
-        case "out":
+        case 'out':
           this.errorMessage = lang.groupCheckedRangeStart + qtyAllowed + lang.groupCheckedEnd;
           isValid = false;
           break;
         // below min qty
-        case "min":
+        case 'min':
           this.errorMessage = lang.groupCheckedTooFewStart + qtyCheckResults[1] + lang.groupCheckedEnd;
           isValid = false;
           break;
         // above max qty
-        case "max":
+        case 'max':
           this.errorMessage = lang.groupCheckedTooManyStart + qtyCheckResults[1] + lang.groupCheckedEnd;
           isValid = false;
           break;

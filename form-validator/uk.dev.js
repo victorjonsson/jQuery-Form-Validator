@@ -28,27 +28,27 @@ $.formUtils.addValidator({
     	var valid = false;
 
     	var VATsplit = [];
-    	VATsplit = number.split("");
+    	VATsplit = number.split('');
 
     	var checkDigits = Number(VATsplit[7] + VATsplit[8]);  // two final digits as a number
 
     	var firstDigit = VATsplit[0];
     	var secondDigit = VATsplit[1];
-    	if ((firstDigit == 0) && (secondDigit >0)) {
+    	if ((firstDigit === 0) && (secondDigit > 0)) {
     		return false;
     	}
 
     	var total = 0;
-    	for (var i=0; i<7; i++) {  // first 7 digits
+    	for (var i = 0; i < 7; i++) {  // first 7 digits
     		total += VATsplit[i]* (8-i);  // sum weighted cumulative total
     	}
 
     	var c = 0;
-    	var i = 0;
+    	var j = 0;
 
-    	for (var m = 8; m>=2; m--) {
-    		c += VATsplit[i]* m;
-    		i++;
+    	for (var m = 8; m >= 2; m--) {
+    		c += VATsplit[j] * m;
+    		j++;
     	}
 
     	// Traditional Algorithm for VAT numbers issued before 2010
@@ -58,22 +58,22 @@ $.formUtils.addValidator({
     	}
     	total = Math.abs(total);  // make positive
 
-    	if (checkDigits == total) {
+    	if (checkDigits === total) {
     		valid = true;
     	}
 
     	// If not valid try the new method (introduced November 2009) by subtracting 55 from the mod 97 check digit if we can - else add 42
 
     	if (!valid) {
-    		total = total%97  // modulus 97
+    		total = total%97;  // modulus 97
 
     		if (total >= 55) {
-    			total = total - 55
+    			total = total - 55;
     		} else {
-    			total = total + 42
+    			total = total + 42;
     		}
 
-    		if (total == checkDigits) {
+    		if (total === checkDigits) {
     			valid = true;
     		}
     	}

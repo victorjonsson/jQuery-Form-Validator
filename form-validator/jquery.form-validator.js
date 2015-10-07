@@ -955,12 +955,6 @@
         // select the checkbox type element in this form
         validateIfCheckedElement = $form.find('input[name="' + validateIfCheckedElementName + '"]');
 
-        // test if it's property "checked" is checked
-        if (validateIfCheckedElement.prop('checked')) {
-          // set value for validation checkpoint
-          validationDependentInputIsChecked = true;
-        }
-
         // test if check input value
         if (validateIfCheckedElementValue != null) {
           validateIfCheckedElement.each(function(index, el) {

@@ -944,7 +944,10 @@
           validateIfCheckedElement = false,
 
           // get value of this element's attribute "... if-checked"
-          validateIfCheckedElementName = $elem.valAttr('if-checked');
+          validateIfCheckedElementName = $elem.valAttr('if-checked'),
+          // get expected radio button value for "if-checked" optional validation
+          validateIfCheckedElementValue = $elem.valAttr('if-checked-value');
+
 
       if ($elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs)) {
         result.shouldChangeDisplay = false;
@@ -961,10 +964,21 @@
         // select the checkbox type element in this form
         validateIfCheckedElement = $form.find('input[name="' + validateIfCheckedElementName + '"]');
 
-        // test if it's property "checked" is checked
-        if (validateIfCheckedElement.prop('checked')) {
-          // set value for validation checkpoint
-          validationDependentInputIsChecked = true;
+        // test if check input value
+        if (validateIfCheckedElementValue != null) {
+          validateIfCheckedElement.each(function(index, el) {
+            // test if it's property "checked" is checked and value equals expected value
+            if ($(el).prop('checked') && $(el).val() === validateIfCheckedElementValue) {
+              validationDependentInputIsChecked = true;
+            }
+          });
+        }
+        else {
+          // test if it's property "checked" is checked
+          if (validateIfCheckedElement.prop('checked')) {
+            // set value for validation checkpoint
+            validationDependentInputIsChecked = true;
+          }
         }
       }
 

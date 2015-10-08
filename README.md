@@ -1,6 +1,6 @@
 # jQuery Form Validator
 
-jQuery Form Validator is a feature rich and multilingual jQuery plugin that makes it easy to validate user input while keeping your HTML markup clean from javascript code. Even though this plugin has a wide range of validation functions it's designed to require as little jQuery network traffic as possible. This is achieved by grouping together validation functions in "modules", making it possible to load only those functions that's needed to validate a particular form.
+jQuery Form Validator is a **feature rich and multilingual** jQuery plugin that makes it easy to validate user input while keeping your HTML markup clean from javascript code. Even though this plugin has a wide range of validation functions it's **designed to require as little jQuery network traffic as possible**. This is achieved by grouping together validation functions in "modules", making it possible to load only those functions that's needed to validate a particular form.
 
 **Form demos and full documentation available at http://formvalidator.net/**
 

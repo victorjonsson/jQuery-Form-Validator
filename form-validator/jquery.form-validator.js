@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.82
+ * @version 2.2.83
  */
 (function ($) {
 
@@ -291,7 +291,6 @@
     _removeErrorStyle(this, conf);
     var $elem = this,
         $form = $elem.closest('form'),
-        validationRule = $elem.attr(conf.validationRuleAttribute),
         result = $.formUtils.validateInput(
                     $elem,
                     language,
@@ -1729,7 +1728,7 @@
    */
   $.formUtils.addValidator({
     name: 'custom',
-    validatorFunction: function (val, $el, conf) {
+    validatorFunction: function (val, $el) {
       var regexp = new RegExp($el.valAttr('regexp'));
       return regexp.test(val);
     },

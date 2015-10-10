@@ -166,23 +166,8 @@
           $input.hide();
           equal(true, $input.closest('form').isValid({}, {}, false));
           $input.validate(function(valid) {
-            console.log('in here');
             assert.equal(false, valid);
           }, {validateHiddenInputs: true});
-
-
-                       /*
-          $input
-            .validate(function(valid) {
-              assert.equal(false, valid, 'Should not be valid');
-
-                .
-                .validate(function(valid) {
-                  alert('Serry?');
-                  assert.equal(valid, true, 'Should be');
-                });
-
-            }); */
 
          });
 

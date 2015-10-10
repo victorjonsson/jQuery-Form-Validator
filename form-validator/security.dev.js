@@ -14,7 +14,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license MIT
- * @version 2.2.82
+ * @version 2.2.83
  */
 (function($, window) {
 
@@ -25,7 +25,7 @@
      */
     $.formUtils.addValidator({
         name : 'spamcheck',
-        validatorFunction : function(val, $el, config) {
+        validatorFunction : function(val, $el) {
             var attr = $el.valAttr('captcha');
             return attr === val;
         },
@@ -74,7 +74,7 @@
      */
     $.formUtils.addValidator({
         name : 'creditcard',
-        validatorFunction : function(value, $el, config, language, $form) {
+        validatorFunction : function(value, $el) {
             var allowing = $.split( $el.valAttr('allowing') || '' );
 
             // Setup for cvv validation
@@ -155,7 +155,7 @@
      */
     $.formUtils.addValidator({
         name : 'strength',
-        validatorFunction : function(val, $el, conf) {
+        validatorFunction : function(val, $el) {
             var requiredStrength = $el.valAttr('strength') || 2;
             if (requiredStrength && requiredStrength > 3) {
                 requiredStrength = 3;

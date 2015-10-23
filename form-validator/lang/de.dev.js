@@ -49,7 +49,7 @@
       badCVV: 'Sie haben eine falsche CVV eingegeben',
       wrongFileDim: 'Illegal Bildgröße,',
       imageTooTall: 'Bild kann nicht größer als',
-      imageTooWide: 'Bild kann nicht größer als',
+      imageTooWide: 'Bild kann nicht breiter sein als',
       imageTooSmall: 'Bild ist zu klein',
       min: 'min',
       max: 'max',

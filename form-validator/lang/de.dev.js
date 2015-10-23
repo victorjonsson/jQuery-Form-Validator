@@ -22,10 +22,10 @@
       badTelephone: "Sie haben keine richtige Telefonnummer eingetragen",
       badSecurityAnswer: "Sie haben die falsche Antwort auf die Sicherheitsfrage eingegeben",
       badDate: "Re-Eingabe eines falschen Datums",
-      lengthBadStart: "Ihre Eingabe muss zwischen %s lang sein",
-      lengthBadEnd: " Zeichen",
-      lengthTooLongStart: "Sie haben eine Antwort die länger als %s angegeben",
-      lengthTooShortStart: "Sie haben eine Antwort die kürzer ist als %s eingegebene",
+      lengthBadStart: "Der eingegebene Wert muss da zwischen sein ",
+      lengthBadEnd: "  Zeichen",
+      lengthTooLongStart: "Eingegebene Wert ist größer als ",
+      lengthTooShortStart: "Eingegebene Wert ist größer als ",
       notConfirmed: "Die Antworten könnten nicht gegenseitig bestätigen,",
       badDomain: "Sie haben die falsche Domäne eingetragen",
       badUrl: "Sie haben nicht die richtige URL eingegeben",
@@ -35,7 +35,7 @@
       badSecurityNumber: "Sie haben eine falsche Sozialversicherungsnummer eingegeben",
       badUKVatAnswer: "Sie haben keine UK Umsatzsteuer-Identifikationsnummer eingegeben",
       badStrength: "Sie haben ein Kennwort, das nicht sicher genug ist eingegeben",
-      badNumberOfSelectedOptionsStart: "Sie müssen mindestens %s wählen",
+      badNumberOfSelectedOptionsStart: "Wählen Sie zu mindestens ",
       badNumberOfSelectedOptionsEnd: " Antwort",
       badAlphaNumeric: "Sie können nur mit alphanumerische Zeichen (Buchstaben und Zahlen) eingaben",
       badAlphaNumericExtra: " und",
@@ -48,16 +48,17 @@
       badCreditCard: "Sie haben eine ungültige Kreditkartennummer eingegeben",
       badCVV: "Sie haben eine falsche CVV eingegeben",
       wrongFileDim: "Illegal Bildgröße,",
-      imageTooTall: "Das Bild kann nicht höher als %s sein",
-      imageTooWide: "Das Bild kann nicht breiter als %s sein",
-      imageTooSmall: "das Bild ist zu klein",
+      imageTooTall: "Bild kann nicht größer als",
+      imageTooWide: "Bild kann nicht größer als",
+      imageTooSmall: "Bild ist zu klein",
       min: "min",
       max: "max",
-      imageRatioNotAccepted : 'Bildverhältnis wird nicht akzeptiert'
+      imageRatioNotAccepted : 'Bildverhältnis wird nicht akzeptiert',
+      badBrazilTelephoneAnswer: 'Die eingegebene Telefonnummer ist nicht korrekt',
+      badBrazilCEPAnswer: 'Der CEP ist ungültig',
+      badBrazilCPFAnswer: 'Der CEP ist ungültig'
     };
 
   });
 
 })(jQuery, window);
-
-

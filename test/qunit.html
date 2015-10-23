@@ -175,18 +175,25 @@
          * Test error message
          */
         test('Error messages', function() {
-            var $input = input('', {'':'required'}),
-                result = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
 
-            equal('You have not answered all required fields', result.errorMsg, 'Incorrect message');
+            // default inline (below input) error messages
+            var $input = input('', 'required'),
+                result = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
+            equal(result.errorMsg, 'This field is required', 'Incorrect message');
+
+            // messages on top of form
+            var configWithTopMsg = $.formUtils.defaultConfig();
+            configWithTopMsg.errorMessagePosition = "top";
+            result = $.formUtils.validateInput($input, $.formUtils.LANG, configWithTopMsg, $form);
+            equal(result.errorMsg, 'You have not answered all required fields', 'Incorrect message');
 
             $input = input('--', {'':'required alphanumeric', 'error-msg-alphanumeric':'custom for alphanum'}),
             result = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
-            equal('custom for alphanum', result.errorMsg, 'Incorrect message');
+            equal(result.errorMsg, 'custom for alphanum', 'Incorrect message');
 
             $input = input('sam', {'':'required alphanumeric length', length:'min10', 'error-msg-alphanumeric':'custom for alphanum'}),
             result = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
-            equal('The input value is shorter than 10 characters', result.errorMsg, 'Incorrect message');
+            equal(result.errorMsg, 'The input value is shorter than 10 characters', 'Incorrect message');
 
         });
 

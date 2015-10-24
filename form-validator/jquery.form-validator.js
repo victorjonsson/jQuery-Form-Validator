@@ -1027,7 +1027,7 @@
               if (!validationErrorMsg) {
                 validationErrorMsg = $elem.attr(conf.validationErrorMsgAttribute);
                 if (!validationErrorMsg) {
-                  if(typeof validator.errorMessageKey !== 'function') {
+                  if (typeof validator.errorMessageKey !== 'function') {
                     validationErrorMsg = language[validator.errorMessageKey];
                   }
                   else {

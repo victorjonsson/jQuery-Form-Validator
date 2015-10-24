@@ -10,7 +10,7 @@
  */
 (function($, window) {
 
-  "use strict";
+  'use strict';
 
   $(window).bind('validatorsLoaded', function() {
 
@@ -22,29 +22,29 @@
       badTelephone: 'Wprowadzono niepoprawny numeru telefonu',
       badSecurityAnswer: 'Nieprawidłowa odpowiedź na pytanie bezpieczeństwa',
       badDate: 'Niepoprawna data',
-      lengthBadStart: 'Wprowadzona wartość musi być pomiędzy',
-      lengthBadEnd: 'znaków',
-      lengthTooLongStart: 'Wprowadzona wartość jest większa niż',
-      lengthTooShortStart: 'Wprowadzona wartość jest mniejsza niż',
+      lengthBadStart: 'Wprowadzona wartość musi być pomiędzy ',
+      lengthBadEnd: ' znaków',
+      lengthTooLongStart: 'Wprowadzona wartość jest większa niż ',
+      lengthTooShortStart: 'Wprowadzona wartość jest mniejsza niż ',
       notConfirmed: 'Wprowadzone wartości nie zostały potwierdzone',
       badDomain: 'Nieprawidłowa wartość domeny',
       badUrl: 'Wprowadzono nieprawidłowy adres URL',
       badCustomVal: 'Wprowadzona wartość jest niepoprawna',
-      andSpaces: 'i odstępy',
+      andSpaces: ' i odstępy',
       badInt: 'Wprowadzono nieprawidłowy numer',
       badSecurityNumber: 'Wprowadzono niepoprawny numer ubezpieczenia społecznego',
       badUKVatAnswer: 'Wprowadzono niepoprawny brytyjski numer VAT',
       badStrength: 'Twoje hasło nie jest wystarczająco mocne',
-      badNumberOfSelectedOptionsStart: 'Musisz wybrać przynajmniej',
-      badNumberOfSelectedOptionsEnd: 'odpowiedzi',
-      badAlphaNumeric: 'Wprowadzona wartość może zawierać tylko znaki alfanumeryczne',
-      badAlphaNumericExtra: 'i',
+      badNumberOfSelectedOptionsStart: 'Musisz wybrać przynajmniej ',
+      badNumberOfSelectedOptionsEnd: ' odpowiedzi',
+      badAlphaNumeric: 'Wprowadzona wartość może zawierać tylko znaki alfanumeryczne ',
+      badAlphaNumericExtra: ' i ',
       wrongFileSize: 'Wysyłany plik jest zbyt duży (max %s)',
       wrongFileType: 'Dozwolone są tylko pliki typu %s',
-      groupCheckedRangeStart: 'Proszę wybrać pomiędzy',
-      groupCheckedTooFewStart: 'Proszę wybrać przynajmniej',
-      groupCheckedTooManyStart: 'Proszę wybrać maksymalnie',
-      groupCheckedEnd: 'element(ów)',
+      groupCheckedRangeStart: 'Proszę wybrać pomiędzy ',
+      groupCheckedTooFewStart: 'Proszę wybrać przynajmniej ',
+      groupCheckedTooManyStart: 'Proszę wybrać maksymalnie ',
+      groupCheckedEnd: ' element(ów)',
       badCreditCard: 'Podany numer karty kredytowej jest nieprawidłowy',
       badCVV: 'Podany numer CVV jest nieprawidłowy',
       wrongFileDim: 'Nieprawidłowe wymiary obrazu,',

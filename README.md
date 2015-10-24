@@ -250,6 +250,10 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 
 ## Changelog
 
+#### 2.3.0 (unreleased)
+- New translations (Polish, Romanian, Czech, Russian)
+- Several improvements made to already existing translations
+
 #### 2.2.8
 - The plugin is now again possible to install via bower.
 - Portoguese language pack and validators

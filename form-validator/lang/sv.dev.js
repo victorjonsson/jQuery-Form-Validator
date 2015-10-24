@@ -16,6 +16,7 @@
 
     $.formUtils.LANG = {
       errorTitle: 'Formuläret kunde inte skickas!',
+      requiredField: 'Detta är ett obligtoriskt fält',
       requiredFields: 'Du har inte besvarat alla frågor',
       badTime: 'Du har inte angett en korrekt tidpunkt',
       badEmail: 'Du har inte angett en korrekt e-postadress',

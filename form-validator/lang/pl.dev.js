@@ -16,6 +16,7 @@
 
     $.formUtils.LANG = {
       errorTitle: 'Złożenie formularza nie powiodło się!',
+      requiredField: 'To pole jest wymagane',
       requiredfields: 'Nie wszystkie wymagane pola zostały wypełnione',
       badTime: 'Wprowadzono niepoprawny czas',
       badEmail: 'Wprowadzono niepoprawny adres e-mail',

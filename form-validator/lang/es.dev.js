@@ -16,6 +16,7 @@
 
     $.formUtils.LANG = {
       errorTitle: 'El formulario no se ha podido enviar!',
+      requiredField: 'Este campo es obligatorio',
       requiredFields: 'No ha contestado todos los campos requeridos',
       badTime: 'La hora proporcionada no es válida',
       badEmail: 'La dirección de e-mail no es válida',

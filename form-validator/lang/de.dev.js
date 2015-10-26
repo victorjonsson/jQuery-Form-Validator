@@ -16,6 +16,7 @@
 
     $.formUtils.LANG = {
       errorTitle: 'Ihre Anfrage konnte nicht gesendet werden!',
+      requiredField: 'Dies ist ein Pflichtfeld',
       requiredFields: 'Sie haben nicht alle Fragen beantwortet',
       badTime: 'Sie haben nicht die korrekte Zeit eingegeben',
       badEmail: 'Sie haben keine gültige E-Mail-Adresse eingegeben',

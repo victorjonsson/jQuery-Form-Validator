@@ -16,6 +16,7 @@
 
     $.formUtils.LANG = {
       errorTitle: 'Podání formuláře selhalo!',
+      requiredField: 'Toto pole je povinné',
       requiredfields: 'Nebyly vyplněny všechny požadované pole',
       badTime: 'Neplatný čas',
       badEmail: 'Neplatná e-mailová adresa',

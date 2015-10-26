@@ -1027,7 +1027,12 @@
               if (!validationErrorMsg) {
                 validationErrorMsg = $elem.attr(conf.validationErrorMsgAttribute);
                 if (!validationErrorMsg) {
-                  validationErrorMsg = language[validator.errorMessageKey];
+                  if (typeof validator.errorMessageKey !== 'function') {
+                    validationErrorMsg = language[validator.errorMessageKey];
+                  }
+                  else {
+                    validationErrorMsg = language[validator.errorMessageKey(conf)];
+                  }
                   if (!validationErrorMsg) {
                     validationErrorMsg = validator.errorMessage;
                   }
@@ -1449,6 +1454,7 @@
      */
     LANG: {
       errorTitle: 'Form submission failed!',
+      requiredField: 'This is a required field',
       requiredFields: 'You have not answered all required fields',
       badTime: 'You have not given a correct time',
       badEmail: 'You have not given a correct e-mail address',
@@ -1565,7 +1571,14 @@
       }
     },
     errorMessage: '',
-    errorMessageKey: 'requiredFields'
+    errorMessageKey: function(config) {
+      if (config.errorMessagePosition === 'top' || config.errorMessagePosition === 'custom') {
+        return 'requiredFields';
+      }
+      else {
+        return 'requiredField';
+      }
+    }
   });
 
   /*

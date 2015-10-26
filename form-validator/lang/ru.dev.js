@@ -15,8 +15,9 @@
   $(window).bind('validatorsLoaded', function() {
 
     $.formUtils.LANG = {
-    
+
       errorTitle: 'Ошибка отправки формы!',
+      requiredField: 'Это обязательное поле',
       requiredFields: 'Вы задали не все обязательные поля',
       badTime: 'Вы задали некорректное время',
       badEmail: 'Вы задали некорректный e-mail',

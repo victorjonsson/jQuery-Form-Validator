@@ -16,6 +16,7 @@
 
     $.formUtils.LANG = {
       errorTitle: 'Nu sa reusit lansarea formularului!',
+      requiredField: 'Acest câmp este obligatoriu',
       requiredfields: 'Nu toate câmpurile obligatorii au fost completate',
       badTime: 'Timpul introdus este incorect',
       badEmail: 'Adresa de e-mail este incorectă',

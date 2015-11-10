@@ -251,7 +251,7 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 ## Changelog
 
 #### 2.3.0 (unreleased)
-- New translations (Polish, Romanian, Czech, Russian)
+- New translations (Polish, Romanian, Czech, Russian, Italian)
 - Several improvements made to already existing translations
 
 #### 2.2.8

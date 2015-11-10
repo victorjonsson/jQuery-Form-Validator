@@ -2,7 +2,7 @@
  * jQuery Form Validator
  * ------------------------------------------
  *
- * Spanish language package
+ * Italian language package
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses

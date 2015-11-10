@@ -318,22 +318,22 @@ of validation that should be applied.
  * Correction of the US states in validation "federatestate"
  * Fixed bug in server validation
 
-#### 2.1.9
+#### 2.1.09
  * File validation now support multiple files
  * Length validation can now be used to validate the number of uploaded files using a file input that supports multiple files
  * Validation classes is no longer applied on inputs that for some reason shouldn't become validated
 
-#### 2.1.8
+#### 2.1.08
  * Now possible to configure the decimal separator when validating float values. Use either the
  attribute *data-validation-decimal-separator* or the property *decimalSeparator* when
 calling $.validate()
  * $.validationSetup is renamed to $.validate. You will still be able to initiate the validation by calling
  the $.validationSetup but it's considered deprecated.
 
-#### 2.1.6
+#### 2.1.06
  * Modules can now be loaded from remote websites
 
-#### 2.1.5
+#### 2.1.05
  * Fixed language bug (issue #43 on github)
  * Validation on server side is now triggered by the blur event
  * Now using class names that's compliant with twitter bootstrap 3.x

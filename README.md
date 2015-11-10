@@ -114,6 +114,7 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
 ### Module: uk
  * **ukvatnumber**
 
+Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://formvalidator.net/#uk-validators)
 
 ### Module: brazil
  * **brphone** — Validate a brazilian telephone number
@@ -132,7 +133,7 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
  * **escape**  — (convert < > & ' " to html entities)
  * **numberFormat**  — (declare the attribute data-sanitize-number-format with any of the formats described on http://numeraljs.com/. Note that this rule requires that numeral.js is included in the page)
 
-Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://formvalidator.net/#uk-validators)
+Read the documentation for the sanitation module at [http://formvalidator.net/#data-sanitation](http://formvalidator.net/#data-sanitation)
 
 
 ## Writing a custom validator

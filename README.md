@@ -97,7 +97,7 @@ Read the documentation for the location module at [http://formvalidator.net/#loc
  * **mime**
  * **extension**
  * **size** (file size)
- * **dimension** ()
+ * **dimension** (size dimension and ratio)
 
 Read the documentation for the file module at [http://formvalidator.net/#file-validators](http://formvalidator.net/#file-validators)
 

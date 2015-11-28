@@ -6,7 +6,7 @@
  *
  * @website http://formvalidator.net/
  * @license Dual licensed under the MIT or GPL Version 2 licenses
- * @version 2.2.84
+ * @version 2.2.85
  */
 (function($, window) {
 
@@ -23,7 +23,7 @@
       badTelephone: 'Il numero di telefono imputato non &egrave; valido',
       badSecurityAnswer: 'La risposta alla domanda di sicurezza &egrave; errata',
       badDate: 'La data scelta non &egrave; valida',
-      lengthBadStart: 'La sua risposta non pu� essere pi� lunga di ',
+      lengthBadStart: 'La sua risposta non può essere più lunga di ',
       lengthBadEnd: ' caratteri',
       lengthTooLongStart: 'La lunghezza della risposta deve essere minore di ',
       lengthTooShortStart: 'La lunghezza della risposta deve essere maggiore di ',
@@ -40,7 +40,7 @@
       badNumberOfSelectedOptionsEnd: ' risposta/e',
       badAlphaNumeric: 'Il valore proposto deve contenere caratteri alfanumerici (a-z e 1234...)',
       badAlphaNumericExtra: '',
-      wrongFileSize: 'Il file che si sta cercando di caricare � troppo grande (massimo %s)',
+      wrongFileSize: 'Il file che si sta cercando di caricare è troppo grande (massimo %s)',
       wrongFileType: 'Solo i file di tipo %s possono essere inviati',
       groupCheckedRangeStart: 'Si prega di scegliere tra ',
       groupCheckedTooFewStart: 'Si prega di selezionare un minimo di ',
@@ -49,11 +49,11 @@
       badCreditCard: 'Il numero di carta di credito non risulta valido',
       badCVV: 'CVV non valido',
       wrongFileDim: "La dimensione dell'immagine non &egrave; valida,",
-      imageTooTall: "il lato alto dell'immagine non pu� essere maggiore di ",
-      imageTooWide: "il lato lungo dell'immagine non pu� essere maggiore di",
-      imageTooSmall: "L'immagine � troppo piccola",
+      imageTooTall: "il lato alto dell'immagine non può essere maggiore di ",
+      imageTooWide: "il lato lungo dell'immagine non può essere maggiore di",
+      imageTooSmall: "L'immagine è troppo piccola",
       min: 'min.',
-      max: 'm�x.',
+      max: 'máx.',
       imageRatioNotAccepted : "La proporzione dell' immagine (altezza x larghezza) non &egrave; valida"
     };
 

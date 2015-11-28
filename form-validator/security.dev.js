@@ -14,7 +14,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license MIT
- * @version 2.2.85
+ * @version 2.2.86
  */
 (function($, window) {
 
@@ -42,10 +42,21 @@
         validatorFunction : function(value, $el, config, language, $form) {
             var conf = '',
                 confInputName = $el.valAttr('confirm') || ($el.attr('name') + '_confirmation'),
-                confInput = $form.find('[name="' +confInputName+ '"]').eq(0);
+                $confInput = $form.find('[name="' +confInputName+ '"]').eq(0);
 
-            if (confInput) {
-                conf = confInput.val();
+            if ( $confInput ) {
+                conf = $confInput.val();
+                if( config.validateOnBlur && !$confInput[0].hasValidationCallback ) {
+                    $confInput[0].hasValidationCallback = true;
+                    var keyUpCallback = function() {
+                        $el.validate();
+                    };
+                    $confInput.on('keyup', keyUpCallback);
+                    $form.one('formValidationSetup', function() {
+                        $confInput[0].hasValidationCallback = false;
+                        $confInput.off('keyup', keyUpCallback);
+                    });
+                }
             } else {
                 alert('Could not find an input with name "'+confInputName+'"');
             }

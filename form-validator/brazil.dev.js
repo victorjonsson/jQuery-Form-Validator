@@ -11,7 +11,7 @@
  *
  * @website http://formvalidator.net/#brazil-validators
  * @license MIT
- * @version 2.2.85
+ * @version 2.2.86
  */
 
 $.formUtils.addValidator({

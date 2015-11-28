@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.85
+ * @version 2.2.86
  */
 (function ($) {
 
@@ -626,9 +626,10 @@
       // Make a reference to the config for this form
       form.validationConfig = conf;
 
-      // Trigger jQuery event that we're about to setup va
+      // Trigger jQuery event that we're about to setup validation
       var $form = $(form);
       $window.trigger('formValidationSetup', [$form, conf]);
+      $form.trigger('formValidationSetup', [conf]);
 
       // Remove classes and event handlers that might have been
       // added by a previous call to $.validate

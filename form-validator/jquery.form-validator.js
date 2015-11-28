@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.86
+ * @version 2.2.87
  */
 (function ($) {
 
@@ -154,8 +154,10 @@
         if (etype) {
           $el
             .unbind(etype + '.validation')
-            .bind(etype + '.validation', function () {
-              $(this).validateInputOnBlur(language, settings, true, etype);
+            .bind(etype + '.validation', function (evt) {
+              if( (evt || {}).keyCode !== 9 ) {
+                $(this).validateInputOnBlur(language, settings, true, etype);
+              }
             });
         }
       });
@@ -315,8 +317,10 @@
       if (attachKeyupEvent) {
         $elem
           .unbind('keyup.validation')
-          .bind('keyup.validation', function () {
-            $(this).validateInputOnBlur(language, conf, false, 'keyup');
+          .bind('keyup.validation', function (evt) {
+            if( evt.keyCode !== 9 ) {
+              $(this).validateInputOnBlur(language, conf, false, 'keyup');
+            }
           });
       }
     }

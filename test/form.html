@@ -158,7 +158,7 @@
         <div class="form-group">
             <label class="control-label">Server validation</label>
             <input class="form-control" name="code" value="secret"
-                   data-validation-helssp="The word is &quot;secret&quot;"
+                   data-validation-help="The word is &quot;secret&quot;"
                    data-validation="length server"
                    data-validation-length="min2"
                    data-validation-url="http://formvalidator.net/validate-email.php" />
@@ -167,6 +167,7 @@
             <label class="control-label">File validation</label>
             <input type="file" name="some-file1" class="form-control"
                    data-validation="size mime required dimension"
+                   data-validation-help="Images only"
                    data-validation-error-msg-size="The file cant be larger than 400kb"
                    data-validation-error-msg="You must upload an image file (max 400 kb)"
                    data-validation-allowing="jpg, png, ico"

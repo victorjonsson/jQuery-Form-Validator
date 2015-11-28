@@ -179,7 +179,7 @@
             // default inline (below input) error messages
             var $input = input('', 'required'),
                 result = $.formUtils.validateInput($input, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
-            equal(result.errorMsg, 'This field is required', 'Incorrect message');
+            equal(result.errorMsg, 'This is a required field', 'Incorrect message');
 
             // messages on top of form
             var configWithTopMsg = $.formUtils.defaultConfig();

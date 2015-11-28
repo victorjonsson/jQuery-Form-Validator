@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.83
+ * @version 2.2.84
  */
 (function ($) {
 
@@ -170,6 +170,7 @@
    * @param {String} attrName - Optional, default is data-help
    * @return {jQuery}
    */
+  var _helpers = 0;
   $.fn.showHelpOnFocus = function (attrName) {
     if (!attrName) {
       attrName = 'data-validation-help';
@@ -183,7 +184,7 @@
     // Add help text listeners
     this.find('textarea,input').each(function () {
       var $elem = $(this),
-          className = 'jquery_form_help_' + ($elem.attr('name') || '').replace(/(:|\.|\[|\])/g, ''),
+          className = 'jquery_form_help_' + (++_helpers),
           help = $elem.attr(attrName);
 
       if (help) {
@@ -194,11 +195,11 @@
             var $help = $elem.parent().find('.' + className);
             if ($help.length === 0) {
               $help = $('<span />')
-                        .addClass(className)
-                        .addClass('help')
-                        .addClass('help-block') // twitter bs
-                        .text(help)
-                        .hide();
+                          .addClass(className)
+                          .addClass('help')
+                          .addClass('help-block') // twitter bs
+                          .text(help)
+                          .hide();
 
               $elem.after($help);
             }

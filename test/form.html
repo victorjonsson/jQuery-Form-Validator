@@ -367,7 +367,7 @@
         },
         borderColorOnError : '',
         errorMessage : 'You have to give an even number',
-        errorMessageKey: 'badEvenNumber'
+        errorMessageKey: 'badEvenNumber',
     });
 
     window.applyValidation = function(validateOnBlur, forms, messagePosition, xtraModule) {
@@ -419,7 +419,10 @@
 
     window.applyValidation(true, '#form-a', 'top');
     window.applyValidation(false, '#form-b', 'element');
-    window.applyValidation(true, '#form-c', $('#error-container'), 'sanitize'+dev);
+    window.applyValidation(true, '#form-c', function() {
+        console.log('in here then');
+        return $('#error-container');
+    }, 'sanitize'+dev);
     window.applyValidation(true, '#form-d', 'element', 'html5'+dev);
     window.applyValidation(true, '#form-e');
 

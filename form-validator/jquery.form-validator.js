@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.87
+ * @version 2.2.88
  */
 (function ($) {
 
@@ -66,9 +66,13 @@
           $mess = {};
 
       if (custom) {
-        setErrorMessage($(custom));
+        _warn('Using deprecated element reference '+custom.id);
+        $messageContainer = $(custom);
+      } else if( typeof $messageContainer === 'function' ) {
+        $messageContainer = $messageContainer($input, mess, conf);
       }
-      else if (typeof $messageContainer === 'object') {
+
+      if (typeof $messageContainer === 'object') {
         var $found = false;
         $messageContainer.find('.' + conf.errorMessageClass).each(function () {
           if (this.inputReferer === $input[0]) {
@@ -99,6 +103,17 @@
         }
 
         setErrorMessage($mess);
+      }
+    },
+    _warn = function(msg) {
+      if( 'console' in window ) {
+        if( typeof window.console.warn === 'function' ) {
+          window.console.warn(msg);
+        } else if( typeof window.console.log === 'function' ) {
+          window.console.log(msg);
+        }
+      } else {
+        alert(msg);
       }
     },
     _templateMessage = function ($form, title, errorMessages, conf) {
@@ -490,6 +505,7 @@
         }
         // Customize display message
         else if (conf.errorMessagePosition === 'custom') {
+          _warn('Use deprecated function errorMessageCustom');
           if (typeof conf.errorMessageCustom === 'function') {
             conf.errorMessageCustom($form, language.errorTitle, errorMessages, conf);
           }
@@ -522,9 +538,7 @@
    * @param conf
    */
   $.fn.validateForm = function (language, conf) {
-    if (window.console && typeof window.console.warn === 'function') {
-      window.console.warn('Use of deprecated function $.validateForm, use $.isValid instead');
-    }
+    _warn('Use of deprecated function $.validateForm, use $.isValid instead');
     return this.isValid(language, conf, true);
   };
 
@@ -877,9 +891,7 @@
                 script.onload = moduleLoadedCallback;
                 script.src = scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' );
                 script.onerror = function() {
-                  if( 'console' in window && window.console.log ) {
-                    window.console.log('Unable to load form validation module '+scriptUrl);
-                  }
+                  _warn('Unable to load form validation module '+scriptUrl);
                 };
                 script.onreadystatechange = function () {
                   // IE 7 fix

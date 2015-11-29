@@ -95,9 +95,10 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label">Number 0-10 (accepting floats with comma)</label>
+            <label class="control-label">Number 0-10 (accepting floats with comma, ignoring $ and €)</label>
             <input name="floats" class="form-control"
                    data-validation="number"
+                   data-validation-ignore="$€"
                    data-validation-allowing="range[0;10], float"
                    data-validation-decimal-separator=","
                     />

@@ -643,6 +643,23 @@
         });
 
         /*
+         * VALIDATION WITH IGNORE
+         */
+        test("Validate with ignore validation", function() {
+
+            clearForm();
+
+            var links = [
+                {val:input('1234$', {'length':'max3', '':'length'}), isValid:false},
+                {val:input('1234$', {'length':'min3', ignore:'$', '':'length'}), isValid:true}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'length');
+            });
+        });
+
+        /*
          * SWEDISH SSN VALIDATION
          */
         test("Swedish SSN validation", function() {

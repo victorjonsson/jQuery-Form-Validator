@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.88
+ * @version 2.2.90
  */
 (function ($) {
 
@@ -1016,6 +1016,17 @@
       if (!validationRules) {
         result.shouldChangeDisplay = conf.addValidClassOnAll;
         return result;
+      }
+
+      // Filter out specified characters
+      var ignore = $elem.valAttr('ignore');
+      if( ignore ) {
+        console.log('HAS IGNORE '+ value);
+        $.each(ignore.split(''), function(i, char) {
+          console.log(char+' -> IGNORED');
+          value = value.replace(new RegExp('\\'+char, 'g'), '');
+        });
+        console.log('AFTER IGNORE FILTER '+ value);
       }
 
       $.split(validationRules, function (rule) {

@@ -254,6 +254,12 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 #### 2.3.0 (unreleased)
 - New translations (Polish, Romanian, Czech, Russian, Italian)
 - Several improvements made to already existing translations
+- "Validation help" no longer puts constraints on input names
+- Improved confirmation validation
+- Now possible to set `errorMessagePosition` to a callback function
+- Now possible to add `data-validation-ignore` to filter out certain characters before validation.
+- Now possible to declare attributes not prefixed with data-validation in jsconf module
+
 
 #### 2.2.8
 - The plugin is now again possible to install via bower.

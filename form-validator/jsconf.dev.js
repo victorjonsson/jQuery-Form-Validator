@@ -7,7 +7,7 @@
  *
  * @website http://formvalidator.net/#location-validators
  * @license MIT
- * @version 2.2.90
+ * @version 2.2.91
  */
 (function($) {
 
@@ -31,15 +31,25 @@
 
         $.each(attr, function(name, val) {
           if( name !== 'validation' && val !== false) {
-            if( val === true ){
+            if( val === true ) {
               val = 'true';
             }
-            $elem.valAttr(name, val);
+            if( name[0] === '_' ) {
+                name = name.substring(1);
+                if( val === false ) {
+                    $elem.removeAttr(name);
+                } else {
+                    $elem.attr(name, val);
+                }
+            } else {
+                $elem.valAttr(name, val);
+            }
           }
         });
     });
 
     $.validate(conf);
+
   };
 
 })(jQuery);

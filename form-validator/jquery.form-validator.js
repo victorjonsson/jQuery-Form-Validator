@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.91
+ * @version 2.2.92
  */
 (function ($) {
 

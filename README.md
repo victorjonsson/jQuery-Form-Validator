@@ -259,6 +259,7 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 - Now possible to set `errorMessagePosition` to a callback function
 - Now possible to add `data-validation-ignore` to filter out certain characters before validation.
 - Now possible to declare attributes not prefixed with data-validation in jsconf module
+- All inputs gets sanitized on page load when using sanitation module
 
 
 #### 2.2.8

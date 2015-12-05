@@ -22,7 +22,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.91
+ * @version 2.2.92
  */
 (function($, window) {
 
@@ -117,13 +117,19 @@
           var $form = $(this);
           if( config.sanitizeAll ) {
             $form.find('input,textarea').not(inputsThatCantBeSanitized).each(function() {
-              $(this).attr('data-sanitize', config.sanitizeAll+ ' '+ ($(this).attr('data-sanitize') || ''));
+              var $input = $(this),
+                  sanitation = $input.attr('data-sanitize') || '';
+              $input.attr('data-sanitize', config.sanitizeAll +' '+ sanitation);
             });
           }
 
           $form.find('[data-sanitize]')
-            .unbind('blur', execSanitationCommands)
-            .bind('blur', execSanitationCommands);
+            .unbind('blur.sanitation', execSanitationCommands)
+            .bind('blur.sanitation', execSanitationCommands);
+
+          $(function() {
+              $form.trigger('blur.sanitation');
+          });
 
         });
       };

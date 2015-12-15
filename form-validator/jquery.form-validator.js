@@ -1576,7 +1576,7 @@
     validatorFunction: function (val) {
       return val.length > 0 &&
         val.length <= 253 && // Including sub domains
-        !(/[^a-zA-Z0-9]/.test(val.slice(-2))) && !(/[^a-zA-Z0-9]/.test(val.substr(0, 1))) && !(/[^a-zA-Z0-9\.\-]/.test(val)) &&
+        !(/[^a-zA-Z0-9]/.test(val.slice(-2))) && !(/[^a-zA-Z0-9\.\-]/.test(val)) &&
         val.split('..').length === 1 &&
         val.split('.').length > 1;
     },

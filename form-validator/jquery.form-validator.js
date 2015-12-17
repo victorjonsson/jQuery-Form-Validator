@@ -317,6 +317,10 @@
                     eventType
                   );
 
+    if (attachKeyupEvent) {
+      $elem.unbind('keyup.validation');
+    }
+
     if ( result.isValid ) {
       if( result.shouldChangeDisplay ) {
           $elem.addClass('valid');
@@ -330,13 +334,11 @@
       _setInlineErrorMessage($elem, result.errorMsg, conf, conf.errorMessagePosition);
 
       if (attachKeyupEvent) {
-        $elem
-          .unbind('keyup.validation')
-          .bind('keyup.validation', function (evt) {
-            if( evt.keyCode !== 9 ) {
-              $(this).validateInputOnBlur(language, conf, false, 'keyup');
-            }
-          });
+        $elem.bind('keyup.validation', function (evt) {
+          if( evt.keyCode !== 9 ) {
+            $(this).validateInputOnBlur(language, conf, false, 'keyup');
+          }
+        });
       }
     }
 

@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.92
+ * @version 2.2.93
  */
 (function ($) {
 
@@ -1021,12 +1021,9 @@
       // Filter out specified characters
       var ignore = $elem.valAttr('ignore');
       if( ignore ) {
-        console.log('HAS IGNORE '+ value);
         $.each(ignore.split(''), function(i, char) {
-          console.log(char+' -> IGNORED');
           value = value.replace(new RegExp('\\'+char, 'g'), '');
         });
-        console.log('AFTER IGNORE FILTER '+ value);
       }
 
       $.split(validationRules, function (rule) {
@@ -1103,9 +1100,10 @@
      *
      * @param {String} val
      * @param {String} dateFormat
+     * @param {Boolean} [addMissingLeadingZeros]
      * @return {Array}|{Boolean}
      */
-    parseDate: function (val, dateFormat) {
+    parseDate: function (val, dateFormat, addMissingLeadingZeros) {
       var divider = dateFormat.replace(/[a-zA-Z]/gi, '').substring(0, 1),
         regexp = '^',
         formatParts = dateFormat.split(divider || null),
@@ -1116,6 +1114,17 @@
       });
 
       regexp += '$';
+
+      if (addMissingLeadingZeros) {
+        var newValueParts = [];
+        $.each(val.split(divider), function(i, part) {
+          if(part.length === 1) {
+            part = '0'+part;
+          }
+          newValueParts.push(part);
+        });
+        val = newValueParts.join(divider);
+      }
 
       matches = val.match(new RegExp(regexp));
       if (matches === null) {
@@ -1151,7 +1160,7 @@
      * skum fix. är talet 05 eller lägre ger parseInt rätt int annars får man 0 när man kör parseInt?
      *
      * @param {String} val
-     * @param {Number}
+     * @return {Number}
      */
     parseDateInt: function (val) {
       if (val.indexOf('0') === 0) {
@@ -1784,8 +1793,9 @@
   $.formUtils.addValidator({
     name: 'date',
     validatorFunction: function (date, $el, conf) {
-      var dateFormat = $el.valAttr('format') || conf.dateFormat || 'yyyy-mm-dd';
-      return $.formUtils.parseDate(date, dateFormat) !== false;
+      var dateFormat = $el.valAttr('format') || conf.dateFormat || 'yyyy-mm-dd',
+          addMissingLeadingZeros = $el.valAttr('require-leading-zero') === 'false';
+      return $.formUtils.parseDate(date, dateFormat, addMissingLeadingZeros) !== false;
     },
     errorMessage: '',
     errorMessageKey: 'badDate'

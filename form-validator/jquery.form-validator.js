@@ -5,7 +5,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.93
+ * @version 2.2.101
  */
 (function ($) {
 
@@ -432,7 +432,7 @@
        * @param {String} type
        * @return {Boolean}
        */
-        ignoreInput = function (name, type) {
+      ignoreInput = function (name, type) {
         if (type === 'submit' || type === 'button' || type === 'reset') {
           return true;
         }
@@ -1024,7 +1024,7 @@
       var ignore = $elem.valAttr('ignore');
       if( ignore ) {
         $.each(ignore.split(''), function(i, char) {
-          value = value.replace(new RegExp('\\'+char, 'g'), '');
+          value = value.replace(new RegExp('\\'+char), '');
         });
       }
 

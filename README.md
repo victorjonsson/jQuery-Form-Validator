@@ -257,10 +257,11 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 - "Validation help" no longer puts constraints on input names
 - Improved confirmation validation
 - Now possible to set `errorMessagePosition` to a callback function
-- Now possible to add `data-validation-ignore` to filter out certain characters before validation.
+- Now possible to add `data-validation-ignore` to filter out certain characters before validation
+- New sanitation method `strip` that removes defined characters
 - Now possible to declare attributes not prefixed with data-validation in jsconf module
 - All inputs gets sanitized on page load when using sanitation module
-
+- Allow dates to omit leading zero using `data-validation-require-leading-zero="false"`
 
 #### 2.2.8
 - The plugin is now again possible to install via bower.

@@ -18,11 +18,12 @@
  *  - numberFormat
  *  - insertLeft
  *  - insertRight
+ *  - strip
  *  - escape (replace <, >, &, ' and " with HTML entities)
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.93
+ * @version 2.2.101
  */
 (function($, window) {
 
@@ -72,6 +73,13 @@
           else {
             throw new Error('Using sanitation function "numberFormat" requires that you include numeraljs (http://http://numeraljs.com/)');
           }
+          return val;
+        },
+        strip: function(val, $input) {
+          var toRemove = $input.attr('data-sanitize-strip') || '';
+          $.split(toRemove, function(char) {
+              val = val.replace(new RegExp('\\'+char, 'g'), '');
+          });
           return val;
         },
         escape : function(val) {

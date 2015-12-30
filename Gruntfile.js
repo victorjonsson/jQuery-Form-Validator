@@ -39,7 +39,7 @@ module.exports = function (grunt) {
   // Add main script to concat/uglify
   filesToBuild.uglify['form-validator/jquery.form-validator.min.js'] = 'form-validator/jquery.form-validator.min.js';
   filesToBuild.concat.main = {
-    src: ['form-validator/jquery.form-validator.js'],
+    src: ['form-validator/jquery.form-validator.js', 'form-validator/jquery.form-validator-default.js'],
     dest: 'form-validator/jquery.form-validator.min.js'
   };
 
@@ -86,6 +86,16 @@ module.exports = function (grunt) {
 
     qunit: {
       all: ['test/qunit.html']
+    },
+
+    connect: {
+      server: {
+        options: {
+          port: 8000,
+          base: '.',
+          keepalive: true
+        }
+      }
     }
 
   });
@@ -127,10 +137,11 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-contrib-jshint");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-qunit');
 
   grunt.registerTask("build", ["version", "concat", "uglify"]);
-  grunt.registerTask('test', ['jshint', 'qunit']);
+  grunt.registerTask('test', ['concat', 'jshint', 'qunit']);
   grunt.registerTask("default", ["test", "build"]);
 
 };

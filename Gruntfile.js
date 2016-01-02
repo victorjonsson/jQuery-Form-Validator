@@ -77,9 +77,10 @@ module.exports = function (grunt) {
       banner: "/**\n" +
       " *  <%= (pkg.title || pkg.name).toUpperCase() %>\n" +
       " *\n" +
+      " *  @version <%= pkg.version %>\n" +
+      " *  @website <%= pkg.homepage %>\n" +
       " *  @author <%= pkg.author.name %>, <%= pkg.author.url %>\n" +
       " *  @license <%= pkg.license %>\n" +
-      " *  @version <%= pkg.version %>\n" +
       " */\n"
     },
 

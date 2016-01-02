@@ -10,7 +10,7 @@
  *
  * @website http://formvalidator.net/#file-validators
  * @license MIT
- * @version 2.2.136
+ * @version 2.2.137
  */
 (function($, window) {
 

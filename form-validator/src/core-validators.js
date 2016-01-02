@@ -1,13 +1,5 @@
 /**
- * jQuery Form Validator
- * ------------------------------------------
- * Created by Victor Jonsson <http://www.victorjonsson.se>
- *
  * File declaring all default validators.
- *
- * @website http://formvalidator.net/
- * @license MIT
- * @version 2.2.102
  */
 (function($) {
 

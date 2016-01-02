@@ -1,743 +1,15 @@
 /**
- * jQuery Form Validator
- * ------------------------------------------
- * Created by Victor Jonsson <http://www.victorjonsson.se>
- *
- * @website http://formvalidator.net/
- * @license MIT
- * @version 2.2.102
+ * Utility methods and properties attached to $.formUtils
  */
-(function ($) {
+(function($, window) {
 
   'use strict';
 
-  var $window = $(window),
-    _getInputParentContainer = function ($elem) {
-      if ($elem.valAttr('error-msg-container')) {
-        return $($elem.valAttr('error-msg-container'));
-      } else {
-        var $parent = $elem.parent();
-        if ( !$parent.hasClass('form-group') && !$parent.closest('form').hasClass('form-horizontal') ) {
-          var $formGroup = $parent.closest('.form-group');
-          if ($formGroup.length) {
-            return $formGroup.eq(0);
-          }
-        }
-        return $parent;
-      }
-    },
-    _applyErrorStyle = function ($elem, conf) {
-      $elem
-        .addClass(conf.errorElementClass)
-        .removeClass('valid');
+  var $win = $(window);
 
-      _getInputParentContainer($elem)
-        .addClass(conf.inputParentClassOnError)
-        .removeClass(conf.inputParentClassOnSuccess);
+  $.formUtils = $.extend($.formUtils || {}, {
 
-      if (conf.borderColorOnError !== '') {
-        $elem.css('border-color', conf.borderColorOnError);
-      }
-    },
-    _removeErrorStyle = function ($elem, conf) {
-      $elem.each(function () {
-        var $this = $(this);
-
-        _setInlineErrorMessage($this, '', conf, conf.errorMessagePosition);
-
-        $this
-          .removeClass('valid')
-          .removeClass(conf.errorElementClass)
-          .css('border-color', '');
-
-        _getInputParentContainer($this)
-          .removeClass(conf.inputParentClassOnError)
-          .removeClass(conf.inputParentClassOnSuccess)
-          .find('.' + conf.errorMessageClass) // remove inline span holding error message
-            .remove();
-      });
-    },
-    _setInlineErrorMessage = function ($input, mess, conf, $messageContainer) {
-      var custom = document.getElementById($input.attr('name') + '_err_msg'),
-          setErrorMessage = function($elem) {
-            $window.trigger('validationErrorDisplay', [$input, $elem]);
-            $elem.html(mess);
-          },
-          $mess = {};
-
-      if (custom) {
-        _warn('Using deprecated element reference '+custom.id);
-        $messageContainer = $(custom);
-      } else if( typeof $messageContainer === 'function' ) {
-        $messageContainer = $messageContainer($input, mess, conf);
-      }
-
-      if (typeof $messageContainer === 'object') {
-        var $found = false;
-        $messageContainer.find('.' + conf.errorMessageClass).each(function () {
-          if (this.inputReferer === $input[0]) {
-            $found = $(this);
-            return false;
-          }
-        });
-        if ($found) {
-          if (!mess) {
-            $found.remove();
-          } else {
-            setErrorMessage($found);
-          }
-        } else {
-          $mess = $('<div class="' + conf.errorMessageClass + '"></div>');
-          setErrorMessage($mess);
-          $mess[0].inputReferer = $input[0];
-          $messageContainer.prepend($mess);
-        }
-      }
-      else {
-        var $parent = _getInputParentContainer($input);
-        $mess = $parent.find('.' + conf.errorMessageClass + '.help-block');
-
-        if ($mess.length === 0) {
-          $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
-          $mess.appendTo($parent);
-        }
-
-        setErrorMessage($mess);
-      }
-    },
-    _warn = function(msg) {
-      if( 'console' in window ) {
-        if( typeof window.console.warn === 'function' ) {
-          window.console.warn(msg);
-        } else if( typeof window.console.log === 'function' ) {
-          window.console.log(msg);
-        }
-      } else {
-        alert(msg);
-      }
-    },
-    _templateMessage = function ($form, title, errorMessages, conf) {
-      var messages = conf.errorMessageTemplate.messages.replace(/\{errorTitle\}/g, title),
-          fields = [],
-          container;
-
-      $.each(errorMessages, function (i, msg) {
-        fields.push(conf.errorMessageTemplate.field.replace(/\{msg\}/g, msg));
-      });
-
-      messages = messages.replace(/\{fields\}/g, fields.join(''));
-      container = conf.errorMessageTemplate.container.replace(/\{errorMessageClass\}/g, conf.errorMessageClass);
-      container = container.replace(/\{messages\}/g, messages);
-      $form.children().eq(0).before(container);
-    };
-
-
-  /**
-   * Assigns validateInputOnBlur function to elements blur event
-   *
-   * @param {Object} language Optional, will override $.formUtils.LANG
-   * @param {Object} conf Optional, will override the default settings
-   * @return {jQuery}
-   */
-  $.fn.validateOnBlur = function (language, conf) {
-    this.find('*[data-validation]')
-      .bind('blur.validation', function () {
-        $(this).validateInputOnBlur(language, conf, true, 'blur');
-      });
-    if (conf.validateCheckboxRadioOnClick) {
-      // bind click event to validate on click for radio & checkboxes for nice UX
-      this.find('input[type=checkbox][data-validation],input[type=radio][data-validation]')
-        .bind('click.validation', function () {
-          $(this).validateInputOnBlur(language, conf, true, 'click');
-        });
-    }
-
-    return this;
-  };
-
-  /*
-   * Assigns validateInputOnBlur function to elements custom event
-   * @param {Object} language Optional, will override $.formUtils.LANG
-   * @param {Object} settings Optional, will override the default settings
-   * * @return {jQuery}
-   */
-  $.fn.validateOnEvent = function (language, settings) {
-    this.find('*[data-validation-event]')
-      .each(function () {
-        var $el = $(this),
-            etype = $el.valAttr('event');
-        if (etype) {
-          $el
-            .unbind(etype + '.validation')
-            .bind(etype + '.validation', function (evt) {
-              if( (evt || {}).keyCode !== 9 ) {
-                $(this).validateInputOnBlur(language, settings, true, etype);
-              }
-            });
-        }
-      });
-    return this;
-  };
-
-  /**
-   * fade in help message when input gains focus
-   * fade out when input loses focus
-   * <input data-help="The info that I want to display for the user when input is focused" ... />
-   *
-   * @param {String} attrName - Optional, default is data-help
-   * @return {jQuery}
-   */
-  var _helpers = 0;
-  $.fn.showHelpOnFocus = function (attrName) {
-    if (!attrName) {
-      attrName = 'data-validation-help';
-    }
-
-    // Remove previously added event listeners
-    this.find('.has-help-txt')
-      .valAttr('has-keyup-event', false)
-      .removeClass('has-help-txt');
-
-    // Add help text listeners
-    this.find('textarea,input').each(function () {
-      var $elem = $(this),
-          className = 'jquery_form_help_' + (++_helpers),
-          help = $elem.attr(attrName);
-
-      if (help) {
-        $elem
-          .addClass('has-help-txt')
-          .unbind('focus.help')
-          .bind('focus.help', function () {
-            var $help = $elem.parent().find('.' + className);
-            if ($help.length === 0) {
-              $help = $('<span />')
-                          .addClass(className)
-                          .addClass('help')
-                          .addClass('help-block') // twitter bs
-                          .text(help)
-                          .hide();
-
-              $elem.after($help);
-            }
-            $help.fadeIn();
-          })
-          .unbind('blur.help')
-          .bind('blur.help', function () {
-            $(this)
-              .parent()
-              .find('.' + className)
-              .fadeOut('slow');
-          });
-      }
-    });
-
-    return this;
-  };
-
-  /**
-   * @param {Function} cb
-   * @param {Object} [conf]
-   * @param {Object} [lang]
-   */
-  $.fn.validate = function(cb, conf, lang) {
-    var language = $.extend({}, $.formUtils.LANG, lang || {});
-    this.each(function() {
-      var $elem = $(this),
-          formDefaultConfig = $elem.closest('form').get(0).validationConfig || {};
-
-      $elem.one('validation', function(evt, isValid) {
-        if ( typeof cb === 'function' ) {
-          cb(isValid, this, evt);
-        }
-      });
-
-      $elem.validateInputOnBlur(
-          language,
-          $.extend({}, formDefaultConfig, conf || {}),
-          true
-        );
-    });
-  };
-
-  /**
-   * Tells whether or not validation of this input will have to postpone the form submit ()
-   * @returns {Boolean}
-   */
-  $.fn.willPostponeValidation = function() {
-    return (this.valAttr('suggestion-nr') ||
-            this.valAttr('postpone') ||
-            this.hasClass('hasDatepicker')) &&
-            !window.postponedValidation;
-  };
-
-  /**
-   * Validate single input when it loses focus
-   * shows error message in a span element
-   * that is appended to the parent element
-   *
-   * @param {Object} [language] Optional, will override $.formUtils.LANG
-   * @param {Object} [conf] Optional, will override the default settings
-   * @param {Boolean} attachKeyupEvent Optional
-   * @param {String} eventType
-   * @return {jQuery}
-   */
-  $.fn.validateInputOnBlur = function (language, conf, attachKeyupEvent, eventType) {
-
-    $.formUtils.eventType = eventType;
-
-    if ( this.willPostponeValidation() ) {
-      // This validation has to be postponed
-      var _self = this,
-          postponeTime = this.valAttr('postpone') || 200;
-
-      window.postponedValidation = function () {
-        _self.validateInputOnBlur(language, conf, attachKeyupEvent, eventType);
-        window.postponedValidation = false;
-      };
-
-      setTimeout(function () {
-        if (window.postponedValidation) {
-          window.postponedValidation();
-        }
-      }, postponeTime);
-
-      return this;
-    }
-
-    language = $.extend({}, $.formUtils.LANG, language || {});
-    _removeErrorStyle(this, conf);
-    var $elem = this,
-        $form = $elem.closest('form'),
-        result = $.formUtils.validateInput(
-                    $elem,
-                    language,
-                    conf,
-                    $form,
-                    eventType
-                  );
-
-    if (attachKeyupEvent) {
-      $elem.unbind('keyup.validation');
-    }
-
-    if ( result.isValid ) {
-      if( result.shouldChangeDisplay ) {
-          $elem.addClass('valid');
-          _getInputParentContainer($elem)
-            .addClass(conf.inputParentClassOnSuccess);
-      }
-    }
-    else if (!result.isValid) {
-
-      _applyErrorStyle($elem, conf);
-      _setInlineErrorMessage($elem, result.errorMsg, conf, conf.errorMessagePosition);
-
-      if (attachKeyupEvent) {
-        $elem.bind('keyup.validation', function (evt) {
-          if( evt.keyCode !== 9 ) {
-            $(this).validateInputOnBlur(language, conf, false, 'keyup');
-          }
-        });
-      }
-    }
-
-    return this;
-  };
-
-  /**
-   * Short hand for fetching/adding/removing element attributes
-   * prefixed with 'data-validation-'
-   *
-   * @param {String} name
-   * @param {String|Boolean} [val]
-   * @return string|undefined
-   * @protected
-   */
-  $.fn.valAttr = function (name, val) {
-    if (val === undefined) {
-      return this.attr('data-validation-' + name);
-    } else if (val === false || val === null) {
-      return this.removeAttr('data-validation-' + name);
-    } else {
-      name = ((name.length > 0) ? '-' + name : '');
-      return this.attr('data-validation' + name, val);
-    }
-  };
-
-  /**
-   * Function that validates all inputs in active form
-   *
-   * @param {Object} [language]
-   * @param {Object} [conf]
-   * @param {Boolean} [displayError] Defaults to true
-   */
-  $.fn.isValid = function (language, conf, displayError) {
-
-    if ($.formUtils.isLoadingModules) {
-      var $self = this;
-      setTimeout(function () {
-        $self.isValid(language, conf, displayError);
-      }, 200);
-      return null;
-    }
-
-    conf = $.extend({}, $.formUtils.defaultConfig(), conf || {});
-    language = $.extend({}, $.formUtils.LANG, language || {});
-    displayError = displayError !== false;
-
-    if ($.formUtils.errorDisplayPreventedWhenHalted) {
-      // isValid() was called programmatically with argument displayError set
-      // to false when the validation was halted by any of the validators
-      delete $.formUtils.errorDisplayPreventedWhenHalted;
-      displayError = false;
-    }
-
-    $.formUtils.isValidatingEntireForm = true;
-    $.formUtils.haltValidation = false;
-
-    /**
-     * Adds message to error message stack if not already in the message stack
-     *
-     * @param {String} mess
-     * @para {jQuery} $elem
-     */
-    var addErrorMessage = function (mess, $elem) {
-          if ($.inArray(mess, errorMessages) < 0) {
-            errorMessages.push(mess);
-          }
-          errorInputs.push($elem);
-          $elem.attr('current-error', mess);
-          if (displayError) {
-            _applyErrorStyle($elem, conf);
-          }
-        },
-
-        /** Holds inputs (of type checkox or radio) already validated, to prevent recheck of mulitple checkboxes & radios */
-        checkedInputs = [],
-
-        /** Error messages for this validation */
-        errorMessages = [],
-
-        /** Input elements which value was not valid */
-        errorInputs = [],
-
-        /** Form instance */
-        $form = this,
-
-      /**
-       * Tells whether or not to validate element with this name and of this type
-       *
-       * @param {String} name
-       * @param {String} type
-       * @return {Boolean}
-       */
-      ignoreInput = function (name, type) {
-        if (type === 'submit' || type === 'button' || type === 'reset') {
-          return true;
-        }
-        return $.inArray(name, conf.ignore || []) > -1;
-      };
-
-    // Reset style and remove error class
-    if (displayError) {
-      $form.find('.' + conf.errorMessageClass + '.alert').remove();
-      _removeErrorStyle($form.find('.' + conf.errorElementClass + ',.valid'), conf);
-    }
-
-    // Validate element values
-    $form.find('input,textarea,select').filter(':not([type="submit"],[type="button"])').each(function () {
-      var $elem = $(this),
-        elementType = $elem.attr('type'),
-        isCheckboxOrRadioBtn = elementType === 'radio' || elementType === 'checkbox',
-        elementName = $elem.attr('name');
-
-      if (!ignoreInput(elementName, elementType) && (!isCheckboxOrRadioBtn || $.inArray(elementName, checkedInputs) < 0)) {
-
-        if (isCheckboxOrRadioBtn) {
-          checkedInputs.push(elementName);
-        }
-
-        var result = $.formUtils.validateInput(
-                              $elem,
-                              language,
-                              conf,
-                              $form,
-                              'submit'
-                            );
-
-        if( result.shouldChangeDisplay ) {
-          if ( !result.isValid ) {
-            addErrorMessage(result.errorMsg, $elem);
-          } else if( result.isValid ) {
-            $elem
-              .valAttr('current-error', false)
-              .addClass('valid');
-
-            _getInputParentContainer($elem)
-              .addClass(conf.inputParentClassOnSuccess);
-          }
-        }
-      }
-    });
-
-    // Run validation callback
-    if (typeof conf.onValidate === 'function') {
-      var errors = conf.onValidate($form);
-      if ($.isArray(errors)) {
-        $.each(errors, function (i, err) {
-          addErrorMessage(err.message, err.element);
-        });
-      }
-      else if (errors && errors.element && errors.message) {
-        addErrorMessage(errors.message, errors.element);
-      }
-    }
-
-    // Reset form validation flag
-    $.formUtils.isValidatingEntireForm = false;
-
-    // Validation failed
-    if (!$.formUtils.haltValidation && errorInputs.length > 0) {
-
-      if (displayError) {
-        // display all error messages in top of form
-        if (conf.errorMessagePosition === 'top') {
-          _templateMessage($form, language.errorTitle, errorMessages, conf);
-        }
-        // Customize display message
-        else if (conf.errorMessagePosition === 'custom') {
-          _warn('Use deprecated function errorMessageCustom');
-          if (typeof conf.errorMessageCustom === 'function') {
-            conf.errorMessageCustom($form, language.errorTitle, errorMessages, conf);
-          }
-        }
-        // Display error message below input field or in defined container
-        else {
-          $.each(errorInputs, function (i, $input) {
-            _setInlineErrorMessage($input, $input.attr('current-error'), conf, conf.errorMessagePosition);
-          });
-        }
-
-        if (conf.scrollToTopOnError) {
-          $window.scrollTop($form.offset().top - 20);
-        }
-      }
-
-      return false;
-    }
-
-    if (!displayError && $.formUtils.haltValidation) {
-      $.formUtils.errorDisplayPreventedWhenHalted = true;
-    }
-
-    return !$.formUtils.haltValidation;
-  };
-
-  /**
-   * @deprecated
-   * @param language
-   * @param conf
-   */
-  $.fn.validateForm = function (language, conf) {
-    _warn('Use of deprecated function $.validateForm, use $.isValid instead');
-    return this.isValid(language, conf, true);
-  };
-
-  /**
-   * Plugin for displaying input length restriction
-   */
-  $.fn.restrictLength = function (maxLengthElement) {
-    new $.formUtils.lengthRestriction(this, maxLengthElement);
-    return this;
-  };
-
-  /**
-   * Add suggestion dropdown to inputs having data-suggestions with a comma
-   * separated string with suggestions
-   * @param {Array} [settings]
-   * @returns {jQuery}
-   */
-  $.fn.addSuggestions = function (settings) {
-    var sugs = false;
-    this.find('input').each(function () {
-      var $field = $(this);
-
-      sugs = $.split($field.attr('data-suggestions'));
-
-      if (sugs.length > 0 && !$field.hasClass('has-suggestions')) {
-        $.formUtils.suggest($field, sugs, settings);
-        $field.addClass('has-suggestions');
-      }
-    });
-    return this;
-  };
-
-  /**
-   * A bit smarter split function
-   * delimiter can be space, comma, dash or pipe
-   * @param {String} val
-   * @param {Function|String} [callback]
-   * @returns {Array|void}
-   */
-  $.split = function (val, callback) {
-    if (typeof callback !== 'function') {
-      // return array
-      if (!val) {
-        return [];
-      }
-      var values = [];
-      $.each(val.split(callback ? callback : /[,|\-\s]\s*/g),
-        function (i, str) {
-          str = $.trim(str);
-          if (str.length) {
-            values.push(str);
-          }
-        }
-      );
-      return values;
-    } else if (val) {
-      // exec callback func on each
-      $.each(val.split(/[,|\-\s]\s*/g),
-        function (i, str) {
-          str = $.trim(str);
-          if (str.length) {
-            return callback(str, i);
-          }
-        }
-      );
-    }
-  };
-
-  /**
-   * Short hand function that makes the validation setup require less code
-   * @param conf
-   */
-  $.validate = function (conf) {
-
-    var defaultConf = $.extend($.formUtils.defaultConfig(), {
-      form: 'form',
-      /*
-       * Enable custom event for validation
-       */
-      validateOnEvent: false,
-      validateOnBlur: true,
-      validateCheckboxRadioOnClick: true,
-      showHelpOnFocus: true,
-      addSuggestions: true,
-      modules: '',
-      onModulesLoaded: null,
-      language: false,
-      onSuccess: false,
-      onError: false,
-      onElementValidate: false,
-    });
-
-    conf = $.extend(defaultConf, conf || {});
-
-    if( conf.lang && conf.lang !== 'en' ) {
-      var langModule = 'lang/'+conf.lang+'.js';
-      conf.modules += conf.modules.length ? ','+langModule : langModule;
-    }
-
-    // Add validation to forms
-    $(conf.form).each(function (i, form) {
-
-      // Make a reference to the config for this form
-      form.validationConfig = conf;
-
-      // Trigger jQuery event that we're about to setup validation
-      var $form = $(form);
-      $window.trigger('formValidationSetup', [$form, conf]);
-      $form.trigger('formValidationSetup', [conf]);
-
-      // Remove classes and event handlers that might have been
-      // added by a previous call to $.validate
-      $form.find('.has-help-txt')
-          .unbind('focus.validation')
-          .unbind('blur.validation');
-
-      $form
-        .removeClass('has-validation-callback')
-        .unbind('submit.validation')
-        .unbind('reset.validation')
-        .find('input[data-validation],textarea[data-validation]')
-          .unbind('blur.validation');
-
-      // Validate when submitted
-      $form.bind('submit.validation', function () {
-
-        var $form = $(this);
-
-        if ($.formUtils.haltValidation) {
-          // pressing several times on submit button while validation is halted
-          return false;
-        }
-
-        if ($.formUtils.isLoadingModules) {
-          setTimeout(function () {
-            $form.trigger('submit.validation');
-          }, 200);
-          return false;
-        }
-
-        var valid = $form.isValid(conf.language, conf);
-
-        if ($.formUtils.haltValidation) {
-          // Validation got halted by one of the validators
-          return false;
-        } else {
-          if (valid && typeof conf.onSuccess === 'function') {
-            var callbackResponse = conf.onSuccess($form);
-            if (callbackResponse === false) {
-              return false;
-            }
-          } else if (!valid && typeof conf.onError === 'function') {
-            conf.onError($form);
-            return false;
-          } else {
-            return valid;
-          }
-        }
-      })
-      .bind('reset.validation', function () {
-        // remove messages
-        $(this).find('.' + conf.errorMessageClass + '.alert').remove();
-        _removeErrorStyle($(this).find('.' + conf.errorElementClass + ',.valid'), conf);
-      })
-      .addClass('has-validation-callback');
-
-      if (conf.showHelpOnFocus) {
-        $form.showHelpOnFocus();
-      }
-      if (conf.addSuggestions) {
-        $form.addSuggestions();
-      }
-      if (conf.validateOnBlur) {
-        $form.validateOnBlur(conf.language, conf);
-        $form.bind('html5ValidationAttrsFound', function () {
-          $form.validateOnBlur(conf.language, conf);
-        });
-      }
-      if (conf.validateOnEvent) {
-        $form.validateOnEvent(conf.language, conf);
-      }
-    });
-
-    if (conf.modules !== '') {
-      $.formUtils.loadModules(conf.modules, false, function() {
-        if (typeof conf.onModulesLoaded === 'function') {
-          conf.onModulesLoaded();
-        }
-        $window.trigger('validatorsLoaded', [typeof conf.form === 'string' ? $(conf.form) : conf.form, conf]);
-      });
-    }
-  };
-
-  /**
-   * Object containing utility methods for this plugin
-   */
-  $.formUtils = {
+    $win: $win,
 
     /**
      * Default config for $(...).isValid();
@@ -756,14 +28,14 @@
           messages: '<strong>{errorTitle}</strong><ul>{fields}</ul>',
           field: '<li>{msg}</li>'
         },
-        errorMessageCustom: _templateMessage,
+        errorMessageCustom: this.errorDialogs.setTemplateMessage,
         scrollToTopOnError: true,
         dateFormat: 'yyyy-mm-dd',
         addValidClassOnAll: false, // whether or not to apply class="valid" even if the input wasn't validated
         decimalSeparator: '.',
         inputParentClassOnError: 'has-error', // twitter-bootstrap default class name
         inputParentClassOnSuccess: 'has-success', // twitter-bootstrap default class name
-        validateHiddenInputs: false, // whether or not hidden inputs should be validated
+        validateHiddenInputs: false // whether or not hidden inputs should be validated
       };
     },
 
@@ -855,7 +127,7 @@
                   if( typeof fireEvent === 'function' ) {
                     fireEvent();
                   } else {
-                    $window.trigger('validatorsLoaded');
+                    $win.trigger('validatorsLoaded');
                   }
                 }
               }
@@ -893,7 +165,7 @@
                 script.onload = moduleLoadedCallback;
                 script.src = scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' );
                 script.onerror = function() {
-                  _warn('Unable to load form validation module '+scriptUrl);
+                  $.formUtils.warn('Unable to load form validation module '+scriptUrl);
                 };
                 script.onreadystatechange = function () {
                   // IE 7 fix
@@ -937,6 +209,21 @@
     },
 
     /**
+     * Warn user via the console if available
+     */
+    warn: function(msg) {
+      if( 'console' in window ) {
+        if( typeof window.console.warn === 'function' ) {
+          window.console.warn(msg);
+        } else if( typeof window.console.log === 'function' ) {
+          window.console.log(msg);
+        }
+      } else {
+        alert(msg);
+      }
+    },
+
+    /**
      * Validate the value of given element according to the validation rules
      * found in the attribute data-validation. Will return an object representing
      * a validation result, having the props shouldChangeDisplay, isValid and errorMsg
@@ -954,18 +241,18 @@
       language = language || $.formUtils.LANG;
 
       var value = $elem.val() || '',
-          result = {isValid: true, shouldChangeDisplay:true, errorMsg:''},
-          optional = $elem.valAttr('optional'),
+        result = {isValid: true, shouldChangeDisplay:true, errorMsg:''},
+        optional = $elem.valAttr('optional'),
 
-          // test if a checkbox forces this element to be validated
-          validationDependsOnCheckedInput = false,
-          validationDependentInputIsChecked = false,
-          validateIfCheckedElement = false,
+      // test if a checkbox forces this element to be validated
+        validationDependsOnCheckedInput = false,
+        validationDependentInputIsChecked = false,
+        validateIfCheckedElement = false,
 
-          // get value of this element's attribute "... if-checked"
-          validateIfCheckedElementName = $elem.valAttr('if-checked'),
-          // get expected radio button value for "if-checked" optional validation
-          validateIfCheckedElementValue = $elem.valAttr('if-checked-value');
+      // get value of this element's attribute "... if-checked"
+        validateIfCheckedElementName = $elem.valAttr('if-checked'),
+      // get expected radio button value for "if-checked" optional validation
+        validateIfCheckedElementValue = $elem.valAttr('if-checked-value');
 
 
       if ($elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs)) {
@@ -1012,7 +299,7 @@
 
       var validationRules = $elem.attr(conf.validationRuleAttribute),
 
-        // see if form element has inline err msg attribute
+      // see if form element has inline err msg attribute
         validationErrorMsg = true;
 
       if (!validationRules) {
@@ -1147,8 +434,8 @@
       year = findDateUnit('y', formatParts, matches);
 
       if ((month === 2 && day > 28 && (year % 4 !== 0 || year % 100 === 0 && year % 400 !== 0)) ||
-      (month === 2 && day > 29 && (year % 4 === 0 || year % 100 !== 0 && year % 400 === 0)) ||
-      month > 12 || month === 0) {
+        (month === 2 && day > 29 && (year % 4 === 0 || year % 100 !== 0 && year % 400 === 0)) ||
+        month > 12 || month === 0) {
         return false;
       }
       if ((this.isShortMonth(month) && day > 30) || (!this.isShortMonth(month) && day > 31) || day === 0) {
@@ -1233,8 +520,8 @@
     numericRangeCheck: function (value, rangeAllowed) {
       // split by dash
       var range = $.split(rangeAllowed),
-          // min or max
-          minmax = parseInt(rangeAllowed.substr(3), 10);
+      // min or max
+        minmax = parseInt(rangeAllowed.substr(3), 10);
 
       if( range.length === 1 && rangeAllowed.indexOf('min') === -1 && rangeAllowed.indexOf('max') === -1 ) {
         range = [rangeAllowed, rangeAllowed]; // only a number, checking agains an exact number of characters
@@ -1305,7 +592,7 @@
 
       if (this._numSuggestionElements === 0) {
         // Re-position suggestion container if window size changes
-        $window.bind('resize', function () {
+        $win.bind('resize', function () {
           $('.jquery-form-suggestions').each(function () {
             var $container = $(this),
               suggestID = $container.attr('data-suggest-container');
@@ -1537,6 +824,6 @@
       badBrazilCEPAnswer: 'The CEP entered is invalid',
       badBrazilCPFAnswer: 'The CPF entered is invalid'
     }
-  };
+  });
 
-})(jQuery);
+})(jQuery, window);

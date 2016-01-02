@@ -1,8 +1,27 @@
+
+const SRC_DIR = './form-validator/src/';
+const MODULE_DIR = './form-validator/';
+const LANG_DIR = './form-validator/lang/';
+const MAIN_PLUGIN_FILE = 'form-validator/jquery.form-validator.min.js';
+const JS_EXTENSION = '.js';
+const DEV_EXTENSION = '.dev.js';
+
 var fs = require('fs'),
   filesToBuild = {
     uglify: {},
-    concat: {},
+    concat: {
+      main:{
+        src:[SRC_DIR+'core-validators.js'],
+        dest: MAIN_PLUGIN_FILE
+      }
+    },
     devFiles: []
+  },
+  isJavascriptFile = function(fileName) {
+    return fileName.substr(-3) == JS_EXTENSION;
+  },
+  isDevFile = function(fileName) {
+    return fileName.substr(-1 * DEV_EXTENSION.length) == DEV_EXTENSION;
   },
   readFile = function (file) {
     return fs.readFileSync(file, 'utf-8');
@@ -13,19 +32,28 @@ var fs = require('fs'),
 
 module.exports = function (grunt) {
 
-  // Gather up all js files
-  ['form-validator/', 'form-validator/lang/'].forEach(function (path) {
+  // Gather up all module and language files
+  [MODULE_DIR, LANG_DIR].forEach(function (path) {
     fs.readdirSync(path).forEach(function (fileName) {
-      if (fileName.substr(-7) == '.dev.js') {
-        var name = fileName.substr(0, fileName.length - 7);
-        filesToBuild.uglify[path + name + '.js'] = [path + name + '.js'];
+      if (isDevFile(fileName)) {
+        var name = fileName.substr(0, fileName.length - DEV_EXTENSION.length),
+          fullPath = path + name + JS_EXTENSION;
+
+        filesToBuild.uglify[fullPath] = [fullPath];
         filesToBuild.concat['file' + name] = {
           src: [path + fileName],
-          dest: path + name + '.js'
+          dest: path + name + JS_EXTENSION
         };
         filesToBuild.devFiles.push(path + fileName);
       }
     });
+  });
+  // Gather up all source files that will added to minified core library
+  fs.readdirSync(SRC_DIR).forEach(function (fileName) {
+    var fullPath = SRC_DIR + fileName;
+    if (isJavascriptFile(fileName) && filesToBuild.concat.main.src.indexOf(fullPath) == -1) {
+      filesToBuild.concat.main.src.unshift(fullPath);
+    }
   });
 
   // Add options for concat ang ugligy
@@ -36,12 +64,8 @@ module.exports = function (grunt) {
     banner: "<%= meta.banner %>"
   };
 
-  // Add main script to concat/uglify
-  filesToBuild.uglify['form-validator/jquery.form-validator.min.js'] = 'form-validator/jquery.form-validator.min.js';
-  filesToBuild.concat.main = {
-    src: ['form-validator/jquery.form-validator.js', 'form-validator/jquery.form-validator-default.js'],
-    dest: 'form-validator/jquery.form-validator.min.js'
-  };
+  // Add main script to uglify
+ // filesToBuild.uglify[MAIN_PLUGIN_FILE] = MAIN_PLUGIN_FILE;
 
   grunt.initConfig({
 
@@ -59,14 +83,12 @@ module.exports = function (grunt) {
       " */\n"
     },
 
-    // Concat definitions. The only purpose of this
-    // is to create a distribution file out
-    // of files name *.dev.js
+    // Concat definitions.
     concat: filesToBuild.concat,
 
     // Lint definitions
     jshint: {
-      files: ["form-validator/*.dev.js", "form-validator/jquery.form-validator.js"],
+      files: [MODULE_DIR+"*"+DEV_EXTENSION, SRC_DIR+"*.js"],
       options: {
         jshintrc: ".jshintrc"
       }
@@ -79,15 +101,17 @@ module.exports = function (grunt) {
     // Better than calling grunt a million times
     // (call 'grunt watch')
     watch: {
-      files: ['form-validator/*'],
+      files: [SRC_DIR+'/*', LANG_DIR+'/*', MODULE_DIR+'/*'],
       tasks: ['build'],
       options : { nospawn : true }
     },
 
+    // Unit tests
     qunit: {
       all: ['test/qunit.html']
     },
 
+    // Standalone servers
     connect: {
       server: {
         options: {
@@ -117,15 +141,22 @@ module.exports = function (grunt) {
     }
 
     grunt.log.writeln('* Moving from version ' + currentVersion + ' to ' + newVersion);
+    var fromVersion = '@version ' + currentVersion,
+      toVersion = '@version ' + newVersion;
+
 
     // replace version in config files and dev-files
-    replaceInFile('form-validator/jquery.form-validator.min.js', '@version ' + currentVersion, '@version ' + newVersion);
-    replaceInFile('form-validator/jquery.form-validator.js', '@version ' + currentVersion, '@version ' + newVersion);
+    fs.readdirSync(SRC_DIR).forEach(function(file) {
+      if (isJavascriptFile(file)) {
+        replaceInFile(SRC_DIR+file, fromVersion, toVersion);
+      }
+    });
+    filesToBuild.devFiles.forEach(function (filePath) {
+      replaceInFile(filePath, fromVersion, toVersion);
+    });
+
     replaceInFile('package.json', '"version": "' + currentVersion + '"', '"version": "' + newVersion + '"');
     replaceInFile('formvalidator.jquery.json', '"version": "' + currentVersion + '"', '"version": "' + newVersion + '"');
-    filesToBuild.devFiles.forEach(function (filePath) {
-      replaceInFile(filePath, '@version ' + currentVersion, '@version ' + newVersion);
-    });
 
     // Set new version globally (can later on be used by concat/uglify)
     pkg.version = newVersion;

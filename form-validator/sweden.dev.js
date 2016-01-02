@@ -13,7 +13,7 @@
  *
  * @website http://formvalidator.net/#swedish-validators
  * @license MIT
- * @version 2.2.117
+ * @version 2.2.135
  */
 (function($, window) {
 
@@ -44,7 +44,7 @@
 
             window.ssnGender = ( parseInt( (RegExp.$4).substring(2,3) ) % 2 ) === 0 ? 'female':'male';
 
-            var months = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+            var months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
             if (year % 400 === 0 || year % 4 === 0 && year % 100 !== 0) {
                 months[1] = 29;
             }

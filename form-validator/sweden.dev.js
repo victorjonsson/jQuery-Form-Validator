@@ -13,7 +13,7 @@
  *
  * @website http://formvalidator.net/#swedish-validators
  * @license MIT
- * @version 2.2.135
+ * @version 2.2.136
  */
 (function($, window) {
 

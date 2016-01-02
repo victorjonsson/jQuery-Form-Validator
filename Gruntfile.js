@@ -65,7 +65,7 @@ module.exports = function (grunt) {
   };
 
   // Add main script to uglify
- // filesToBuild.uglify[MAIN_PLUGIN_FILE] = MAIN_PLUGIN_FILE;
+  filesToBuild.uglify[MAIN_PLUGIN_FILE] = MAIN_PLUGIN_FILE;
 
   grunt.initConfig({
 

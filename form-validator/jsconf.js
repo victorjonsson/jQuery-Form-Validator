@@ -3,60 +3,6 @@
  *
  *  @author Victor Jonsson, http://victorjonsson.se
  *  @license MIT
- *  @version 2.2.135
+ *  @version 2.2.136
  */
-/**
- * jQuery Form Validator Module: JSconf
- * ------------------------------------------
- * Created by Victor Jonsson <http://www.victorjonsson.se>
- *
- * This module makes it possible to configure form validation using javascript
- *
- * @website http://formvalidator.net/#location-validators
- * @license MIT
- * @version 2.2.135
- */
-(function($) {
-
-  'use strict';
-
-  $.setupValidation = function(conf) {
-    var $forms = $(conf.form || 'form');
-    $.each(conf.validate || conf.validation || {}, function(elemRef, attr) {
-        var $elem;
-        if ( elemRef[0] === '#' ) {
-          $elem = $(elemRef);
-        }
-        else if ( elemRef[0] === '.' ) {
-          $elem = $forms.find(elemRef);
-        }
-        else {
-          $elem = $forms.find('*[name="' +elemRef+ '"]');
-        }
-
-        $elem.attr('data-validation', attr.validation);
-
-        $.each(attr, function(name, val) {
-          if( name !== 'validation' && val !== false) {
-            if( val === true ) {
-              val = 'true';
-            }
-            if( name[0] === '_' ) {
-                name = name.substring(1);
-                if( val === false ) {
-                    $elem.removeAttr(name);
-                } else {
-                    $elem.attr(name, val);
-                }
-            } else {
-                $elem.valAttr(name, val);
-            }
-          }
-        });
-    });
-
-    $.validate(conf);
-
-  };
-
-})(jQuery);
+!function(a){"use strict";a.setupValidation=function(b){var c=a(b.form||"form");a.each(b.validate||b.validation||{},function(b,d){var e;e="#"===b[0]?a(b):c.find("."===b[0]?b:'*[name="'+b+'"]'),e.attr("data-validation",d.validation),a.each(d,function(a,b){"validation"!==a&&b!==!1&&(b===!0&&(b="true"),"_"===a[0]?(a=a.substring(1),b===!1?e.removeAttr(a):e.attr(a,b)):e.valAttr(a,b))})}),a.validate(b)}}(jQuery);

@@ -121,7 +121,7 @@ Read the documentation for the UK module at [http://formvalidator.net/#uk-valida
 ### Module: brazil
  * **brphone** — Validate a brazilian telephone number
  * **cep**
- * **cpf** 
+ * **cpf**
 
 ### Module: sanitation
  * **trim**
@@ -264,6 +264,7 @@ it calls jQ func **$.formUtils.validateInput** to validate the single input when
 - Now possible to declare attributes not prefixed with data-validation in jsconf module
 - All inputs gets sanitized on page load when using sanitation module
 - Allow dates to omit leading zero using `data-validation-require-leading-zero="false"`
+- Module toggleDisabled now acts on value change, not only mouse click
 
 #### 2.2.8
 - The plugin is now again possible to install via bower.

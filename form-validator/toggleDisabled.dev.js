@@ -8,7 +8,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.137
+ * @version 2.2.138
  */
 (function($, window, undefined) {
 
@@ -37,7 +37,7 @@
       $formsToDisable
         .addClass(showErrorDialogs ? 'disabled-with-errors' : 'disabled-without-errors')
         .find('*[data-validation]')
-          .attr('data-validation-event','keyup')
+          .attr('data-validation-event','keyup change')
           .on('validation', function(evt, valid) {
             if( !isCheckingIfFormValid ) {
               isCheckingIfFormValid = true;

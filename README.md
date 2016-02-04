@@ -242,15 +242,6 @@ You can cause an element to be validated upon the firing of an event, by attachi
 This plugin comes with translations for English, German, French Spanish and Swedish. You can also choose to override the error
 dialogs yourself. Here you can read more about [localization](http://formvalidator.net/#localization)
 
-## Program Flow
-Form submit() event is bound to jQ func **validateForm()** when the form is submitted, it calls
-jQ func **$.formUtils.validateInput**, which calls **validatorFunction** for the specific validation
-rule assigned to the input element. If a validation fails, error messages are assigned and displayed
-as configured. If **validateOnBlur** is set to true, jQ finds all form input elements with the
-data-validation attribute and binds their onBlur event to call the function **validateInputOnBlur**.
-it calls jQ func **$.formUtils.validateInput** to validate the single input when blurred.
-
-
 ## Changelog
 
 #### 2.3.0 (unreleased)

@@ -380,7 +380,7 @@
         }
         // Customize display message
         else if (conf.errorMessagePosition === 'custom') {
-          _warn('Use deprecated function errorMessageCustom');
+          $.formUtils.warn('Use deprecated function errorMessageCustom');
           if (typeof conf.errorMessageCustom === 'function') {
             conf.errorMessageCustom($form, language.errorTitle, errorMessages, conf);
           }

@@ -14,7 +14,7 @@
  *
  * @website http://formvalidator.net/#security-validators
  * @license MIT
- * @version 2.2.141
+ * @version 2.2.142
  */
 (function($, window) {
 
@@ -431,12 +431,11 @@
             else if (backendInvalid) {
                 return false;
             }
-            else if($.formUtils.eventType === 'keyup') {
+            else if($.formUtils.eventType === 'keyup' && !$.formUtils.isValidatingEntireForm) {
                 return null;
             }
 
             if ($.formUtils.isValidatingEntireForm) {
-
                 $form
                     .bind('submit', disableFormSubmit)
                     .addClass('validating-server-side')
@@ -465,7 +464,7 @@
                 return null;
 
             } else {
-                // validaiton on blur
+                // validation on blur
                 $form.addClass('validating-server-side');
                 $el.addClass('validating-server-side');
                 requestServer(serverURL, $el, val, conf, function() {

@@ -17,7 +17,7 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.142
+ * @version 2.2.144
  */
 (function($, window) {
 

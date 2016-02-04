@@ -24,11 +24,11 @@
     function input(val, dataValidationAttr, elAttr) {
         if(!elAttr)
             elAttr = {};
-        if( typeof dataValidationAttr == 'string') {
+        if( typeof dataValidationAttr === 'string') {
             elAttr['data-validation'] = dataValidationAttr;
         } else if(dataValidationAttr) {
             $.each(dataValidationAttr, function(x, val) {
-                if( x == '' ) {
+                if( x === '' ) {
                     elAttr['data-validation'] = val;
                 } else {
                     elAttr['data-validation-'+x] = val;
@@ -51,31 +51,18 @@
         var result = $.formUtils.validateInput($el, $.formUtils.LANG, $.formUtils.defaultConfig(), $form);
 
         var message;
-        if( typeof obj.val == 'string' ) {
+        if (typeof obj.val === 'string' ) {
             message  = 'Check that "'+obj.val+'" is '+(obj.isValid ? 'valid':'invalid');
-        } else {
+        }
+        else {
             message = 'Check that input[value="'+obj.val.attr('value')+'"] is '+(obj.isValid ? 'valid':'invalid');
         }
 
-        if( !result.shouldChangeDisplay && obj.isValid ) {
-            equal(
-                null,
-                null,
-                message
-            );
+        if (!result.shouldChangeDisplay && obj.isValid ) {
+            equal(null, null, message);
         }
-        else if( $el.attr('data-validation-optional') && !$el.val() ) {
-            equal(
-                null,
-                null,
-                message
-            );
-        } else {
-            equal(
-                result.isValid,
-                obj.isValid,
-                message
-            );
+        else {
+            equal(result.isValid, obj.isValid, message);
         }
     }
 
@@ -460,35 +447,39 @@
         });
 
         /*
-         * NUMBER VALIDATION
+         * NUMBER VALIDATION type=text (HTML4)
          */
-        test("Number validation", function() {
+        test('Number validation for <input type=text"/>', function() {
 
             clearForm();
 
             var links = [
-                {val:'123', isValid:true},
-                {val:'', isValid:false},
-                {val:'asdfsd', isValid:false},
-                {val:'-123', isValid:false},
-                {val:input('-123', {'allowing':'negative', '':'number'}), isValid:true},
-                {val:'1.032', isValid:false},
-                {val:input('1.023', {'allowing':'float', '':'number'}), isValid:true},
-                {val:'-1.032', isValid:false},
-                {val:input('-1.023', {'allowing':'float,negative', '':'number'}), isValid:true},
-                {val:input('1.0234', {'allowing':'float,negative', '':'number'}), isValid:true},
-                {val:input('1.0235', {'allowing':'float,negative,number', '':'number'}), isValid:true},
-                {val:input('1.0236', {'allowing':'float,negative,number', 'decimal-separator':',', '':'number'}), isValid:false},
-                {val:input('1,023', {'allowing':'float,negative,number', 'decimal-separator':',', '':'number'}), isValid:true},
-                {val:'123', isValid:true},
-                {val:input('12', {'allowing':'range[1;10]', '':'number'}), isValid:false},
-                {val:input('-1', {'allowing':'range[1;10]', '':'number'}), isValid:false},
-                {val:input('1', {'allowing':'range[1;10]', '':'number'}), isValid:true},
-                {val:input('10', {'allowing':'range[1;10]', '':'number'}), isValid:true},
-                {val:input('5', {'allowing':'range[1;10]', '':'number'}), isValid:true},
-                {val:input('-1', {'allowing':'range[-10;10],negative', '':'number'}), isValid:true},
-                {val:input('0.0001', {'allowing':'range[0.05;0.9]', '':'number'}), isValid:false},
-                {val:input('0.06', {'allowing':'range[0.05;0.9],float', '':'number'}), isValid:true}
+                {val: '123',    isValid: true},
+                {val: '',       isValid: false},
+                {val: 'asdfsd', isValid: false},
+                {val: '-123',   isValid: false},
+                {val: '1.032',  isValid: false},
+                {val: '-1.032', isValid: false},
+                {val: input('-123'  , {'allowing': 'negative', '': 'number'}),                isValid: true},
+                {val: input('-1',     {'allowing': 'range[-10;10],negative', '': 'number'}), isValid: true},
+              //Test ranges
+                {val: input('12',     {'allowing': 'range[1;10]', '':'number'}), isValid: false},
+                {val: input('-1',     {'allowing': 'range[1;10]', '':'number'}), isValid: false},
+                {val: input('1',      {'allowing': 'range[1;10]', '':'number'}), isValid: true},
+                {val: input('10',     {'allowing': 'range[1;10]', '':'number'}), isValid: true},
+                {val: input('5',      {'allowing': 'range[1;10]', '':'number'}), isValid: true},
+                {val: input('',       {'optional': true, '': 'number' }),        isValid: true},
+              //Test floats
+                {val: input('1.023' , {'allowing': 'float', '': 'number'}),      isValid: true},
+                {val: input('-1.023', {'allowing': 'float,negative', '': 'number'}),        isValid: true},
+                {val: input('1.0234', {'allowing': 'float,negative', '': 'number'}),        isValid: true},
+                {val: input('1.0235', {'allowing': 'float,negative,number', '': 'number'}), isValid: true},
+                {val: input('1.0236', {'allowing': 'float,negative,number', 'decimal-separator': ',',
+                            '': 'number'}),                                                  isValid: false},
+                {val: input('1,023',  {'allowing': 'float,negative,number', 'decimal-separator':',',
+                            '': 'number'}),                                                  isValid: true},
+                {val: input('0.0001', {'allowing': 'range[0.05;0.9]', '': 'number'}),        isValid: false},
+                {val: input('0.06',   {'allowing': 'range[0.05;0.9],float', '': 'number'}),  isValid: true}
             ];
 
             $.each(links, function(i, obj) {
@@ -496,6 +487,49 @@
             });
         });
 
+        /**
+         *  NUMBER VALIDATION for type = "number" (HTML5)
+         */
+        test('Number validation for <input type="number"/>', function () {
+          clearForm();
+          var links = [];
+          var numberType = {type: 'number'};
+          links.push(
+            {val: input('123',    {'': 'number'}, numberType), isValid: true},
+            {val: input('',       {'': 'number'}, numberType), isValid: false},
+            {val: input('asdfsd', {'': 'number'}, numberType), isValid: false},
+            {val: input('-123',   {'': 'number'}, numberType), isValid: false},
+            {val: input('1.032',  {'': 'number'}, numberType), isValid: false},
+            {val: input('-1.032', {'': 'number'}, numberType), isValid: false},
+            {val: input('-123'  , {'allowing': 'negative', '': 'number'}, numberType),   isValid: true},
+            {val: input('',       {'optional': true, '': 'number' }, numberType),  isValid: true},
+            //Test ranges
+            {val: input('12',     {'allowing': 'range[1;10]', '':'number'}, numberType), isValid: false},
+            {val: input('-1',     {'allowing': 'range[1;10]', '':'number'}, numberType), isValid: false},
+            {val: input('1',      {'allowing': 'range[1;10]', '':'number'}, numberType), isValid: true},
+            {val: input('10',     {'allowing': 'range[1;10]', '':'number'}, numberType), isValid: true},
+            {val: input('5',      {'allowing': 'range[1;10]', '':'number'}, numberType), isValid: true},
+            {val: input('-1',     {'allowing': 'range[-10;10],negative', '': 'number'}, numberType), isValid: true},
+            //Test floats
+            {val: input('1.023' , {'allowing': 'float', '': 'number'}, numberType),      isValid: true},
+            {val: input('-1.023', {'allowing': 'float,negative', '': 'number'}, numberType),        isValid: true},
+            {val: input('1.0234', {'allowing': 'float,negative', '': 'number'}, numberType),        isValid: true},
+            {val: input('1.0235', {'allowing': 'float,negative,number', '': 'number'}, numberType), isValid: true},
+            {val: input('1.0236', {'allowing': 'float,negative,number', 'decimal-separator': ',',
+                        '': 'number'}, numberType),                                                 isValid: false},
+            {val: input('0.0001', {'allowing': 'range[0.05;0.9]', '': 'number'}, numberType),       isValid: false},
+            {val: input('0.06',   {'allowing': 'range[0.05;0.9],float', 'decimal-separator': '.',
+                                   '': 'number'}, numberType), isValid: true}
+          );
+          /* Tests that fail with HTML input type number because of bugs in how browsers handle decimal separators:
+           {val: input('1,023',  {'allowing': 'float,negative,number', 'decimal-separator':',',
+                 '': 'number'}, {'lang': 'no', type: 'number'}),                                    isValid: true},
+           */
+
+          $.each(links, function(i, obj) {
+            runTest(obj, 'number');
+          });
+        });
         /*
          * DATE VALIDATION
          */

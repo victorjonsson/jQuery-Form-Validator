@@ -68,10 +68,14 @@
         },
         numberFormat : function(val, $input) {
           if ( 'numeral' in window ) {
+            //If this has been previously formatted, it needs to be unformatted first before being reformatted.
+            //Else numeral will fail
+            val = numeral().unformat(val);
             val = numeral(val).format( $input.attr('data-sanitize-number-format') );
           }
           else {
-            throw new Error('Using sanitation function "numberFormat" requires that you include numeraljs (http://http://numeraljs.com/)');
+            throw new Error('Using sanitation function "numberFormat" requires that you include numeral.js ' +
+              '(http://numeraljs.com/)');
           }
           return val;
         },

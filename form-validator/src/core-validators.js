@@ -165,6 +165,19 @@
           steps = $el.valAttr('step') || '',
           allowsSteps = false;
 
+        var sanitize = $el.attr('data-sanitize') || '';
+        var isFormattedWithNumeral = sanitize.split(/\s/).find(function (name) {
+          return (name === 'numberFormat');
+        });
+        if (isFormattedWithNumeral) {
+          if (!window.numeral) {
+            throw new ReferenceError('The data-sanitize value numberFormat cannot be used without the numeral' +
+              ' library. Please see Data Validation in http://www.formvalidator.net for more information.');
+          }
+          //Unformat input first, then convert back to String
+          val = String(numeral().unformat(val));
+        }
+
         if (allowing.indexOf('number') === -1) {
           allowing += ',number';
         }

@@ -56,7 +56,7 @@ module.exports = function (grunt) {
     }
   });
 
-  // Add options for concat ang ugligy
+  // Add options for concat and uglify
   filesToBuild.concat.options = {
     banner: "<%= meta.banner %>"
   };
@@ -174,6 +174,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask("build", ["version", "concat", "uglify"]);
   grunt.registerTask('test', ['concat', 'jshint', 'qunit']);
+  grunt.registerTask('test-uglify', ['concat', 'uglify', 'jshint', 'qunit']);
   grunt.registerTask("default", ["test", "build"]);
 
 };

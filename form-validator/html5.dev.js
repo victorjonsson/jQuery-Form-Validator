@@ -119,7 +119,9 @@
                 }
 
                 foundHtml5Rule = true;
-                $input.attr('data-validation', validation.join(' '));
+
+                var validationRules = ($input.attr('data-validation') || '') +' '+ validation.join(' ');
+                $input.attr('data-validation', $.trim(validationRules));
 
                 $.each(attrs, function(attrName, attrVal) {
                   $input.attr(attrName, attrVal);

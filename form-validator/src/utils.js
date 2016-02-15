@@ -296,7 +296,7 @@
       // If the input fails browser validation, the browser sets the input value equal to an empty string.
       // Therefore, we cannot distinguish (apart from hacks) between an empty input type="text" and one with a
       // value that can't be parsed by the browser.
-      
+
       // validation checkpoint
       // if empty AND optional attribute is present
       // OR depending on a checkbox being checked AND checkbox is checked, return true
@@ -366,7 +366,10 @@
           }
 
         } else {
-          throw new Error('Using undefined validator "' + rule + '"');
+
+          throw new Error('Using undefined validator "' + rule +
+            '". Maybe you have forgotten to load the module that "' + rule +'" belongs to?');
+
         }
 
       }, ' ');

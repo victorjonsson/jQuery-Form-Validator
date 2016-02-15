@@ -52,19 +52,18 @@
           .remove();
       });
     },
-    setInlineErrorMessage: function ($input, mess, conf, $messageContainer) {
+    setInlineErrorMessage: function ($input, errorMsg, conf, $messageContainer) {
       var custom = document.getElementById($input.attr('name') + '_err_msg'),
         setErrorMessage = function ($elem) {
           $.formUtils.$win.trigger('validationErrorDisplay', [$input, $elem]);
-          $elem.html(mess);
-        },
-        $mess = {};
+          $elem.html(errorMsg);
+        };
 
       if (custom) {
         $.formUtils.warn('Using deprecated element reference ' + custom.id);
         $messageContainer = $(custom);
       } else if (typeof $messageContainer === 'function') {
-        $messageContainer = $messageContainer($input, mess, conf);
+        $messageContainer = $messageContainer($input, errorMsg, conf);
       }
 
       if (typeof $messageContainer === 'object') {
@@ -76,28 +75,28 @@
           }
         });
         if ($found) {
-          if (!mess) {
+          if (!errorMsg) {
             $found.remove();
           } else {
             setErrorMessage($found);
           }
-        } else {
-          $mess = $('<div class="' + conf.errorMessageClass + '"></div>');
-          setErrorMessage($mess);
-          $mess[0].inputReferer = $input[0];
-          $messageContainer.prepend($mess);
+        } else if(errorMsg !== '') {
+          var $message = $('<div class="' + conf.errorMessageClass + ' alert"></div>');
+          setErrorMessage($message);
+          $message[0].inputReferer = $input[0];
+          $messageContainer.prepend($message);
         }
       }
       else {
-        var $parent = this.getParentContainer($input);
-        $mess = $parent.find('.' + conf.errorMessageClass + '.help-block');
+        var $parent = this.getParentContainer($input),
+          $message = $parent.find('.' + conf.errorMessageClass + '.help-block');
 
-        if ($mess.length === 0) {
-          $mess = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
-          $mess.appendTo($parent);
+        if ($message.length === 0) {
+          $message = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);
+          $message.appendTo($parent);
         }
 
-        setErrorMessage($mess);
+        setErrorMessage($message);
       }
     },
     setTemplateMessage: function ($form, title, errorMessages, conf) {

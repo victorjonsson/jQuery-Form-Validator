@@ -179,7 +179,9 @@
     }
 
     language = $.extend({}, $.formUtils.LANG, language || {});
+
     $.formUtils.errorDialogs.removeErrorStyling(this, conf);
+
     var $elem = this,
       $form = $elem.closest('form'),
       result = $.formUtils.validateInput(

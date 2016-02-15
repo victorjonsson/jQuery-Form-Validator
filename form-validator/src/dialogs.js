@@ -57,7 +57,8 @@
         setErrorMessage = function ($elem) {
           $.formUtils.$win.trigger('validationErrorDisplay', [$input, $elem]);
           $elem.html(errorMsg);
-        };
+        },
+        $message;
 
       if (custom) {
         $.formUtils.warn('Using deprecated element reference ' + custom.id);
@@ -81,15 +82,15 @@
             setErrorMessage($found);
           }
         } else if(errorMsg !== '') {
-          var $message = $('<div class="' + conf.errorMessageClass + ' alert"></div>');
+          $message = $('<div class="' + conf.errorMessageClass + ' alert"></div>');
           setErrorMessage($message);
           $message[0].inputReferer = $input[0];
           $messageContainer.prepend($message);
         }
       }
       else {
-        var $parent = this.getParentContainer($input),
-          $message = $parent.find('.' + conf.errorMessageClass + '.help-block');
+        var $parent = this.getParentContainer($input);
+        $message = $parent.find('.' + conf.errorMessageClass + '.help-block');
 
         if ($message.length === 0) {
           $message = $('<span></span>').addClass('help-block').addClass(conf.errorMessageClass);

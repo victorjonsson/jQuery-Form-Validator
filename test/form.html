@@ -265,6 +265,9 @@
       <div class="form-group">
             <label class="control-label">Number auto formatted '0,0.0000'</label>
             <input name="numeral" data-sanitize="numberFormat" data-sanitize-number-format="0,0.0000" />
+            <label class="control-label">Number format with numeral</label>
+            <input type="text" name="amount" data-validation="number" data-validation-allowing="float"
+                   data-sanitize="numberFormat"  data-sanitize-number-format="0.0,0">
         </div>
         <div class="form-group">
             <label class="control-label">Alphanumeric (will only be validated if the checkbox is checked)</label>
@@ -425,7 +428,6 @@
     window.applyValidation(true, '#form-a', 'top');
     window.applyValidation(false, '#form-b', 'element');
     window.applyValidation(true, '#form-c', function() {
-        console.log('in here then');
         return $('#error-container');
     }, 'sanitize'+dev);
     window.applyValidation(true, '#form-d', 'element', 'html5'+dev);
@@ -449,6 +451,24 @@
             }
             console.log('Input '+this.name+' is '+validationResult);
         });
+
+  //Initialize numeral with the correct delimiters for the numberFormat sanitizer
+  numeral.language('it', {
+    delimiters: {
+      thousands: '.',
+      decimal: ','
+    },
+    abbreviations: {
+      thousand: 'k',
+      million: 'm',
+      billion: 'b',
+      trillion: 't'
+    },
+    currency: {
+      symbol: '€'
+    }
+  });
+  numeral.language('it');
 
 })(jQuery, window);
 </script>

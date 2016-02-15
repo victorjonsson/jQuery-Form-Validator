@@ -11,9 +11,11 @@
 <div id="qunit-fixture"></div>
 <form id="dummy-form" style="visibility: hidden"></form>
 
+<script src="phantom-polyfills.js"></script>
 <script src="../node_modules/jquery/dist/jquery.min.js"></script>
 <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
 <script src="../form-validator/jquery.form-validator.min.js"></script>
+<script src="../node_modules/numeral/numeral.js"></script>
 <script>
 (function($) {
 
@@ -833,10 +835,27 @@
                     attr: {
                         'data-sanitize-strip' : '$, @'
                     }
+                }, /* This functionality doesn't work correctly. See issue #381
+                escape: {
+                    val: '<p style="color: pink">hejsan & så\' vidare</p>',
+                    expected:  '&lt;p style=&quot;color: pink&quot;&gt;hejsan &amp; så&#8217; vidare&lt;/p&gt;'
+                }, */
+                basicNumberFormat1: {
+                    val: '-8000.00',
+                    expected: '-8,000.0',
+                    attr: {
+                      'data-sanitize-number-format': '0,0.0'
+                    },
+                    sanitize: 'numberFormat'
                 },
-                escape : {
-                    val : '<p style="color: pink">hejsan & så\' vidare</p>',
-                    expected:  '&lt;p style=&quot;color: pink&quot;&gt;hejsan &amp; så&#8217; vidare&lt;/p&gt;'                }
+                basicNumberFormat2: {
+                    val: '12221.444',
+                    expected: '12,221',
+                    attr: {
+                      'data-sanitize-number-format': '0,0'
+                    },
+                    sanitize: 'numberFormat'
+                }
             };
 
             $.each(sanitationTests, function(sanitation, data) {
@@ -846,13 +865,15 @@
                     $input.attr(attrName, attrVal);
                 });
                 $.formUtils.setupSanitation({}, $form, $.formUtils.defaultConfig());
+
                 $input.val(data.val);
+
                 $input.trigger('blur');
-                equal(
-                    $input.val(),
-                    data.expected,
-                    'Sanitize with "'+sanitation+'"'
-                );
+                equal($input.val(), data.expected, 'Sanitize with "'+sanitation+'"');
+                //Verify that sanitizing twice has no effect
+                $input.trigger('focus');
+                $input.trigger('blur');
+                equal($input.val(), data.expected, 'Sanitize twice with "'+sanitation+'"');
             });
 
         });

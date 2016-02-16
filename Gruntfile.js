@@ -126,8 +126,8 @@ module.exports = function (grunt) {
   });
 
   /*
-   * Change to new version or the next version number in all files
-   * containing the version definition
+   * Change to new version or the next version number. The project must be built again after this task
+   * in order for the version change to take effect.
    */
   grunt.registerTask('version', 'Bump up the version number, or change version name by adding --new-version=3.1.0', function () {
     var pkg = grunt.config.get('pkg'),
@@ -142,19 +142,6 @@ module.exports = function (grunt) {
     }
 
     grunt.log.writeln('* Moving from version ' + currentVersion + ' to ' + newVersion);
-    var fromVersion = '@version ' + currentVersion,
-      toVersion = '@version ' + newVersion;
-
-
-    // replace version in config files and dev-files
-    fs.readdirSync(SRC_DIR).forEach(function(file) {
-      if (isJavascriptFile(file)) {
-        replaceInFile(SRC_DIR+file, fromVersion, toVersion);
-      }
-    });
-    filesToBuild.devFiles.forEach(function (filePath) {
-      replaceInFile(filePath, fromVersion, toVersion);
-    });
 
     replaceInFile('package.json', '"version": "' + currentVersion + '"', '"version": "' + newVersion + '"');
     replaceInFile('formvalidator.jquery.json', '"version": "' + currentVersion + '"', '"version": "' + newVersion + '"');

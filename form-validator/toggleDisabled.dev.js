@@ -8,7 +8,6 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.138
  */
 (function($, window, undefined) {
 

@@ -23,7 +23,6 @@
  *
  * @website http://formvalidator.net/
  * @license MIT
- * @version 2.2.163
  */
 (function($, window) {
 
@@ -67,6 +66,9 @@
           return this.insert(val, $input, 'left');
         },
         numberFormat : function(val, $input) {
+          if (val.length === 0) {
+            return val;
+          }
           if ( 'numeral' in window ) {
             //If this has been previously formatted, it needs to be unformatted first before being reformatted.
             //Else numeral will fail
@@ -74,7 +76,7 @@
             val = numeral(val).format( $input.attr('data-sanitize-number-format') );
           }
           else {
-            throw new Error('Using sanitation function "numberFormat" requires that you include numeral.js ' +
+            throw new ReferenceError('Using sanitation function "numberFormat" requires that you include numeral.js ' +
               '(http://numeraljs.com/)');
           }
           return val;

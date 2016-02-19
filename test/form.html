@@ -276,13 +276,21 @@
                    data-sanitize="numberFormat"  data-sanitize-number-format="0,0.0">
         </div>
         <div class="form-group">
-            <label class="control-label">Alphanumeric (will only be validated if the checkbox is checked)</label>
+            <label class="control-label">Alphanumeric (will only be validated if checkbox below is checked)</label>
             <input name="test2"
                     data-validation="alphanumeric"
-                    data-validation-error-msg="Invalid..."
-                    data-validation-if-checked="checker" />
+                    data-validation-error-msg="Invalid above..."
+                    data-validation-depends-on="checker" />
             <br />
-            <input type="checkbox" name="checker" />
+            Checkbox <input type="checkbox" name="checker" value="99" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Alphanumeric (will only be validated if checkbox above is checked)</label>
+            <input name="test2"
+                    data-validation="alphanumeric"
+                    data-validation-error-msg="Invalid below..."
+                    data-validation-depends-on="checker"
+                    data-validation-depends-on-value="99" />
         </div>
         <div id="error-container">
 

@@ -1,7 +1,7 @@
 /**
  *  JQUERY-FORM-VALIDATOR
  *
- *  @version 2.2.164
+ *  @version 2.2.186
  *  @website http://formvalidator.net/
  *  @author Victor Jonsson, http://victorjonsson.se
  *  @license MIT

@@ -5,7 +5,19 @@
 
   'use strict';
 
-  var $win = $(window);
+  var $win = $(window),
+      getInputValue = function(query, $parent) {
+        var $inputs = $parent ? $parent.find(query) : query;
+        if ($inputs.length > 0 ) {
+          var type = $inputs.eq(0).attr('type');
+          if (type === 'radio' || type === 'checkbox') {
+            return $inputs.filter(':checked').val();
+          } else {
+            return $inputs.val();
+          }
+        }
+        return false;
+      };
 
   $.formUtils = $.extend($.formUtils || {}, {
 
@@ -240,51 +252,32 @@
       conf = conf || $.formUtils.defaultConfig();
       language = language || $.formUtils.LANG;
 
-      var value = $elem.val() || '',
+      var value = getInputValue($elem),
         result = {isValid: true, shouldChangeDisplay:true, errorMsg:''},
-        optional = $elem.valAttr('optional'),
+        inputIsOptional = $elem.valAttr('optional'),
+        skipBecauseDependingInputIsEmpty = false,
+        skipBecauseItsEmpty = !value && inputIsOptional === 'true',
+        skipBecauseInputIsHidden = $elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs),
+        validationDependsOn = $elem.valAttr('depends-on') || $elem.valAttr('if-checked');
 
-      // test if a checkbox forces this element to be validated
-        validationDependsOnCheckedInput = false,
-        validationDependentInputIsChecked = false,
-        validateIfCheckedElement = false,
-
-      // get value of this element's attribute "... if-checked"
-        validateIfCheckedElementName = $elem.valAttr('if-checked'),
-      // get expected radio button value for "if-checked" optional validation
-        validateIfCheckedElementValue = $elem.valAttr('if-checked-value');
-
-
-      if ($elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs)) {
+      if (skipBecauseInputIsHidden) {
         result.shouldChangeDisplay = false;
         return result;
       }
 
-      // make sure we can proceed
-      if (validateIfCheckedElementName != null) {
+      // Whether or not this input should be validated depends on if another input has a value
+      if (validationDependsOn) {
 
         // Set the boolean telling us that the validation depends
         // on another input being checked
-        validationDependsOnCheckedInput = true;
+        var valueOfDependingInput = getInputValue('input[name="' + validationDependsOn + '"]', $form),
+          requiredValueOfDependingInput = $elem.valAttr('depends-on-value') || $elem.valAttr('if-checked-value'),
+          dependingInputHasRequiredValue = !requiredValueOfDependingInput || requiredValueOfDependingInput === valueOfDependingInput;
 
-        // select the checkbox type element in this form
-        validateIfCheckedElement = $form.find('input[name="' + validateIfCheckedElementName + '"]');
-
-        // test if check input value
-        if (validateIfCheckedElementValue != null) {
-          validateIfCheckedElement.each(function(index, el) {
-            // test if it's property "checked" is checked and value equals expected value
-            if ($(el).prop('checked') && $(el).val() === validateIfCheckedElementValue) {
-              validationDependentInputIsChecked = true;
-            }
-          });
-        }
-        else {
-          // test if it's property "checked" is checked
-          if (validateIfCheckedElement.prop('checked')) {
-            // set value for validation checkpoint
-            validationDependentInputIsChecked = true;
-          }
+        if (valueOfDependingInput && dependingInputHasRequiredValue) {
+          skipBecauseDependingInputIsEmpty = false;
+        } else {
+          skipBecauseDependingInputIsEmpty = true;
         }
       }
 
@@ -297,10 +290,7 @@
       // Therefore, we cannot distinguish (apart from hacks) between an empty input type="text" and one with a
       // value that can't be parsed by the browser.
 
-      // validation checkpoint
-      // if empty AND optional attribute is present
-      // OR depending on a checkbox being checked AND checkbox is checked, return true
-      if ((!value && optional === 'true') || (validationDependsOnCheckedInput && !validationDependentInputIsChecked)) {
+      if (skipBecauseItsEmpty || skipBecauseDependingInputIsEmpty) {
         result.shouldChangeDisplay = conf.addValidClassOnAll;
         return result;
       }
@@ -317,7 +307,7 @@
 
       // Filter out specified characters
       var ignore = $elem.valAttr('ignore');
-      if( ignore ) {
+      if (ignore) {
         $.each(ignore.split(''), function(i, char) {
           value = value.replace(new RegExp('\\'+char), '');
         });

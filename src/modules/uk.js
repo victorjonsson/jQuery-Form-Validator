@@ -1,16 +1,24 @@
 /**
- * jQuery Form Validator Module: Security
+ * jQuery Form Validator Module: UK
  * ------------------------------------------
  * Created by Victor Jonsson <http://www.victorjonsson.se>
  *
  * This form validation module adds validators typically used on
  * websites in the UK. This module adds the following validators:
  *  - ukvatnumber
+ *  - utr
  *
  * @website http://formvalidator.net/#uk-validators
  * @license MIT
  */
-$.formUtils.addValidator({
+(function($) {
+
+	'use strict';
+
+	/**
+	 * UK VAT Validator
+	 */
+	$.formUtils.addValidator({
     name : 'ukvatnumber',
     validatorFunction : function(number) {
 
@@ -82,3 +90,49 @@ $.formUtils.addValidator({
     errorMessage : '',
     errorMessageKey: 'badUKVatAnswer'
 });
+
+	/**
+	 * UK Unique Taxpayer Reference Validator
+	 */
+	$.formUtils.addValidator({
+		name: 'ukutr',
+		validatorFunction: function (val)
+		{
+			var weights = [0, 6, 7, 8, 9, 10, 5, 4, 3, 2, 0],
+				checkDigits = [2, 1, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+				checkSum = 0,
+				utr = val + 'K';
+
+			if( /\d{10}K/.test( utr ) ){
+				for (var i = 0; i < 10; i++) {
+					checkSum += utr[ i ] * weights[ i ];
+				}
+
+				if( utr.charAt( 0 ) === checkDigits[ checkSum % 11 ]){
+					return true;
+				}
+			}
+
+			return false;
+		},
+		errorMessage: '',
+		errorMessageKey: 'badUkUtr'
+	});
+
+	/**
+	 * UK National Insurance number Validator
+	 */
+	$.formUtils.addValidator({
+		name: 'uknin',
+		validatorFunction: function(val){
+			if( /^(?!BG)(?!GB)(?!NK)(?!KN)(?!TN)(?!NT)(?!ZZ)(?:[A-CEGHJ-PR-TW-Z][A-CEGHJ-NPR-TW-Z])(?:\s*\d\s*){6}([A-D]|\s)$/i.test( val ) ){
+				return true;
+			}
+
+			return false;
+		},
+		errorMessage: '',
+		errorMessageKey: 'badUkNin'
+	});
+
+})(jQuery);

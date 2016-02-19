@@ -34,6 +34,8 @@
       badInt: 'Wprowadzono nieprawidłowy numer',
       badSecurityNumber: 'Wprowadzono niepoprawny numer ubezpieczenia społecznego',
       badUKVatAnswer: 'Wprowadzono niepoprawny brytyjski numer VAT',
+      badUKNin: 'Wprowadzono niepoprawny brytyjski numer NIP',
+      badUKUtr: 'Wprowadzono niepoprawny brytyjski numer podatnika',
       badStrength: 'Twoje hasło nie jest wystarczająco mocne',
       badNumberOfSelectedOptionsStart: 'Musisz wybrać przynajmniej ',
       badNumberOfSelectedOptionsEnd: ' odpowiedzi',

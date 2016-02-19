@@ -254,9 +254,9 @@
 
       var value = getInputValue($elem),
         result = {isValid: true, shouldChangeDisplay:true, errorMsg:''},
-        inputIsOptional = $elem.valAttr('optional'),
+        inputIsOptional = $elem.valAttr('optional') === 'true',
         skipBecauseDependingInputIsEmpty = false,
-        skipBecauseItsEmpty = !value && inputIsOptional === 'true',
+        skipBecauseItsEmpty = !value && inputIsOptional,
         skipBecauseInputIsHidden = $elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs),
         validationDependsOn = $elem.valAttr('depends-on') || $elem.valAttr('if-checked');
 

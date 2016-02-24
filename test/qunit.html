@@ -925,10 +925,8 @@
 
     }
 
-    var dev = window.location.hash.indexOf('dev') > -1 ? '.dev' : '';
-
     $.validate({
-        modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', date'+dev+', sanitize'+dev+', uk'+dev,
+        modules : 'security, location, sweden, file, date, sanitize, uk',
         onModulesLoaded: function( $form ) {
             if( window.console && window.console.log )
                 console.log('About to run all tests');

@@ -1,27 +1,23 @@
-
-const SRC_DIR = './form-validator/src/';
-const MODULE_DIR = './form-validator/';
-const LANG_DIR = './form-validator/lang/';
+//TODO: During next major version bump change to /dist. Leaving at ./form-validator for backwards
+//compabilitiy
+const DIST_DIR = './form-validator';
 const MAIN_PLUGIN_FILE = 'form-validator/jquery.form-validator.min.js';
-const JS_EXTENSION = '.js';
-const DEV_EXTENSION = '.dev.js';
+const SRC_DIR = './src';
+const MAIN_DIR = '/main/';
+const MODULE_DIR = '/modules/';
+const LANG_DIR = '/lang/';
+const CSS_FILE = 'theme-default.css';
+
 
 var fs = require('fs'),
   filesToBuild = {
     uglify: {},
     concat: {
       main:{
-        src:[SRC_DIR+'core-validators.js'],
+        src: [SRC_DIR + MAIN_DIR+'core-validators.js'],
         dest: MAIN_PLUGIN_FILE
       }
-    },
-    devFiles: []
-  },
-  isJavascriptFile = function(fileName) {
-    return fileName.substr(-3) == JS_EXTENSION;
-  },
-  isDevFile = function(fileName) {
-    return fileName.substr(-1 * DEV_EXTENSION.length) == DEV_EXTENSION;
+    }
   },
   readFile = function (file) {
     return fs.readFileSync(file, 'utf-8');
@@ -31,29 +27,38 @@ var fs = require('fs'),
   };
 
 module.exports = function (grunt) {
-
   // Gather up all module and language files
   [MODULE_DIR, LANG_DIR].forEach(function (path) {
-    fs.readdirSync(path).forEach(function (fileName) {
-      if (isDevFile(fileName)) {
-        var name = fileName.substr(0, fileName.length - DEV_EXTENSION.length),
-          fullPath = path + name + JS_EXTENSION;
+    var srcPath = SRC_DIR + path;
+    var distPath = DIST_DIR + path;
+    if (path === MODULE_DIR) {
+      distPath = DIST_DIR + '/';
+    }
 
-        filesToBuild.uglify[fullPath] = [fullPath];
-        filesToBuild.concat['file' + name] = {
-          src: [path + fileName],
-          dest: path + name + JS_EXTENSION
+    fs.readdirSync(srcPath).forEach(function (fileName) {
+        var fullPath = srcPath + fileName;
+        filesToBuild.uglify[distPath + fileName] = fullPath;
+        filesToBuild.concat[fullPath] = {
+          src: [fullPath],
+          dest: distPath + fileName
         };
-        filesToBuild.devFiles.push(path + fileName);
-      }
     });
   });
+
   // Gather up all source files that will added to minified core library
-  fs.readdirSync(SRC_DIR).forEach(function (fileName) {
-    var fullPath = SRC_DIR + fileName;
-    if (isJavascriptFile(fileName) && filesToBuild.concat.main.src.indexOf(fullPath) == -1) {
+  fs.readdirSync(SRC_DIR + MAIN_DIR).forEach(function (fileName) {
+    var fullPath = SRC_DIR + MAIN_DIR + fileName;
+    if (filesToBuild.concat.main.src.indexOf(fullPath) === -1) {
       filesToBuild.concat.main.src.unshift(fullPath);
     }
+  });
+
+  filesToBuild.cssFiles = [];
+  filesToBuild.cssFiles.push({
+    dest: DIST_DIR,
+    src: CSS_FILE,
+    cwd: SRC_DIR,
+    expand: true
   });
 
   // Add options for concat and uglify
@@ -87,11 +92,17 @@ module.exports = function (grunt) {
     // Concat definitions.
     concat: filesToBuild.concat,
 
+    cssmin: {
+        target: {
+          files: filesToBuild.cssFiles
+        }
+    },
     // Lint definitions
     jshint: {
-      files: [MODULE_DIR+"*"+DEV_EXTENSION, SRC_DIR+"*.js"],
+      files: [SRC_DIR + '/*'],
       options: {
-        jshintrc: ".jshintrc"
+        jshintrc: ".jshintrc",
+        ignores: [SRC_DIR + '/' + CSS_FILE]
       }
     },
 
@@ -102,8 +113,8 @@ module.exports = function (grunt) {
     // Better than calling grunt a million times
     // (call 'grunt watch')
     watch: {
-      files: [SRC_DIR+'/*', LANG_DIR+'/*', MODULE_DIR+'/*'],
-      tasks: ['build'],
+      files: [SRC_DIR + '/**'],
+      tasks: ['test'],
       options : { nospawn : true }
     },
 
@@ -143,7 +154,8 @@ module.exports = function (grunt) {
 
     grunt.log.writeln('* Moving from version ' + currentVersion + ' to ' + newVersion);
 
-    replaceInFile('package.json', '"version": "' + currentVersion + '"', '"version": "' + newVersion + '"');
+    replaceInFile('package.json', '"version": "' + currentVersion + '"',
+      '"version": "' + newVersion + '"');
     replaceInFile('formvalidator.jquery.json', '"version": "' + currentVersion + '"', '"version": "' + newVersion + '"');
 
     // Set new version globally (can later on be used by concat/uglify)
@@ -158,10 +170,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-qunit');
-
-  grunt.registerTask("build", ["version", "concat", "uglify"]);
-  grunt.registerTask('test', ['concat', 'jshint', 'qunit']);
-  grunt.registerTask('test-uglify', ['concat', 'uglify', 'jshint', 'qunit']);
-  grunt.registerTask("default", ["test", "build"]);
-
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.registerTask("build-production", ["version", "cssmin", "test", "uglify"]);
+  grunt.registerTask('test', ['concat', 'cssmin','jshint', 'qunit']);
+  grunt.registerTask("default", ["test", "watch"]);
+  //TODO: add clean task, don't minify CSS in dev build, ?remove volo (its {version} is busted anyway)
+  //Add unminified CSS to prod build
 };

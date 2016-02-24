@@ -375,9 +375,6 @@
 <script src="../form-validator/jquery.form-validator.min.js"></script>
 <script>
 (function($, window) {
-
-    var dev = window.location.href.indexOf('dev') > -1 ? '.dev' : '';
-
     // setup datepicker
     $("#datepicker").datepicker();
 
@@ -409,7 +406,8 @@
             lang : 'sv',
             sanitizeAll : 'trim', // only used on form C
            // borderColorOnError : 'purple',
-            modules : 'security'+dev+', location'+dev+', sweden'+dev+', file'+dev+', uk'+dev+' , brazil'+dev +( xtraModule ? ','+xtraModule:''),
+            modules : 'security, location, sweden, file,' +
+              ' uk, brazil' +( xtraModule ? ','+xtraModule:''),
             onModulesLoaded: function() {
                 $('#country-suggestions').suggestCountry();
                 $('#swedish-county-suggestions').suggestSwedishCounty();
@@ -443,12 +441,12 @@
     window.applyValidation(false, '#form-b', 'element');
     window.applyValidation(true, '#form-c', function() {
         return $('#error-container');
-    }, 'sanitize'+dev);
-    window.applyValidation(true, '#form-d', 'element', 'html5'+dev);
+    }, 'sanitize');
+    window.applyValidation(true, '#form-d', 'element', 'html5');
     window.applyValidation(true, '#form-e');
 
     // Load one module outside $.validate() even though you do not have to
-    $.formUtils.loadModules('date'+dev+'.js', false, false);
+    $.formUtils.loadModules('date', false, false);
 
     $('input')
         .on('beforeValidation', function() {

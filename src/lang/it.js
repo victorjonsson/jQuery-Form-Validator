@@ -9,7 +9,6 @@
  * @version 2.2.163
  */
 (function($, window) {
-
   'use strict';
 
   $(window).bind('validatorsLoaded', function() {
@@ -18,7 +17,7 @@
       errorTitle: 'Impossibile inviare il modulo!',
       requiredField: 'Campo obbligatorio',
       requiredFields: 'Non sono stati compilati tutti i campi richiesti',
-      badTime: "L'ora scelta non &egrave; valida",
+      badTime: 'L\'ora scelta non &egrave; valida',
       badEmail: 'Questo indirizzo email non &egrave; valido',
       badTelephone: 'Il numero di telefono imputato non &egrave; valido',
       badSecurityAnswer: 'La risposta alla domanda di sicurezza &egrave; errata',
@@ -29,7 +28,7 @@
       lengthTooShortStart: 'La lunghezza della risposta deve essere maggiore di ',
       notConfirmed: 'Los valores proporcionados no pudieron ser confirmados',
       badDomain: 'Il dominio inserito non &egrave; corretto.',
-      badUrl: "L' URL inserito non &egrave; valido",
+      badUrl: 'L\' URL inserito non &egrave; valido',
       badCustomVal: 'I valori inseriti non sono validi',
       andSpaces: ' e spazi ',
       badInt: 'Il numero inserito non &egrave; valido',
@@ -48,13 +47,13 @@
       groupCheckedEnd: ' opzione/i',
       badCreditCard: 'Il numero di carta di credito non risulta valido',
       badCVV: 'CVV non valido',
-      wrongFileDim: "La dimensione dell'immagine non &egrave; valida,",
-      imageTooTall: "il lato alto dell'immagine non può essere maggiore di ",
-      imageTooWide: "il lato lungo dell'immagine non può essere maggiore di",
-      imageTooSmall: "L'immagine è troppo piccola",
+      wrongFileDim: 'La dimensione dell\'immagine non &egrave; valida,',
+      imageTooTall: 'il lato alto dell\'immagine non può essere maggiore di',
+      imageTooWide: 'il lato lungo dell\'immagine non può essere maggiore di',
+      imageTooSmall: 'L\'immagine è troppo piccola',
       min: 'min.',
       max: 'máx.',
-      imageRatioNotAccepted : "La proporzione dell' immagine (altezza x larghezza) non &egrave; valida"
+      imageRatioNotAccepted : 'La proporzione dell\' immagine (altezza x larghezza) non &egrave; valida'
     };
 
   });

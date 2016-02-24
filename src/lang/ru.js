@@ -8,8 +8,7 @@
  * @license MIT
  */
 (function($, window) {
-
-  "use strict";
+  'use strict';
 
   $(window).bind('validatorsLoaded', function() {
 

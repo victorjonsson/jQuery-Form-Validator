@@ -6,7 +6,8 @@
  * This form validation module adds validators typically used on
  * websites in the UK. This module adds the following validators:
  *  - ukvatnumber
- *  - utr
+ *  - ukutr
+ *  - uknin
  *
  * @website http://formvalidator.net/#uk-validators
  * @license MIT

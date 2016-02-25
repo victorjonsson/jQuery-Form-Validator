@@ -115,6 +115,8 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
 
 ### Module: uk
  * **ukvatnumber**
+ * **uknin** - *validate UK National Insurance number*
+ * **ukutr** - *validate UK Unique Taxpayer Reference number*
 
 Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://formvalidator.net/#uk-validators)
 

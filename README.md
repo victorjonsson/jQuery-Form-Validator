@@ -38,7 +38,7 @@ jQuery Form Validator is a **feature rich and multilingual** jQuery plugin that 
 
 ### Support for HTML5
 
-As of version 2.2 (unreleased) you can use this plugin as a fallback solution for the validation attributes in the HTML5 spec. Add the module `html5` to the module declaration and you can use the following native features:
+As of version 2.2 you can use this plugin as a fallback solution for the validation attributes in the HTML5 spec. Add the module `html5` to the module declaration and you can use the following native features:
 
 **Attributes**: require, pattern, maxlength, min, max, placeholder
 
@@ -216,7 +216,7 @@ The first argument of $.formUtils.loadModules is a comma separated string with n
 file extension (add .dev if the file name is for example mymodule.dev.js, this will insure that the browser never
 caches the javascript).
 
-The second argument is the path where the module files is located. This argument is optional, if not given
+The second argument is the path where the module files are located. This argument is optional, if not given
 the module files has to be located in the same directory as the core modules shipped together with this jquery plugin
 (js/form-validator/)
 

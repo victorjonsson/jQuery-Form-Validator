@@ -801,6 +801,8 @@
       badInt: 'The input value was not a correct number',
       badSecurityNumber: 'Your social security number was incorrect',
       badUKVatAnswer: 'Incorrect UK VAT Number',
+      badUKNin: 'Incorrect UK NIN',
+      badUKUtr: 'Incorrect UK UTR Number',
       badStrength: 'The password isn\'t strong enough',
       badNumberOfSelectedOptionsStart: 'You have to choose at least ',
       badNumberOfSelectedOptionsEnd: ' answers',

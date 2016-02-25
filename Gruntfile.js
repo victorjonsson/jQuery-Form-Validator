@@ -1,7 +1,7 @@
 //TODO: During next major version bump change to /dist. Leaving at ./form-validator for backwards
 //compatibility
 const DIST_DIR = './form-validator';
-const MAIN_PLUGIN_FILE = 'form-validator/jquery.form-validator.min.js';
+const MAIN_PLUGIN_FILE = './form-validator/jquery.form-validator.js';
 const SRC_DIR = './src';
 const MAIN_DIR = '/main/';
 const MODULE_DIR = '/modules/';
@@ -140,7 +140,12 @@ module.exports = function (grunt) {
   };
 
   // Add main script to uglify
-  filesToBuild.uglify[MAIN_PLUGIN_FILE] = MAIN_PLUGIN_FILE;
+  filesToBuild.uglify[MAIN_PLUGIN_FILE] = {
+    src: MAIN_PLUGIN_FILE,
+    expand: true,
+    extDot: 'last',
+    ext: '.min.js'
+  };
 
   initializeGruntConfig(grunt, filesToBuild);
   /*

@@ -1,7 +1,7 @@
 //TODO: During next major version bump change to /dist. Leaving at ./form-validator for backwards
 //compatibility
 const DIST_DIR = './form-validator';
-const MAIN_PLUGIN_FILE = './form-validator/jquery.form-validator.js';
+const MAIN_PLUGIN_FILE = './form-validator/jquery.form-validator';
 const SRC_DIR = './src';
 const MAIN_DIR = '/main/';
 const MODULE_DIR = '/modules/';
@@ -79,7 +79,25 @@ function initializeGruntConfig(grunt, filesToBuild) {
       }
     },
 
-    clean: [DIST_DIR + '/']
+    clean: [DIST_DIR + '/'],
+    umd: {
+      main: {
+        options: {
+          src: MAIN_PLUGIN_FILE + '.js',
+          deps: {
+            'default': ['$']
+          }
+        }
+      },
+      minified: {
+        options: {
+          src: MAIN_PLUGIN_FILE + '.min.js',
+          deps: {
+            'default': ['$']
+          }
+        }
+      }
+    }
   });
 }
 
@@ -89,7 +107,7 @@ module.exports = function (grunt) {
       concat: {
         main:{
           src: [SRC_DIR + MAIN_DIR+'core-validators.js'],
-          dest: MAIN_PLUGIN_FILE
+          dest: MAIN_PLUGIN_FILE + '.js'
         }
       }
   };
@@ -140,8 +158,8 @@ module.exports = function (grunt) {
   };
 
   // Add main script to uglify
-  filesToBuild.uglify[MAIN_PLUGIN_FILE] = {
-    src: MAIN_PLUGIN_FILE,
+  filesToBuild.uglify[MAIN_PLUGIN_FILE + '.js'] = {
+    src: MAIN_PLUGIN_FILE + '.js',
     expand: true,
     extDot: 'last',
     ext: '.min.js'
@@ -183,7 +201,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.registerTask("build-production", ["version", "cssmin", "test", "uglify"]);
-  grunt.registerTask('test', ['concat', 'cssmin','jshint', 'qunit']);
+  grunt.loadNpmTasks('grunt-umd');
+
+  grunt.registerTask("build-production", ["version", "test", "uglify"]);
+  grunt.registerTask('test', ['concat', 'umd', 'cssmin','jshint', 'qunit']);
   grunt.registerTask("default", ["test", "watch"]);
+  grunt.registerTask("prepublish", ["test", "uglify"]);
 };

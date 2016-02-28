@@ -1,0 +1,10 @@
+#Testing, not relevant to end user
+test/
+.travis.yml
+.jshintrc
+
+#Not relevant to npm users
+bower.json
+
+#IDE
+.idea/

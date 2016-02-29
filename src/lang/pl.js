@@ -58,7 +58,10 @@
       imageRatioNotAccepted: 'Proporcje obrazu są niepoprawne',
       badBrazilTelephoneAnswer: 'Wprowadzono niepoprawny numer telefonu',
       badBrazilCEPAnswer: 'Wprowadzono niepoprawny CEP',
-      badBrazilCPFAnswer: 'Wprowadzono niepoprawny CPF'
+      badBrazilCPFAnswer: 'Wprowadzono niepoprawny CPF',
+      badPlPesel: 'Wprowadzono niepoprawny numer PESEL',
+      badPlNip: 'Wprowadzono niepoprawny numer NIP',
+      badPlRegon: 'Wprowadzono niepoprawny numer REGON'
     };
 
   });

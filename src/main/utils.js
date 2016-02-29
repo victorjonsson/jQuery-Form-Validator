@@ -825,7 +825,10 @@
       imageRatioNotAccepted : 'Image ratio is not be accepted',
       badBrazilTelephoneAnswer: 'The phone number entered is invalid',
       badBrazilCEPAnswer: 'The CEP entered is invalid',
-      badBrazilCPFAnswer: 'The CPF entered is invalid'
+      badBrazilCPFAnswer: 'The CPF entered is invalid',
+      badPlPesel: 'The PESEL entered is invalid',
+      badPlNip: 'The NIP entered is invalid',
+      badPlRegon: 'The REGON entered is invalid'
     }
   });
 

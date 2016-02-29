@@ -123,6 +123,11 @@ Read the documentation for the UK module at [http://formvalidator.net/#uk-valida
  * **brphone** — Validate a brazilian telephone number
  * **cep**
  * **cpf**
+ 
+### Module: poland
+ * **plpesel** - validate polish personal identity number (in Polish identity cards)
+ * **plnip** - validate polish VAT identification number
+ * **plregon** - validate polish bussiness identity number
 
 ### Module: sanitation
  * **trim**

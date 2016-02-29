@@ -695,6 +695,7 @@
                 .click(function () {
                   $input.focus();
                   $input.val($(this).text());
+                  $input.trigger('change');
                   onSelectSuggestion($input);
                 });
             });
@@ -713,6 +714,7 @@
             if ($suggestionContainer.length > 0) {
               var newText = $suggestionContainer.find('div').eq($.formUtils._selectedSuggestion).text();
               $input.val(newText);
+              $input.trigger('change');
               onSelectSuggestion($input);
               e.preventDefault();
             }

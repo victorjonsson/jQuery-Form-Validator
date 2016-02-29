@@ -85,7 +85,9 @@ function initializeGruntConfig(grunt, filesToBuild) {
         options: {
           src: MAIN_PLUGIN_FILE + '.js',
           deps: {
-            'default': ['$']
+            default: ['jQuery'],
+            amd: [{'jquery': 'jQuery'}],
+            cjs: [{'jquery': 'jQuery'}]
           }
         }
       },
@@ -93,7 +95,9 @@ function initializeGruntConfig(grunt, filesToBuild) {
         options: {
           src: MAIN_PLUGIN_FILE + '.min.js',
           deps: {
-            'default': ['$']
+            default: ['$'],
+            amd: [{'jquery': 'jQuery'}],
+            cjs: [{'jquery': 'jQuery'}]
           }
         }
       }

@@ -921,12 +921,77 @@
             );
         });
 
+		/*
+         * POLAND VALIDATION
+         */
+        test("Polish PESEL validation", function(){
+
+            clearForm();
+
+            var links = [
+                {val:'11310810104', isValid:true},
+                {val:'61030604284', isValid:true},
+                {val:'04212602595', isValid:true},
+                {val:'15251410340', isValid:true},
+                {val:'65788768888', isValid:false},
+                {val:'12306789761', isValid:false},
+                {val:'73896757737', isValid:false}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'plpesel');
+            });
+        });
+
+        test("Polish NIP validation", function(){
+
+            clearForm();
+
+            var links = [
+                {val:'2236473023', isValid:true},
+                {val:'6650872044', isValid:true},
+                {val:'4622952623', isValid:true},
+                {val:'7154300218', isValid:true},
+                {val:'3467567875', isValid:false},
+                {val:'8676876861', isValid:false},
+                {val:'7568876872', isValid:false}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'plnip');
+            });
+        });
+
+        test("Polish REGON validation", function(){
+
+            clearForm();
+
+            var links = [
+                {val:'714379260', isValid:true},
+                {val:'951591192', isValid:true},
+                {val:'018905922', isValid:true},
+                {val:'134533221', isValid:true},
+                {val:'21115383251129', isValid:true},
+                {val:'05768114548441', isValid:true},
+                {val:'71291247784457', isValid:true},
+                {val:'87244008641050', isValid:false},
+                {val:'8724400864105', isValid:false},
+                {val:'010218305', isValid:false},
+                {val:'773645358', isValid:false}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'plregon');
+            });
+        });
+
+
         // TODO: Write more tests...
 
     }
 
     $.validate({
-        modules : 'security, location, sweden, file, date, sanitize, uk',
+        modules : 'security, location, sweden, file, date, sanitize, uk, poland',
         onModulesLoaded: function( $form ) {
             if( window.console && window.console.log )
                 console.log('About to run all tests');

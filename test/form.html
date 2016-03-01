@@ -101,7 +101,7 @@
                    data-validation-ignore="$€"
                    data-validation-allowing="range[0;10], float"
                    data-validation-decimal-separator=","
-                    />
+            />
         </div>
 
         <div class="form-group password-strength">
@@ -184,7 +184,7 @@
                    data-validation="extension required"
                    data-validation-error-msg="You must write a file name with extension jpg|png|ico"
                    data-validation-allowing="jpg, png, ico"
-                    />
+            />
         </div>
         <div class="form-group">
             <label class="control-label">
@@ -265,8 +265,8 @@
             <input name="test" data-validation="confirmation" data-validation-confirm="testmail" />
         </div>
         <div class="form-group">
-          <!-- The numeral library appears to not parse correctly when periods are the thousands delimiter
-          and commas are the decimal delimiter. -->
+            <!-- The numeral library appears to not parse correctly when periods are the thousands delimiter
+			and commas are the decimal delimiter. -->
             <label class="control-label">Number auto formatted '0,0.0000'</label>
             <input name="numeral" data-sanitize="numberFormat" data-sanitize-number-format="0,0.0000" />
         </div>
@@ -278,19 +278,19 @@
         <div class="form-group">
             <label class="control-label">Alphanumeric (will only be validated if checkbox below is checked)</label>
             <input name="test2"
-                    data-validation="alphanumeric"
-                    data-validation-error-msg="Invalid above..."
-                    data-validation-depends-on="checker" />
+                   data-validation="alphanumeric"
+                   data-validation-error-msg="Invalid above..."
+                   data-validation-depends-on="checker" />
             <br />
             Checkbox <input type="checkbox" name="checker" value="99" />
         </div>
         <div class="form-group">
             <label class="control-label">Alphanumeric (will only be validated if checkbox above is checked)</label>
             <input name="test2"
-                    data-validation="alphanumeric"
-                    data-validation-error-msg="Invalid below..."
-                    data-validation-depends-on="checker"
-                    data-validation-depends-on-value="99" />
+                   data-validation="alphanumeric"
+                   data-validation-error-msg="Invalid below..."
+                   data-validation-depends-on="checker"
+                   data-validation-depends-on-value="99" />
         </div>
         <div id="error-container">
 
@@ -368,103 +368,124 @@
             <input type="reset" class="button">
         </p>
     </form>
+    <hr />
+    <form id="form-f">
+        <h2>Validation Module: Poland</h2>
+        <div class="form-group">
+            <label class="control-label">Pesel</label>
+            <input name="poland_plpesel" data-validation="plpesel" type="text" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">NIP</label>
+            <input name="poland_plnip" data-validation="plnip" type="text" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">REGON</label>
+            <input name="poland_plregon" data-validation="plregon" type="text" />
+        </div>
+        <p>
+            <input type="submit" class="button">
+            <input type="reset" class="button">
+        </p>
+    </form>
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
 <script src="../form-validator/jquery.form-validator.js"></script>
 <script>
-(function($, window) {
-    // setup datepicker
-    $("#datepicker").datepicker();
+    (function($, window) {
+        // setup datepicker
+        $("#datepicker").datepicker();
 
-    // Add a new validator
-    $.formUtils.addValidator({
-        name : 'even_number',
-        validatorFunction : function(value, $el, config, language, $form) {
-            return parseInt(value, 10) % 2 === 0;
-        },
-        borderColorOnError : '',
-        errorMessage : 'You have to give an even number',
-        errorMessageKey: 'badEvenNumber',
-    });
-
-    window.applyValidation = function(validateOnBlur, forms, messagePosition, xtraModule) {
-        if( !forms )
-            forms = 'form';
-        if( !messagePosition )
-            messagePosition = 'top';
-
-        $.validate({
-            form : forms,
-            language : {
-                requiredFields: 'Du måste bocka för denna'
+        // Add a new validator
+        $.formUtils.addValidator({
+            name : 'even_number',
+            validatorFunction : function(value, $el, config, language, $form) {
+                return parseInt(value, 10) % 2 === 0;
             },
-            validateOnBlur : validateOnBlur,
-            errorMessagePosition : messagePosition,
-            scrollToTopOnError : true,
-            lang : 'sv',
-            sanitizeAll : 'trim', // only used on form C
-           // borderColorOnError : 'purple',
-            modules : 'security, location, sweden, file,' +
-              ' uk, brazil' +( xtraModule ? ','+xtraModule:''),
-            onModulesLoaded: function() {
-                $('#country-suggestions').suggestCountry();
-                $('#swedish-county-suggestions').suggestSwedishCounty();
-                $('#password').displayPasswordStrength();
-            },
-            onValidate : function($f) {
+            borderColorOnError : '',
+            errorMessage : 'You have to give an even number',
+            errorMessageKey: 'badEvenNumber',
+        });
 
-                console.log('about to validate form '+$f.attr('id'));
+        window.applyValidation = function(validateOnBlur, forms, messagePosition, xtraModule) {
+            if( !forms )
+                forms = 'form';
+            if( !messagePosition )
+                messagePosition = 'top';
 
-                var $callbackInput = $('#callback');
-                if( $callbackInput.val() == 1 ) {
-                    return {
-                        element : $callbackInput,
-                        message : 'This validation was made in a callback'
-                    };
+            $.validate({
+                form : forms,
+                language : {
+                    requiredFields: 'Du måste bocka för denna'
+                },
+                validateOnBlur : validateOnBlur,
+                errorMessagePosition : messagePosition,
+                scrollToTopOnError : true,
+                lang : 'sv',
+                sanitizeAll : 'trim', // only used on form C
+                // borderColorOnError : 'purple',
+                modules : 'security, location, sweden, file,' +
+                ' uk, brazil poland' +( xtraModule ? ','+xtraModule:''),
+                onModulesLoaded: function() {
+                    $('#country-suggestions').suggestCountry();
+                    $('#swedish-county-suggestions').suggestSwedishCounty();
+                    $('#password').displayPasswordStrength();
+                },
+                onValidate : function($f) {
+
+                    console.log('about to validate form '+$f.attr('id'));
+
+                    var $callbackInput = $('#callback');
+                    if( $callbackInput.val() == 1 ) {
+                        return {
+                            element : $callbackInput,
+                            message : 'This validation was made in a callback'
+                        };
+                    }
+                },
+                onError : function($form) {
+                    alert('Invalid '+$form.attr('id'));
+                },
+                onSuccess : function($form) {
+                    alert('Valid '+$form.attr('id'));
+                    return false;
                 }
-            },
-            onError : function($form) {
-                alert('Invalid '+$form.attr('id'));
-            },
-            onSuccess : function($form) {
-                alert('Valid '+$form.attr('id'));
-                return false;
-            }
-        });
-    };
+            });
+        };
 
-    $('#text-area').restrictLength($('#max-len'));
+        $('#text-area').restrictLength($('#max-len'));
 
-    window.applyValidation(true, '#form-a', 'top');
-    window.applyValidation(false, '#form-b', 'element');
-    window.applyValidation(true, '#form-c', function() {
-        return $('#error-container');
-    }, 'sanitize');
-    window.applyValidation(true, '#form-d', 'element', 'html5');
-    window.applyValidation(true, '#form-e');
+        window.applyValidation(true, '#form-a', 'top');
+        window.applyValidation(false, '#form-b', 'element');
+        window.applyValidation(true, '#form-c', function() {
+            return $('#error-container');
+        }, 'sanitize');
+        window.applyValidation(true, '#form-d', 'element', 'html5');
+        window.applyValidation(true, '#form-e');
+        window.applyValidation(true, '#form-f');
 
-    // Load one module outside $.validate() even though you do not have to
-    $.formUtils.loadModules('date', false, false);
+        // Load one module outside $.validate() even though you do not have to
+        $.formUtils.loadModules('date', false, false);
 
-    $('input')
-        .on('beforeValidation', function() {
-            console.log('About to validate input "'+this.name+'"');
-        })
-        .on('validation', function(evt, isValid) {
-            var validationResult = '';
-            if( isValid === null ) {
-                validationResult = 'not validated';
-            } else if( isValid ) {
-                validationResult = 'VALID';
-            } else {
-                validationResult = 'INVALID';
-            }
-            console.log('Input '+this.name+' is '+validationResult);
-        });
+        $('input')
+                .on('beforeValidation', function() {
+                    console.log('About to validate input "'+this.name+'"');
+                })
+                .on('validation', function(evt, isValid) {
+                    var validationResult = '';
+                    if( isValid === null ) {
+                        validationResult = 'not validated';
+                    } else if( isValid ) {
+                        validationResult = 'VALID';
+                    } else {
+                        validationResult = 'INVALID';
+                    }
+                    console.log('Input '+this.name+' is '+validationResult);
+                });
 
-})(jQuery, window);
+    })(jQuery, window);
 </script>
 </body>
 </html>

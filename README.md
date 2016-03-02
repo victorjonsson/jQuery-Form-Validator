@@ -76,6 +76,7 @@ Read the documentation for the default features at [http://formvalidator.net/#de
  * **strength** — *Validate the strength of a password*
  * **server** — *Validate value of input on server side*
  * **letternumeric** — *Validate that the input value consists out of only letters and/or numbers*
+ * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)*
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
 

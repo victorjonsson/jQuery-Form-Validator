@@ -514,7 +514,7 @@
      */
     $.formUtils.addValidator({
         name: 'recaptcha',
-        validatorFunction: function (val, $el, config)
+        validatorFunction: function (val, $el)
         {
             return grecaptcha.getResponse($el.data('validation-widget-id'));
         },
@@ -560,7 +560,7 @@
             $('[data-validation~="recaptcha"]', $form).each(function ()
             {
                 var $el = $(this),
-                    div = document.createElement("DIV");
+                    div = document.createElement('DIV');
 
                 $el.hide();
                 $el.parent().append(div);

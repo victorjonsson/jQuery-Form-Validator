@@ -558,14 +558,13 @@
         {
             var $form = $(this),
                 config = $form.context.validationConfig,
-                sitekey = config.reCaptchaSiteKey,
                 theme = config.reCaptchaTheme;
 
             $('[data-validation~="recaptcha"]', $form).each(function ()
             {
                 var $el = $(this),
                     div = document.createElement('DIV'),
-                    sitekey = sitekey || $el.valAttr('recaptcha-sitekey');
+                    sitekey = config.reCaptchaSiteKey || $el.valAttr('recaptcha-sitekey');
 
                 if( !sitekey ){
                     throw new Error('Google reCaptcha site key is required.');

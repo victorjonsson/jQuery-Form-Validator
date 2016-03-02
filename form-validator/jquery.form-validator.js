@@ -265,7 +265,8 @@
         inputIsOptional = $elem.valAttr('optional') === 'true',
         skipBecauseDependingInputIsEmpty = false,
         skipBecauseItsEmpty = !value && inputIsOptional,
-        skipBecauseInputIsHidden = $elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs),
+        validationRules = $elem.attr(conf.validationRuleAttribute),
+        skipBecauseInputIsHidden = $elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs && (typeof validationRules !== typeof undefined && validationRules.indexOf("recaptcha") < 0)),
         validationDependsOn = $elem.valAttr('depends-on') || $elem.valAttr('if-checked');
 
       if (skipBecauseInputIsHidden) {
@@ -303,10 +304,8 @@
         return result;
       }
 
-      var validationRules = $elem.attr(conf.validationRuleAttribute),
-
       // see if form element has inline err msg attribute
-        validationErrorMsg = true;
+      var validationErrorMsg = true;
 
       if (!validationRules) {
         result.shouldChangeDisplay = conf.addValidClassOnAll;

@@ -516,7 +516,7 @@
         name: 'recaptcha',
         validatorFunction: function (val, $el)
         {
-            return grecaptcha.getResponse($el.data('validation-widget-id'));
+            return grecaptcha.getResponse($el.data('validation-recaptcha-widget-id'));
         },
         errorMessage: '',
         errorMessageKey: 'badreCaptcha'
@@ -566,12 +566,12 @@
                 $el.parent().append(div);
 
                 var widget_id = grecaptcha.render(div, {
-                    sitekey: sitekey || $el.valAttr('sitekey'),
+                    sitekey: sitekey || $el.valAttr('recaptcha-sitekey'),
                     theme: theme || $el.valAttr('recaptcha-theme') || 'light'
                 });
 
                 $el
-                    .data('validation-widget-id', widget_id);
+                    .data('validation-recaptcha-widget-id', widget_id);
             });
 
         });

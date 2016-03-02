@@ -529,6 +529,10 @@
 
     var setupGooglereCaptcha = function (evt, $forms, config)
     {
+        if( typeof grecaptcha !== typeof undefined ){
+            throw new Error('reCaptcha API can not be loaded by hand, delete reCaptcha API snippet.');
+        }
+
         var src = '//www.google.com/recaptcha/api.js?onload=reCaptchaLoaded&render=explicit' + (config.lang ? '&hl=' + config.lang : '');
         if ($('body').find('script[src="' + src + '"]').length === 0)
         {
@@ -560,13 +564,18 @@
             $('[data-validation~="recaptcha"]', $form).each(function ()
             {
                 var $el = $(this),
-                    div = document.createElement('DIV');
+                    div = document.createElement('DIV'),
+                    sitekey = sitekey || $el.valAttr('recaptcha-sitekey');
+
+                if( !sitekey ){
+                    throw new Error('Google reCaptcha site key is required.');
+                }
 
                 $el.hide();
                 $el.parent().append(div);
 
                 var widget_id = grecaptcha.render(div, {
-                    sitekey: sitekey || $el.valAttr('recaptcha-sitekey'),
+                    sitekey: sitekey,
                     theme: theme || $el.valAttr('recaptcha-theme') || 'light'
                 });
 

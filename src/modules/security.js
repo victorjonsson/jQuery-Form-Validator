@@ -516,7 +516,7 @@
         name: 'recaptcha',
         validatorFunction: function (val, $el)
         {
-            return grecaptcha.getResponse($el.data('validation-recaptcha-widget-id'));
+            return grecaptcha.getResponse($el.valAttr('recaptcha-widgetId'));
         },
         errorMessage: '',
         errorMessageKey: 'badreCaptcha'
@@ -529,13 +529,13 @@
 
     var setupGooglereCaptcha = function (evt, $forms, config)
     {
-        if( typeof grecaptcha !== typeof undefined ){
+        if( typeof grecaptcha !== typeof undefined && !$.formUtils.hasLoadedGrecaptcha ){
             throw new Error('reCaptcha API can not be loaded by hand, delete reCaptcha API snippet.');
-        }
-
-        var src = '//www.google.com/recaptcha/api.js?onload=reCaptchaLoaded&render=explicit' + (config.lang ? '&hl=' + config.lang : '');
-        if ($('body').find('script[src="' + src + '"]').length === 0)
+        } else if(!$.formUtils.hasLoadedGrecaptcha)
         {
+            $.formUtils.hasLoadedGrecaptcha = true;
+
+            var src = '//www.google.com/recaptcha/api.js?onload=reCaptchaLoaded&render=explicit' + (config.lang ? '&hl=' + config.lang : '');
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.async = true;
@@ -557,29 +557,29 @@
         $forms.each(function ()
         {
             var $form = $(this),
-                config = $form.context.validationConfig,
-                theme = config.reCaptchaTheme;
+                config = $form.context.validationConfig;
 
             $('[data-validation~="recaptcha"]', $form).each(function ()
             {
                 var $el = $(this),
                     div = document.createElement('DIV'),
-                    sitekey = config.reCaptchaSiteKey || $el.valAttr('recaptcha-sitekey');
+                    siteKey = config.reCaptchaSiteKey || $el.valAttr('recaptcha-sitekey'),
+                    theme = config.reCaptchaTheme || $el.valAttr('recaptcha-theme') || 'light';
 
-                if( !sitekey ){
+                if( !siteKey ){
                     throw new Error('Google reCaptcha site key is required.');
                 }
 
                 $el.hide();
                 $el.parent().append(div);
 
-                var widget_id = grecaptcha.render(div, {
-                    sitekey: sitekey,
-                    theme: theme || $el.valAttr('recaptcha-theme') || 'light'
+                var widgetId = grecaptcha.render(div, {
+                    sitekey: siteKey,
+                    theme: theme
                 });
 
                 $el
-                    .data('validation-recaptcha-widget-id', widget_id);
+                    .valAttr('recaptcha-widgetId', widgetId);
             });
 
         });

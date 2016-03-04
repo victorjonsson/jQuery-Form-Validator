@@ -61,7 +61,8 @@
       badBrazilCPFAnswer: 'Wprowadzono niepoprawny CPF',
       badPlPesel: 'Wprowadzono niepoprawny numer PESEL',
       badPlNip: 'Wprowadzono niepoprawny numer NIP',
-      badPlRegon: 'Wprowadzono niepoprawny numer REGON'
+      badPlRegon: 'Wprowadzono niepoprawny numer REGON',
+      badreCaptcha: 'Potwierdź że nie jesteś botem!'
     };
 
   });

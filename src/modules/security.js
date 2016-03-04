@@ -32,7 +32,6 @@
         errorMessageKey: 'badSecurityAnswer'
     });
 
-
     /*
      * Validate confirmation
      */
@@ -136,7 +135,6 @@
         errorMessage : '',
         errorMessageKey: 'badCreditCard'
     });
-
 
     /*
      * Credit card number
@@ -479,7 +477,6 @@
         validateOnKeyUp : false
     });
 
-
     /*
      * Check for only letters and numbers
      *
@@ -512,11 +509,82 @@
       errorMessageKey: 'requiredFields'
     });
 
+    /*
+     * Google reCaptcha 2
+     */
+    $.formUtils.addValidator({
+        name: 'recaptcha',
+        validatorFunction: function (val, $el)
+        {
+            return grecaptcha.getResponse($el.valAttr('recaptcha-widgetId'));
+        },
+        errorMessage: '',
+        errorMessageKey: 'badreCaptcha'
+    });
 
-
-  $.fn.displayPasswordStrength = function(conf) {
+    $.fn.displayPasswordStrength = function(conf) {
         new $.formUtils.validators.validate_strength.strengthDisplay(this, conf);
         return this;
     };
+
+    var setupGooglereCaptcha = function (evt, $forms, config)
+    {
+        if( typeof grecaptcha !== typeof undefined && !$.formUtils.hasLoadedGrecaptcha ){
+            throw new Error('reCaptcha API can not be loaded by hand, delete reCaptcha API snippet.');
+        } else if(!$.formUtils.hasLoadedGrecaptcha)
+        {
+            $.formUtils.hasLoadedGrecaptcha = true;
+
+            var src = '//www.google.com/recaptcha/api.js?onload=reCaptchaLoaded&render=explicit' + (config.lang ? '&hl=' + config.lang : '');
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.async = true;
+            script.defer = true;
+            script.src = src;
+            document.getElementsByTagName('body')[0].appendChild(script);
+        }
+    };
+
+    window.reCaptchaLoaded = function ()
+    {
+        var $forms = $('form');
+
+        if (!$forms.each)
+        {
+            $forms = $($forms);
+        }
+
+        $forms.each(function ()
+        {
+            var $form = $(this),
+                config = $form.context.validationConfig;
+
+            $('[data-validation~="recaptcha"]', $form).each(function ()
+            {
+                var $el = $(this),
+                    div = document.createElement('DIV'),
+                    siteKey = config.reCaptchaSiteKey || $el.valAttr('recaptcha-sitekey'),
+                    theme = config.reCaptchaTheme || $el.valAttr('recaptcha-theme') || 'light';
+
+                if( !siteKey ){
+                    throw new Error('Google reCaptcha site key is required.');
+                }
+
+                $el.hide();
+                $el.parent().append(div);
+
+                var widgetId = grecaptcha.render(div, {
+                    sitekey: siteKey,
+                    theme: theme
+                });
+
+                $el
+                    .valAttr('recaptcha-widgetId', widgetId);
+            });
+
+        });
+    };
+
+    $(window).on('validatorsLoaded formValidationSetup', setupGooglereCaptcha);
 
 })(jQuery, window);

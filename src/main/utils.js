@@ -830,7 +830,8 @@
       badBrazilCPFAnswer: 'The CPF entered is invalid',
       badPlPesel: 'The PESEL entered is invalid',
       badPlNip: 'The NIP entered is invalid',
-      badPlRegon: 'The REGON entered is invalid'
+      badPlRegon: 'The REGON entered is invalid',
+      badreCaptcha: 'Please confirm that you are not a bot'
     }
   });
 

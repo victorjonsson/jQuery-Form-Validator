@@ -42,7 +42,7 @@
                 confInputName = $el.valAttr('confirm') || ($el.attr('name') + '_confirmation'),
                 $confInput = $form.find('[name="' +confInputName+ '"]').eq(0);
 
-            if ( $confInput ) {
+            if ($confInput.length) {
                 conf = $confInput.val();
                 if( config.validateOnBlur && !$confInput[0].hasValidationCallback ) {
                     $confInput[0].hasValidationCallback = true;
@@ -56,7 +56,9 @@
                     });
                 }
             } else {
-                alert('Could not find an input with name "'+confInputName+'"');
+                $.formUtils.warn('Password confirmation validator: could not find an input ' +
+                  'with name "'+confInputName+'"');
+                return false;
             }
 
             return value === conf;

@@ -119,6 +119,7 @@ function initializeGruntConfig(grunt) {
         }
       }
     },
+
     copy: {
       main: {
         files: [
@@ -140,7 +141,9 @@ function initializeGruntConfig(grunt) {
           }]
       }
     },
+
     clean: [DIST_DIR + '/'],
+
     umd: {
       main: {
         options: {

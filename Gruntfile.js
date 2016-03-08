@@ -1,12 +1,14 @@
 //TODO: During next major version bump change to /dist. Leaving at ./form-validator for backwards
 //compatibility
 const DIST_DIR = './form-validator';
-const MAIN_PLUGIN_FILE = './form-validator/jquery.form-validator';
+const MAIN_PLUGIN_FILE = 'jquery.form-validator';
 const SRC_DIR = './src';
 const MAIN_DIR = '/main/';
-const MODULE_DIR = '/modules/';
-const LANG_DIR = '/lang/';
+const MODULE_DIR = '/modules';
+const LANG_DIR = '/lang';
 const CSS_FILE = 'theme-default.css';
+const CORE_VALIDATORS = 'core-validators.js'; //must come at end of concatted file
+const coreValidatorsPath = SRC_DIR + MAIN_DIR + CORE_VALIDATORS;
 
 var fs = require('fs'),
   readFile = function (file) {
@@ -16,7 +18,8 @@ var fs = require('fs'),
     fs.writeFileSync(path, readFile(path).replace(from, to));
   };
 
-function initializeGruntConfig(grunt, filesToBuild) {
+function initializeGruntConfig(grunt) {
+
   grunt.initConfig({
 
     // Import package manifest
@@ -34,12 +37,36 @@ function initializeGruntConfig(grunt, filesToBuild) {
       " */\n"
     },
 
-    // Concat definitions.
-    concat: filesToBuild.concat,
+    concat: {
+      main:{
+        files: [
+          //This concatenates the core validators file after the other files
+          //Per: http://gruntjs.com/configuring-tasks
+          {
+            src: [SRC_DIR + MAIN_DIR+'*.js', '!' + coreValidatorsPath, coreValidatorsPath],
+            dest: DIST_DIR + '/' + MAIN_PLUGIN_FILE + '.js'
+          },
+          {
+            src: [SRC_DIR + MAIN_DIR+'*.js', '!' + coreValidatorsPath, coreValidatorsPath],
+            dest: DIST_DIR + '/' + MAIN_PLUGIN_FILE + '.min.js'
+          }]
+      },
+      options: {
+        banner: "<%= meta.banner %>"
+      }
+    },
 
     cssmin: {
       target: {
-        files: filesToBuild.cssFiles
+        files:   [
+          {
+            dest: DIST_DIR,
+            src: CSS_FILE,
+            cwd: SRC_DIR,
+            expand: true,
+            ext: '.min.css'
+          }
+        ]
       }
     },
     // Lint definitions
@@ -52,7 +79,21 @@ function initializeGruntConfig(grunt, filesToBuild) {
     },
 
     // Minify definitions
-    uglify: filesToBuild.uglify,
+    uglify: {
+      options: {
+        banner: "<%= meta.banner %>"
+      },
+      main: {
+        files: [
+          {
+            expand: true,
+            cwd: DIST_DIR + '/',
+            src: ['**/*.js', '!' + MAIN_PLUGIN_FILE +'.js'],
+            dest: DIST_DIR + '/'
+          }
+        ]
+      }
+    },
 
     // watch for changes to source
     // Better than calling grunt a million times
@@ -79,23 +120,37 @@ function initializeGruntConfig(grunt, filesToBuild) {
       }
     },
 
+    copy: {
+      main: {
+        files: [
+          {
+            src: SRC_DIR + '/' + CSS_FILE,
+            dest: DIST_DIR + '/' + CSS_FILE
+          },
+          {
+            cwd: SRC_DIR + '/' + MODULE_DIR,
+            src: '**',
+            dest: DIST_DIR  + '/',
+            expand: true
+          },
+          {
+            cwd: SRC_DIR + '/' + LANG_DIR,
+            src: '**',
+            dest: DIST_DIR + LANG_DIR +'/',
+            expand: true
+          }]
+      }
+    },
+
     clean: [DIST_DIR + '/'],
+
     umd: {
       main: {
         options: {
-          src: MAIN_PLUGIN_FILE + '.js',
+          src: DIST_DIR + '/**/*.js',
+          dest: './',
           deps: {
             default: ['jQuery'],
-            amd: [{'jquery': 'jQuery'}],
-            cjs: [{'jquery': 'jQuery'}]
-          }
-        }
-      },
-      minified: {
-        options: {
-          src: MAIN_PLUGIN_FILE + '.min.js',
-          deps: {
-            default: ['$'],
             amd: [{'jquery': 'jQuery'}],
             cjs: [{'jquery': 'jQuery'}]
           }
@@ -106,70 +161,8 @@ function initializeGruntConfig(grunt, filesToBuild) {
 }
 
 module.exports = function (grunt) {
-  var filesToBuild =  {
-      uglify: {},
-      concat: {
-        main:{
-          src: [SRC_DIR + MAIN_DIR+'core-validators.js'],
-          dest: MAIN_PLUGIN_FILE + '.js'
-        }
-      }
-  };
-  // Gather up all module and language files
-  [MODULE_DIR, LANG_DIR].forEach(function (path) {
-    var srcPath = SRC_DIR + path;
-    var distPath = DIST_DIR + path;
-    if (path === MODULE_DIR) {
-      distPath = DIST_DIR + '/';
-    }
 
-    fs.readdirSync(srcPath).forEach(function (fileName) {
-        var fullPath = srcPath + fileName;
-        filesToBuild.uglify[distPath + fileName] = fullPath;
-        filesToBuild.concat[fullPath] = {
-          src: [fullPath],
-          dest: distPath + fileName
-        };
-    });
-  });
-  filesToBuild.concat[CSS_FILE] = {
-    src: [SRC_DIR + '/' + CSS_FILE],
-    dest: DIST_DIR + '/' + CSS_FILE
-  };
-  // Gather up all source files that will added to minified core library
-  fs.readdirSync(SRC_DIR + MAIN_DIR).forEach(function (fileName) {
-    var fullPath = SRC_DIR + MAIN_DIR + fileName;
-    if (filesToBuild.concat.main.src.indexOf(fullPath) === -1) {
-      filesToBuild.concat.main.src.unshift(fullPath);
-    }
-  });
-
-  filesToBuild.cssFiles = [];
-  filesToBuild.cssFiles.push({
-    dest: DIST_DIR,
-    src: CSS_FILE,
-    cwd: SRC_DIR,
-    expand: true,
-    ext: '.min.css'
-  });
-
-  // Add options for concat and uglify
-  filesToBuild.concat.options = {
-    banner: "<%= meta.banner %>"
-  };
-  filesToBuild.uglify.options = {
-    banner: "<%= meta.banner %>"
-  };
-
-  // Add main script to uglify
-  filesToBuild.uglify[MAIN_PLUGIN_FILE + '.js'] = {
-    src: MAIN_PLUGIN_FILE + '.js',
-    expand: true,
-    extDot: 'last',
-    ext: '.min.js'
-  };
-
-  initializeGruntConfig(grunt, filesToBuild);
+  initializeGruntConfig(grunt);
   /*
    * Change to new version or the next version number. The project must be built again after this task
    * in order for the version change to take effect.
@@ -199,6 +192,7 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks("grunt-contrib-concat");
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks("grunt-contrib-jshint");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
@@ -208,7 +202,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-umd');
 
   grunt.registerTask("build-production", ["version", "test", "uglify"]);
-  grunt.registerTask('test', ['concat', 'umd', 'cssmin','jshint', 'qunit']);
+  grunt.registerTask('test', ['concat', 'copy', 'umd', 'cssmin','jshint', 'qunit']);
   grunt.registerTask("default", ["test", "watch"]);
   grunt.registerTask("prepublish", ["test", "uglify"]);
 };

@@ -233,17 +233,19 @@
     </form>
     <hr />
     <form id="form-b">
+        <h4>Validate on submit</h4>
         <div class="form-group">
             <label class="control-label">Test</label>
             <input name="test" data-validation="number" type="text" />
         </div>
         <div class="form-group">
             <label class="control-label">Password</label>
-            <input name="pass" data-validation="confirmation" type="password" />
+            <input name="pass" type="password" />
         </div>
         <div class="form-group">
             <label class="control-label">Password again</label>
-            <input name="pass_confirmation" type="password" />
+            <input data-validation-confirm="pass" type="password"
+                   data-validation="confirmation" />
         </div>
         <p>
             <input type="submit" class="button">

@@ -1,7 +1,7 @@
 {
   "name": "jquery-form-validator",
   "description": "With this feature rich jQuery plugin it becomes easy to validate user input while keeping your HTML markup clean from javascript code. Even though this plugin has a wide range of validation functions it's designed to require as little bandwidth as possible. This is achieved by grouping together validation functions in \"modules\", making it possible for the programmer to load only those functions that's needed to validate a particular form.",
-  "version": "2.2.189",
+  "version": "2.2.190",
   "main": "./form-validator/jquery.form-validator.min.js",
   "keywords": [
     "form",
@@ -28,6 +28,7 @@
     "grunt-contrib-clean": "~1.0.0",
     "grunt-contrib-concat": "^0.5.1",
     "grunt-contrib-connect": "^0.11.2",
+    "grunt-contrib-copy": "~1.0.0",
     "grunt-contrib-cssmin": "~0.14.0",
     "grunt-contrib-jshint": "~1.0.0",
     "grunt-contrib-qunit": "^0.7.0",

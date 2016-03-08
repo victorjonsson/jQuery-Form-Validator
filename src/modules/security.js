@@ -33,35 +33,36 @@
     });
 
     /*
-     * Validate confirmation
+     * Validate confirmation (tests that two inputs are identical; usually used for
+     * passwords)
      */
     $.formUtils.addValidator({
         name : 'confirmation',
         validatorFunction : function(value, $el, config, language, $form) {
-            var conf = '',
-                confInputName = $el.valAttr('confirm') || ($el.attr('name') + '_confirmation'),
-                $confInput = $form.find('[name="' +confInputName+ '"]').eq(0);
-
-            if ($confInput.length) {
-                conf = $confInput.val();
-                if( config.validateOnBlur && !$confInput[0].hasValidationCallback ) {
-                    $confInput[0].hasValidationCallback = true;
-                    var keyUpCallback = function() {
-                        $el.validate();
-                    };
-                    $confInput.on('keyup', keyUpCallback);
-                    $form.one('formValidationSetup', function() {
-                        $confInput[0].hasValidationCallback = false;
-                        $confInput.off('keyup', keyUpCallback);
-                    });
-                }
-            } else {
+            var password,
+                passwordInputName = $el.valAttr('confirm') ||
+                                   ($el.attr('name') + '_confirmation'),
+                $passwordInput = $form.find('[name="' +passwordInputName+ '"]');
+            if (!$passwordInput.length) {
                 $.formUtils.warn('Password confirmation validator: could not find an input ' +
-                  'with name "'+confInputName+'"');
+                  'with name "'+passwordInputName+'"');
                 return false;
             }
 
-            return value === conf;
+            password = $passwordInput.val();
+            if( config.validateOnBlur && !$passwordInput[0].hasValidationCallback ) {
+                $passwordInput[0].hasValidationCallback = true;
+                var keyUpCallback = function() {
+                    $el.validate();
+                };
+                $passwordInput.on('keyup', keyUpCallback);
+                $form.one('formValidationSetup', function() {
+                    $passwordInput[0].hasValidationCallback = false;
+                    $passwordInput.off('keyup', keyUpCallback);
+                });
+            }
+
+            return value === password;
         },
         errorMessage : '',
         errorMessageKey: 'notConfirmed'

@@ -27,16 +27,28 @@
     },
     isCheckingIfFormValid = false;
 
-  $(window).bind('validatorsLoaded formValidationSetup', function(evt, $forms, conf) {
+  $.formUtils.$win.bind('validatorsLoaded formValidationSetup', function(evt, $forms, conf) {
 
       var $formsToDisable = conf.disabledFormFilter ? $forms.filter(conf.disabledFormFilter) : $forms,
-          showErrorDialogs = conf.showErrorDialogs === undefined || conf.showErrorDialogs;
+          showErrorDialogs = conf.showErrorDialogs === undefined || conf.showErrorDialogs,
+          afterValidationCallback = function(evt, result, evtContext) {
+            var $this = $(this);
+            if (evtContext.indexOf('blur') > -1) {
+              $this.unbind('afterValidation', afterValidationCallback);
+            } else {
+              if (result.isValid) {
+                $this.unbind('afterValidation', afterValidationCallback);
+              } else if (!$this.valAttr('have-been-blurred')) {
+                result.shouldChangeDisplay = false;
+              }
+            }
+          };
 
       // Toggle form state depending on if it has only valid inputs or not.
       $formsToDisable
         .addClass(showErrorDialogs ? 'disabled-with-errors' : 'disabled-without-errors')
         .find('*[data-validation]')
-          .attr('data-validation-event','keyup change')
+          .valAttr('event','keyup change')
           .on('validation', function(evt, valid) {
             if( !isCheckingIfFormValid ) {
               isCheckingIfFormValid = true;
@@ -48,6 +60,10 @@
               }
               isCheckingIfFormValid = false;
             }
+          })
+          .on('afterValidation', afterValidationCallback)
+          .on('blur', function() {
+            $(this).valAttr('have-been-blurred', 1);
           });
 
 

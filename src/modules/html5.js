@@ -18,7 +18,7 @@
  * @website http://formvalidator.net/
  * @license MIT
  */
-(function($, window) {
+(function($) {
 
   'use strict';
 
@@ -154,7 +154,7 @@
           });
         };
 
-    $(window).bind('validatorsLoaded formValidationSetup', function(evt, $form) {
+    $.formUtils.$win.bind('validatorsLoaded formValidationSetup', function(evt, $form) {
         if( !$form ) {
             $form = $('form');
         }

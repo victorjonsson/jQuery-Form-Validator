@@ -282,7 +282,7 @@
             <input name="test2"
                    data-validation="alphanumeric"
                    data-validation-error-msg="Invalid above..."
-                   data-validation-depends-on="checker" />
+                   data-validation-if-checked="checker" />
             <br />
             Checkbox <input type="checkbox" name="checker" value="99" />
         </div>
@@ -291,12 +291,10 @@
             <input name="test2"
                    data-validation="alphanumeric"
                    data-validation-error-msg="Invalid below..."
-                   data-validation-depends-on="checker"
-                   data-validation-depends-on-value="99" />
+                   data-validation-if-checked="checker"
+                   data-validation-if-checked-value="99" />
         </div>
-        <div id="error-container">
-
-        </div>
+        <div id="error-container"></div>
         <p>
             <input type="submit" class="button">
             <input type="reset" class="button">
@@ -461,9 +459,7 @@
 
         window.applyValidation(true, '#form-a', 'top');
         window.applyValidation(false, '#form-b', 'element');
-        window.applyValidation(true, '#form-c', function() {
-            return $('#error-container');
-        }, 'sanitize');
+        window.applyValidation(true, '#form-c', $('#error-container'), 'sanitize');
         window.applyValidation(true, '#form-d', 'element', 'html5');
         window.applyValidation(true, '#form-e');
         window.applyValidation(true, '#form-f');

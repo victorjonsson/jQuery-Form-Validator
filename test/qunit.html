@@ -129,7 +129,6 @@
         $.each(imgDimensionChecks, function(imgFileName, assertions) {
             var img = document.createElement('IMG');
             img.onload = function() {
-                console.log('Check image dim on '+imgFileName);
                 test('Check image dim on '+imgFileName, function() {
                     $.each(assertions, function(valRule, shouldFail) {
                         var didFail = $.formUtils.checkImageDimension(img, valRule, {}) ? true:false;

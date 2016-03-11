@@ -1,7 +1,9 @@
 /**
  * File declaring all methods if this plugin which is applied to $.fn.
  */
-(function($) {
+(function($, window) {
+
+  'use strict';
 
   var _helpers = 0;
 
@@ -35,8 +37,9 @@
    * @param {Object} settings Optional, will override the default settings
    * * @return {jQuery}
    */
-  $.fn.validateOnEvent = function (language, settings) {
-    this.find('*[data-validation-event]')
+  $.fn.validateOnEvent = function (language, config) {
+    var $elements = this[0].nodeName === 'FORM' ? this.find('*[data-validation-event]') : this;
+    $elements
       .each(function () {
         var $el = $(this),
           etype = $el.valAttr('event');
@@ -45,7 +48,7 @@
             .unbind(etype + '.validation')
             .bind(etype + '.validation', function (evt) {
               if( (evt || {}).keyCode !== 9 ) {
-                $(this).validateInputOnBlur(language, settings, true, etype);
+                $(this).validateInputOnBlur(language, config, true, etype);
               }
             });
         }
@@ -179,8 +182,7 @@
     }
 
     language = $.extend({}, $.formUtils.LANG, language || {});
-
-    $.formUtils.errorDialogs.removeErrorStyling(this, conf);
+    $.formUtils.dialogs.removeInputStylingAndMessage(this, conf);
 
     var $elem = this,
       $form = $elem.closest('form'),
@@ -196,25 +198,20 @@
       $elem.unbind('keyup.validation');
     }
 
-    if ( result.isValid ) {
-      if( result.shouldChangeDisplay ) {
-        $elem.addClass('valid');
-        $.formUtils.errorDialogs.getParentContainer($elem)
-          .addClass(conf.inputParentClassOnSuccess);
+    if (result.shouldChangeDisplay) {
+      if (result.isValid) {
+        $.formUtils.dialogs.applyInputSuccessStyling($elem, conf);
+      } else {
+        $.formUtils.dialogs.setInlineMessage($elem, result.errorMsg, conf);
       }
     }
-    else if (!result.isValid) {
 
-      $.formUtils.errorDialogs.applyErrorStyling($elem, conf);
-      $.formUtils.errorDialogs.setInlineErrorMessage($elem, result.errorMsg, conf, conf.errorMessagePosition);
-
-      if (attachKeyupEvent) {
-        $elem.bind('keyup.validation', function (evt) {
-          if( evt.keyCode !== 9 ) {
-            $(this).validateInputOnBlur(language, conf, false, 'keyup');
-          }
-        });
-      }
+    if (!result.isValid && attachKeyupEvent) {
+      $elem.bind('keyup.validation', function (evt) {
+        if( evt.keyCode !== 9 ) {
+          $(this).validateInputOnBlur(language, conf, false, 'keyup');
+        }
+      });
     }
 
     return this;
@@ -226,7 +223,7 @@
    *
    * @param {String} name
    * @param {String|Boolean} [val]
-   * @return string|undefined
+   * @return {String|undefined|jQuery}
    * @protected
    */
   $.fn.valAttr = function (name, val) {
@@ -284,7 +281,7 @@
         errorInputs.push($elem);
         $elem.attr('current-error', mess);
         if (displayError) {
-          $.formUtils.errorDialogs.applyErrorStyling($elem, conf);
+          $.formUtils.dialogs.applyInputErrorStyling($elem, conf);
         }
       },
 
@@ -316,8 +313,7 @@
 
     // Reset style and remove error class
     if (displayError) {
-      $form.find('.' + conf.errorMessageClass + '.alert').remove();
-      $.formUtils.errorDialogs.removeErrorStyling($form.find('.' + conf.errorElementClass + ',.valid'), conf);
+      $.formUtils.dialogs.removeAllMessagesAndStyling($form, conf);
     }
 
     // Validate element values
@@ -341,19 +337,16 @@
           'submit'
         );
 
-        if( result.shouldChangeDisplay ) {
-          if ( !result.isValid ) {
+        if (result.shouldChangeDisplay) {
+          if (!result.isValid) {
             addErrorMessage(result.errorMsg, $elem);
-          } else if( result.isValid ) {
-            $elem
-              .valAttr('current-error', false)
-              .addClass('valid');
-
-            $.formUtils.errorDialogs.getParentContainer($elem)
-              .addClass(conf.inputParentClassOnSuccess);
+          } else if (result.isValid) {
+            $elem.valAttr('current-error', false);
+            $.formUtils.dialogs.applyInputSuccessStyling($elem, conf);
           }
         }
       }
+
     });
 
     // Run validation callback
@@ -376,27 +369,18 @@
     if (!$.formUtils.haltValidation && errorInputs.length > 0) {
 
       if (displayError) {
-        // display all error messages in top of form
+
         if (conf.errorMessagePosition === 'top') {
-          $.formUtils.errorDialogs.setTemplateMessage($form, language.errorTitle, errorMessages, conf);
-        }
-        // Customize display message
-        else if (conf.errorMessagePosition === 'custom') {
-          $.formUtils.warn('Use deprecated function errorMessageCustom');
-          if (typeof conf.errorMessageCustom === 'function') {
-            conf.errorMessageCustom($form, language.errorTitle, errorMessages, conf);
-          }
-        }
-        // Display error message below input field or in defined container
-        else {
+          $.formUtils.dialogs.setMessageInTopOfForm($form, errorMessages, conf, language);
+        } else {
           $.each(errorInputs, function (i, $input) {
-            $.formUtils.errorDialogs.setInlineErrorMessage($input, $input.attr('current-error'), conf, conf.errorMessagePosition);
+            $.formUtils.dialogs.setInlineMessage($input, $input.attr('current-error'), conf);
           });
         }
-
         if (conf.scrollToTopOnError) {
           $.formUtils.$win.scrollTop($form.offset().top - 20);
         }
+
       }
 
       return false;
@@ -407,16 +391,6 @@
     }
 
     return !$.formUtils.haltValidation;
-  };
-
-  /**
-   * @deprecated
-   * @param language
-   * @param conf
-   */
-  $.fn.validateForm = function (language, conf) {
-    $.formUtils.warn('Use of deprecated function $.validateForm, use $.isValid instead');
-    return this.isValid(language, conf, true);
   };
 
   /**
@@ -449,4 +423,4 @@
   };
 
 
-})(jQuery);
+})(jQuery, window);

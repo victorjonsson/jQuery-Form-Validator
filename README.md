@@ -124,7 +124,7 @@ Read the documentation for the UK module at [http://formvalidator.net/#uk-valida
  * **brphone** — *Validate a brazilian telephone number*
  * **cep**
  * **cpf**
- 
+
 ### Module: poland
  * **plpesel** - *validate polish personal identity number (in Polish identity cards)*
  * **plnip** - *validate polish VAT identification number*
@@ -263,6 +263,12 @@ dialogs yourself. Here you can read more about [localization](http://formvalidat
 - All inputs gets sanitized on page load when using sanitation module
 - Allow dates to omit leading zero using `data-validation-require-leading-zero="false"`
 - Module toggleDisabled now acts on value change, not only mouse click
+- `data-validation-if-checked` now deprecated, use `data-validation-depends-on` instead [#153](https://github.com/victorjonsson/jQuery-Form-Validator/issues/153)
+- Event `beforeValidation` now gets value, language and configuration as arguments and can be used to prevent validation of the input.
+- Security module now has a `recaptcha` validator that uses Google reCaptcha 2
+- The plugin is installable using npm (also possible to require validation modules when using browserify)
+- Polish validation module
+
 
 #### 2.2.8
 - The plugin is now again possible to install via bower.

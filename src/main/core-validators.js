@@ -70,7 +70,7 @@
     },
     errorMessage: '',
     errorMessageKey: function(config) {
-      if (config.errorMessagePosition === 'top' || config.errorMessagePosition === 'custom') {
+      if (config.errorMessagePosition === 'top' || typeof config.errorMessagePosition === 'function') {
         return 'requiredFields';
       }
       else {
@@ -163,10 +163,10 @@
           allowsRange = false,
           begin, end,
           steps = $el.valAttr('step') || '',
-          allowsSteps = false;
+          allowsSteps = false,
+          sanitize = $el.attr('data-sanitize') || '',
+          isFormattedWithNumeral = sanitize.match(/(^|[\s])numberFormat([\s]|$)/i);
 
-        var sanitize = $el.attr('data-sanitize') || '';
-        var isFormattedWithNumeral = sanitize.match(/(^|[\s])numberFormat([\s]|$)/i);
         if (isFormattedWithNumeral) {
           if (!window.numeral) {
             throw new ReferenceError('The data-sanitize value numberFormat cannot be used without the numeral' +

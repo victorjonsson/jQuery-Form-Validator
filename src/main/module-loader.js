@@ -8,11 +8,6 @@
   $.formUtils = $.extend($.formUtils || {}, {
 
     /**
-     * Available validators
-     */
-    validators: {},
-
-    /**
      * @var {Boolean}
      */
     isLoadingModules: false,
@@ -36,17 +31,13 @@
      *
      * @param {String} modules - Comma separated string with module file names (no directory nor file extension)
      * @param {String} [path] - Optional, path where the module files is located if their not in the same directory as the core modules
-     * @param {Boolean|function} [fireEvent] - Optional, whether or not to fire event 'load' when modules finished loading
+     * @param {function} [callback] - Optional, whether or not to fire event 'load' when modules finished loading
      */
-    loadModules: function (modules, path, fireEvent) {
-
-      if (fireEvent === undefined) {
-        fireEvent = true;
-      }
+    loadModules: function (modules, path, callback) {
 
       if ($.formUtils.isLoadingModules) {
         setTimeout(function () {
-          $.formUtils.loadModules(modules, path, fireEvent);
+          $.formUtils.loadModules(modules, path, callback);
         }, 10);
         return;
       }
@@ -60,11 +51,9 @@
               numModules--;
               if (numModules === 0) {
                 $.formUtils.isLoadingModules = false;
-                if (fireEvent && hasLoadedAnyModule) {
-                  if( typeof fireEvent === 'function' ) {
-                    fireEvent();
-                  } else {
-                    $.formUtils.$win.trigger('validatorsLoaded');
+                if (callback && hasLoadedAnyModule) {
+                  if( typeof callback === 'function' ) {
+                    callback();
                   }
                 }
               }

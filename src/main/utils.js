@@ -5,19 +5,7 @@
 
   'use strict';
 
-  var $win = $(window),
-      getInputValue = function(query, $parent) {
-        var $inputs = $parent ? $parent.find(query) : query;
-        if ($inputs.length > 0 ) {
-          var type = $inputs.eq(0).attr('type');
-          if (type === 'radio' || type === 'checkbox') {
-            return $inputs.filter(':checked').val();
-          } else {
-            return $inputs.val();
-          }
-        }
-        return false;
-      };
+  var $win = $(window);
 
   $.formUtils = $.extend($.formUtils || {}, {
 
@@ -28,7 +16,7 @@
      */
     defaultConfig: function () {
       return {
-        ignore: [], // Names of inputs not to be validated even though node attribute containing the validation rules tells us to
+        ignore: [], // Names of inputs not to be validated even though `validationRuleAttribute` containing the validation rules tells us to
         errorElementClass: 'error', // Class that will be put on elements which value is invalid
         borderColorOnError: '#b94a48', // Border color of elements which value is invalid, empty string to not change border color
         errorMessageClass: 'form-error', // class name of div containing error messages when validation fails
@@ -40,14 +28,15 @@
           messages: '<strong>{errorTitle}</strong><ul>{fields}</ul>',
           field: '<li>{msg}</li>'
         },
-        errorMessageCustom: this.errorDialogs.setTemplateMessage,
         scrollToTopOnError: true,
         dateFormat: 'yyyy-mm-dd',
         addValidClassOnAll: false, // whether or not to apply class="valid" even if the input wasn't validated
         decimalSeparator: '.',
         inputParentClassOnError: 'has-error', // twitter-bootstrap default class name
         inputParentClassOnSuccess: 'has-success', // twitter-bootstrap default class name
-        validateHiddenInputs: false // whether or not hidden inputs should be validated
+        validateHiddenInputs: false, // whether or not hidden inputs should be validated
+        inlineErrorMessageCallback: false,
+        submitErrorMessageCallback: false
       };
     },
 
@@ -88,139 +77,6 @@
     },
 
     /**
-     * @var {Boolean}
-     */
-    isLoadingModules: false,
-
-    /**
-     * @var {Object}
-     */
-    loadedModules: {},
-
-    /**
-     * @example
-     *  $.formUtils.loadModules('date, security.dev');
-     *
-     * Will load the scripts date.js and security.dev.js from the
-     * directory where this script resides. If you want to load
-     * the modules from another directory you can use the
-     * path argument.
-     *
-     * The script will be cached by the browser unless the module
-     * name ends with .dev
-     *
-     * @param {String} modules - Comma separated string with module file names (no directory nor file extension)
-     * @param {String} [path] - Optional, path where the module files is located if their not in the same directory as the core modules
-     * @param {Boolean|function} [fireEvent] - Optional, whether or not to fire event 'load' when modules finished loading
-     */
-    loadModules: function (modules, path, fireEvent) {
-
-      if (fireEvent === undefined) {
-        fireEvent = true;
-      }
-
-      if ($.formUtils.isLoadingModules) {
-        setTimeout(function () {
-          $.formUtils.loadModules(modules, path, fireEvent);
-        });
-        return;
-      }
-
-      var hasLoadedAnyModule = false,
-        loadModuleScripts = function (modules, path) {
-
-          var moduleList = $.split(modules),
-            numModules = moduleList.length,
-            moduleLoadedCallback = function () {
-              numModules--;
-              if (numModules === 0) {
-                $.formUtils.isLoadingModules = false;
-                if (fireEvent && hasLoadedAnyModule) {
-                  if( typeof fireEvent === 'function' ) {
-                    fireEvent();
-                  } else {
-                    $win.trigger('validatorsLoaded');
-                  }
-                }
-              }
-            };
-
-
-          if (numModules > 0) {
-            $.formUtils.isLoadingModules = true;
-          }
-
-          var cacheSuffix = '?_=' + ( new Date().getTime() ),
-            appendToElement = document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0];
-
-          $.each(moduleList, function (i, modName) {
-            modName = $.trim(modName);
-            if (modName.length === 0) {
-              moduleLoadedCallback();
-            }
-            else {
-              var scriptUrl = path + modName + (modName.slice(-3) === '.js' ? '' : '.js'),
-                script = document.createElement('SCRIPT');
-
-              if (scriptUrl in $.formUtils.loadedModules) {
-                // already loaded
-                moduleLoadedCallback();
-              }
-              else {
-
-                // Remember that this script is loaded
-                $.formUtils.loadedModules[scriptUrl] = 1;
-                hasLoadedAnyModule = true;
-
-                // Load the script
-                script.type = 'text/javascript';
-                script.onload = moduleLoadedCallback;
-                script.src = scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' );
-                script.onerror = function() {
-                  $.formUtils.warn('Unable to load form validation module '+scriptUrl);
-                };
-                script.onreadystatechange = function () {
-                  // IE 7 fix
-                  if (this.readyState === 'complete' || this.readyState === 'loaded') {
-                    moduleLoadedCallback();
-                    // Handle memory leak in IE
-                    this.onload = null;
-                    this.onreadystatechange = null;
-                  }
-                };
-                appendToElement.appendChild(script);
-              }
-            }
-          });
-        };
-
-      if (path) {
-        loadModuleScripts(modules, path);
-      } else {
-        var findScriptPathAndLoadModules = function () {
-          var foundPath = false;
-          $('script[src*="form-validator"]').each(function () {
-            foundPath = this.src.substr(0, this.src.lastIndexOf('/')) + '/';
-            if (foundPath === '/') {
-              foundPath = '';
-            }
-            return false;
-          });
-
-          if (foundPath !== false) {
-            loadModuleScripts(modules, foundPath);
-            return true;
-          }
-          return false;
-        };
-
-        if (!findScriptPathAndLoadModules()) {
-          $(findScriptPathAndLoadModules);
-        }
-      }
-    },
-
-    /**
      * Warn user via the console if available
      */
     warn: function(msg) {
@@ -236,6 +92,30 @@
     },
 
     /**
+     * Same as input $.fn.val() but also supporting input of typ radio or checkbox
+     * @example
+     *
+     *  $.formUtils.getValue('.myRadioButtons', $('#some-form'));
+     *  $.formUtils.getValue($('#some-form').find('.check-boxes'));
+     *
+     * @param query
+     * @param $parent
+     * @returns {String|Boolean}
+     */
+    getValue: function(query, $parent) {
+      var $inputs = $parent ? $parent.find(query) : query;
+      if ($inputs.length > 0 ) {
+        var type = $inputs.eq(0).attr('type');
+        if (type === 'radio' || type === 'checkbox') {
+          return $inputs.filter(':checked').val();
+        } else {
+          return $inputs.val();
+        }
+      }
+      return false;
+    },
+
+    /**
      * Validate the value of given element according to the validation rules
      * found in the attribute data-validation. Will return an object representing
      * a validation result, having the props shouldChangeDisplay, isValid and errorMsg
@@ -248,39 +128,29 @@
      */
     validateInput: function ($elem, language, conf, $form, eventContext) {
 
-      $elem.trigger('beforeValidation');
       conf = conf || $.formUtils.defaultConfig();
       language = language || $.formUtils.LANG;
 
-      var value = getInputValue($elem),
-        result = {isValid: true, shouldChangeDisplay:true, errorMsg:''},
-        inputIsOptional = $elem.valAttr('optional') === 'true',
-        skipBecauseDependingInputIsEmpty = false,
-        skipBecauseItsEmpty = !value && inputIsOptional,
-        skipBecauseInputIsHidden = $elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs),
-        validationDependsOn = $elem.valAttr('depends-on') || $elem.valAttr('if-checked');
+      var value = this.getValue($elem);
 
-      if (skipBecauseInputIsHidden) {
-        result.shouldChangeDisplay = false;
-        return result;
-      }
+      $elem
+        .valAttr('skipped', false)
+        .one('beforeValidation', function() {
+          // Skip input because its hidden or disabled
+          // Doing this in a callback makes it possible for others to prevent the default
+          // behaviour by binding to the same event and call evt.stopImmediatePropagation()
+          if ($elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs)) {
+            $elem.valAttr('skipped', 1);
+          }
+        })
+        .trigger('beforeValidation', [value, conf, language]);
 
-      // Whether or not this input should be validated depends on if another input has a value
-      if (validationDependsOn) {
-
-        // Set the boolean telling us that the validation depends
-        // on another input being checked
-        var valueOfDependingInput = getInputValue('input[name="' + validationDependsOn + '"]', $form),
-          requiredValueOfDependingInput = $elem.valAttr('depends-on-value') || $elem.valAttr('if-checked-value'),
-          dependingInputHasRequiredValue = !requiredValueOfDependingInput || requiredValueOfDependingInput === valueOfDependingInput;
-
-        if (valueOfDependingInput && dependingInputHasRequiredValue) {
-          skipBecauseDependingInputIsEmpty = false;
-        } else {
-          skipBecauseDependingInputIsEmpty = true;
-        }
-      }
-
+      var inputIsOptional = $elem.valAttr('optional') === 'true',
+          skipBecauseItsEmpty = !value && inputIsOptional,
+          validationRules = $elem.attr(conf.validationRuleAttribute),
+          isValid = true,
+          errorMsg = '',
+          result = {isValid: true, shouldChangeDisplay:true, errorMsg:''};
 
       // For input type="number", browsers attempt to parse the entered value into a number.
       // If the input is not numeric, browsers handle the situation differently:
@@ -290,17 +160,7 @@
       // Therefore, we cannot distinguish (apart from hacks) between an empty input type="text" and one with a
       // value that can't be parsed by the browser.
 
-      if (skipBecauseItsEmpty || skipBecauseDependingInputIsEmpty) {
-        result.shouldChangeDisplay = conf.addValidClassOnAll;
-        return result;
-      }
-
-      var validationRules = $elem.attr(conf.validationRuleAttribute),
-
-      // see if form element has inline err msg attribute
-        validationErrorMsg = true;
-
-      if (!validationRules) {
+      if (!validationRules || skipBecauseItsEmpty || $elem.valAttr('skipped')) {
         result.shouldChangeDisplay = conf.addValidClassOnAll;
         return result;
       }
@@ -314,13 +174,14 @@
       }
 
       $.split(validationRules, function (rule) {
+
         if (rule.indexOf('validate_') !== 0) {
           rule = 'validate_' + rule;
         }
 
         var validator = $.formUtils.validators[rule];
 
-        if (validator && typeof validator.validatorFunction === 'function') {
+        if (validator) {
 
           // special change of element for checkbox_group rule
           if (rule === 'validate_checkbox_group') {
@@ -328,35 +189,19 @@
             $elem = $form.find('[name="' + $elem.attr('name') + '"]:eq(0)');
           }
 
-          var isValid = null;
           if (eventContext !== 'keyup' || validator.validateOnKeyUp) {
+            // A validator can prevent itself from getting triggered on keyup
             isValid = validator.validatorFunction(value, $elem, conf, language, $form);
           }
 
           if (!isValid) {
-            validationErrorMsg = null;
-            if (isValid !== null) {
-              validationErrorMsg = $elem.attr(conf.validationErrorMsgAttribute + '-' + rule.replace('validate_', ''));
-              if (!validationErrorMsg) {
-                validationErrorMsg = $elem.attr(conf.validationErrorMsgAttribute);
-                if (!validationErrorMsg) {
-                  if (typeof validator.errorMessageKey !== 'function') {
-                    validationErrorMsg = language[validator.errorMessageKey];
-                  }
-                  else {
-                    validationErrorMsg = language[validator.errorMessageKey(conf)];
-                  }
-                  if (!validationErrorMsg) {
-                    validationErrorMsg = validator.errorMessage;
-                  }
-                }
-              }
-            }
+            errorMsg = $.formUtils.dialogs.resolveErrorMessage($elem, validator, rule, conf, language);
             return false; // break iteration
           }
 
         } else {
 
+          // todo: Add some validator lookup function and tell immediately which module is missing
           throw new Error('Using undefined validator "' + rule +
             '". Maybe you have forgotten to load the module that "' + rule +'" belongs to?');
 
@@ -364,22 +209,28 @@
 
       }, ' ');
 
-      if (typeof validationErrorMsg === 'string') {
+
+      if (isValid === false) {
         $elem.trigger('validation', false);
-        result.errorMsg = validationErrorMsg;
+        result.errorMsg = errorMsg;
         result.isValid = false;
         result.shouldChangeDisplay = true;
-      } else if (validationErrorMsg === null) {
-        result.shouldChangeDisplay = conf.addValidClassOnAll;
+      } else if (isValid === null) {
+        // A validatorFunction returning null means that it's not able to validate
+        // the input at this time. Most probably some async stuff need to gets finished
+        // first and then the validator will re-trigger the validation.
+        result.shouldChangeDisplay = false;
       } else {
         $elem.trigger('validation', true);
         result.shouldChangeDisplay = true;
       }
 
       // Run element validation callback
-      if (typeof conf.onElementValidate === 'function' && validationErrorMsg !== null) {
-        conf.onElementValidate(result.isValid, $elem, $form, validationErrorMsg);
+      if (typeof conf.onElementValidate === 'function' && errorMsg !== null) {
+        conf.onElementValidate(result.isValid, $elem, $form, errorMsg);
       }
+
+      $elem.trigger('afterValidation', [result, eventContext]);
 
       return result;
     },

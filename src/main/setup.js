@@ -78,8 +78,8 @@
 
       // Trigger jQuery event that we're about to setup validation
       var $form = $(form);
-      $.formUtils.$win.trigger('formValidationSetup', [$form, conf]);
-      $form.trigger('formValidationSetup', [conf]);
+      // $.formUtils.$win.trigger('formValidationSetup', [$form, conf]);
+      $form.trigger('formValidationSetup', [$form, conf]);
 
       // Remove classes and event handlers that might have been
       // added by a previous call to $.validate
@@ -131,10 +131,7 @@
         }
       })
       .bind('reset.validation', function () {
-        var $this = $(this),
-            $elems = $this.find('.' + conf.errorElementClass + ',.valid');
-        $this.find('.' + conf.errorMessageClass + '.alert').remove();
-        $.formUtils.errorDialogs.removeErrorStyling($elems, conf);
+        $.formUtils.dialogs.removeAllMessagesAndStyling($form, conf);
       })
       .addClass('has-validation-callback');
 
@@ -160,7 +157,8 @@
         if (typeof conf.onModulesLoaded === 'function') {
           conf.onModulesLoaded();
         }
-        $.formUtils.$win.trigger('validatorsLoaded', [typeof conf.form === 'string' ? $(conf.form) : conf.form, conf]);
+        var $form = typeof conf.form === 'string' ? $(conf.form) : conf.form;
+        $.formUtils.$win.trigger('validatorsLoaded', [$form, conf]);
       });
     }
   };

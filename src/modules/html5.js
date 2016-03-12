@@ -38,6 +38,10 @@
                 isRequired = $input.attr('required'),
                 attrs = {};
 
+              if (isRequired) {
+                validation.push('required');
+              }
+
               switch ( ($input.attr('type') || '').toLowerCase() ) {
                 case 'time':
                   validation.push('time');
@@ -106,10 +110,6 @@
                 $list.remove();
 
                 $.formUtils.suggest( $input, suggestions );
-              }
-
-              if ( isRequired && validation.length === 0 ) {
-                validation.push('required');
               }
 
               if( validation.length ) {

@@ -16,7 +16,7 @@
     return this.isValid(language, conf, true);
   };
 
-  $.formUtils.$win.bind('validatorsLoaded formValidationSetup', function(evt, $form, config) {
+  $(window).on('validatorsLoaded formValidationSetup', function(evt, $form, config) {
     if( !$form ) {
       $form = $('form');
     }

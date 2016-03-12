@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/css/bootstrap.min.css">
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <link href="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.2.8/theme-default.min.css"
+        rel="stylesheet" type="text/css" /></head>
+
+<body>
+<div>
+  <form action="" style="margin: 3% auto; max-width: 400px" role="form">
+
+    <div class="input-group">
+      <input data-validation="required"
+             data-validation-error-msg-container="#error-container"
+             class="form-control">
+      <span class="input-group-addon" id="basic-addon2">@example.com</span>
+    </div>
+    <div id="error-container"></div>
+
+    <hr>
+    <div class="form-group">
+      <button type="submit">Submit</button>
+      <hr>
+      <a href="#" onclick="testIsValid(); return false;">
+        [test isValid()]
+      </a>
+    </div>
+
+  </form>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="../form-validator/jquery.form-validator.min.js"></script>
+
+<script>
+
+  $.validate();
+
+</script>
+
+
+</body>
+</html>

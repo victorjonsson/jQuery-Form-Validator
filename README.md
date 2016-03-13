@@ -268,6 +268,7 @@ dialogs yourself. Here you can read more about [localization](http://formvalidat
 - Security module now has a `recaptcha` validator that uses Google reCaptcha 2
 - The plugin is installable using npm (also possible to require validation modules when using browserify)
 - Polish validation module
+- New module named "logic" containing the features `data-validation-depends-on` and `data-validation-optional-if-answered`
 
 
 #### 2.2.8

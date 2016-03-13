@@ -62,12 +62,14 @@
           // Remove validation when on depending input
           var $dependingInput = $(this);
           $form.find('[name="'+$dependingInput.valAttr('depends-on')+'"]').each(function() {
-            this.$dependingInput = $dependingInput;
             $(this)
               .off('change', dependingOnValueChanged)
               .on('change', dependingOnValueChanged)
               .valAttr('depending-value', $dependingInput.valAttr('depends-on-value'));
-          })
+
+            this.$dependingInput = $dependingInput;
+            
+          });
 
         });
 
@@ -81,7 +83,7 @@
             thisInputHasAnswer = $.formUtils.getValue($input) ? true:false;
 
           if (!thisInputHasAnswer) {
-            $.each($.split('dependingInputs'), function(inputName) {
+            $.each($.split(dependingInputs), function(inputName) {
               var $dependingInput = $form.find('[name="'+inputName+'"]');
               dependingInputsHasValue = $.formUtils.getValue($dependingInput) ? true:false;
               if (dependingInputsHasValue) {

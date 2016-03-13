@@ -27,17 +27,19 @@
             // Set the boolean telling us that the validation depends
             // on another input being checked
             var valueOfDependingInput = $.formUtils.getValue('[name="' + nameOfDependingInput + '"]', $form),
-              requiredValueOfDependingInput = $input.valAttr('depends-on-value'),
+              listWithRequiredValues = $input.valAttr('depends-on-value'),
               dependingInputIsMissingValueOrHasIncorrectValue = !valueOfDependingInput || (
-                  requiredValueOfDependingInput &&
-                  requiredValueOfDependingInput !== valueOfDependingInput
+                  listWithRequiredValues &&
+                    !valueIsInList(valueOfDependingInput, listWithRequiredValues)
                 );
 
             if (dependingInputIsMissingValueOrHasIncorrectValue && !inputHasValue) {
               $input.valAttr('skipped', '1');
             }
-
           }
+        },
+        valueIsInList = function(word, commaSeparatedList) {
+          return $.inArray(word.toLocaleLowerCase(), $.split(commaSeparatedList.toLocaleLowerCase())) > -1;
         },
         dependingOnValueChanged = function() {
           var $input = $(this),

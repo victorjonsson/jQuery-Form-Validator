@@ -57,16 +57,19 @@
      */
     var _makeSortedList = function(listItems) {
         var newList = [];
-        $.each(listItems, function(i, v) {
-            newList.push(v.substr(0,1).toUpperCase() + v.substr(1, v.length));
+        $.each(listItems, function(i, value) {
+            newList.push(value.substr(0,1).toUpperCase() + value.substr(1, value.length));
         });
         newList.sort();
         return newList;
     };
 
     $.fn.suggestCountry = function(settings) {
-        var country = _makeSortedList($.formUtils.validators.validate_country.countries);
-        return $.formUtils.suggest(this, country, settings);
+        var countries = _makeSortedList($.formUtils.validators.validate_country.countries),
+          usaIndex = $.inArray(countries, 'Usa');
+
+        countries[usaIndex] = 'USA';
+        return $.formUtils.suggest(this, countries, settings);
     };
 
     $.fn.suggestState = function(settings) {

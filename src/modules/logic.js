@@ -17,8 +17,9 @@
 
       var dependingOnBeforeValidation = function() {
 
-          var $elem = $(this),
-            nameOfDependingInput = $elem.valAttr('depends-on') || $elem.valAttr('if-checked');
+          var $input = $(this),
+            inputHasValue = $.formUtils.getValue($input) ? true:false,
+            nameOfDependingInput = $input.valAttr('depends-on') || $input.valAttr('if-checked');
 
           // Whether or not this input should be validated depends on if another input has a value
           if (nameOfDependingInput) {
@@ -26,33 +27,32 @@
             // Set the boolean telling us that the validation depends
             // on another input being checked
             var valueOfDependingInput = $.formUtils.getValue('[name="' + nameOfDependingInput + '"]', $form),
-              requiredValueOfDependingInput = $elem.valAttr('depends-on-value'),
+              requiredValueOfDependingInput = $input.valAttr('depends-on-value'),
               dependingInputIsMissingValueOrHasIncorrectValue = !valueOfDependingInput || (
                   requiredValueOfDependingInput &&
                   requiredValueOfDependingInput !== valueOfDependingInput
                 );
 
-            if (dependingInputIsMissingValueOrHasIncorrectValue) {
-              $elem.valAttr('skipped', '1');
+            if (dependingInputIsMissingValueOrHasIncorrectValue && !inputHasValue) {
+              $input.valAttr('skipped', '1');
             }
 
           }
         },
         dependingOnValueChanged = function() {
           var $input = $(this),
+            $otherInput = this.$dependingInput,
             valueOfDependingInput = $.formUtils.getValue($input),
             requiredValueOfDependingInput = $input.valAttr('depending-value'),
+            otherInputHasValue = $.formUtils.getValue($otherInput) ? true:false,
             dependingInputIsMissingValueOrHasIncorrectValue = !valueOfDependingInput || (
                 requiredValueOfDependingInput &&
                 requiredValueOfDependingInput !== valueOfDependingInput
               );
 
-            if (dependingInputIsMissingValueOrHasIncorrectValue) {
-              console.log(this.$dependingInput);
-              $.formUtils.dialogs.removeInputStylingAndMessage(this.$dependingInput, conf);
-            } else if ($.formUtils.getValue(this.$dependingInput)) {
-              this.$dependingInput.validate();
-            }
+          if (dependingInputIsMissingValueOrHasIncorrectValue && !otherInputHasValue) {
+            $.formUtils.dialogs.removeInputStylingAndMessage($otherInput, conf);
+          }
         };
 
       $form.find('[data-validation-depends-on]')
@@ -68,22 +68,22 @@
               .valAttr('depending-value', $dependingInput.valAttr('depends-on-value'));
 
             this.$dependingInput = $dependingInput;
-            
+
           });
 
         });
 
     },
-    setupValidationTogetherWith = function($form) {
-      $form.find('[data-validation-optional-if-answered]')
-        .on('beforeValidation', function() {
+    setupValidationTogetherWith = function($form, conf) {
+
+      var optionalBeforeValidation = function() {
           var $input = $(this),
-            dependingInputs = $input.valAttr('optional-if-optional-if-answered'),
+            dependingInputs = $input.valAttr('optional-if-answered'),
             dependingInputsHasValue = false,
             thisInputHasAnswer = $.formUtils.getValue($input) ? true:false;
 
           if (!thisInputHasAnswer) {
-            $.each($.split(dependingInputs), function(inputName) {
+            $.each($.split(dependingInputs), function(i, inputName) {
               var $dependingInput = $form.find('[name="'+inputName+'"]');
               dependingInputsHasValue = $.formUtils.getValue($dependingInput) ? true:false;
               if (dependingInputsHasValue) {
@@ -95,7 +95,27 @@
               $input.valAttr('skipped', 1);
             }
           }
+        },
+        optionalInputOnChange = function() {
+          var $input = $(this),
+            dependingInputs = $input.valAttr('optional-if-answered');
 
+          $.each($.split(dependingInputs), function(i, inputName) {
+            var $dependingInput = $form.find('[name="'+inputName+'"]'),
+                dependingInputsHasValue = $.formUtils.getValue($dependingInput) ? true:false;
+            if (!dependingInputsHasValue) {
+              $.formUtils.dialogs.removeInputStylingAndMessage($dependingInput, conf);
+            }
+          });
+        };
+
+      $form.find('[data-validation-optional-if-answered]')
+        .off('beforeValidation', optionalBeforeValidation)
+        .on('beforeValidation', optionalBeforeValidation)
+        .each(function() {
+          $(this)
+            .off('change', optionalInputOnChange)
+            .on('change', optionalInputOnChange);
         });
     };
 
@@ -104,7 +124,7 @@
       $form = $('form');
     }
     setupValidationDependsOn($form, conf);
-    setupValidationTogetherWith($form);
+    setupValidationTogetherWith($form, conf);
   });
 
 })(jQuery);

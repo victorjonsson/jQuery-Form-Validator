@@ -51,7 +51,40 @@
               />
       </div>
 
+      <div class="form-group">
+        <button type="submit">Login</button>
+      </div>
 
+    </form>
+  </div>
+
+  <hr>
+
+  <div>
+    <form action="" style="margin: 3% auto; max-width: 400px" role="form">
+
+      <h3>data-validation-if-answered</h3>
+
+
+      <div class="form-group">
+        <label class="control-label">
+          Work Phone Number &nbsp;
+        </label>
+        <input name="workphone" class="form-control"
+               data-validation="number"
+               data-validation-optional-if-answered="cellphone"
+            />
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">
+          Cell Phone Number &nbsp;
+        </label>
+        <input name="cellphone" class="form-control"
+               data-validation="number"
+               data-validation-optional-if-answered="workphone"
+            />
+      </div>
 
       <div class="form-group">
         <button type="submit">Login</button>

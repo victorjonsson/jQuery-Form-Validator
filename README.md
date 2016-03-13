@@ -374,29 +374,4 @@ calling $.validate()
 
 ## Credits
 
-#### Maintainer
-
-[Victor Jonsson](https://github.com/victorjonsson)
-
-#### Contributors
-<a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a><br />
-<a href="http://lagden.github.com" target="_blank">Thiago Lagden</a><br />
-<a href="https://github.com/robamaton" target="_blank">Joel Sutherland</a><br />
-<a href="https://github.com/mattclements" target="_blank">Matt Clements</a><br />
-<a href="http://www.joshtoft.com/" target="_blank">Josh Toft</a><br/>
-<a href="https://github.com/dfcplc" target="_blank">@dfcplc</a><br />
-<a href="https://github.com/coffein" target="_blank">Andree Wendel</a><br />
-<a href="http://www.huotmedia.com" target="_blank">Nicholas Huot</a><br />
-<a href="https://github.com/Repkit" target="_blank">@repkit</a><br />
-<a href="https://github.com/aL3xa" target="_blank">Alexandar Blagotic</a><br />
-<a href="http://thekindof.me/" target="_blank">Yasith Fernando</a><br />
-<a href="https://github.com/S0L4R1S" target="_blank">@S0L4R1S</a><br />
-<a href="http://lisangan.com/">Erick Lisangan</a><br />
-<a href="https://github.com/kirbs-">@kirbs</a>
-<a href="https://github.com/hslee87">hslee87</a>
-
-#### Additional credits
-
-<a href="http://projects.scottsplayground.com/iri/" target="_blank">Scott Gonzales</a> (URL regexp)<br />
-<a href="http://www.mypocket-technologies.com" target="_blank">Darren Mason</a> (Password strength meter)<br />
-<a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a> (Checkbox group)
+http://www.formvalidator.net/#credits

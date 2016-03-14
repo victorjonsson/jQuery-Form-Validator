@@ -97,19 +97,20 @@
 	 */
 	$.formUtils.addValidator({
 		name: 'ukutr',
-		validatorFunction: function (val)
+		validatorFunction: function (utr)
 		{
-			var weights = [0, 6, 7, 8, 9, 10, 5, 4, 3, 2, 0],
+			var weights = [0, 6, 7, 8, 9, 10, 5, 4, 3, 2],
 				checkDigits = [2, 1, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-				checkSum = 0,
-				utr = val + 'K';
+				checkSum = 0;
 
-			if( /\d{10}K/.test( utr ) ){
+			if (/\d{10}/.test(utr) && utr.length === 10)
+			{
 				for (var i = 0; i < 10; i++) {
 					checkSum += utr[ i ] * weights[ i ];
 				}
 
-				if( utr.charAt( 0 ) === checkDigits[ checkSum % 11 ]){
+				if (parseInt(utr.charAt(0)) === checkDigits[checkSum % 11])
+				{
 					return true;
 				}
 			}

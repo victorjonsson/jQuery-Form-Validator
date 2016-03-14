@@ -984,7 +984,32 @@
             });
         });
 
+        /*
+         * UK VALIDATION
+         */
+        test("UK UTR validation", function(){
 
+            clearForm();
+
+            var links = [
+                {val:'9300960004', isValid:true},
+                {val:'7795475945', isValid:true},
+                {val:'2010335150', isValid:true},
+                {val:'3317055678', isValid:true},
+                {val:'2444339765', isValid:true},
+                {val:'3867839121', isValid:true},
+                {val:'38678391210', isValid:false},
+                {val:'386783912', isValid:false},
+                {val:'1779560363', isValid:false},
+                {val:'8648200373', isValid:false},
+                {val:'9300648179', isValid:false}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'ukutr');
+            });
+
+        });
         // TODO: Write more tests...
 
     }

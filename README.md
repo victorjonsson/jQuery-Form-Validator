@@ -111,14 +111,14 @@ Read the documentation for the file module at [http://formvalidator.net/#file-va
  * Suggest county
  * Suggest municipality
 
-Read the documentation for the Swedish module at [http://formvalidator.net/#sweden-validators](http://formvalidator.net/#sweden-validators)
+Read the documentation for the Swedish module at [http://formvalidator.net/#sweden-validators](http://www.formvalidator.net/#country-specific-validators_sweden)
 
 ### Module: uk
  * **ukvatnumber**
  * **uknin** - *validate UK National Insurance number*
  * **ukutr** - *validate UK Unique Taxpayer Reference number*
 
-Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://formvalidator.net/#uk-validators)
+Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://www.formvalidator.net/#country-specific-validators_uk)
 
 ### Module: brazil
  * **brphone** — *Validate a brazilian telephone number*
@@ -268,6 +268,8 @@ dialogs yourself. Here you can read more about [localization](http://formvalidat
 - Security module now has a `recaptcha` validator that uses Google reCaptcha 2
 - The plugin is installable using npm (also possible to require validation modules when using browserify)
 - Polish validation module
+- Brazilian validation module
+- UK validation module now also have validators `uknin` `ukutr`
 - New module named "logic" containing the features `data-validation-depends-on` and `data-validation-optional-if-answered`
 
 

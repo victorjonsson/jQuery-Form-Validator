@@ -252,7 +252,7 @@ dialogs yourself. Here you can read more about [localization](http://formvalidat
 ## Changelog
 
 #### 2.3.0 (unreleased)
-- New translations (Polish, Romanian, Czech, Russian, Italian)
+- New translations (Polish, Romanian, Danish, Dutch, Czech, Russian, Italian)
 - Several improvements made to already existing translations
 - "Validation help" no longer puts constraints on input names
 - Improved confirmation validation

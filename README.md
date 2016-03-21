@@ -76,7 +76,7 @@ Read the documentation for the default features at [http://formvalidator.net/#de
  * **strength** — *Validate the strength of a password*
  * **server** — *Validate value of input on server side*
  * **letternumeric** — *Validate that the input value consists out of only letters and/or numbers*
- * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)*
+ * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)* **not yet released...**
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
 
@@ -115,17 +115,17 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
 
 ### Module: uk
  * **ukvatnumber**
- * **uknin** - *validate UK National Insurance number*
- * **ukutr** - *validate UK Unique Taxpayer Reference number*
+ * **uknin** - *validate UK National Insurance number* **not yet released...**
+ * **ukutr** - *validate UK Unique Taxpayer Reference number* **not yet released...**
 
 Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://www.formvalidator.net/#country-specific-validators_uk)
 
-### Module: brazil
+### Module: brazil *(not yet released...)*
  * **brphone** — *Validate a brazilian telephone number*
- * **cep**
+ * **cep** 
  * **cpf**
 
-### Module: poland
+### Module: poland *(not yet released...)*
  * **plpesel** - *validate polish personal identity number (in Polish identity cards)*
  * **plnip** - *validate polish VAT identification number*
  * **plregon** - *validate polish bussiness identity number*
@@ -252,7 +252,7 @@ dialogs yourself. Here you can read more about [localization](http://formvalidat
 ## Changelog
 
 #### 2.3.0 (unreleased)
-- New translations (Polish, Romanian, Danish, Dutch, Czech, Russian, Italian)
+- New translations (Polish, Romanian, Danish, Norwegian, Dutch, Czech, Russian, Italian)
 - Several improvements made to already existing translations
 - "Validation help" no longer puts constraints on input names
 - Improved confirmation validation

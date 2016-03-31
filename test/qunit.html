@@ -1010,6 +1010,25 @@
             });
 
         });
+
+        test("UK NIN validation", function(){
+
+            clearForm();
+
+            var links = [
+                {val:'JX 49 54 09 A', isValid:true},
+                {val:'LA 22 26 04 B', isValid:true},
+                {val:'LC 34 39 51 C', isValid:true},
+                {val:'JX 49 54 09 Z', isValid:false},
+                {val:'JX 49 54 09 3', isValid:false},
+                {val:'ZZ495409A', isValid:false}
+            ];
+
+            $.each(links, function(i, obj) {
+                runTest(obj, 'uknin');
+            });
+
+        });
         // TODO: Write more tests...
 
     }

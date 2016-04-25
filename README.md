@@ -6,6 +6,8 @@ jQuery Form Validator is a **feature rich and multilingual** jQuery plugin that 
 
 [![Travis](https://travis-ci.org/victorjonsson/PHP-Markdown-Documentation-Generator.svg)](https://travis-ci.org/victorjonsson/jQuery-Form-Validator/builds/)
 
+[![npm version](https://badge.fury.io/js/jquery-form-validator.svg)](https://www.npmjs.com/package/jquery-form-validator)
+
 *Usage example*
 
 ```html

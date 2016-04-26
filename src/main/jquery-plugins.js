@@ -16,10 +16,28 @@
    * @return {jQuery}
    */
   $.fn.validateOnBlur = function (language, conf) {
-    this.find('*[data-validation]')
-      .bind('blur.validation', function () {
-        $(this).validateInputOnBlur(language, conf, true, 'blur');
-      });
+    var $form = this,
+        $elems = this.find('*[data-validation]');
+
+    $elems.each(function(){
+      var $this = $(this);
+      if ($this.is('[type=radio'])){
+        var $additionals = $form.find('[type=radio][name="' + $this.attr('name') + '"]');
+        $additionals.bind('blur.validation', function(){
+          $this.validateInputOnBlur(language, conf, true, 'blur');
+        });
+        if (conf.validateCheckboxRadioOnClick) {
+          $additionals.bind('click.validation', function () {
+            $this.validateInputOnBlur(language, conf, true, 'click');
+          });
+        }
+      }
+    });
+
+    $elems.bind('blur.validation', function () {
+      $(this).validateInputOnBlur(language, conf, true, 'blur');
+    });
+
     if (conf.validateCheckboxRadioOnClick) {
       // bind click event to validate on click for radio & checkboxes for nice UX
       this.find('input[type=checkbox][data-validation],input[type=radio][data-validation]')

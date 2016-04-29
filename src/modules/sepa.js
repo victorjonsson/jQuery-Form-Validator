@@ -119,14 +119,13 @@
                 + remainder.slice(block.length);
     }
 
-    console.log(parseInt(remainder, 10) % 97);
-
     if (parseInt(remainder, 10) % 97 === 1){
       return true;
     } else {
       return false;
     }
   };
+
   var countryIBAN = function(sepa) {
     sepa = sepa.toUpperCase();
     sepa = sepa.replace(/\s+/g, '');

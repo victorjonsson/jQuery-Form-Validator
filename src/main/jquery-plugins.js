@@ -1,7 +1,7 @@
 /**
  * File declaring all methods if this plugin which is applied to $.fn.
  */
-(function($, window) {
+(function($, window, undefined) {
 
   'use strict';
 

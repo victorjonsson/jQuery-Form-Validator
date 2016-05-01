@@ -88,17 +88,31 @@
           });
           return val;
         },
-        escape : function(val) {
-          var symbols = {
-            '<' : '__%AMP%__lt;',
-            '>' : '__%AMP%__gt;',
-            '&' : '__%AMP%__amp;',
-            '\'': '__%AMP%__#8217;',
-            '"' : '__%AMP%__quot;'
-          };
-          $.each(symbols, function(symbol, replacement) {
+        escape : function(val, $input) {
+          var isEscaped = $input.valAttr('is-escaped'),
+            entities = {
+              '<' : '__%AMP%__lt;',
+              '>' : '__%AMP%__gt;',
+              '&' : '__%AMP%__amp;',
+              '\'': '__%AMP%__#8217;',
+              '"' : '__%AMP%__quot;'
+            };
+
+          if (isEscaped === 'yes') {
+             return val;
+          }
+
+          $input.valAttr('is-escaped', 'yes');
+          $input.one('keyup', function(evt) {
+            if( evt.keyCode !== $.formUtils.tabKey ) {
+              $input.valAttr('is-escaped', 'no');
+            }
+          });
+
+          $.each(entities, function(symbol, replacement) {
             val = val.replace(new RegExp(symbol, 'g'), replacement);
           });
+
           return val.replace(new RegExp('__\%AMP\%__', 'g'), '&');
         }
       },

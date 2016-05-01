@@ -531,9 +531,12 @@
     };
 
   var setupGooglereCaptcha = function (evt, $forms, config) {
-    if (typeof grecaptcha !== typeof undefined && !$.formUtils.hasLoadedGrecaptcha) {
+    if (!$forms) {
+      $forms = $('form');
+    }
+    if (typeof grecaptcha !== 'undefined' && !$.formUtils.hasLoadedGrecaptcha) {
       throw new Error('reCaptcha API can not be loaded by hand, delete reCaptcha API snippet.');
-    } else if (!$.formUtils.hasLoadedGrecaptcha) {
+    } else if (!$.formUtils.hasLoadedGrecaptcha && $('[data-validation~="recaptcha"]', $forms).length) {
       $.formUtils.hasLoadedGrecaptcha = true;
 
       var src = '//www.google.com/recaptcha/api.js?onload=reCaptchaLoaded&render=explicit' + (config.lang ? '&hl=' + config.lang : '');
@@ -547,7 +550,7 @@
   };
 
   window.reCaptchaLoaded = function ($forms) {
-    if (!$forms || typeof $forms) {
+    if (!$forms || typeof $forms !== 'object' || !$forms.length) {
       $forms = $('form');
     }
 

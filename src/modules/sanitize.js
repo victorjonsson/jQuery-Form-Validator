@@ -104,7 +104,7 @@
 
           $input.valAttr('is-escaped', 'yes');
           $input.one('keyup', function(evt) {
-            if( evt.keyCode !== $.formUtils.tabKey ) {
+            if(evt.keyCode !== 9) {
               $input.valAttr('is-escaped', 'no');
             }
           });

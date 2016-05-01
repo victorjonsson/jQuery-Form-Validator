@@ -9,9 +9,6 @@
 
   $.formUtils = $.extend($.formUtils || {}, {
 
-    tabKey: 9,
-    shiftKey: 16,
-
     $win: $win,
 
     /**

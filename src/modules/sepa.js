@@ -129,12 +129,12 @@
     sepa = sepa.toUpperCase();
     sepa = sepa.replace(/\s+/g, '');
 
-    var country_code = sepa.slice(0,2);
+    var countryCode = sepa.slice(0,2);
     var i = 0;
     var structure = '';
 
     for (i = 0; i < ibanCountryList.length; ++i){
-      if (ibanCountryList[i][0] === country_code){
+      if (ibanCountryList[i][0] === countryCode){
         structure = ibanCountryList[i][2];
         break;
       }
@@ -170,16 +170,15 @@
   };
 
 
-
-
   $.formUtils.addValidator({
-    name: 'sepageneral',
+    name: 'sepa',
     validatorFunction: generalValidatorFunction,
     errorMessage: '',
     errorMessageKey:'badSepa'
   });
+
   $.formUtils.addValidator({
-    name: 'sepaiban',
+    name: 'iban',
 
     validatorFunction: function(sepa) {
       return countryIBAN(sepa) && generalValidatorFunction(sepa);
@@ -187,6 +186,7 @@
     errorMessage: '',
     errorMessageKey:'badIban'
   });
+
   $.formUtils.addValidator({
     name: 'bic',
     validatorFunction: function(bic) {
@@ -196,4 +196,5 @@
     errorMessage: '',
     errorMessageKey:'badBic'
   });
+
 })(jQuery);

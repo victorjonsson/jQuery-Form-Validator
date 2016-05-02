@@ -41,7 +41,7 @@
       </div>
 
       <div class="form-group">
-        <label class="control-label">US state</label>
+        <label class="control-label">State</label>
         <input class="form-control"
                type="text"
                name="state"
@@ -68,11 +68,21 @@
 
       <div class="form-group">
         <label class="control-label">
+          Home Phone Number &nbsp;
+        </label>
+        <input name="homephone" class="form-control"
+               data-validation="number"
+               data-validation-optional-if-answered="cellphone, workphone"
+            />
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">
           Work Phone Number &nbsp;
         </label>
         <input name="workphone" class="form-control"
                data-validation="number"
-               data-validation-optional-if-answered="cellphone"
+               data-validation-optional-if-answered="cellphone, homephone"
             />
       </div>
 
@@ -82,7 +92,7 @@
         </label>
         <input name="cellphone" class="form-control"
                data-validation="number"
-               data-validation-optional-if-answered="workphone"
+               data-validation-optional-if-answered="workphone, homephone"
             />
       </div>
 

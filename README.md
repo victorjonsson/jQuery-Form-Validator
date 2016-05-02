@@ -124,7 +124,7 @@ Read the documentation for the UK module at [http://formvalidator.net/#uk-valida
 
 ### Module: brazil *(not yet released...)*
  * **brphone** — *Validate a brazilian telephone number*
- * **cep** 
+ * **cep**
  * **cpf**
 
 ### Module: poland *(not yet released...)*
@@ -258,7 +258,7 @@ dialogs yourself. Here you can read more about [localization](http://formvalidat
 - Several improvements made to already existing translations
 - "Validation help" no longer puts constraints on input names
 - Improved confirmation validation
-- Now possible to set `errorMessagePosition` to a callback function
+- Config parameter `errorMessagePosition` is now only used to point out where error message should be placed. New configuration parameters is introduced that handles custom positioning of error messages [#226](https://github.com/victorjonsson/jQuery-Form-Validator/issues/226#issuecomment-191233456)
 - Now possible to add `data-validation-ignore` to filter out certain characters before validation
 - New sanitation method `strip` that removes defined characters
 - Now possible to declare attributes not prefixed with data-validation in jsconf module
@@ -272,8 +272,9 @@ dialogs yourself. Here you can read more about [localization](http://formvalidat
 - Polish validation module
 - Brazilian validation module
 - UK validation module now also have validators `uknin` `ukutr`
+- Sepa-module that makes it possible to validate sepa, iban and bic.
 - New module named "logic" containing the features `data-validation-depends-on` and `data-validation-optional-if-answered`
-
+- The security module now support reCAPTCHA from Google.
 
 #### 2.2.8
 - The plugin is now again possible to install via bower.

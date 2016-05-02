@@ -44,15 +44,6 @@
       },
 
       /**
-      * @param {String} msg
-      */
-      _log = function(msg) {
-        if( window.console && window.console.log ) {
-          window.console.log(msg);
-        }
-      },
-
-      /**
        * @param {String} imgPath
        * @param {Function} successCallback
        * @param {Function} errCallback
@@ -106,8 +97,8 @@
                         return valid;
                     });
 
-                    if( !valid ) {
-                        _log('Trying to upload a file with mime type '+mime+' which is not allowed');
+                    if (!valid) {
+                        $.formUtils.warn('Trying to upload a file with mime type '+mime+' which is not allowed');
                         _generateErrorMsg(this, 'wrongFileType', allowedTypes.join(', '), language);
                     }
                 }
@@ -115,7 +106,7 @@
                 return valid;
 
             } else {
-                _log('FileReader not supported by browser, will check file extension');
+                $.formUtils.warn('FileReader not supported by browser, will check file extension');
                 return $.formUtils.validators.validate_extension.validatorFunction(str, $input, conf, language);
             }
         },
@@ -158,7 +149,7 @@
         validatorFunction : function(val, $input, conf, language) {
             var maxSize = $input.valAttr('max-size');
             if( !maxSize ) {
-                _log('Input "'+$input.attr('name')+'" is missing data-validation-max-size attribute');
+                $.formUtils.warn('Input "'+$input.attr('name')+'" is missing data-validation-max-size attribute');
                 return true;
             } else if( !SUPPORTS_FILE_READER ) {
                 return true; // no fallback available

@@ -102,8 +102,8 @@
                             hasValidLength = true;
                             return false;
                         }
-                    } else if( window.console ) {
-                        console.warn('Use of unknown credit card "'+cardName+'"');
+                    } else {
+                        $.formUtils.warn('Use of unknown credit card "'+cardName+'"');
                     }
                 });
 

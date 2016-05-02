@@ -122,7 +122,6 @@
               return false;
             }
           });
-          console.log($found);
           if ($found) {
             if (!errorMsg) {
               $found.remove();
@@ -169,7 +168,6 @@
 
       if (typeof conf.submitErrorMessageCallback === 'function') {
         $container = conf.submitErrorMessageCallback($form, errorMessages, conf);
-        console.log($container);
         if (!$container) {
           // message display taken care of by callback
           return;

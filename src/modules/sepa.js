@@ -172,6 +172,8 @@
   };
 
 
+
+
   $.formUtils.addValidator({
     name: 'sepageneral',
     validatorFunction: generalValidatorFunction,
@@ -185,6 +187,15 @@
       return countryIBAN(sepa) && generalValidatorFunction(sepa);
     },
     errorMessage: '',
-    errorMessageKey:'badIpan'
+    errorMessageKey:'badIban'
+  });
+  $.formUtils.addValidator({
+    name: 'bic',
+    validatorFunction: function(bic) {
+      var regextest = new RegExp('[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}$');
+      return regextest.test(bic);
+    },
+    errorMessage: '',
+    errorMessageKey:'badBic'
   });
 })(jQuery);

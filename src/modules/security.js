@@ -519,7 +519,7 @@
         name: 'recaptcha',
         validatorFunction: function (val, $el)
         {
-            return grecaptcha.getResponse($el.valAttr('recaptcha-widgetId'));
+            return grecaptcha.getResponse($el.valAttr('recaptcha-widget-id'));
         },
         errorMessage: '',
         errorMessageKey: 'badreCaptcha'

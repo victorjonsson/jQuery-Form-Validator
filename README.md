@@ -274,7 +274,6 @@ dialogs yourself. Here you can read more about [localization](http://formvalidat
 - UK validation module now also have validators `uknin` `ukutr`
 - Sepa-module that makes it possible to validate sepa, iban and bic.
 - New module named "logic" containing the features `data-validation-depends-on` and `data-validation-optional-if-answered`
-- The security module now support reCAPTCHA from Google.
 
 #### 2.2.8
 - The plugin is now again possible to install via bower.

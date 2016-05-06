@@ -33,7 +33,7 @@
       andSpaces: ' y espacios ',
       badInt: 'El valor proporcionado no es un número válido',
       badSecurityNumber: 'El número de seguridad social proporcionado es incorrecto',
-      badUKVatAnswer: 'No número VAT proporcionado no es válido para el Reino Unido',
+      badUKVatAnswer: 'El número VAT proporcionado no es válido para el Reino Unido',
       badStrength: 'La contraseña proporcionada no es lo suficientemente segura',
       badNumberOfSelectedOptionsStart: 'Debe seleccionar al menos',
       badNumberOfSelectedOptionsEnd: ' respuesta(s)',

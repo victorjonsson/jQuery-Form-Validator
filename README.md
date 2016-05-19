@@ -39,7 +39,7 @@ jQuery Form Validator is a **feature rich and multilingual** jQuery plugin that 
 
 ### Support for HTML5
 
-As of version 2.2 you can use this plugin as a fallback solution for the validation attributes in the HTML5 spec. Add the module `html5` to the module declaration and you can use the following native features:
+This plugin can serve as a fallback solution for the validation attributes in the HTML5 spec. With the [html5](http://www.formvalidator.net/#configuration_html5) module you can use the following native features:
 
 **Attributes**: require, pattern, maxlength, min, max, placeholder
 
@@ -78,7 +78,7 @@ Read the documentation for the default features at [http://formvalidator.net/#de
  * **strength** — *Validate the strength of a password*
  * **server** — *Validate value of input on server side*
  * **letternumeric** — *Validate that the input value consists out of only letters and/or numbers*
- * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)* **not yet released...**
+ * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)* 
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
 
@@ -122,12 +122,12 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
 
 Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://www.formvalidator.net/#country-specific-validators_uk)
 
-### Module: brazil *(not yet released...)*
+### Module: brazil
  * **brphone** — *Validate a brazilian telephone number*
  * **cep**
  * **cpf**
 
-### Module: poland *(not yet released...)*
+### Module: poland 
  * **plpesel** - *validate polish personal identity number (in Polish identity cards)*
  * **plnip** - *validate polish VAT identification number*
  * **plregon** - *validate polish bussiness identity number*
@@ -136,13 +136,14 @@ Read the documentation for the UK module at [http://formvalidator.net/#uk-valida
  * **trim**
  * **trimLeft**
  * **trimRight**
- * **upper**  — (convert all letters to upper case)
- * **lower**  — (convert all letters to lower case)
- * **capitalize**  — (convert the first letter in all words to upper case)
- * **insertRight**  — (declare a text that should be inserted at the end of the value, attribute data-sanitize-insert-right)
- * **insertLeft**  — (declare a text that should be inserted at the beginning of the value, attribute data-sanitize-insert-left)
- * **escape**  — (convert < > & ' " to html entities)
- * **numberFormat**  — (declare the attribute data-sanitize-number-format with any of the formats described on http://numeraljs.com/. Note that this rule requires that numeral.js is included in the page)
+ * **upper**  — Convert all letters to upper case
+ * **lower**  — Convert all letters to lower case
+ * **capitalize**  — Convert the first letter in all words to upper case
+ * **insertRight**  — Declare a text that should be inserted at the end of the value, attribute data-sanitize-insert-right
+ * **insertLeft**  — Declare a text that should be inserted at the beginning of the value, attribute data-sanitize-insert-left
+ * **escape**  — Convert < > & ' " to html entities
+ * **strip**  — Comma separated list with words that gets automatically removed
+ * **numberFormat**  — Declare the attribute data-sanitize-number-format with any of the formats described on http://numeraljs.com/. Note that this rule requires that numeral.js is included in the page
 
 Read the documentation for the sanitation module at [http://formvalidator.net/#data-sanitation](http://formvalidator.net/#data-sanitation)
 
@@ -248,12 +249,24 @@ You can cause an element to be validated upon the firing of an event, by attachi
 
 ## Localization
 
-This plugin comes with translations for English, German, French Spanish and Swedish. You can also choose to override the error
+This plugin comes with translations for English, Polish,
+  Romanian,
+  Danish,
+  Norwegian,
+  Dutch,
+  Czech,
+  Catalan,
+  Russian,
+  Italian,
+  French,
+  German,
+  Swedish and
+  Portuguese. You can also choose to override the error
 dialogs yourself. Here you can read more about [localization](http://formvalidator.net/#localization)
 
 ## Changelog
 
-#### 2.3.0 (unreleased)
+#### 2.3.18
 - New translations (Polish, Romanian, Danish, Norwegian, Dutch, Czech, Russian, Italian)
 - Several improvements made to already existing translations
 - "Validation help" no longer puts constraints on input names

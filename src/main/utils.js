@@ -145,6 +145,7 @@
         })
         .trigger('beforeValidation', [value, conf, language]);
 
+
       var inputIsOptional = $elem.valAttr('optional') === 'true',
           skipBecauseItsEmpty = !value && inputIsOptional,
           validationRules = $elem.attr(conf.validationRuleAttribute),

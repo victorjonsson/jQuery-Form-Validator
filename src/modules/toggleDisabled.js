@@ -53,7 +53,7 @@
             if( !isCheckingIfFormValid ) {
               isCheckingIfFormValid = true;
               var $form = $(this).closest('form');
-              if( valid && $form.isValid(conf, conf.language, false) ) {
+              if( valid && $form.isValid(conf.language, conf, false) ) {
                 toggleFormState($form, 'enabled');
               } else {
                 toggleFormState($form, 'disabled');

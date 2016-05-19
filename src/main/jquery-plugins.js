@@ -355,13 +355,11 @@
           'submit'
         );
 
-        if (result.shouldChangeDisplay) {
-          if (!result.isValid) {
-            addErrorMessage(result.errorMsg, $elem);
-          } else if (result.isValid) {
-            $elem.valAttr('current-error', false);
-            $.formUtils.dialogs.applyInputSuccessStyling($elem, conf);
-          }
+        if (!result.isValid) {
+          addErrorMessage(result.errorMsg, $elem);
+        } else if (result.isValid && result.shouldChangeDisplay) {
+          $elem.valAttr('current-error', false);
+          $.formUtils.dialogs.applyInputSuccessStyling($elem, conf);
         }
       }
 

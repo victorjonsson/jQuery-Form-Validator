@@ -266,7 +266,7 @@ dialogs yourself. Here you can read more about [localization](http://formvalidat
 
 ## Changelog
 
-#### 2.3.18
+#### 2.3.19
 - New translations (Polish, Romanian, Danish, Norwegian, Dutch, Czech, Russian, Italian)
 - Several improvements made to already existing translations
 - "Validation help" no longer puts constraints on input names

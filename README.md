@@ -200,11 +200,18 @@ The validation function takes these five arguments:
 
 ## Creating a custom module
 
-A "module" is basically a javascript file containing one or more calls to [$.formUtils.addValidator()](#writing-a-custom-validator). The module file
-should either have the file extension *.js* (as an ordinary javascript file) or *.dev.js*.
+A "module" is basically a javascript file containing one or more calls to [$.formUtils.addValidator()](#writing-a-custom-validator).
+The module file must be placed in the same directory as `jquery.form-validator.min.js` if you want it to load automatically via the setup function.
 
-Using the file extension **.dev.js** will tell *$.formUtils.loadModules* to always append a timestamp to the end of the
-URL, so that the browser never caches the file. You should of course never use *.dev.js* on a production website.
+You can use the method `$.formUtils.loadModules` if you want to load the module from a custom path.
+
+```js
+$.formUtils.loadModule('customModule otherCustomModule', 'my/custom/path', function() {
+  // Setup validation once my custom modules finished loading
+  $.validate(...);
+});
+
+```
 
 ### Loading your module ###
 

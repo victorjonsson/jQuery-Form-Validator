@@ -206,30 +206,14 @@ The module file must be placed in the same directory as `jquery.form-validator.m
 You can use the method `$.formUtils.loadModules` if you want to load the module from a custom path.
 
 ```js
-$.formUtils.loadModule('customModule otherCustomModule', 'my/custom/path', function() {
-  // Setup validation once my custom modules finished loading
-  $.validate(...);
+$.formUtils.loadModules('customModule otherCustomModule', 'js/validation-modules/');
+$.validate({
+   modules: 'security, date'
 });
-
 ```
 
-### Loading your module ###
-
-```html
-<html>
-<head>
-    <script src="js/form-validator/jquery.form-validator.min.js"></script>
-    <script>
-        $.formUtils.loadModules('mymodule.dev', 'js/validation-modules/');
-    </script>
-</head>
-</html>
-...
-```
-
-The first argument of $.formUtils.loadModules is a comma separated string with names of module files, without
-file extension (add .dev if the file name is for example mymodule.dev.js, this will insure that the browser never
-caches the javascript).
+The first argument of `$.formUtils.loadModules` is a comma separated string with names of module files, without
+file extension.
 
 The second argument is the path where the module files are located. This argument is optional, if not given
 the module files has to be located in the same directory as the core modules shipped together with this jquery plugin

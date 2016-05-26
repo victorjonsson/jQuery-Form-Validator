@@ -76,7 +76,7 @@
 
       // Remove possible error message
       if (typeof conf.inlineErrorMessageCallback === 'function') {
-        var $errorMessage = conf.inlineErrorMessageCallback($input, conf);
+        var $errorMessage = conf.inlineErrorMessageCallback($input, false, conf);
         if ($errorMessage) {
           $errorMessage.html('');
         }
@@ -143,7 +143,7 @@
         $messageContainer = $(custom);
         addErrorToMessageContainer();
       } else if (typeof conf.inlineErrorMessageCallback === 'function') {
-        $messageContainer = conf.inlineErrorMessageCallback($input, conf);
+        $messageContainer = conf.inlineErrorMessageCallback($input, errorMsg, conf);
         if (!$messageContainer) {
           // Error display taken care of by inlineErrorMessageCallback
           return;

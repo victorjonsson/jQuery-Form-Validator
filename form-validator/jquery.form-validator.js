@@ -948,7 +948,14 @@
           validateIfCheckedElementValue = $elem.valAttr('if-checked-value');
 
 
-      if ($elem.attr('disabled') || (!$elem.is(':visible') && !conf.validateHiddenInputs)) {
+      if (
+        $elem.attr('disabled')
+        || (
+          !$elem.is(':visible')
+          && !conf.validateHiddenInputs
+          && !$elem.data('force-validation-if-hidden')
+        )
+      ) {
         result.shouldChangeDisplay = false;
         return result;
       }

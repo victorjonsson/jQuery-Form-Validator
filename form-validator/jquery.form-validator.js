@@ -949,11 +949,11 @@
 
 
       if (
-        $elem.attr('disabled')
-        || (
-          !$elem.is(':visible')
-          && !conf.validateHiddenInputs
-          && !$elem.data('force-validation-if-hidden')
+        $elem.attr('disabled') ||
+        (
+          !$elem.is(':visible') &&
+          !conf.validateHiddenInputs &&
+          !$elem.data('force-validation-if-hidden')
         )
       ) {
         result.shouldChangeDisplay = false;

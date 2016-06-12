@@ -519,7 +519,7 @@
         name: 'recaptcha',
         validatorFunction: function (val, $el)
         {
-            return grecaptcha.getResponse($el.valAttr('recaptcha-widget-id'));
+            return grecaptcha.getResponse($el.valAttr('recaptcha-widget-id')) !== '';
         },
         errorMessage: '',
         errorMessageKey: 'badreCaptcha'
@@ -568,9 +568,18 @@
           throw new Error('Google reCaptcha site key is required.');
         }
 
+		  var grecaptchaRenderCallback = function(result) {
+			  $('form').each(function(){
+				  $('[data-validation~="recaptcha"]',$(this)).each(function() {
+					  $(this).trigger('validation', (result && result !== ''));
+				  });
+			  });
+		  };
         var widgetId = grecaptcha.render(div, {
           sitekey: siteKey,
-          theme: theme
+          theme: theme,
+			callback: grecaptchaRenderCallback,
+			'expired-callback': grecaptchaRenderCallback
         });
 
         $input

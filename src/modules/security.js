@@ -414,7 +414,6 @@
     $.formUtils.addValidator({
         name : 'server',
         validatorFunction : function(val, $el, conf, lang, $form) {
-
             var backendValid = $el.valAttr('backend-valid'),
                 backendInvalid = $el.valAttr('backend-invalid'),
                 serverURL = document.location.href;
@@ -426,13 +425,13 @@
             }
 
             if (backendValid) {
-                return true;
+              return true;
             }
             else if (backendInvalid) {
-                return false;
+              return false;
             }
             else if($.formUtils.eventType === 'keyup' && !$.formUtils.isValidatingEntireForm) {
-                return null;
+              return null;
             }
 
             if ($.formUtils.isValidatingEntireForm) {
@@ -476,8 +475,7 @@
             }
         },
         errorMessage : '',
-        errorMessageKey: 'badBackend',
-        validateOnKeyUp : false
+        errorMessageKey: 'badBackend'
     });
 
     /*
@@ -517,8 +515,7 @@
      */
     $.formUtils.addValidator({
         name: 'recaptcha',
-        validatorFunction: function (val, $el)
-        {
+        validatorFunction: function (val, $el) {
             return grecaptcha.getResponse($el.valAttr('recaptcha-widget-id')) !== '';
         },
         errorMessage: '',
@@ -568,18 +565,19 @@
           throw new Error('Google reCaptcha site key is required.');
         }
 
-		  var grecaptchaRenderCallback = function(result) {
-			  $('form').each(function(){
-				  $('[data-validation~="recaptcha"]',$(this)).each(function() {
-					  $(this).trigger('validation', (result && result !== ''));
-				  });
-			  });
-		  };
+        var grecaptchaRenderCallback = function(result) {
+          $('form').each(function(){
+            $('[data-validation~="recaptcha"]',$(this)).each(function() {
+              $(this).trigger('validation', (result && result !== ''));
+            });
+          });
+        };
+
         var widgetId = grecaptcha.render(div, {
           sitekey: siteKey,
           theme: theme,
-			callback: grecaptchaRenderCallback,
-			'expired-callback': grecaptchaRenderCallback
+          callback: grecaptchaRenderCallback,
+          'expired-callback': grecaptchaRenderCallback
         });
 
         $input

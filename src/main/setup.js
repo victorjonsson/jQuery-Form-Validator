@@ -95,38 +95,43 @@
           .unbind('blur.validation');
 
       // Validate when submitted
-      $form.bind('submit.validation', function () {
+      $form.bind('submit.validation', function (evt) {
 
-        var $form = $(this);
+        var $form = $(this),
+          stop = function() {
+            console.log('stopping');
+            evt.stopImmediatePropagation();
+            return false;
+          };
 
         if ($.formUtils.haltValidation) {
           // pressing several times on submit button while validation is halted
-          return false;
+          return stop();
         }
 
         if ($.formUtils.isLoadingModules) {
           setTimeout(function () {
             $form.trigger('submit.validation');
           }, 200);
-          return false;
+          return stop();
         }
 
         var valid = $form.isValid(conf.language, conf);
 
         if ($.formUtils.haltValidation) {
           // Validation got halted by one of the validators
-          return false;
+          return stop();
         } else {
           if (valid && typeof conf.onSuccess === 'function') {
             var callbackResponse = conf.onSuccess($form);
             if (callbackResponse === false) {
-              return false;
+              return stop();
             }
           } else if (!valid && typeof conf.onError === 'function') {
             conf.onError($form);
-            return false;
+            return stop();
           } else {
-            return valid;
+            return valid ? true : stop();
           }
         }
       })

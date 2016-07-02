@@ -99,7 +99,6 @@
 
         var $form = $(this),
           stop = function() {
-            console.log('stopping');
             evt.stopImmediatePropagation();
             return false;
           };

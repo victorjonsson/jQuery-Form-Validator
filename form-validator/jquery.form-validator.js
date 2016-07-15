@@ -333,12 +333,12 @@
    * @protected
    */
   $.fn.valAttr = function (name, val) {
+    name = ((name.length > 0) ? '-' + name : '');
     if (val === undefined) {
-      return this.attr('data-validation-' + name);
+      return this.attr('data-validation' + name);
     } else if (val === false || val === null) {
-      return this.removeAttr('data-validation-' + name);
+      return this.removeAttr('data-validation' + name);
     } else {
-      name = ((name.length > 0) ? '-' + name : '');
       return this.attr('data-validation' + name, val);
     }
   };

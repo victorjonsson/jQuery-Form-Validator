@@ -225,13 +225,28 @@
     }
 
     if (!result.isValid && attachKeyupEvent) {
-      $elem.bind('keyup.validation', function (evt) {
-        if( evt.keyCode !== 9 ) {
-          $(this).validateInputOnBlur(language, conf, false, 'keyup');
-        }
-      });
+      $elem.validateOnKeyUp(language, conf);
     }
 
+    return this;
+  };
+
+  /**
+   * Validate element on keyup-event
+   */
+  $.fn.validateOnKeyUp = function(language, conf) {
+    this.each(function() {
+      var $input = $(this);
+      if (!$input.valAttr('has-keyup-event')) {
+        $input
+          .valAttr('has-keyup-event', 'true')
+          .bind('keyup.validation', function (evt) {
+            if( evt.keyCode !== 9 ) {
+              $input.validateInputOnBlur(language, conf, false, 'keyup');
+            }
+          });
+      }
+    });
     return this;
   };
 

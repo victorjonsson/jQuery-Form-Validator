@@ -196,6 +196,9 @@
           }
 
           if (!isValid) {
+            if (conf.validateOnBlur) {
+              $elem.validateOnKeyUp(language, conf);
+            }
             errorMsg = $.formUtils.dialogs.resolveErrorMessage($elem, validator, rule, conf, language);
             return false; // break iteration
           }

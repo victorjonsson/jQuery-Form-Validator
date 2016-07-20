@@ -107,9 +107,9 @@
       if ($inputs.length > 0 ) {
         var type = $inputs.eq(0).attr('type');
         if (type === 'radio' || type === 'checkbox') {
-          return $inputs.filter(':checked').val();
+          return $inputs.filter(':checked').val() || '';
         } else {
-          return $inputs.val();
+          return $inputs.val() || '';
         }
       }
       return false;

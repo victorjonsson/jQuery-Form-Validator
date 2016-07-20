@@ -178,8 +178,6 @@
    */
   $.fn.validateInputOnBlur = function (language, conf, attachKeyupEvent, eventType) {
 
-    console.log('validating '+this.get(0).name+' on blur');
-
     $.formUtils.eventType = eventType;
 
     if ( this.willPostponeValidation() ) {
@@ -227,7 +225,6 @@
     }
 
     if (!result.isValid && attachKeyupEvent) {
-      console.log('in here');
       $elem.validateOnKeyUp(language, conf);
     }
 
@@ -241,12 +238,9 @@
     this.each(function() {
       var $input = $(this);
       if (!$input.valAttr('has-keyup-event')) {
-        console.log('Applygin keyup-validation on '+this.name);
-        console.log((new Error()).stack);
         $input
           .valAttr('has-keyup-event', 'true')
           .bind('keyup.validation', function (evt) {
-            console.log('key up');
             if( evt.keyCode !== 9 ) {
               $input.validateInputOnBlur(language, conf, false, 'keyup');
             }

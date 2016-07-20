@@ -105,6 +105,22 @@ Read the documentation for the location module at [http://formvalidator.net/#loc
 
 Read the documentation for the file module at [http://formvalidator.net/#file-validators](http://formvalidator.net/#file-validators)
 
+### Module: logic
+
+* **Dependent validation**
+* **Require "one-of"**
+
+Read the documentation for this module at [http://formvalidator.net/#logic](http://www.formvalidator.net/#logic)
+
+### Module: sepa
+
+* **IBAN**
+* **BIC**
+* **Sepa**
+
+Read the documentation for this module at [http://formvalidator.net/#sepa](http://www.formvalidator.net/#sepa)
+
+
 ### Module: sweden
  * **swemob** — *validate that the value is a swedish mobile telephone number*
  * **swesec** — *validate swedish social security number*
@@ -117,8 +133,8 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
 
 ### Module: uk
  * **ukvatnumber**
- * **uknin** - *validate UK National Insurance number* **not yet released...**
- * **ukutr** - *validate UK Unique Taxpayer Reference number* **not yet released...**
+ * **uknin** 
+ * **ukutr** 
 
 Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://www.formvalidator.net/#country-specific-validators_uk)
 

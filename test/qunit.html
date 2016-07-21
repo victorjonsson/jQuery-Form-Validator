@@ -156,8 +156,8 @@
           assert.equal($.formUtils.getValue($(select)), 'B');
 
           var selectMultipleWithoutSelected = '<select multiple><option>A</option><option>B</option><option>C</option></select>';
-          assert.equal($.formUtils.getValue($(selectMultipleWithoutSelected)) === '', true);
-   
+          assert.equal($.isEmptyObject($.formUtils.getValue($(selectMultipleWithoutSelected))), true);
+
           var selectMultiple = '<select multiple><option>A</option><option selected>B</option><option selected>C</option></select>';
           var selected = $.formUtils.getValue($(selectMultiple));
           assert.equal(selected.length, 2);

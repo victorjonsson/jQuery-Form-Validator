@@ -718,7 +718,8 @@
 
             var links = [
                 {val:input('1234$', {'length':'max3', '':'length'}), isValid:false},
-                {val:input('1234$', {'length':'min3', ignore:'$', '':'length'}), isValid:true}
+                {val:input('1234$', {'length':'min3', ignore:'$', '':'length'}), isValid:true},
+                {val:input('1234$$$$2$', {ignore:'$', '':'number'}), isValid:true}
             ];
 
             $.each(links, function(i, obj) {

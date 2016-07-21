@@ -170,7 +170,7 @@
       var ignore = $elem.valAttr('ignore');
       if (ignore) {
         $.each(ignore.split(''), function(i, char) {
-          value = value.replace(new RegExp('\\'+char), '');
+          value = value.replace(new RegExp('\\'+char, 'g'), '');
         });
       }
 

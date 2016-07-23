@@ -87,21 +87,21 @@
       attrName = 'data-validation-help';
     }
 
-    // Remove previously added event listeners
-    this.find('.has-help-txt')
-      .valAttr('has-keyup-event', false)
-      .removeClass('has-help-txt');
-
     // Add help text listeners
     this.find('textarea,input').each(function () {
       var $elem = $(this),
         className = 'jquery_form_help_' + (++_helpers),
         help = $elem.attr(attrName);
 
+      // Reset
+      $elem
+        .removeClass('has-help-text')
+        .unbind('focus.help')
+        .unbind('blur.help');
+
       if (help) {
         $elem
           .addClass('has-help-txt')
-          .unbind('focus.help')
           .bind('focus.help', function () {
             var $help = $elem.parent().find('.' + className);
             if ($help.length === 0) {
@@ -116,7 +116,6 @@
             }
             $help.fadeIn();
           })
-          .unbind('blur.help')
           .bind('blur.help', function () {
             $(this)
               .parent()

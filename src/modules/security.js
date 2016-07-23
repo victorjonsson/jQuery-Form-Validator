@@ -347,7 +347,7 @@
     var requestServer = function(serverURL, $element, val, conf, callback) {
         var reqParams = $element.valAttr('req-params') || $element.data('validation-req-params') || {},
             handleResponse = function(response, callback) {
-              if(response.valid) {
+              if (response.valid) {
                 $element.valAttr('backend-valid', 'true');
               }
               else {
@@ -357,9 +357,9 @@
                 }
               }
 
-              if( !$element.valAttr('has-keyup-event') ) {
+              if (!$element.valAttr('validate-backend-on-change')) {
                 $element
-                  .valAttr('has-keyup-event', '1')
+                  .valAttr('validate-backend-on-change', '1')
                   .bind('keyup change', function(evt) {
                     if( evt.keyCode !== 9 && evt.keyCode !== 16 ) {
                       $(this)
@@ -414,13 +414,13 @@
      */
     $.formUtils.addValidator({
         name : 'server',
-        validatorFunction : function(val, $el, conf, lang, $form) {
-            var backendValid = $el.valAttr('backend-valid'),
-                backendInvalid = $el.valAttr('backend-invalid'),
+        validatorFunction : function(val, $input, conf, lang, $form) {
+            var backendValid = $input.valAttr('backend-valid'),
+                backendInvalid = $input.valAttr('backend-invalid'),
                 serverURL = document.location.href;
 
-            if($el.valAttr('url')) {
-                serverURL = $el.valAttr('url');
+            if($input.valAttr('url')) {
+                serverURL = $input.valAttr('url');
             } else if('serverURL' in conf) {
                 serverURL = conf.backendUrl;
             }
@@ -435,45 +435,44 @@
               return null;
             }
 
+            $form.addClass('validating-server-side');
+            $input.addClass('validating-server-side');
+
             if ($.formUtils.isValidatingEntireForm) {
+              console.log('in here');
+
+              $form.bind('submit', disableFormSubmit);
+              $.formUtils.haltValidation = true;
+              currentOngoingRequests++;
+
+              requestServer(serverURL, $input, val, conf, function() {
+                currentOngoingRequests--;
                 $form
-                    .bind('submit', disableFormSubmit)
-                    .addClass('validating-server-side')
-                    .addClass('on-blur');
+                  .unbind('submit', disableFormSubmit)
+                  .removeClass('validating-server-side')
+                  .removeClass('on-blur')
+                  .get(0).onsubmit = function() {};
 
-                $el.addClass('validating-server-side');
-                $.formUtils.haltValidation = true;
+                $input
+                  .removeClass('validating-server-side')
+                  .valAttr('value-length', val.length);
 
-                currentOngoingRequests++;
-                requestServer(serverURL, $el, val, conf, function() {
-                  currentOngoingRequests--;
-                  $form
-                      .removeClass('validating-server-side')
-                      .removeClass('on-blur')
-                      .get(0).onsubmit = function() {};
+                // fire submission again!
+                if (currentOngoingRequests === 0) {
+                  $.formUtils.haltValidation = false;
+                  $form.trigger('submit');
+                }
 
-                  $form.unbind('submit', disableFormSubmit);
-                  $el.removeClass('validating-server-side');
+              });
 
-                  $el.valAttr('value-length', val.length);
-
-                  // fire submission again!
-                  if (currentOngoingRequests === 0) {
-                    $.formUtils.haltValidation = false;
-                    $form.trigger('submit');
-                  }
-                });
-
-                return null;
+              return null;
 
             } else {
                 // validation on blur
-                $form.addClass('validating-server-side');
-                $el.addClass('validating-server-side');
-                requestServer(serverURL, $el, val, conf, function() {
+                requestServer(serverURL, $input, val, conf, function() {
                     $form.removeClass('validating-server-side');
-                    $el.removeClass('validating-server-side');
-                    $el.trigger('blur');
+                    $input.removeClass('validating-server-side');
+                    $input.trigger('blur');
                 });
                 return null;
             }

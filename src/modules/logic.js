@@ -18,7 +18,6 @@
       var dependingOnBeforeValidation = function() {
 
           var $input = $(this),
-            inputHasValue = $.formUtils.getValue($input) ? true:false,
             nameOfDependingInput = $input.valAttr('depends-on') || $input.valAttr('if-checked');
 
           // Whether or not this input should be validated depends on if another input has a value
@@ -27,19 +26,28 @@
             // Set the boolean telling us that the validation depends
             // on another input being checked
             var valueOfDependingInput = $.formUtils.getValue('[name="' + nameOfDependingInput + '"]', $form),
-              listWithRequiredValues = $input.valAttr('depends-on-value'),
+              listWithRequiredValues = $.split($input.valAttr('depends-on-value'), false, false),
               dependingInputIsMissingValueOrHasIncorrectValue = !valueOfDependingInput || (
-                  listWithRequiredValues &&
+                  listWithRequiredValues.length &&
                     !valueIsInList(valueOfDependingInput, listWithRequiredValues)
                 );
 
-            if (dependingInputIsMissingValueOrHasIncorrectValue && !inputHasValue) {
+            if (dependingInputIsMissingValueOrHasIncorrectValue) {
               $input.valAttr('skipped', '1');
             }
           }
         },
-        valueIsInList = function(word, commaSeparatedList) {
-          return $.inArray(word.toLocaleLowerCase(), $.split(commaSeparatedList.toLocaleLowerCase())) > -1;
+        valueIsInList = function(value, valueList) {
+          var isInList = false,
+            lowerCaseValue = value.toLocaleLowerCase();
+
+          $.each(valueList, function(i, otherValue) {
+            if (lowerCaseValue === otherValue.toLocaleLowerCase()) {
+              isInList = true;
+              return false;
+            }
+          });
+          return isInList;
         },
         dependingOnValueChanged = function() {
           var $input = $(this),

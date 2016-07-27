@@ -11,16 +11,21 @@
    * delimiter can be space, comma, dash or pipe
    * @param {String} val
    * @param {Function|String} [callback]
+   * @param {Boolean} [allowSpaceAsDelimiter]
    * @returns {Array|void}
    */
-  $.split = function (val, callback) {
+  $.split = function (val, callback, allowSpaceAsDelimiter) {
+    // default to true
+    allowSpaceAsDelimiter = allowSpaceAsDelimiter === undefined || allowSpaceAsDelimiter === true;
+    var pattern = '[,|\-'+(allowSpaceAsDelimiter ? '\\s':'')+']\\s*',
+      regex = new RegExp(pattern, 'g');
     if (typeof callback !== 'function') {
       // return array
       if (!val) {
         return [];
       }
       var values = [];
-      $.each(val.split(callback ? callback : /[,|\-\s]\s*/g),
+      $.each(val.split(callback ? callback : regex),
         function (i, str) {
           str = $.trim(str);
           if (str.length) {
@@ -31,7 +36,7 @@
       return values;
     } else if (val) {
       // exec callback func on each
-      $.each(val.split(/[,|\-\s]\s*/g),
+      $.each(val.split(regex),
         function (i, str) {
           str = $.trim(str);
           if (str.length) {

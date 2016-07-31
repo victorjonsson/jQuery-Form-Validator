@@ -169,8 +169,8 @@
       // Filter out specified characters
       var ignore = $elem.valAttr('ignore');
       if (ignore) {
-        $.each(ignore.split(''), function(i, char) {
-          value = value.replace(new RegExp('\\'+char, 'g'), '');
+        $.each(ignore.split(''), function(i, character) {
+          value = value.replace(new RegExp('\\'+character, 'g'), '');
         });
       }
 

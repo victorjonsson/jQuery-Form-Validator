@@ -78,6 +78,8 @@
                     if( min.indexOf('.') > -1 || max.indexOf('.') > -1 ) {
                       attrs['data-validation-allowing'] += ',float';
                     }
+                  } else {
+                    attrs['data-validation-allowing'] += ',float,negative';
                   }
                   break;
               }

@@ -16,15 +16,18 @@
     return this.isValid(language, conf, true);
   };
 
-  $(window).on('validatorsLoaded formValidationSetup', function(evt, $form, config) {
-    if( !$form ) {
-      $form = $('form');
-    }
-
-    addSupportForCustomErrorMessageCallback(config);
-    addSupportForElementReferenceInPositionParam(config);
-    addSupportForValidationDependingOnCheckedInput($form);
-  });
+  $(window)
+    .on('formValidationPluginInit', function(evt, config) {
+      convertDeprecatedLangCodeToISO6391(config);
+      addSupportForCustomErrorMessageCallback(config);
+      addSupportForElementReferenceInPositionParam(config);
+    })
+    .on('validatorsLoaded formValidationSetup', function(evt, $form) {
+      if( !$form ) {
+        $form = $('form');
+      }
+      addSupportForValidationDependingOnCheckedInput($form);
+    });
 
 
   function addSupportForCustomErrorMessageCallback(config) {
@@ -86,6 +89,22 @@
         }
 
       });
+    }
+
+    function convertDeprecatedLangCodeToISO6391(config) {
+      var deprecatedLangCodes = {
+        se: 'sv',
+        cz: 'cs',
+        dk: 'da'
+      };
+
+      if (config.lang in deprecatedLangCodes) {
+        var newLangCode = deprecatedLangCodes[config.lang];
+        $.formUtils.warn(
+          'Deprecated use of lang code "'+config.lang+'" use "'+newLangCode+'" instead'
+        );
+        config.lang = newLangCode;
+      }
     }
 
 })(jQuery);

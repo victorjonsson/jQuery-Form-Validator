@@ -87,21 +87,21 @@
       attrName = 'data-validation-help';
     }
 
-    // Remove previously added event listeners
-    this.find('.has-help-txt')
-      .valAttr('has-keyup-event', false)
-      .removeClass('has-help-txt');
-
     // Add help text listeners
     this.find('textarea,input').each(function () {
       var $elem = $(this),
         className = 'jquery_form_help_' + (++_helpers),
         help = $elem.attr(attrName);
 
+      // Reset
+      $elem
+        .removeClass('has-help-text')
+        .unbind('focus.help')
+        .unbind('blur.help');
+
       if (help) {
         $elem
           .addClass('has-help-txt')
-          .unbind('focus.help')
           .bind('focus.help', function () {
             var $help = $elem.parent().find('.' + className);
             if ($help.length === 0) {
@@ -116,7 +116,6 @@
             }
             $help.fadeIn();
           })
-          .unbind('blur.help')
           .bind('blur.help', function () {
             $(this)
               .parent()
@@ -213,7 +212,7 @@
       );
 
     if (attachKeyupEvent) {
-      $elem.unbind('keyup.validation');
+      $elem.removeKeyUpValidation();
     }
 
     if (result.shouldChangeDisplay) {
@@ -225,13 +224,40 @@
     }
 
     if (!result.isValid && attachKeyupEvent) {
-      $elem.bind('keyup.validation', function (evt) {
-        if( evt.keyCode !== 9 ) {
-          $(this).validateInputOnBlur(language, conf, false, 'keyup');
-        }
-      });
+      $elem.validateOnKeyUp(language, conf);
     }
 
+    return this;
+  };
+
+  /**
+   * Validate element on keyup-event
+   */
+  $.fn.validateOnKeyUp = function(language, conf) {
+    this.each(function() {
+      var $input = $(this);
+      if (!$input.valAttr('has-keyup-event')) {
+        $input
+          .valAttr('has-keyup-event', 'true')
+          .bind('keyup.validation', function (evt) {
+            if( evt.keyCode !== 9 ) {
+              $input.validateInputOnBlur(language, conf, false, 'keyup');
+            }
+          });
+      }
+    });
+    return this;
+  };
+
+  /**
+   * Remove validation on keyup
+   */
+  $.fn.removeKeyUpValidation = function() {
+    this.each(function() {
+      $(this)
+        .valAttr('has-keyup-event', false)
+        .unbind('keyup.validation');
+    });
     return this;
   };
 

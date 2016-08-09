@@ -11,16 +11,21 @@
    * delimiter can be space, comma, dash or pipe
    * @param {String} val
    * @param {Function|String} [callback]
+   * @param {Boolean} [allowSpaceAsDelimiter]
    * @returns {Array|void}
    */
-  $.split = function (val, callback) {
+  $.split = function (val, callback, allowSpaceAsDelimiter) {
+    // default to true
+    allowSpaceAsDelimiter = allowSpaceAsDelimiter === undefined || allowSpaceAsDelimiter === true;
+    var pattern = '[,|\-'+(allowSpaceAsDelimiter ? '\\s':'')+']\\s*',
+      regex = new RegExp(pattern, 'g');
     if (typeof callback !== 'function') {
       // return array
       if (!val) {
         return [];
       }
       var values = [];
-      $.each(val.split(callback ? callback : /[,|\-\s]\s*/g),
+      $.each(val.split(callback ? callback : regex),
         function (i, str) {
           str = $.trim(str);
           if (str.length) {
@@ -31,7 +36,7 @@
       return values;
     } else if (val) {
       // exec callback func on each
-      $.each(val.split(/[,|\-\s]\s*/g),
+      $.each(val.split(regex),
         function (i, str) {
           str = $.trim(str);
           if (str.length) {
@@ -65,6 +70,8 @@
 
     conf = $.extend(defaultConf, conf || {});
 
+    $(window).trigger('formValidationPluginInit', [conf]);
+
     if( conf.lang && conf.lang !== 'en' ) {
       var langModule = 'lang/'+conf.lang+'.js';
       conf.modules += conf.modules.length ? ','+langModule : langModule;
@@ -95,38 +102,42 @@
           .unbind('blur.validation');
 
       // Validate when submitted
-      $form.bind('submit.validation', function () {
+      $form.bind('submit.validation', function (evt) {
 
-        var $form = $(this);
+        var $form = $(this),
+          stop = function() {
+            evt.stopImmediatePropagation();
+            return false;
+          };
 
         if ($.formUtils.haltValidation) {
           // pressing several times on submit button while validation is halted
-          return false;
+          return stop();
         }
 
         if ($.formUtils.isLoadingModules) {
           setTimeout(function () {
             $form.trigger('submit.validation');
           }, 200);
-          return false;
+          return stop();
         }
 
         var valid = $form.isValid(conf.language, conf);
 
         if ($.formUtils.haltValidation) {
           // Validation got halted by one of the validators
-          return false;
+          return stop();
         } else {
           if (valid && typeof conf.onSuccess === 'function') {
             var callbackResponse = conf.onSuccess($form);
             if (callbackResponse === false) {
-              return false;
+              return stop();
             }
           } else if (!valid && typeof conf.onError === 'function') {
             conf.onError($form);
-            return false;
+            return stop();
           } else {
-            return valid;
+            return valid ? true : stop();
           }
         }
       })

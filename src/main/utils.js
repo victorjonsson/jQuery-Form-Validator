@@ -107,9 +107,9 @@
       if ($inputs.length > 0 ) {
         var type = $inputs.eq(0).attr('type');
         if (type === 'radio' || type === 'checkbox') {
-          return $inputs.filter(':checked').val();
+          return $inputs.filter(':checked').val() || '';
         } else {
-          return $inputs.val();
+          return $inputs.val() || '';
         }
       }
       return false;
@@ -169,8 +169,8 @@
       // Filter out specified characters
       var ignore = $elem.valAttr('ignore');
       if (ignore) {
-        $.each(ignore.split(''), function(i, char) {
-          value = value.replace(new RegExp('\\'+char), '');
+        $.each(ignore.split(''), function(i, character) {
+          value = value.replace(new RegExp('\\'+character, 'g'), '');
         });
       }
 
@@ -196,6 +196,9 @@
           }
 
           if (!isValid) {
+            if (conf.validateOnBlur) {
+              $elem.validateOnKeyUp(language, conf);
+            }
             errorMsg = $.formUtils.dialogs.resolveErrorMessage($elem, validator, rule, conf, language);
             return false; // break iteration
           }
@@ -208,7 +211,7 @@
 
         }
 
-      }, ' ');
+      });
 
 
       if (isValid === false) {

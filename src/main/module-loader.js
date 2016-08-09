@@ -114,11 +114,14 @@
         var findScriptPathAndLoadModules = function () {
           var foundPath = false;
           $('script[src*="form-validator"]').each(function () {
-            foundPath = this.src.substr(0, this.src.lastIndexOf('/')) + '/';
-            if (foundPath === '/') {
-              foundPath = '';
+            var isScriptFromPluginNodeModulesDirectory = this.src.split('form-validator')[1].split('node_modules').length > 1;
+            if (!isScriptFromPluginNodeModulesDirectory) {
+              foundPath = this.src.substr(0, this.src.lastIndexOf('/')) + '/';
+              if (foundPath === '/') {
+                foundPath = '';
+              }
+              return false;
             }
-            return false;
           });
 
           if (foundPath !== false) {

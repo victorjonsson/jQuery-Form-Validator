@@ -62,7 +62,8 @@
                 case 'number':
                   validation.push('number');
                   var max = $input.attr('max'),
-                    min = $input.attr('min');
+                    min = $input.attr('min'),
+                    step = $input.attr('step');
                   if( min || max ) {
                     if ( !min ) {
                       min = '0';
@@ -70,12 +71,15 @@
                     if ( !max ) {
                       max = '9007199254740992'; // js max int
                     }
+                    if ( !step ) {
+                      step = '1'; // default value
+                    }
 
-                    attrs['data-validation-allowing'] = 'range['+min+';'+max+']';
+                    attrs['data-validation-allowing'] = 'range['  +min+';'+max+']';
                     if( min.indexOf('-') === 0 || max.indexOf('-') === 0 ) {
                       attrs['data-validation-allowing'] += ',negative';
                     }
-                    if( min.indexOf('.') > -1 || max.indexOf('.') > -1 ) {
+                    if( min.indexOf('.') > -1 || max.indexOf('.') > -1 || step.indexOf('.') > -1 ) {
                       attrs['data-validation-allowing'] += ',float';
                     }
                   } else {

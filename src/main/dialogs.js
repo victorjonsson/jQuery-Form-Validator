@@ -91,7 +91,7 @@
 
       // Remove error messages in top of form
       if (typeof conf.submitErrorMessageCallback === 'function') {
-        var $errorMessagesInTopOfForm = conf.submitErrorMessageCallback($form, conf);
+        var $errorMessagesInTopOfForm = conf.submitErrorMessageCallback($form, false, conf);
         if ($errorMessagesInTopOfForm) {
           $errorMessagesInTopOfForm.html('');
         }

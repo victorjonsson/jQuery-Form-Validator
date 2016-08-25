@@ -534,19 +534,23 @@
         pattern_sc = '^(?=(?:.*(_|[-+_!@#$%^&*?])){'+require_sc+',}).+',
         pattern_num = '^(?=(?:.*\\d){'+require_num+',}).+',
         message_error = 'Password must contain at least ',
+        result_uc = false,
+        result_lc = false,
+        result_sc = false,
+        result_num = false,
         error = false;
 
       if (require_uc !== '0'){
-        var result_uc = new RegExp(pattern_uc).test(val);
+        result_uc = new RegExp(pattern_uc).test(val);
       }
       if (require_lc !== '0'){
-        var result_lc = new RegExp(pattern_lc).test(val);
+        result_lc = new RegExp(pattern_lc).test(val);
       }
       if (require_sc !== '0'){
-        var result_sc = new RegExp(pattern_sc).test(val);
+        result_sc = new RegExp(pattern_sc).test(val);
       }
       if (require_num !== '0'){
-        var result_num = new RegExp(pattern_num).test(val);
+        result_num = new RegExp(pattern_num).test(val);
       }
 
       if (!result_uc){

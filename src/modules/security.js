@@ -524,7 +524,7 @@
   */
   $.formUtils.addValidator({
     name : 'content',
-    validatorFunction : function(val, $el, config, language) {
+    validatorFunction : function(val, $el) {
       var require_uc = $el.valAttr('require-uc-letter') || '0',
         require_lc = $el.valAttr('require-lc-letter') || '0',
         require_sc = $el.valAttr('require-special-char') || '0',

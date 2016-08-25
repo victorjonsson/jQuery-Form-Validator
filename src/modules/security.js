@@ -537,16 +537,16 @@
         error = false;
 
       if (require_uc !== '0'){
-        result_uc = new RegExp(pattern_uc).test(val);
+        var result_uc = new RegExp(pattern_uc).test(val);
       }
       if (require_lc !== '0'){
-        result_lc = new RegExp(pattern_lc).test(val);
+        var result_lc = new RegExp(pattern_lc).test(val);
       }
       if (require_sc !== '0'){
-        result_sc = new RegExp(pattern_sc).test(val);
+        var result_sc = new RegExp(pattern_sc).test(val);
       }
       if (require_num !== '0'){
-        result_num = new RegExp(pattern_num).test(val);
+        var result_num = new RegExp(pattern_num).test(val);
       }
 
       if (!result_uc){

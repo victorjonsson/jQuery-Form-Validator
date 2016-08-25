@@ -515,6 +515,81 @@
   });
 
   /*
+   * Check password content depending on following parameters: 
+   *    data-validation-require-uc-letter, 
+   *    data-validation-require-lc-letter,
+   *    data-validation-require-special-char,
+   *    data-validation-require-numeral
+   *
+  */
+  $.formUtils.addValidator({
+    name : 'content',
+    validatorFunction : function(val, $el, config, language) {
+      var require_uc = $el.valAttr('require-uc-letter') || '0',
+        require_lc = $el.valAttr('require-lc-letter') || '0',
+        require_sc = $el.valAttr('require-special-char') || '0',
+        require_num = $el.valAttr('require-numeral') || '0',
+        pattern_uc = '^(?=(?:.*[A-Z]){'+require_uc+',}).+',
+        pattern_lc = '^(?=(?:.*[a-z]){'+require_lc+',}).+',
+        pattern_sc = '^(?=(?:.*(_|[-+_!@#$%^&*?])){'+require_sc+',}).+',
+        pattern_num = '^(?=(?:.*\\d){'+require_num+',}).+',
+        message_error = 'Password must contain at least ',
+        error = false;
+
+      if (require_uc !== '0'){
+        result_uc = new RegExp(pattern_uc).test(val);
+      }
+      if (require_lc !== '0'){
+        result_lc = new RegExp(pattern_lc).test(val);
+      }
+      if (require_sc !== '0'){
+        result_sc = new RegExp(pattern_sc).test(val);
+      }
+      if (require_num !== '0'){
+        result_num = new RegExp(pattern_num).test(val);
+      }
+
+      if (!result_uc){
+        error = true;
+        message_error = message_error + require_uc + ' uppercase letter(s)';
+      }
+      if (!result_lc){
+        if (error){
+          message_error = message_error + ', ' + require_lc + ' lowercase letter(s)';
+        }
+        else{
+          error = true;
+          message_error = message_error + require_lc + ' lowercase letter(s)';
+        } 
+      }
+      if (!result_sc){
+        if (error){
+          message_error = message_error + ', ' + require_sc + ' special character(s)';
+        }
+        else{
+          error = true;
+          message_error = message_error + require_sc + ' special character(s)';
+        }
+      }
+      if (!result_num){
+        if (error){
+          message_error = message_error + ', ' + require_num + ' numeric character(s)';
+        }
+        else{
+          message_error = message_error  + require_num + ' numeric character(s)';
+        }
+      }
+
+      this.errorMessage = message_error + '.';
+      if(result_uc && result_lc && result_sc && result_num){
+        return true;
+      }
+      return false;
+    },
+    errorMessage : '',
+    errorMessageKey: ''
+  });
+  /*
    * Google reCaptcha 2
    */
   $.formUtils.addValidator({

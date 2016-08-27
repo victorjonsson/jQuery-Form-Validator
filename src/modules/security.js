@@ -523,69 +523,68 @@
    *
   */
   $.formUtils.addValidator({
-    name : 'content',
-    validatorFunction : function(val, $el) {
-      var require_uc = $el.valAttr('require-uc-letter') || '0',
-        require_lc = $el.valAttr('require-lc-letter') || '0',
-        require_sc = $el.valAttr('require-special-char') || '0',
-        require_num = $el.valAttr('require-numeral') || '0',
-        pattern_uc = '^(?=(?:.*[A-Z]){'+require_uc+',}).+',
-        pattern_lc = '^(?=(?:.*[a-z]){'+require_lc+',}).+',
-        pattern_sc = '^(?=(?:.*(_|[-+_!@#$%^&*?])){'+require_sc+',}).+',
-        pattern_num = '^(?=(?:.*\\d){'+require_num+',}).+',
-        message_error = 'Password must contain at least ',
-        result_uc = false,
-        result_lc = false,
-        result_sc = false,
-        result_num = false,
+    name : 'complexity',
+    validatorFunction : function(val, $el, conf, lang) {
+      var numRequiredUppercaseChars = $el.valAttr('require-uc-letter') || '0',
+        numRequiredLowercaseChars = $el.valAttr('require-lc-letter') || '0',
+        numRequiredSpecialChars = $el.valAttr('require-special-char') || '0',
+        numRequiredNumericChars = $el.valAttr('require-numeral') || '0',
+        patternUpperCaseChars = '^(?=(?:.*[A-Z]){'+numRequiredUppercaseChars+',}).+',
+        patternLowerCaseChars = '^(?=(?:.*[a-z]){'+numRequiredLowercaseChars+',}).+',
+        patternSpecialChars = '^(?=(?:.*(_|[!"#$%&\'()*+\\\\,-./:;<=>?@[\\]^_`{|}~])){'+numRequiredSpecialChars+',}).+',
+        patternNumericChars = '^(?=(?:.*\\d){'+numRequiredNumericChars+',}).+',
+        resultRegExpRequiredUppercaseChars = false,
+        resultRegExpRequiredLowercaseChars = false,
+        resultRegExpRequiredSpecialChars = false,
+        resultRegExpRequiredNumericChars = false,
         error = false;
 
-      if (require_uc !== '0'){
-        result_uc = new RegExp(pattern_uc).test(val);
+      if (numRequiredUppercaseChars !== '0'){
+        resultRegExpRequiredUppercaseChars = new RegExp(patternUpperCaseChars).test(val);
       }
-      if (require_lc !== '0'){
-        result_lc = new RegExp(pattern_lc).test(val);
+      if (numRequiredLowercaseChars !== '0'){
+        resultRegExpRequiredLowercaseChars = new RegExp(patternLowerCaseChars).test(val);
       }
-      if (require_sc !== '0'){
-        result_sc = new RegExp(pattern_sc).test(val);
+      if (numRequiredSpecialChars !== '0'){
+        resultRegExpRequiredSpecialChars = new RegExp(patternSpecialChars).test(val);
       }
-      if (require_num !== '0'){
-        result_num = new RegExp(pattern_num).test(val);
+      if (numRequiredNumericChars !== '0'){
+        resultRegExpRequiredNumericChars = new RegExp(patternNumericChars).test(val);
       }
 
-      if (!result_uc){
+      if (!resultRegExpRequiredUppercaseChars){
         error = true;
-        message_error = message_error + require_uc + ' uppercase letter(s)';
+        message_error = lang.passwordComplexityStart + numRequiredUppercaseChars + lang.passwordComplexityUppercaseInfo;
       }
-      if (!result_lc){
+      if (!resultRegExpRequiredLowercaseChars){
         if (error){
-          message_error = message_error + ', ' + require_lc + ' lowercase letter(s)';
+          message_error = message_error + lang.passwordComplexitySeparator + numRequiredLowercaseChars + lang.passwordComplexityLowercaseInfo;
         }
         else{
           error = true;
-          message_error = message_error + require_lc + ' lowercase letter(s)';
+          message_error = lang.passwordComplexityStart + numRequiredLowercaseChars + lang.passwordComplexityLowercaseInfo;
         } 
       }
-      if (!result_sc){
+      if (!resultRegExpRequiredSpecialChars){
         if (error){
-          message_error = message_error + ', ' + require_sc + ' special character(s)';
+          message_error = message_error + lang.passwordComplexitySeparator + numRequiredSpecialChars + lang.passwordComplexitySpecialCharsInfo;
         }
         else{
           error = true;
-          message_error = message_error + require_sc + ' special character(s)';
+          message_error = lang.passwordComplexityStart + numRequiredSpecialChars + lang.passwordComplexitySpecialCharsInfo;
         }
       }
-      if (!result_num){
+      if (!resultRegExpRequiredNumericChars){
         if (error){
-          message_error = message_error + ', ' + require_num + ' numeric character(s)';
+          message_error = message_error + lang.passwordComplexitySeparator + numRequiredNumericChars + lang.passwordComplexityNumericCharsInfo;
         }
         else{
-          message_error = message_error  + require_num + ' numeric character(s)';
+          message_error = lang.passwordComplexityStart  + numRequiredNumericChars + lang.passwordComplexityNumericCharsInfo;
         }
       }
 
-      this.errorMessage = message_error + '.';
-      if(result_uc && result_lc && result_sc && result_num){
+      this.errorMessage = message_error + lang.passwordComplexityEnd;
+      if(resultRegExpRequiredUppercaseChars && resultRegExpRequiredLowercaseChars && resultRegExpRequiredSpecialChars && resultRegExpRequiredNumericChars){
         return true;
       }
       return false;

@@ -515,6 +515,85 @@
   });
 
   /*
+   * Check password content depending on following parameters: 
+   *    data-validation-require-uc-letter, 
+   *    data-validation-require-lc-letter,
+   *    data-validation-require-special-char,
+   *    data-validation-require-numeral
+   *
+  */
+  $.formUtils.addValidator({
+    name : 'complexity',
+    validatorFunction : function(val, $el) {
+      var numRequiredUppercaseChars = $el.valAttr('require-uc-letter') || '0',
+        numRequiredLowercaseChars = $el.valAttr('require-lc-letter') || '0',
+        numRequiredSpecialChars = $el.valAttr('require-special-char') || '0',
+        numRequiredNumericChars = $el.valAttr('require-numeral') || '0',
+        patternUpperCaseChars = '^(?=(?:.*[A-Z]){'+numRequiredUppercaseChars+',}).+',
+        patternLowerCaseChars = '^(?=(?:.*[a-z]){'+numRequiredLowercaseChars+',}).+',
+        patternSpecialChars = '^(?=(?:.*(_|[!"#$%&\'()*+\\\\,-./:;<=>?@[\\]^_`{|}~])){'+numRequiredSpecialChars+',}).+',
+        patternNumericChars = '^(?=(?:.*\\d){'+numRequiredNumericChars+',}).+',
+        resultRegExpRequiredUppercaseChars = true,
+        resultRegExpRequiredLowercaseChars = true,
+        resultRegExpRequiredSpecialChars = true,
+        resultRegExpRequiredNumericChars = true,
+        error = false,
+        message_error = '';
+
+      if (numRequiredUppercaseChars !== '0'){
+        resultRegExpRequiredUppercaseChars = new RegExp(patternUpperCaseChars).test(val);
+      }
+      if (numRequiredLowercaseChars !== '0'){
+        resultRegExpRequiredLowercaseChars = new RegExp(patternLowerCaseChars).test(val);
+      }
+      if (numRequiredSpecialChars !== '0'){
+        resultRegExpRequiredSpecialChars = new RegExp(patternSpecialChars).test(val);
+      }
+      if (numRequiredNumericChars !== '0'){
+        resultRegExpRequiredNumericChars = new RegExp(patternNumericChars).test(val);
+      }
+
+      if (!resultRegExpRequiredUppercaseChars){
+        error = true;
+        message_error = $.formUtils.LANG.passwordComplexityStart + numRequiredUppercaseChars + $.formUtils.LANG.passwordComplexityUppercaseInfo;
+      }
+      if (!resultRegExpRequiredLowercaseChars){
+        if (error){
+          message_error = message_error + $.formUtils.LANG.passwordComplexitySeparator + numRequiredLowercaseChars + $.formUtils.LANG.passwordComplexityLowercaseInfo;
+        }
+        else{
+          error = true;
+          message_error = $.formUtils.LANG.passwordComplexityStart + numRequiredLowercaseChars + $.formUtils.LANG.passwordComplexityLowercaseInfo;
+        } 
+      }
+      if (!resultRegExpRequiredSpecialChars){
+        if (error){
+          message_error = message_error + $.formUtils.LANG.passwordComplexitySeparator + numRequiredSpecialChars + $.formUtils.LANG.passwordComplexitySpecialCharsInfo;
+        }
+        else{
+          error = true;
+          message_error = $.formUtils.LANG.passwordComplexityStart + numRequiredSpecialChars + $.formUtils.LANG.passwordComplexitySpecialCharsInfo;
+        }
+      }
+      if (!resultRegExpRequiredNumericChars){
+        if (error){
+          message_error = message_error + $.formUtils.LANG.passwordComplexitySeparator + numRequiredNumericChars + $.formUtils.LANG.passwordComplexityNumericCharsInfo;
+        }
+        else{
+          message_error = $.formUtils.LANG.passwordComplexityStart  + numRequiredNumericChars + $.formUtils.LANG.passwordComplexityNumericCharsInfo;
+        }
+      }
+
+      this.errorMessage = message_error + $.formUtils.LANG.passwordComplexityEnd;
+      if(resultRegExpRequiredUppercaseChars && resultRegExpRequiredLowercaseChars && resultRegExpRequiredSpecialChars && resultRegExpRequiredNumericChars){
+        return true;
+      }
+      return false;
+    },
+    errorMessage : '',
+    errorMessageKey: ''
+  });
+  /*
    * Google reCaptcha 2
    */
   $.formUtils.addValidator({

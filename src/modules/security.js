@@ -524,7 +524,7 @@
   */
   $.formUtils.addValidator({
     name : 'complexity',
-    validatorFunction : function(val, $el, conf, lang) {
+    validatorFunction : function(val, $el) {
       var numRequiredUppercaseChars = $el.valAttr('require-uc-letter') || '0',
         numRequiredLowercaseChars = $el.valAttr('require-lc-letter') || '0',
         numRequiredSpecialChars = $el.valAttr('require-special-char') || '0',

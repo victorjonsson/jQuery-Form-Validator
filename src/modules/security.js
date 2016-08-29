@@ -533,11 +533,12 @@
         patternLowerCaseChars = '^(?=(?:.*[a-z]){'+numRequiredLowercaseChars+',}).+',
         patternSpecialChars = '^(?=(?:.*(_|[!"#$%&\'()*+\\\\,-./:;<=>?@[\\]^_`{|}~])){'+numRequiredSpecialChars+',}).+',
         patternNumericChars = '^(?=(?:.*\\d){'+numRequiredNumericChars+',}).+',
-        resultRegExpRequiredUppercaseChars = false,
-        resultRegExpRequiredLowercaseChars = false,
-        resultRegExpRequiredSpecialChars = false,
-        resultRegExpRequiredNumericChars = false,
-        error = false;
+        resultRegExpRequiredUppercaseChars = true,
+        resultRegExpRequiredLowercaseChars = true,
+        resultRegExpRequiredSpecialChars = true,
+        resultRegExpRequiredNumericChars = true,
+        error = false,
+        message_error = '';
 
       if (numRequiredUppercaseChars !== '0'){
         resultRegExpRequiredUppercaseChars = new RegExp(patternUpperCaseChars).test(val);
@@ -554,36 +555,36 @@
 
       if (!resultRegExpRequiredUppercaseChars){
         error = true;
-        message_error = lang.passwordComplexityStart + numRequiredUppercaseChars + lang.passwordComplexityUppercaseInfo;
+        message_error = $.formUtils.LANG.passwordComplexityStart + numRequiredUppercaseChars + $.formUtils.LANG.passwordComplexityUppercaseInfo;
       }
       if (!resultRegExpRequiredLowercaseChars){
         if (error){
-          message_error = message_error + lang.passwordComplexitySeparator + numRequiredLowercaseChars + lang.passwordComplexityLowercaseInfo;
+          message_error = message_error + $.formUtils.LANG.passwordComplexitySeparator + numRequiredLowercaseChars + $.formUtils.LANG.passwordComplexityLowercaseInfo;
         }
         else{
           error = true;
-          message_error = lang.passwordComplexityStart + numRequiredLowercaseChars + lang.passwordComplexityLowercaseInfo;
+          message_error = $.formUtils.LANG.passwordComplexityStart + numRequiredLowercaseChars + $.formUtils.LANG.passwordComplexityLowercaseInfo;
         } 
       }
       if (!resultRegExpRequiredSpecialChars){
         if (error){
-          message_error = message_error + lang.passwordComplexitySeparator + numRequiredSpecialChars + lang.passwordComplexitySpecialCharsInfo;
+          message_error = message_error + $.formUtils.LANG.passwordComplexitySeparator + numRequiredSpecialChars + $.formUtils.LANG.passwordComplexitySpecialCharsInfo;
         }
         else{
           error = true;
-          message_error = lang.passwordComplexityStart + numRequiredSpecialChars + lang.passwordComplexitySpecialCharsInfo;
+          message_error = $.formUtils.LANG.passwordComplexityStart + numRequiredSpecialChars + $.formUtils.LANG.passwordComplexitySpecialCharsInfo;
         }
       }
       if (!resultRegExpRequiredNumericChars){
         if (error){
-          message_error = message_error + lang.passwordComplexitySeparator + numRequiredNumericChars + lang.passwordComplexityNumericCharsInfo;
+          message_error = message_error + $.formUtils.LANG.passwordComplexitySeparator + numRequiredNumericChars + $.formUtils.LANG.passwordComplexityNumericCharsInfo;
         }
         else{
-          message_error = lang.passwordComplexityStart  + numRequiredNumericChars + lang.passwordComplexityNumericCharsInfo;
+          message_error = $.formUtils.LANG.passwordComplexityStart  + numRequiredNumericChars + $.formUtils.LANG.passwordComplexityNumericCharsInfo;
         }
       }
 
-      this.errorMessage = message_error + lang.passwordComplexityEnd;
+      this.errorMessage = message_error + $.formUtils.LANG.passwordComplexityEnd;
       if(resultRegExpRequiredUppercaseChars && resultRegExpRequiredLowercaseChars && resultRegExpRequiredSpecialChars && resultRegExpRequiredNumericChars){
         return true;
       }

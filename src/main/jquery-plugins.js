@@ -172,12 +172,12 @@
    * @param {Object} [language] Optional, will override $.formUtils.LANG
    * @param {Object} [conf] Optional, will override the default settings
    * @param {Boolean} attachKeyupEvent Optional
-   * @param {String} eventType
+   * @param {String} eventContext
    * @return {jQuery}
    */
-  $.fn.validateInputOnBlur = function (language, conf, attachKeyupEvent, eventType) {
+  $.fn.validateInputOnBlur = function (language, conf, attachKeyupEvent, eventContext) {
 
-    $.formUtils.eventType = eventType;
+    $.formUtils.eventType = eventContext;
 
     if ( this.willPostponeValidation() ) {
       // This validation has to be postponed
@@ -185,7 +185,7 @@
         postponeTime = this.valAttr('postpone') || 200;
 
       window.postponedValidation = function () {
-        _self.validateInputOnBlur(language, conf, attachKeyupEvent, eventType);
+        _self.validateInputOnBlur(language, conf, attachKeyupEvent, eventContext);
         window.postponedValidation = false;
       };
 
@@ -208,8 +208,18 @@
         language,
         conf,
         $form,
-        eventType
+        eventContext
       );
+
+    var reValidate = function() {
+      $elem.validateInputOnBlur(language, conf, false, 'blur.revalidated');
+    };
+
+    if (eventContext === 'blur') {
+      $elem
+        .unbind('validation.revalidate', reValidate)
+        .one('validation.revalidate', reValidate);
+    }
 
     if (attachKeyupEvent) {
       $elem.removeKeyUpValidation();
@@ -381,6 +391,8 @@
           'submit'
         );
 
+        console.log(result);
+
         if (!result.isValid) {
           addErrorMessage(result.errorMsg, $elem);
         } else if (result.isValid && result.shouldChangeDisplay) {
@@ -408,10 +420,8 @@
     $.formUtils.isValidatingEntireForm = false;
 
     // Validation failed
-    if (!$.formUtils.haltValidation && errorInputs.length > 0) {
-
+    if (errorInputs.length > 0) {
       if (displayError) {
-
         if (conf.errorMessagePosition === 'top') {
           $.formUtils.dialogs.setMessageInTopOfForm($form, errorMessages, conf, language);
         } else {
@@ -422,17 +432,14 @@
         if (conf.scrollToTopOnError) {
           $.formUtils.$win.scrollTop($form.offset().top - 20);
         }
-
       }
-
-      return false;
     }
 
     if (!displayError && $.formUtils.haltValidation) {
       $.formUtils.errorDisplayPreventedWhenHalted = true;
     }
 
-    return !$.formUtils.haltValidation;
+    return errorInputs.length == 0 && !$.formUtils.haltValidation;
   };
 
   /**

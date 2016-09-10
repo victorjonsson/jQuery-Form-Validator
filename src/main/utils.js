@@ -192,7 +192,7 @@
 
           if (eventContext !== 'keyup' || validator.validateOnKeyUp) {
             // A validator can prevent itself from getting triggered on keyup
-            isValid = validator.validatorFunction(value, $elem, conf, language, $form);
+            isValid = validator.validatorFunction(value, $elem, conf, language, $form, eventContext);
           }
 
           if (!isValid) {

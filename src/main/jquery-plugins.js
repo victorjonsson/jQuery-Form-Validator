@@ -319,9 +319,6 @@
       displayError = false;
     }
 
-    $.formUtils.isValidatingEntireForm = true;
-    $.formUtils.haltValidation = false;
-
     /**
      * Adds message to error message stack if not already in the message stack
      *

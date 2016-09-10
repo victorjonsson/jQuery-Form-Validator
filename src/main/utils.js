@@ -58,12 +58,6 @@
     haltValidation: false,
 
     /**
-     * This variable will be true $.fn.isValid() is called
-     * and false when $.fn.validateOnBlur is called
-     */
-    isValidatingEntireForm: false,
-
-    /**
      * Function for adding a validator
      * @param {Object} validator
      */

@@ -34,6 +34,7 @@
     this.$form = $form;
     this.$input = $input;
     this.reset();
+    $input.on('change paste', this.reset.bind(this));
   }
 
   AsyncValidation.prototype.reset = function() {
@@ -53,7 +54,7 @@
       }
       return null; // Waiting for result
     } else if(this.hasRun) {
-      this.$input.one('keyup paste', this.reset.bind(this));
+      //this.$input.one('keyup change paste', this.reset.bind(this));
       return this.result;
     } else {
       if (eventContext === 'submit') {

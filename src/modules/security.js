@@ -347,29 +347,7 @@
   var requestServer = function (serverURL, $element, val, conf, callback) {
       var reqParams = $element.valAttr('req-params') || $element.data('validation-req-params') || {},
         handleResponse = function (response, callback) {
-          if (response.valid) {
-            $element.valAttr('backend-valid', 'true');
-          }
-          else {
-            $element.valAttr('backend-invalid', 'true');
-            if (response.message) {
-              $element.attr(conf.validationErrorMsgAttribute, response.message);
-            }
-          }
-
-          if (!$element.valAttr('validate-backend-on-change')) {
-            $element
-              .valAttr('validate-backend-on-change', '1')
-              .bind('keyup change', function (evt) {
-                if (evt.keyCode !== 9 && evt.keyCode !== 16) {
-                  $(this)
-                    .valAttr('backend-valid', false)
-                    .valAttr('backend-invalid', false);
-                }
-              });
-          }
-
-          callback();
+          callback(response);
         };
 
       if (!reqParams) {
@@ -394,89 +372,29 @@
           handleResponse(response, callback);
         }
       });
-    },
-    currentOngoingRequests = 0,
-    disableFormSubmit = function () {
-      return false;
     };
 
   /*
    * Server validation
-   * Flow (form submission):
-   *  1) Check if the value already has been validated on the server. If so, display the validation
-   *     result and continue the validation process, otherwise continue to step 2
-   *  2) Return false as if the value is invalid and set $.formUtils.haltValidation to true
-   *  3) Disable form submission on the form being validated
-   *  4) Request the server with value and input name and add class 'validating-server-side' to the form
-   *  5) When the server responds an attribute will be added to the element
-   *      telling the validator that the input has a valid/invalid value and enable form submission
-   *  6) Run form submission again (back to step 1)
    */
   $.formUtils.addValidator({
     name: 'server',
-    validatorFunction: function (val, $input, conf, lang, $form) {
-      var backendValid = $input.valAttr('backend-valid'),
-        backendInvalid = $input.valAttr('backend-invalid'),
-        serverURL = document.location.href;
-
-      if ($input.valAttr('url')) {
-        serverURL = $input.valAttr('url');
-      } else if ('serverURL' in conf) {
-        serverURL = conf.backendUrl;
-      }
-
-      if (backendValid) {
-        return true;
-      }
-      else if (backendInvalid) {
-        return false;
-      }
-      else if ($.formUtils.eventType === 'keyup' && !$.formUtils.isValidatingEntireForm) {
-        return null;
-      }
-
-      $form.addClass('validating-server-side');
-      $input.addClass('validating-server-side');
-
-      if ($.formUtils.isValidatingEntireForm) {
-        console.log('in here');
-
-        $form.bind('submit', disableFormSubmit);
-        $.formUtils.haltValidation = true;
-        currentOngoingRequests++;
-
-        requestServer(serverURL, $input, val, conf, function () {
-          currentOngoingRequests--;
-          $form
-            .unbind('submit', disableFormSubmit)
-            .removeClass('validating-server-side')
-            .removeClass('on-blur')
-            .get(0).onsubmit = function () {
-          };
-
-          $input
-            .removeClass('validating-server-side')
-            .valAttr('value-length', val.length);
-
-          // fire submission again!
-          if (currentOngoingRequests === 0) {
-            $.formUtils.haltValidation = false;
-            $form.trigger('submit');
-          }
-
-        });
-
-        return null;
-
-      } else {
-        // validation on blur
-        requestServer(serverURL, $input, val, conf, function () {
+    validatorFunction: function (val, $input, conf, lang, $form, eventContext) {
+      var asyncValidation = $.formUtils.asyncValidation(this.name, $input, $form);
+      return asyncValidation.run(eventContext, function(done) {
+        var serverURL = $input.valAttr('url') || conf.backendUrl || document.location.href;
+        // @todo: deprecated class names that should be removed when moving up to 3.0
+        $form.addClass('validating-server-side');
+        $input.addClass('validating-server-side');
+        requestServer(serverURL, $input, val, conf, function (response) {
           $form.removeClass('validating-server-side');
           $input.removeClass('validating-server-side');
-          $input.trigger('blur');
+          if (response.message) {
+            $input.attr(conf.validationErrorMsgAttribute, response.message);
+          }
+          done(response.valid);
         });
-        return null;
-      }
+      });
     },
     errorMessage: '',
     errorMessageKey: 'badBackend'

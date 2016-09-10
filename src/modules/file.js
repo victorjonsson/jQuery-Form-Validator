@@ -8,6 +8,8 @@
  *  - file size
  *  - file extension
  *
+ * @todo, Use $.formUtils.asyncValidation in "dimension" validator
+ *
  * @website http://formvalidator.net/#file-validators
  * @license MIT
  */

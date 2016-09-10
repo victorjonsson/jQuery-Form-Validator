@@ -123,7 +123,6 @@
         }
 
         var valid = $form.isValid(conf.language, conf);
-        console.log(valid);
         if ($.formUtils.haltValidation) {
           // Validation got halted by one of the validators
           return stop();

@@ -56,7 +56,6 @@
       this.$input.one('keyup paste', this.reset.bind(this));
       return this.result;
     } else {
-      console.log(eventContext);
       if (eventContext === 'submit') {
         HaltManager.haltValidation(this.$form);
         this.haltedFormValidation = true;

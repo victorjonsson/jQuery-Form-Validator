@@ -391,8 +391,6 @@
           'submit'
         );
 
-        console.log(result);
-
         if (!result.isValid) {
           addErrorMessage(result.errorMsg, $elem);
         } else if (result.isValid && result.shouldChangeDisplay) {
@@ -439,7 +437,7 @@
       $.formUtils.errorDisplayPreventedWhenHalted = true;
     }
 
-    return errorInputs.length == 0 && !$.formUtils.haltValidation;
+    return errorInputs.length === 0 && !$.formUtils.haltValidation;
   };
 
   /**

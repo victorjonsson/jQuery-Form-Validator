@@ -53,7 +53,14 @@
       imageTooSmall: 'la imagen es demasiado pequeña',
       min: 'min.',
       max: 'máx.',
-      imageRatioNotAccepted : 'La proporción de imagen (alto x ancho) no es válida'
+      imageRatioNotAccepted : 'La proporción de imagen (alto x ancho) no es válida',
+      passwordComplexityStart: 'La contraseña debe contener al menos ',
+      passwordComplexitySeparator: ', ',
+      passwordComplexityUppercaseInfo: ' mayúscula(s)',
+      passwordComplexityLowercaseInfo: ' minúscula(s)',
+      passwordComplexitySpecialCharsInfo: ' caracter(es) especial(es)',
+      passwordComplexityNumericCharsInfo: ' número(s)',
+      passwordComplexityEnd: '.'
     };
 
   });

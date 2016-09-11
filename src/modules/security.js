@@ -433,20 +433,77 @@
   });
 
   /*
-   * Check password content depending on following parameters: 
-   *    data-validation-require-uc-letter, 
+   * Check password content depending on following parameters:
+   *    data-validation-require-uc-letter,
    *    data-validation-require-lc-letter,
    *    data-validation-require-special-char,
    *    data-validation-require-numeral
-   *
   */
   $.formUtils.addValidator({
     name : 'complexity',
+    validatorFunction : function(value, $input, config, language) {
+      var numRequiredUppercaseChars = $input.valAttr('require-uc-letter') || '0',
+        numRequiredLowercaseChars = $input.valAttr('require-lc-letter') || '0',
+        numRequiredSpecialChars = $input.valAttr('require-special-char') || '0',
+        numRequiredNumericChars = $input.valAttr('require-numeral') || '0',
+        subValidators = {
+          'uc-letter': {
+            pattern: '^(?=(?:.*[A-Z]){'+numRequiredUppercaseChars+',}).+',
+            numRequired: numRequiredUppercaseChars,
+            dialogEnd: language.passwordComplexityUppercaseInfo
+          },
+          'lc-letter': {
+            pattern: '^(?=(?:.*[a-z]){'+numRequiredLowercaseChars+',}).+',
+            numRequired: numRequiredLowercaseChars,
+            dialogEnd: language.passwordComplexityLowercaseInfo
+          },
+          'special-char': {
+            pattern: '^(?=(?:.*(_|[!"#$%&\'()*+\\\\,-./:;<=>?@[\\]^_`{|}~])){'+numRequiredSpecialChars+',}).+',
+            numRequired: numRequiredSpecialChars,
+            dialogEnd: language.passwordComplexitySpecialCharsInfo
+          },
+          'numeral': {
+            pattern: '^(?=(?:.*\\d){'+numRequiredNumericChars+',}).+',
+            numRequired: numRequiredNumericChars,
+            dialogEnd: $.formUtils.LANG.passwordComplexityNumericCharsInfo
+          }
+        },
+        errorMessage = '';
+
+      $.each(subValidators, function(name, subValidator) {
+        var numRequired = parseInt(subValidator.numRequired, 10);
+        if (numRequired) {
+          var regexp = new RegExp(subValidator.pattern);
+          if (!regexp.test(value)) {
+            if (errorMessage === '') {
+              errorMessage = language.passwordComplexityStart;
+            }
+            errorMessage += language.passwordComplexitySeparator + numRequired + subValidator.dialogEnd;
+            $input.trigger('complexityValidation', [false, name]);
+          } else {
+            $input.trigger('complexityValidation', [true, name]);
+          }
+        }
+      });
+
+      if (errorMessage) {
+        this.errorMessage = errorMessage + language.passwordComplexityEnd;
+        return false;
+      } else {
+        return true;
+      }
+    },
+    errorMessage : '',
+    errorMessageKey: ''
+  });
+/*
+  $.formUtils.addValidator({
+    name : '_complexity',
     validatorFunction : function(val, $el) {
-      var numRequiredUppercaseChars = $el.valAttr('require-uc-letter') || '0',
-        numRequiredLowercaseChars = $el.valAttr('require-lc-letter') || '0',
-        numRequiredSpecialChars = $el.valAttr('require-special-char') || '0',
-        numRequiredNumericChars = $el.valAttr('require-numeral') || '0',
+      var numRequiredUppercaseChars = $el.valAttr('require-uc-letter') || 0,
+        numRequiredLowercaseChars = $el.valAttr('require-lc-letter') || 0,
+        numRequiredSpecialChars = $el.valAttr('require-special-char') || 0,
+        numRequiredNumericChars = $el.valAttr('require-numeral') || 0,
         patternUpperCaseChars = '^(?=(?:.*[A-Z]){'+numRequiredUppercaseChars+',}).+',
         patternLowerCaseChars = '^(?=(?:.*[a-z]){'+numRequiredLowercaseChars+',}).+',
         patternSpecialChars = '^(?=(?:.*(_|[!"#$%&\'()*+\\\\,-./:;<=>?@[\\]^_`{|}~])){'+numRequiredSpecialChars+',}).+',
@@ -457,6 +514,21 @@
         resultRegExpRequiredNumericChars = true,
         error = false,
         message_error = '';
+
+      var subValidators = {
+        'uc-letter': {
+          regex: '^(?=(?:.*[A-Z]){'+numRequiredUppercaseChars+',}).+'
+        },
+        'lc-letter': {
+          regex: '^(?=(?:.*[a-z]){'+numRequiredLowercaseChars+',}).+'
+        },
+        'special-char': {
+          regex: '^(?=(?:.*(_|[!"#$%&\'()*+\\\\,-./:;<=>?@[\\]^_`{|}~])){'+numRequiredSpecialChars+',}).+',
+        },
+        'numeral': {
+          regex: '^(?=(?:.*\\d){'+numRequiredNumericChars+',}).+'
+        }
+      };
 
       if (numRequiredUppercaseChars !== '0'){
         resultRegExpRequiredUppercaseChars = new RegExp(patternUpperCaseChars).test(val);
@@ -482,7 +554,7 @@
         else{
           error = true;
           message_error = $.formUtils.LANG.passwordComplexityStart + numRequiredLowercaseChars + $.formUtils.LANG.passwordComplexityLowercaseInfo;
-        } 
+        }
       }
       if (!resultRegExpRequiredSpecialChars){
         if (error){
@@ -511,6 +583,7 @@
     errorMessage : '',
     errorMessageKey: ''
   });
+*/
   /*
    * Google reCaptcha 2
    */

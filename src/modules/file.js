@@ -58,18 +58,16 @@
         reader.readAsDataURL(imgPath);
 
         reader.onload = function(fileObj) {
-          setTimeout(function() {
-            image.onload = function() {
-              $(window).trigger('imageValidation', [this]);
-              successCallback(this);
-            };
+          image.onload = function() {
+            $(window).trigger('imageValidation', [this]);
+            successCallback(this);
+          };
 
-            image.onerror= function() {
-              errCallback();
-            };
+          image.onerror= function() {
+            errCallback();
+          };
 
-            image.src = fileObj.target.result;
-          }, 2000);
+          image.src = fileObj.target.result;
         };
       };
 

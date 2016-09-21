@@ -87,21 +87,21 @@
       attrName = 'data-validation-help';
     }
 
-    // Remove previously added event listeners
-    this.find('.has-help-txt')
-      .valAttr('has-keyup-event', false)
-      .removeClass('has-help-txt');
-
     // Add help text listeners
     this.find('textarea,input').each(function () {
       var $elem = $(this),
         className = 'jquery_form_help_' + (++_helpers),
         help = $elem.attr(attrName);
 
+      // Reset
+      $elem
+        .removeClass('has-help-text')
+        .unbind('focus.help')
+        .unbind('blur.help');
+
       if (help) {
         $elem
           .addClass('has-help-txt')
-          .unbind('focus.help')
           .bind('focus.help', function () {
             var $help = $elem.parent().find('.' + className);
             if ($help.length === 0) {
@@ -116,7 +116,6 @@
             }
             $help.fadeIn();
           })
-          .unbind('blur.help')
           .bind('blur.help', function () {
             $(this)
               .parent()
@@ -173,12 +172,12 @@
    * @param {Object} [language] Optional, will override $.formUtils.LANG
    * @param {Object} [conf] Optional, will override the default settings
    * @param {Boolean} attachKeyupEvent Optional
-   * @param {String} eventType
+   * @param {String} eventContext
    * @return {jQuery}
    */
-  $.fn.validateInputOnBlur = function (language, conf, attachKeyupEvent, eventType) {
+  $.fn.validateInputOnBlur = function (language, conf, attachKeyupEvent, eventContext) {
 
-    $.formUtils.eventType = eventType;
+    $.formUtils.eventType = eventContext;
 
     if ( this.willPostponeValidation() ) {
       // This validation has to be postponed
@@ -186,7 +185,7 @@
         postponeTime = this.valAttr('postpone') || 200;
 
       window.postponedValidation = function () {
-        _self.validateInputOnBlur(language, conf, attachKeyupEvent, eventType);
+        _self.validateInputOnBlur(language, conf, attachKeyupEvent, eventContext);
         window.postponedValidation = false;
       };
 
@@ -209,11 +208,21 @@
         language,
         conf,
         $form,
-        eventType
+        eventContext
       );
 
+    var reValidate = function() {
+      $elem.validateInputOnBlur(language, conf, false, 'blur.revalidated');
+    };
+
+    if (eventContext === 'blur') {
+      $elem
+        .unbind('validation.revalidate', reValidate)
+        .one('validation.revalidate', reValidate);
+    }
+
     if (attachKeyupEvent) {
-      $elem.unbind('keyup.validation');
+      $elem.removeKeyUpValidation();
     }
 
     if (result.shouldChangeDisplay) {
@@ -225,13 +234,40 @@
     }
 
     if (!result.isValid && attachKeyupEvent) {
-      $elem.bind('keyup.validation', function (evt) {
-        if( evt.keyCode !== 9 ) {
-          $(this).validateInputOnBlur(language, conf, false, 'keyup');
-        }
-      });
+      $elem.validateOnKeyUp(language, conf);
     }
 
+    return this;
+  };
+
+  /**
+   * Validate element on keyup-event
+   */
+  $.fn.validateOnKeyUp = function(language, conf) {
+    this.each(function() {
+      var $input = $(this);
+      if (!$input.valAttr('has-keyup-event')) {
+        $input
+          .valAttr('has-keyup-event', 'true')
+          .bind('keyup.validation', function (evt) {
+            if( evt.keyCode !== 9 ) {
+              $input.validateInputOnBlur(language, conf, false, 'keyup');
+            }
+          });
+      }
+    });
+    return this;
+  };
+
+  /**
+   * Remove validation on keyup
+   */
+  $.fn.removeKeyUpValidation = function() {
+    this.each(function() {
+      $(this)
+        .valAttr('has-keyup-event', false)
+        .unbind('keyup.validation');
+    });
     return this;
   };
 
@@ -282,9 +318,6 @@
       delete $.formUtils.errorDisplayPreventedWhenHalted;
       displayError = false;
     }
-
-    $.formUtils.isValidatingEntireForm = true;
-    $.formUtils.haltValidation = false;
 
     /**
      * Adds message to error message stack if not already in the message stack
@@ -382,10 +415,8 @@
     $.formUtils.isValidatingEntireForm = false;
 
     // Validation failed
-    if (!$.formUtils.haltValidation && errorInputs.length > 0) {
-
+    if (errorInputs.length > 0) {
       if (displayError) {
-
         if (conf.errorMessagePosition === 'top') {
           $.formUtils.dialogs.setMessageInTopOfForm($form, errorMessages, conf, language);
         } else {
@@ -396,17 +427,14 @@
         if (conf.scrollToTopOnError) {
           $.formUtils.$win.scrollTop($form.offset().top - 20);
         }
-
       }
-
-      return false;
     }
 
     if (!displayError && $.formUtils.haltValidation) {
       $.formUtils.errorDisplayPreventedWhenHalted = true;
     }
 
-    return !$.formUtils.haltValidation;
+    return errorInputs.length === 0 && !$.formUtils.haltValidation;
   };
 
   /**

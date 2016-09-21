@@ -84,7 +84,8 @@
         strip: function(val, $input) {
           var toRemove = $input.attr('data-sanitize-strip') || '';
           $.split(toRemove, function(char) {
-              val = val.replace(new RegExp('\\'+char, 'g'), '');
+            var regex = new RegExp($.isNumeric(char) ? char : '\\'+char, 'g');
+            val = val.replace(regex, '');
           });
           return val;
         },

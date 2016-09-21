@@ -22,7 +22,7 @@
     window.$form = $form;
     window.$in = $in;
 
-    function input(val, dataValidationAttr, elAttr) {
+    function input(val, dataValidationAttr, elAttr, elemName) {
         if(!elAttr)
             elAttr = {};
         if( typeof dataValidationAttr === 'string') {
@@ -38,7 +38,7 @@
         }
 
         elAttr['value'] = val;
-        $in = $('<input />', elAttr);
+        $in = $('<'+(elemName || 'input')+' />', elAttr);
         $in.appendTo($form);
         return $in;
     }
@@ -56,7 +56,7 @@
             message  = 'Check that "'+obj.val+'" is '+(obj.isValid ? 'valid':'invalid');
         }
         else {
-            message = 'Check that input[value="'+obj.val.attr('value')+'"] is '+(obj.isValid ? 'valid':'invalid');
+            message = 'Check that '+$el.get(0).nodeName+'[value="'+obj.val.attr('value')+'"] is '+(obj.isValid ? 'valid':'invalid');
         }
 
         if (!result.shouldChangeDisplay && obj.isValid ) {
@@ -141,6 +141,30 @@
                 });
             };
             img.src = document.location.href.substr(0, document.location.href.lastIndexOf('/')) +'/test-data/'+imgFileName;
+        });
+
+        /*
+        * Test utility method for getting input values
+        */
+        test('$.formUtils.getValue', function(assert) {
+
+
+          var input = '<input value="text">';
+          assert.equal($.formUtils.getValue($(input)), 'text');
+
+          var select = '<select><option>A</option><option selected>B</option><option>C</option></select>';
+          assert.equal($.formUtils.getValue($(select)), 'B');
+
+          var selectMultipleWithoutSelected = '<select multiple><option>A</option><option>B</option><option>C</option></select>';
+          assert.equal($.isEmptyObject($.formUtils.getValue($(selectMultipleWithoutSelected))), true);
+
+          var selectMultiple = '<select multiple><option>A</option><option selected>B</option><option selected>C</option></select>';
+          var selected = $.formUtils.getValue($(selectMultiple));
+          assert.equal(selected.length, 2);
+          assert.equal(selected[0], 'B');
+          assert.equal(selected[1], 'C');
+
+
         });
 
         /*
@@ -656,7 +680,7 @@
 
             clearForm();
 
-            var links = [
+            var tests = [
                 {val:input('1234', {'length':'max3', '':'length'}), isValid:false},
                 {val:input('1234', {'length':'min3', '':'length'}), isValid:true},
                 {val:input('1234', {'length':'min5', '':'length'}), isValid:false},
@@ -672,7 +696,15 @@
                 {val:input('123', {length : '5', '':'number length'}), isValid:false}
             ];
 
-            $.each(links, function(i, obj) {
+            var $select = input('', {length: 'min2', '':'length'}, {}, 'select');
+            $select.attr('multiple', 'multiple');
+            $select.html('<option selected>A</option><option>B</option>');
+            tests.push({
+              val: $select,
+              isValid: false
+            });
+
+            $.each(tests, function(i, obj) {
                 runTest(obj, 'length');
             });
         });
@@ -686,7 +718,8 @@
 
             var links = [
                 {val:input('1234$', {'length':'max3', '':'length'}), isValid:false},
-                {val:input('1234$', {'length':'min3', ignore:'$', '':'length'}), isValid:true}
+                {val:input('1234$', {'length':'min3', ignore:'$', '':'length'}), isValid:true},
+                {val:input('1234$$$$2$', {ignore:'$', '':'number'}), isValid:true}
             ];
 
             $.each(links, function(i, obj) {
@@ -828,10 +861,10 @@
                     }
                 },
                 strip: {
-                    val: '$tes@ti$ng@$',
-                    expected: 'testing',
+                    val: '5$tes6@ti$ng@99$',
+                    expected: 'testing99',
                     attr: {
-                        'data-sanitize-strip' : '$, @'
+                        'data-sanitize-strip' : '$, @, 5, 6'
                     }
                 },
                 escape: {
@@ -1029,8 +1062,53 @@
             });
 
         });
-        // TODO: Write more tests...
+    
+        /*
+         * COMPLEXITY VALIDATION
+         */
+        test("Complexity validation", function() {
 
+            clearForm();
+
+            var values = [
+                {val:input('abcdefgh', {'':'complexity'}), isValid:true},
+                {val:input('ABCDEFGH', {'':'complexity'}), isValid:true},
+                {val:input('12345678', {'':'complexity'}), isValid:true},
+                {val:input('@|#{}[]', {'':'complexity'}), isValid:true},
+                {val:input('abcdefgh', {'require-lc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('12@ABCDEFgh', {'require-lc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('12@ABCDEFGh', {'require-lc-letter':'2', '':'complexity'}), isValid:false},
+                {val:input('12@ABCDEFGH', {'require-lc-letter':'2', '':'complexity'}), isValid:false},
+                {val:input('12@ABCDEFGH', {'require-uc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('12@abcdefGH', {'require-uc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('12@abcdefgH', {'require-uc-letter':'2', '':'complexity'}), isValid:false},
+                {val:input('12@abcdefgh', {'require-uc-letter':'2', '':'complexity'}), isValid:false},
+                {val:input('@{}[]', {'require-special-char':'2', '':'complexity'}), isValid:true},
+                {val:input('12abcdfgh{}', {'require-special-char':'2', '':'complexity'}), isValid:true},
+                {val:input('12abcdefgh{', {'require-special-char':'2', '':'complexity'}), isValid:false},
+                {val:input('12abcdefgh', {'require-special-char':'2', '':'complexity'}), isValid:false},
+                {val:input('12345678', {'require-numeral':'2', '':'complexity'}), isValid:true},
+                {val:input('@abcdfgh78', {'require-numeral':'2', '':'complexity'}), isValid:true},
+                {val:input('@abcdefgh1', {'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('@abcdefgh', {'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abCD{}12', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:true},
+                {val:input('abCD{}1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abCD{12', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abC{}12', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('aCD{}12', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abCD{1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abC{1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('aCD{1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('aD{1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('aDDFV{}@1356', {'require-lc-letter':'4', 'require-uc-letter':'2', 'require-special-char':'3', 'require-numeral':'2', '':'complexity'}), isValid:false}
+            ];
+
+            $.each(values, function(i, obj) {
+                runTest(obj, 'complexity');
+            });
+        });
+        
+        // TODO: Write more tests...
     }
 
     $.validate({

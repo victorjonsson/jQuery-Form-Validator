@@ -8,6 +8,8 @@
  *  - file size
  *  - file extension
  *
+ * @todo, Use $.formUtils.asyncValidation in "dimension" validator
+ *
  * @website http://formvalidator.net/#file-validators
  * @license MIT
  */
@@ -56,7 +58,6 @@
         reader.readAsDataURL(imgPath);
 
         reader.onload = function(fileObj) {
-
           image.onload = function() {
             $(window).trigger('imageValidation', [this]);
             successCallback(this);
@@ -67,7 +68,6 @@
           };
 
           image.src = fileObj.target.result;
-
         };
       };
 
@@ -192,10 +192,6 @@
         }
     };
 
-    var disableFormSubmit = function() {
-      return false;
-    };
-
    /**
     * Attach dimension check onto formUtils only for unit testing purpose
     * @param {HTMLImageElement} img
@@ -283,97 +279,49 @@
      */
     $.formUtils.addValidator({
       name : 'dimension',
-      validatorFunction : function(val, $input, conf, language, $form) {
-        var hasCorrectDim = false;
-        if( SUPPORTS_FILE_READER ) {
-          var file = $input.get(0).files || [];
-          hasCorrectDim = true;
+      validatorFunction : function(val, $input, conf, language, $form, eventContext) {
+        if (SUPPORTS_FILE_READER) {
+          var thisValidator = this,
+            asyncValidation = $.formUtils.asyncValidation(this.name, $input, $form);
 
-          if( $input.attr('data-validation').indexOf('mime') === -1) {
-            alert('You should validate file type being jpg, gif or png on input '+$input[0].name);
-            return false;
-          }
-          else if( file.length > 1 ) {
-            alert('Validating image dimensions does not support inputs allowing multiple files');
-            return false;
-          } else if( file.length === 0) {
-            return true;
-          }
-
-          if( $input.valAttr('has-valid-dim') ) {
-            return true;
-          }
-          else if( $input.valAttr('has-not-valid-dim') ) {
-            this.errorMessage = language.wrongFileDim + ' ' + $input.valAttr('has-not-valid-dim');
-            return false;
-          }
-          else if($.formUtils.eventType === 'keyup') {
-            return null;
-          }
-
-          var wasFormSubmit = false;
-
-          if( $.formUtils.isValidatingEntireForm ) {
-            wasFormSubmit = true;
-            $.formUtils.haltValidation = true;
-            $form
-              .bind('submit', disableFormSubmit)
-              .addClass('on-blur');
-          }
-
-          _loadImage(file[0], function(img) {
-            var error = false;
-
-            if ( $input.valAttr('dimension') ) {
-              error = $.formUtils.checkImageDimension(img, $input.valAttr('dimension'), language);
-            }
-
-            if ( !error && $input.valAttr('ratio') ) {
-              error = $.formUtils.checkImageRatio(img, $input.valAttr('ratio'), language);
-            }
-
-            // Set validation result flag on input
-            if( error ) {
-              $input.valAttr('has-not-valid-dim', error);
-            }
-            else {
-              $input.valAttr('has-valid-dim', 'true');
-            }
-
-            // Remove validation flag when input changed
-            if( !$input.valAttr('has-keyup-event') ) {
-              $input
-                .valAttr('has-keyup-event', '1')
-                .bind('keyup change', function(evt) {
-                  if( evt.keyCode !== 9 && evt.keyCode !== 16 ) {
-                    $(this)
-                      .valAttr('has-not-valid-dim', false)
-                      .valAttr('has-valid-dim', false);
-                  }
-                });
-            }
-
-            if( wasFormSubmit ) {
-              $.formUtils.haltValidation = false;
-              $form
-                .removeClass('on-blur')
-                .get(0).onsubmit = function() {};
-
-              $form.unbind('submit', disableFormSubmit);
-              $form.trigger('submit'); // fire submit once more
-
+          return asyncValidation.run(eventContext, function (done) {
+            var file = $input.get(0).files || [];
+            if ($input.attr('data-validation').indexOf('mime') === -1) {
+              alert('You should validate file type being jpg, gif or png on input ' + $input[0].name);
+              done(false);
+            } else if (file.length > 1) {
+              alert('Validating image dimensions does not support inputs allowing multiple files');
+              done(false);
+            } else if (file.length === 0) {
+              done(true);
             } else {
-              $input.trigger('blur'); // triggers the validation once more
+              _loadImage(file[0], function (img) {
+                var error = false;
+
+                if ($input.valAttr('dimension')) {
+                  error = $.formUtils.checkImageDimension(img, $input.valAttr('dimension'), language);
+                }
+
+                if (!error && $input.valAttr('ratio')) {
+                  error = $.formUtils.checkImageRatio(img, $input.valAttr('ratio'), language);
+                }
+
+                // Set validation result flag on input
+                if (error) {
+                  thisValidator.errorMessage = language.wrongFileDim + ' ' + $input.valAttr('has-not-valid-dim');
+                  done(false);
+                } else {
+                  done(true);
+                }
+
+              }, function (err) {
+                throw err;
+              });
             }
-
-          }, function(err) {
-            throw err;
           });
-
-          return true;
         }
 
-        return hasCorrectDim;
+        return true; // Unable to do the validation, lacking FileReader support
       },
       errorMessage : '',
       errorMessageKey: '' // error message created dynamically
@@ -384,20 +332,14 @@
      * This event listener will remove error messages for file
      * inputs when file changes
      */
-    $(window).one('validatorsLoaded formValidationSetup', function(evt, $form) {
-        var $inputs;
-        if( $form ) {
-            $inputs = $form.find('input[type="file"]');
-        } else {
-            $inputs = $('input[type="file"]');
-        }
-
-        $inputs.filter('*[data-validation]').bind('change', function() {
-            $(this)
-                .removeClass('error')
-                .parent()
-                .find('.form-error').remove();
-        });
+    $(window).one('validatorsLoaded formValidationSetup', function(evt, $form, conf) {
+      var $inputs;
+      if( $form ) {
+          $inputs = $form.find('input[type="file"]');
+      } else {
+          $inputs = $('input[type="file"]');
+      }
+      $.formUtils.dialogs.removeInputStylingAndMessage($inputs, conf);
     });
 
 })(jQuery, window);

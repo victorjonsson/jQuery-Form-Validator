@@ -861,10 +861,10 @@
                     }
                 },
                 strip: {
-                    val: '$tes@ti$ng@$',
-                    expected: 'testing',
+                    val: '5$tes6@ti$ng@99$',
+                    expected: 'testing99',
                     attr: {
-                        'data-sanitize-strip' : '$, @'
+                        'data-sanitize-strip' : '$, @, 5, 6'
                     }
                 },
                 escape: {
@@ -1062,8 +1062,53 @@
             });
 
         });
-        // TODO: Write more tests...
+    
+        /*
+         * COMPLEXITY VALIDATION
+         */
+        test("Complexity validation", function() {
 
+            clearForm();
+
+            var values = [
+                {val:input('abcdefgh', {'':'complexity'}), isValid:true},
+                {val:input('ABCDEFGH', {'':'complexity'}), isValid:true},
+                {val:input('12345678', {'':'complexity'}), isValid:true},
+                {val:input('@|#{}[]', {'':'complexity'}), isValid:true},
+                {val:input('abcdefgh', {'require-lc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('12@ABCDEFgh', {'require-lc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('12@ABCDEFGh', {'require-lc-letter':'2', '':'complexity'}), isValid:false},
+                {val:input('12@ABCDEFGH', {'require-lc-letter':'2', '':'complexity'}), isValid:false},
+                {val:input('12@ABCDEFGH', {'require-uc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('12@abcdefGH', {'require-uc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('12@abcdefgH', {'require-uc-letter':'2', '':'complexity'}), isValid:false},
+                {val:input('12@abcdefgh', {'require-uc-letter':'2', '':'complexity'}), isValid:false},
+                {val:input('@{}[]', {'require-special-char':'2', '':'complexity'}), isValid:true},
+                {val:input('12abcdfgh{}', {'require-special-char':'2', '':'complexity'}), isValid:true},
+                {val:input('12abcdefgh{', {'require-special-char':'2', '':'complexity'}), isValid:false},
+                {val:input('12abcdefgh', {'require-special-char':'2', '':'complexity'}), isValid:false},
+                {val:input('12345678', {'require-numeral':'2', '':'complexity'}), isValid:true},
+                {val:input('@abcdfgh78', {'require-numeral':'2', '':'complexity'}), isValid:true},
+                {val:input('@abcdefgh1', {'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('@abcdefgh', {'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abCD{}12', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:true},
+                {val:input('abCD{}1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abCD{12', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abC{}12', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('aCD{}12', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abCD{1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('abC{1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('aCD{1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('aD{1', {'require-lc-letter':'2', 'require-uc-letter':'2', 'require-special-char':'2', 'require-numeral':'2', '':'complexity'}), isValid:false},
+                {val:input('aDDFV{}@1356', {'require-lc-letter':'4', 'require-uc-letter':'2', 'require-special-char':'3', 'require-numeral':'2', '':'complexity'}), isValid:false}
+            ];
+
+            $.each(values, function(i, obj) {
+                runTest(obj, 'complexity');
+            });
+        });
+        
+        // TODO: Write more tests...
     }
 
     $.validate({

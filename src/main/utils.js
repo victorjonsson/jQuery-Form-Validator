@@ -58,12 +58,6 @@
     haltValidation: false,
 
     /**
-     * This variable will be true $.fn.isValid() is called
-     * and false when $.fn.validateOnBlur is called
-     */
-    isValidatingEntireForm: false,
-
-    /**
      * Function for adding a validator
      * @param {Object} validator
      */
@@ -192,7 +186,7 @@
 
           if (eventContext !== 'keyup' || validator.validateOnKeyUp) {
             // A validator can prevent itself from getting triggered on keyup
-            isValid = validator.validatorFunction(value, $elem, conf, language, $form);
+            isValid = validator.validatorFunction(value, $elem, conf, language, $form, eventContext);
           }
 
           if (!isValid) {
@@ -686,7 +680,14 @@
       badPlPesel: 'The PESEL entered is invalid',
       badPlNip: 'The NIP entered is invalid',
       badPlRegon: 'The REGON entered is invalid',
-      badreCaptcha: 'Please confirm that you are not a bot'
+      badreCaptcha: 'Please confirm that you are not a bot',
+      passwordComplexityStart: 'Password must contain at least ',
+      passwordComplexitySeparator: ', ',
+      passwordComplexityUppercaseInfo: ' uppercase letter(s)',
+      passwordComplexityLowercaseInfo: ' lowercase letter(s)',
+      passwordComplexitySpecialCharsInfo: ' special character(s)',
+      passwordComplexityNumericCharsInfo: ' numeric character(s)',
+      passwordComplexityEnd: '.'
     }
   });
 

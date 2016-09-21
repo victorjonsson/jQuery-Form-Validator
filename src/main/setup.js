@@ -85,7 +85,6 @@
 
       // Trigger jQuery event that we're about to setup validation
       var $form = $(form);
-      // $.formUtils.$win.trigger('formValidationSetup', [$form, conf]);
       $form.trigger('formValidationSetup', [$form, conf]);
 
       // Remove classes and event handlers that might have been
@@ -123,7 +122,6 @@
         }
 
         var valid = $form.isValid(conf.language, conf);
-
         if ($.formUtils.haltValidation) {
           // Validation got halted by one of the validators
           return stop();

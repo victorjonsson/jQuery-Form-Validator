@@ -446,6 +446,7 @@
         numRequiredLowercaseChars = $input.valAttr('require-lc-letter') || '0',
         numRequiredSpecialChars = $input.valAttr('require-special-char') || '0',
         numRequiredNumericChars = $input.valAttr('require-numeral') || '0',
+        numRequiredCharsTotal = $input.valAttr('require-length') || '0',
         subValidators = {
           'uc-letter': {
             pattern: '^(?=(?:.*[A-Z]){'+numRequiredUppercaseChars+',}).+',
@@ -466,6 +467,13 @@
             pattern: '^(?=(?:.*\\d){'+numRequiredNumericChars+',}).+',
             numRequired: numRequiredNumericChars,
             dialogEnd: $.formUtils.LANG.passwordComplexityNumericCharsInfo
+          },
+          'length': {
+            callback: function(val) {
+              return val.length > numRequiredCharsTotal;
+            },
+            numRequired: numRequiredCharsTotal,
+            dialogEnd: 'Lorem te ipsum'
           }
         },
         errorMessage = '';
@@ -473,19 +481,26 @@
       $.each(subValidators, function(name, subValidator) {
         var numRequired = parseInt(subValidator.numRequired, 10);
         if (numRequired) {
-          var regexp = new RegExp(subValidator.pattern);
-          if (!regexp.test(value)) {
+          var regexp = new RegExp(subValidator.pattern),
+            valid = false;
+
+          if (subValidator.callback) {
+            valid = subValidator.callback(value);
+          } else {
+            valid = regexp.test(value);
+          }
+
+          if (!valid) {
             if (errorMessage === '') {
               errorMessage = language.passwordComplexityStart;
             }
             errorMessage += language.passwordComplexitySeparator + numRequired + subValidator.dialogEnd;
-            $input.trigger('complexityValidation', [false, name]);
+            $input.trigger('complexityRequirementValidation', [false, name]);
           } else {
-            $input.trigger('complexityValidation', [true, name]);
+            $input.trigger('complexityRequirementValidation', [true, name]);
           }
         }
       });
-
       if (errorMessage) {
         this.errorMessage = errorMessage + language.passwordComplexityEnd;
         return false;
@@ -496,7 +511,7 @@
     errorMessage : '',
     errorMessageKey: ''
   });
-  
+
   /*
    * Google reCaptcha 2
    */

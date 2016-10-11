@@ -562,7 +562,8 @@
           div = document.createElement('DIV'),
           siteKey = config.reCaptchaSiteKey || $input.valAttr('recaptcha-sitekey'),
           theme = config.reCaptchaTheme || $input.valAttr('recaptcha-theme') || 'light',
-		  size = config.reCaptchaSize || $input.valAttr('recaptcha-size') || 'normal';
+		      size = config.reCaptchaSize || $input.valAttr('recaptcha-size') || 'normal',
+          type = config.reCaptchaType || $input.valAttr('recaptcha-type') || 'image';
 
         if (!siteKey) {
           throw new Error('Google reCaptcha site key is required.');
@@ -579,7 +580,8 @@
         var widgetId = grecaptcha.render(div, {
           sitekey: siteKey,
           theme: theme,
-		  size: size,
+		      size: size,
+          type: type,
           callback: grecaptchaRenderCallback,
           'expired-callback': grecaptchaRenderCallback
         });

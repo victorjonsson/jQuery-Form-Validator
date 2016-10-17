@@ -574,7 +574,7 @@
 
         if (!$form.attr('id')) {
 			$form.attr('id', 'recaptcha-form-' + (i++));
-		};
+		}
         grecaptchaRenderCallback[$form.attr('id')] = function (result) {
 		  var formID;
           $('#' + formID).each(function () {
@@ -605,7 +605,7 @@
           .append(div);
 
       });
-	  };
+	  }
 
     });
   };

@@ -555,7 +555,8 @@
 
     $forms.each(function () {
       var $form = $(this),
-        config = $form.context.validationConfig;
+        config = $form.context.validationConfig || false;
+	  if (config) {
 
       $('[data-validation~="recaptcha"]', $form).each(function () {
         var $input = $(this),
@@ -597,6 +598,7 @@
           .append(div);
 
       });
+	  };
 
     });
   };

@@ -23,7 +23,7 @@
         badSecurityAnswer: 'شما به سوال امنیتی درست پاسخ نداده اید',
         badDate: 'تاریخ درستی را وارد نکرده اید',
         lengthBadStart: 'مقدار وارد شده باید ',
-        lengthBadEnd: ' حرف باشد.'
+        lengthBadEnd: ' حرف باشد.',
         lengthTooLongStart: 'مقدار ورودی بیشتر از ',
         lengthTooShortStart: 'مقدار ورودی کمتر از ',
         notConfirmed: 'ورودی ها یکسان نیستند',

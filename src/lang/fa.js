@@ -46,7 +46,7 @@
         groupCheckedTooManyStart: 'لطفا حداکثر ',
         groupCheckedEnd: ' گزینه انتخاب کنید',
         badCreditCard: 'شماره کارت اعتباری معتبر نیست',
-        badCVV: 'کد شناسایی دوم سی‌وی‌وی معتبر نیست',
+        badCVV: 'کد شناسایی سی‌وی‌وی معتبر نیست',
         wrongFileDim : 'ابعاد تصویر صحیح نیست,',
         imageTooTall : 'حداکثر طول تصویر',
         imageTooWide : 'حداکثر عرض تصویر',

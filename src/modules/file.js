@@ -87,7 +87,7 @@
                 if( files.length ) {
                     $.each(files, function(i, file) {
                         valid = false;
-                        mime = file.type || '';
+                        mime = file.type || file.name.substring(file.name.lastIndexOf('.') + 1);
                         $.each(allowedTypes, function(j, type) {
                             valid = mime.indexOf(type) > -1;
                             if( valid ) {

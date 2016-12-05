@@ -330,7 +330,7 @@
           errorMessages.push(mess);
         }
         errorInputs.push($elem);
-        $elem.attr('current-error', mess);
+        $elem.valAttr('current-error', mess);
         if (displayError) {
           $.formUtils.dialogs.applyInputErrorStyling($elem, conf);
         }
@@ -421,7 +421,7 @@
           $.formUtils.dialogs.setMessageInTopOfForm($form, errorMessages, conf, language);
         } else {
           $.each(errorInputs, function (i, $input) {
-            $.formUtils.dialogs.setInlineMessage($input, $input.attr('current-error'), conf);
+            $.formUtils.dialogs.setInlineMessage($input, $input.valAttr('current-error'), conf);
           });
         }
         if (conf.scrollToTopOnError) {

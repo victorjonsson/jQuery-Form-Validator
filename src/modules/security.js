@@ -391,6 +391,9 @@
           $input.removeClass('validating-server-side');
           if (response.message) {
             $input.attr(conf.validationErrorMsgAttribute, response.message);
+            $input.one('validation', function() {
+              $input.removeAttr(conf.validationErrorMsgAttribute);
+            });
           }
           done(response.valid);
         });

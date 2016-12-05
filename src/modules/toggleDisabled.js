@@ -62,6 +62,9 @@
             }
           })
           .on('afterValidation', afterValidationCallback)
+          .on('reset', function() {
+            toggleFormState($(this), 'disabled');
+          })
           .on('blur', function() {
             $(this).valAttr('have-been-blurred', 1);
           });

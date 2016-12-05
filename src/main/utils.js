@@ -137,7 +137,7 @@
             $elem.valAttr('skipped', 1);
           }
         })
-        .trigger('beforeValidation', [value, conf, language]);
+        .trigger('beforeValidation', [value, language, conf]);
 
 
       var inputIsOptional = $elem.valAttr('optional') === 'true',

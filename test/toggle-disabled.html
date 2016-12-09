@@ -34,17 +34,18 @@
 
     <div class="form-group">
       <button type="submit">Login</button>
+      <button type="reset">Reset</button>
     </div>
 
   </form>
 </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-  <script src="../form-validator/jquery.form-validator.js"></script>
+  <script src="../form-validator/jquery.form-validator.min.js"></script>
   <script>
 
     $.validate({
-      modules: 'toggleDisabled',
+      modules: 'security, toggleDisabled',
       onSuccess: function() {
         alert('valid');
         return false;

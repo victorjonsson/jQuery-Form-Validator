@@ -47,6 +47,9 @@
       // Toggle form state depending on if it has only valid inputs or not.
       $formsToDisable
         .addClass(showErrorDialogs ? 'disabled-with-errors' : 'disabled-without-errors')
+        .on('reset', function() {
+          toggleFormState($(this), 'disabled');
+        })
         .find('*[data-validation]')
           .valAttr('event','keyup change')
           .on('validation', function(evt, valid) {
@@ -62,9 +65,6 @@
             }
           })
           .on('afterValidation', afterValidationCallback)
-          .on('reset', function() {
-            toggleFormState($(this), 'disabled');
-          })
           .on('blur', function() {
             $(this).valAttr('have-been-blurred', 1);
           });

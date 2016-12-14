@@ -33,7 +33,7 @@
           showErrorDialogs = conf.showErrorDialogs === undefined || conf.showErrorDialogs,
           afterValidationCallback = function(evt, result, evtContext) {
             var $this = $(this);
-            if (evtContext.indexOf('blur') > -1) {
+            if (evtContext && evtContext.indexOf('blur') > -1) {
               $this.unbind('afterValidation', afterValidationCallback);
             } else {
               if (result.isValid) {

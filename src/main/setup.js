@@ -17,7 +17,7 @@
   $.split = function (val, callback, allowSpaceAsDelimiter) {
     // default to true
     allowSpaceAsDelimiter = allowSpaceAsDelimiter === undefined || allowSpaceAsDelimiter === true;
-    var pattern = '[,|\-'+(allowSpaceAsDelimiter ? '\\s':'')+']\\s*',
+    var pattern = '[,|'+(allowSpaceAsDelimiter ? '\\s':'')+'-]\\s*',
       regex = new RegExp(pattern, 'g');
     if (typeof callback !== 'function') {
       // return array

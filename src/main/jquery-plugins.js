@@ -137,7 +137,8 @@
     var language = $.extend({}, $.formUtils.LANG, lang || {});
     this.each(function() {
       var $elem = $(this),
-        formDefaultConfig = $elem.closest('form').get(0).validationConfig || {};
+        $closestForm = $elem.closest('form').get(0) || {},
+        formDefaultConfig = $closestForm.validationConfig || {};
 
       $elem.one('validation', function(evt, isValid) {
         if ( typeof cb === 'function' ) {

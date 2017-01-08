@@ -290,6 +290,9 @@
             return $formGroup.eq(0);
           }
         }
+        if ($parent.hasClass("input-group")) {
+          return $parent.parent();
+        }
         return $parent;
       }
     },

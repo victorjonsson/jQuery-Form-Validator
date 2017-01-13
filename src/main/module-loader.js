@@ -86,23 +86,27 @@
                 $.formUtils.loadedModules[scriptUrl] = 1;
                 hasLoadedAnyModule = true;
 
-                // Load the script
-                script.type = 'text/javascript';
-                script.onload = moduleLoadedCallback;
-                script.src = scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' );
-                script.onerror = function() {
-                  $.formUtils.warn('Unable to load form validation module '+scriptUrl);
-                };
-                script.onreadystatechange = function () {
-                  // IE 7 fix
-                  if (this.readyState === 'complete' || this.readyState === 'loaded') {
-                    moduleLoadedCallback();
-                    // Handle memory leak in IE
-                    this.onload = null;
-                    this.onreadystatechange = null;
-                  }
-                };
-                appendToElement.appendChild(script);
+                if (typeof define === 'function' && define.amd) {
+                  require([scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' )], moduleLoadedCallback);
+                } else {
+                  // Load the script
+                  script.type = 'text/javascript';
+                  script.onload = moduleLoadedCallback;
+                  script.src = scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' );
+                  script.onerror = function() {
+                    $.formUtils.warn('Unable to load form validation module '+scriptUrl);
+                  };
+                  script.onreadystatechange = function () {
+                    // IE 7 fix
+                    if (this.readyState === 'complete' || this.readyState === 'loaded') {
+                      moduleLoadedCallback();
+                      // Handle memory leak in IE
+                      this.onload = null;
+                      this.onreadystatechange = null;
+                    }
+                  };
+                  appendToElement.appendChild(script);
+                }
               }
             }
           });

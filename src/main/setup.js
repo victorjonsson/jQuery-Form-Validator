@@ -57,6 +57,7 @@
       form: 'form',
       validateOnEvent: false,
       validateOnBlur: true,
+      validateEmptyFields: true,
       validateCheckboxRadioOnClick: true,
       showHelpOnFocus: true,
       addSuggestions: true,

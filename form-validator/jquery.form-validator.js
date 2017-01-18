@@ -659,8 +659,13 @@
     $.formUtils.dialogs.removeInputStylingAndMessage(this, conf);
 
     var $elem = this,
-      $form = $elem.closest('form'),
-      result = $.formUtils.validateInput(
+      $form = $elem.closest('form');
+
+    if( $elem.val().trim().length <= 0 && !conf.validateEmptyFields) {
+      return;
+    }
+
+    var result = $.formUtils.validateInput(
         $elem,
         language,
         conf,
@@ -1132,6 +1137,7 @@
       form: 'form',
       validateOnEvent: false,
       validateOnBlur: true,
+      validateEmptyFields: true,
       validateCheckboxRadioOnClick: true,
       showHelpOnFocus: true,
       addSuggestions: true,

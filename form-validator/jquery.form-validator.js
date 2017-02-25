@@ -296,7 +296,7 @@
     applyInputErrorStyling: function ($input, conf) {
       $input
         .addClass(conf.errorElementClass)
-        .removeClass('valid');
+        .removeClass(conf.successElementClass);
 
       this.getParentContainer($input)
         .addClass(conf.inputParentClassOnError)
@@ -315,7 +315,7 @@
 
       // Reset input css
       $input
-        .removeClass('valid')
+        .removeClass(conf.successElementClass)
         .removeClass(conf.errorElementClass)
         .css('border-color', '');
 
@@ -352,7 +352,7 @@
       }
 
       // Remove input css/messages
-      $form.find('.' + conf.errorElementClass + ',.valid').each(function() {
+      $form.find('.' + conf.errorElementClass + ',.' + conf.successElementClass).each(function() {
         dialogs.removeInputStylingAndMessage($(this), conf);
       });
     },

@@ -18,6 +18,7 @@
       return {
         ignore: [], // Names of inputs not to be validated even though `validationRuleAttribute` containing the validation rules tells us to
         errorElementClass: 'error', // Class that will be put on elements which value is invalid
+        successElementClass: 'valid', // Class that will be put on elements that has been validated with success
         borderColorOnError: '#b94a48', // Border color of elements which value is invalid, empty string to not change border color
         errorMessageClass: 'form-error', // class name of div containing error messages when validation fails
         validationRuleAttribute: 'data-validation', // name of the attribute holding the validation rules

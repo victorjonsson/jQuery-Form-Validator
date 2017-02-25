@@ -96,7 +96,6 @@
   ];
 
   var generalValidatorFunction = function (sepa) {
-    sepa = sepa.toUpperCase();
     sepa = sepa.replace(/\s+/g, '');
     sepa = sepa.substr(4) + sepa.substr(0,4);
 
@@ -179,7 +178,6 @@
 
   $.formUtils.addValidator({
     name: 'iban',
-
     validatorFunction: function(sepa) {
       return countryIBAN(sepa) && generalValidatorFunction(sepa);
     },

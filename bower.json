@@ -14,7 +14,7 @@
   "dependencies": {
     "jquery": ">1.8.0"
   },
-  "license": "Dual licensed under the MIT or GPL Version 2 licenses",
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",

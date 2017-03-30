@@ -1,7 +1,7 @@
 {
   "name": "jquery-form-validator",
   "description": "With this feature rich jQuery plugin it becomes easy to validate user input while keeping your HTML markup clean from javascript code. Even though this plugin has a wide range of validation functions it's designed to require as little bandwidth as possible. This is achieved by grouping together validation functions in \"modules\", making it possible for the programmer to load only those functions that's needed to validate a particular form.",
-  "version": "2.2.83",
+  "version": "2.3.60",
   "main": "./form-validator/jquery.form-validator.min.js",
   "keywords": [
     "form",
@@ -13,28 +13,36 @@
     "url": "git+https://github.com/victorjonsson/jQuery-Form-Validator.git"
   },
   "bugs": {
-    "url": "https://github.com/jquery-boilerplate/jquery-boilerplate/issues"
+    "url": "https://github.com/victorjonsson/jQuery-Form-Validator/issues"
   },
   "author": {
     "name": "Victor Jonsson",
     "email": "kontakt@victorjonsson.se",
-    "url": "https://github.com/victorjonsson"
+    "url": "http://victorjonsson.se"
   },
   "homepage": "http://formvalidator.net/",
-  "volo": {
-    "url": "https://raw.githubusercontent.com/lagden/jQuery-Form-Validator/{version}/form-validator/jquery.form-validator.js"
-  },
   "license": "MIT",
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-cli": "~0.1.13",
+    "grunt-contrib-clean": "~1.0.0",
     "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-jshint": "^0.11.0",
+    "grunt-contrib-connect": "^0.11.2",
+    "grunt-contrib-copy": "~1.0.0",
+    "grunt-contrib-cssmin": "~0.14.0",
+    "grunt-contrib-jshint": "~1.0.0",
     "grunt-contrib-qunit": "^0.7.0",
-    "grunt-contrib-uglify": "^0.8.0",
-    "grunt-contrib-watch": "^0.6.1"
+    "grunt-contrib-uglify": "~0.11.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-umd": "~2.4.0",
+    "numeral": "~1.5.3",
+    "qunitjs": "^1.20.0"
+  },
+  "dependencies": {
+    "jquery": ">1.8.0"
   },
   "scripts": {
-    "test": "grunt travis --verbose"
+    "prepublish": "grunt prepublish",
+    "test": "grunt test"
   }
 }

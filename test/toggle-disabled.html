@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Toggle Disabled Module</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/css/bootstrap.min.css">
+</head>
+<body>
+<div>
+  <form action="" style="margin: 3% auto; max-width: 400px" role="form">
+
+    <div class="form-group">
+      <label class="control-label">E-mail</label>
+      <input class="form-control" name="email" type="email" data-validation="email" />
+    </div>
+
+    <div class="form-group">
+      <label class="control-label">Password</label>
+      <input class="form-control" name="password" type="password"
+             data-validation="length"
+             data-validation-length="min5"
+             data-validation-error-msg="You have not given a correct password" />
+    </div>
+
+    <div class="form-group">
+      <label class="control-label">Service</label>
+      <select class="form-control" data-validation="required">
+        <option value="">- - Choose service - -</option>
+        <option>Admin</option>
+        <option>Client</option>
+        <option>Public</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <button type="submit">Login</button>
+      <button type="reset">Reset</button>
+    </div>
+
+  </form>
+</div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script src="../form-validator/jquery.form-validator.min.js"></script>
+  <script>
+
+    $.validate({
+      modules: 'security, toggleDisabled',
+      onSuccess: function() {
+        alert('valid');
+        return false;
+      }
+    });
+
+  </script>
+
+
+</body>
+</html>

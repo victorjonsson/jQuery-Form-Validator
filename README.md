@@ -1,8 +1,12 @@
 # jQuery Form Validator
 
-jQuery Form Validator is a **feature rich and multilingual** jQuery plugin that makes it easy to validate user input while keeping your HTML markup clean from javascript code. Even though this plugin has a wide range of validation functions it's **designed to require as little jQuery network traffic as possible**. This is achieved by grouping together validation functions in "modules", making it possible to load only those functions that's needed to validate a particular form.
+jQuery Form Validator is a **feature rich and multilingual** jQuery plugin that makes it easy to validate user input while keeping your HTML markup clean from javascript code. Even though this plugin has a wide range of validation functions it's **designed to require as little network traffic as possible**. This is achieved by grouping together validation functions in "modules", making it possible to load only those functions that's needed to validate a particular form.
 
 **Form demos and full documentation available at http://formvalidator.net/**
+
+[![Travis](https://travis-ci.org/victorjonsson/PHP-Markdown-Documentation-Generator.svg)](https://travis-ci.org/victorjonsson/jQuery-Form-Validator/builds/)
+
+[![npm version](https://badge.fury.io/js/jquery-form-validator.svg)](https://www.npmjs.com/package/jquery-form-validator)
 
 *Usage example*
 
@@ -27,7 +31,6 @@ jQuery Form Validator is a **feature rich and multilingual** jQuery plugin that 
 <script src="js/jquery.min.js"></script>
 <script src="js/form-validator/jquery.form-validator.min.js"></script>
 <script>
-/* important to locate this script AFTER the closing form element, so form object is loaded in DOM before setup is called */
     $.validate({
         modules : 'date, security'
     });
@@ -36,7 +39,7 @@ jQuery Form Validator is a **feature rich and multilingual** jQuery plugin that 
 
 ### Support for HTML5
 
-As of version 2.2 (unreleased) you can use this plugin as a fallback solution for the validation attributes in the HTML5 spec. Add the module `html5` to the module declaration and you can use the following native features:
+This plugin can serve as a fallback solution for the validation attributes in the HTML5 spec. With the [html5](http://www.formvalidator.net/#configuration_html5) module you can use the following native features:
 
 **Attributes**: require, pattern, maxlength, min, max, placeholder
 
@@ -75,6 +78,7 @@ Read the documentation for the default features at [http://formvalidator.net/#de
  * **strength** — *Validate the strength of a password*
  * **server** — *Validate value of input on server side*
  * **letternumeric** — *Validate that the input value consists out of only letters and/or numbers*
+ * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)* 
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
 
@@ -97,9 +101,25 @@ Read the documentation for the location module at [http://formvalidator.net/#loc
  * **mime**
  * **extension**
  * **size** (file size)
- * **dimension** ()
+ * **dimension** (size dimension and ratio)
 
 Read the documentation for the file module at [http://formvalidator.net/#file-validators](http://formvalidator.net/#file-validators)
+
+### Module: logic
+
+* **Dependent validation**
+* **Require "one-of"**
+
+Read the documentation for this module at [http://formvalidator.net/#logic](http://www.formvalidator.net/#logic)
+
+### Module: sepa
+
+* **IBAN**
+* **BIC**
+* **Sepa**
+
+Read the documentation for this module at [http://formvalidator.net/#sepa](http://www.formvalidator.net/#sepa)
+
 
 ### Module: sweden
  * **swemob** — *validate that the value is a swedish mobile telephone number*
@@ -109,30 +129,39 @@ Read the documentation for the file module at [http://formvalidator.net/#file-va
  * Suggest county
  * Suggest municipality
 
-Read the documentation for the Swedish module at [http://formvalidator.net/#sweden-validators](http://formvalidator.net/#sweden-validators)
+Read the documentation for the Swedish module at [http://formvalidator.net/#sweden-validators](http://www.formvalidator.net/#country-specific-validators_sweden)
 
 ### Module: uk
  * **ukvatnumber**
+ * **uknin** 
+ * **ukutr** 
 
+Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://www.formvalidator.net/#country-specific-validators_uk)
 
 ### Module: brazil
- * **brphone** — Validate a brazilian telephone number
+ * **brphone** — *Validate a brazilian telephone number*
  * **cep**
- * **cpf** 
+ * **cpf**
+
+### Module: poland 
+ * **plpesel** - *validate polish personal identity number (in Polish identity cards)*
+ * **plnip** - *validate polish VAT identification number*
+ * **plregon** - *validate polish bussiness identity number*
 
 ### Module: sanitation
  * **trim**
  * **trimLeft**
  * **trimRight**
- * **upper**  — (convert all letters to upper case)
- * **lower**  — (convert all letters to lower case)
- * **capitalize**  — (convert the first letter in all words to upper case)
- * **insertRight**  — (declare a text that should be inserted at the end of the value, attribute data-sanitize-insert-right)
- * **insertLeft**  — (declare a text that should be inserted at the beginning of the value, attribute data-sanitize-insert-left)
- * **escape**  — (convert < > & ' " to html entities)
- * **numberFormat**  — (declare the attribute data-sanitize-number-format with any of the formats described on http://numeraljs.com/. Note that this rule requires that numeral.js is included in the page)
+ * **upper**  — Convert all letters to upper case
+ * **lower**  — Convert all letters to lower case
+ * **capitalize**  — Convert the first letter in all words to upper case
+ * **insertRight**  — Declare a text that should be inserted at the end of the value, attribute data-sanitize-insert-right
+ * **insertLeft**  — Declare a text that should be inserted at the beginning of the value, attribute data-sanitize-insert-left
+ * **escape**  — Convert < > & ' " to html entities
+ * **strip**  — Comma separated list with words that gets automatically removed
+ * **numberFormat**  — Declare the attribute data-sanitize-number-format with any of the formats described on http://numeraljs.com/. Note that this rule requires that numeral.js is included in the page
 
-Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://formvalidator.net/#uk-validators)
+Read the documentation for the sanitation module at [http://formvalidator.net/#data-sanitation](http://formvalidator.net/#data-sanitation)
 
 
 ## Writing a custom validator
@@ -187,31 +216,22 @@ The validation function takes these five arguments:
 
 ## Creating a custom module
 
-A "module" is basically a javascript file containing one or more calls to [$.formUtils.addValidator()](#writing-a-custom-validator). The module file
-should either have the file extension *.js* (as an ordinary javascript file) or *.dev.js*.
+A "module" is basically a javascript file containing one or more calls to [$.formUtils.addValidator()](#writing-a-custom-validator).
+The module file must be placed in the same directory as `jquery.form-validator.min.js` if you want it to load automatically via the setup function.
 
-Using the file extension **.dev.js** will tell *$.formUtils.loadModules* to always append a timestamp to the end of the
-URL, so that the browser never caches the file. You should of course never use *.dev.js* on a production website.
+You can use the method `$.formUtils.loadModules` if you want to load the module from a custom path.
 
-### Loading your module ###
-
-```html
-<html>
-<head>
-    <script src="js/form-validator/jquery.form-validator.min.js"></script>
-    <script>
-        $.formUtils.loadModules('mymodule.dev', 'js/validation-modules/');
-    </script>
-</head>
-</html>
-...
+```js
+$.formUtils.loadModules('customModule otherCustomModule', 'js/validation-modules/');
+$.validate({
+   modules: 'security, date'
+});
 ```
 
-The first argument of $.formUtils.loadModules is a comma separated string with names of module files, without
-file extension (add .dev if the file name is for example mymodule.dev.js, this will insure that the browser never
-caches the javascript).
+The first argument of `$.formUtils.loadModules` is a comma separated string with names of module files, without
+file extension.
 
-The second argument is the path where the module files is located. This argument is optional, if not given
+The second argument is the path where the module files are located. This argument is optional, if not given
 the module files has to be located in the same directory as the core modules shipped together with this jquery plugin
 (js/form-validator/)
 
@@ -236,23 +256,44 @@ You can cause an element to be validated upon the firing of an event, by attachi
 
 ## Localization
 
-This plugin comes with translations for English, German, French Spanish and Swedish. You can also choose to override the error
+This plugin comes with translations for English, Polish,
+  Romanian,
+  Danish,
+  Norwegian,
+  Dutch,
+  Czech,
+  Catalan,
+  Russian,
+  Italian,
+  French,
+  German,
+  Swedish and
+  Portuguese. You can also choose to override the error
 dialogs yourself. Here you can read more about [localization](http://formvalidator.net/#localization)
-
-## Program Flow
-Form submit() event is bound to jQ func **validateForm()** when the form is submitted, it calls
-jQ func **$.formUtils.validateInput**, which calls **validatorFunction** for the specific validation
-rule assigned to the input element. If a validation fails, error messages are assigned and displayed
-as configured. If **validateOnBlur** is set to true, jQ finds all form input elements with the
-data-validation attribute and binds their onBlur event to call the function **validateInputOnBlur**.
-it calls jQ func **$.formUtils.validateInput** to validate the single input when blurred.
-
 
 ## Changelog
 
-#### 2.3.0 (unreleased)
-- New translations (Polish, Romanian, Czech, Russian)
+#### 2.3.19
+- New translations (Polish, Romanian, Danish, Norwegian, Dutch, Czech, Russian, Italian)
 - Several improvements made to already existing translations
+- "Validation help" no longer puts constraints on input names
+- Improved confirmation validation
+- Config parameter `errorMessagePosition` is now only used to point out where error message should be placed. New configuration parameters is introduced that handles custom positioning of error messages [#226](https://github.com/victorjonsson/jQuery-Form-Validator/issues/226#issuecomment-191233456)
+- Now possible to add `data-validation-ignore` to filter out certain characters before validation
+- New sanitation method `strip` that removes defined characters
+- Now possible to declare attributes not prefixed with data-validation in jsconf module
+- All inputs gets sanitized on page load when using sanitation module
+- Allow dates to omit leading zero using `data-validation-require-leading-zero="false"`
+- Module toggleDisabled now acts on value change, not only mouse click
+- `data-validation-if-checked` now deprecated, use `data-validation-depends-on` instead [#153](https://github.com/victorjonsson/jQuery-Form-Validator/issues/153)
+- Event `beforeValidation` now gets value, language and configuration as arguments and can be used to prevent validation of the input.
+- Security module now has a `recaptcha` validator that uses Google reCaptcha 2
+- The plugin is installable using npm (also possible to require validation modules when using browserify)
+- Polish validation module
+- Brazilian validation module
+- UK validation module now also have validators `uknin` `ukutr`
+- Sepa-module that makes it possible to validate sepa, iban and bic.
+- New module named "logic" containing the features `data-validation-depends-on` and `data-validation-optional-if-answered`
 
 #### 2.2.8
 - The plugin is now again possible to install via bower.
@@ -317,22 +358,22 @@ of validation that should be applied.
  * Correction of the US states in validation "federatestate"
  * Fixed bug in server validation
 
-#### 2.1.9
+#### 2.1.09
  * File validation now support multiple files
  * Length validation can now be used to validate the number of uploaded files using a file input that supports multiple files
  * Validation classes is no longer applied on inputs that for some reason shouldn't become validated
 
-#### 2.1.8
+#### 2.1.08
  * Now possible to configure the decimal separator when validating float values. Use either the
  attribute *data-validation-decimal-separator* or the property *decimalSeparator* when
 calling $.validate()
  * $.validationSetup is renamed to $.validate. You will still be able to initiate the validation by calling
  the $.validationSetup but it's considered deprecated.
 
-#### 2.1.6
+#### 2.1.06
  * Modules can now be loaded from remote websites
 
-#### 2.1.5
+#### 2.1.05
  * Fixed language bug (issue #43 on github)
  * Validation on server side is now triggered by the blur event
  * Now using class names that's compliant with twitter bootstrap 3.x
@@ -357,29 +398,4 @@ calling $.validate()
 
 ## Credits
 
-#### Maintainer
-
-[Victor Jonsson](https://github.com/victorjonsson)
-
-#### Contributors
-<a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a><br />
-<a href="http://lagden.github.com" target="_blank">Thiago Lagden</a><br />
-<a href="https://github.com/robamaton" target="_blank">Joel Sutherland</a><br />
-<a href="https://github.com/mattclements" target="_blank">Matt Clements</a><br />
-<a href="http://www.joshtoft.com/" target="_blank">Josh Toft</a><br/>
-<a href="https://github.com/dfcplc" target="_blank">@dfcplc</a><br />
-<a href="https://github.com/coffein" target="_blank">Andree Wendel</a><br />
-<a href="http://www.huotmedia.com" target="_blank">Nicholas Huot</a><br />
-<a href="https://github.com/Repkit" target="_blank">@repkit</a><br />
-<a href="https://github.com/aL3xa" target="_blank">Alexandar Blagotic</a><br />
-<a href="http://thekindof.me/" target="_blank">Yasith Fernando</a><br />
-<a href="https://github.com/S0L4R1S" target="_blank">@S0L4R1S</a><br />
-<a href="http://lisangan.com/">Erick Lisangan</a><br />
-<a href="https://github.com/kirbs-">@kirbs</a>
-<a href="https://github.com/hslee87">hslee87</a>
-
-#### Additional credits
-
-<a href="http://projects.scottsplayground.com/iri/" target="_blank">Scott Gonzales</a> (URL regexp)<br />
-<a href="http://www.mypocket-technologies.com" target="_blank">Darren Mason</a> (Password strength meter)<br />
-<a href="http://stevewasiura.waztech.com" target="_blank">Steve Wasiura</a> (Checkbox group)
+http://www.formvalidator.net/#credits

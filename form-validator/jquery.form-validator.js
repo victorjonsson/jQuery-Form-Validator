@@ -307,7 +307,7 @@
       }
     },
     applyInputSuccessStyling: function($input, conf) {
-      $input.addClass('valid');
+      $input.addClass(conf.successElementClass);
       this.getParentContainer($input)
         .addClass(conf.inputParentClassOnSuccess);
     },

@@ -226,16 +226,27 @@
       var patternStart = '^([a-zA-Z0-9',
         patternEnd = ']+)$',
         additionalChars = $el.valAttr('allowing'),
-        pattern = '';
+        pattern = '',
+        hasSpaces = false;
 
       if (additionalChars) {
         pattern = patternStart + additionalChars + patternEnd;
         var extra = additionalChars.replace(/\\/g, '');
         if (extra.indexOf(' ') > -1) {
+          hasSpaces = true;
           extra = extra.replace(' ', '');
           extra += language.andSpaces || $.formUtils.LANG.andSpaces;
         }
-        this.errorMessage = language.badAlphaNumeric + language.badAlphaNumericExtra + extra;
+
+        if(language.badAlphaNumericAndExtraAndSpaces && language.badAlphaNumericAndExtra) {
+          if(hasSpaces) {
+            this.errorMessage = language.badAlphaNumericAndExtraAndSpaces + extra; 
+          } else {
+            this.errorMessage = language.badAlphaNumericAndExtra + extra + language.badAlphaNumericExtra; 
+          }
+        } else {
+          this.errorMessage = language.badAlphaNumeric + language.badAlphaNumericExtra + extra;
+        }
       } else {
         pattern = patternStart + patternEnd;
         this.errorMessage = language.badAlphaNumeric;
@@ -313,12 +324,12 @@
           break;
         // below min qty
         case 'min':
-          this.errorMessage = lang.groupCheckedTooFewStart + qtyCheckResults[1] + lang.groupCheckedEnd;
+          this.errorMessage = lang.groupCheckedTooFewStart + qtyCheckResults[1] + (lang.groupCheckedTooFewEnd || lang.groupCheckedEnd);
           isValid = false;
           break;
         // above max qty
         case 'max':
-          this.errorMessage = lang.groupCheckedTooManyStart + qtyCheckResults[1] + lang.groupCheckedEnd;
+          this.errorMessage = lang.groupCheckedTooManyStart + qtyCheckResults[1] + (lang.groupCheckedTooManyEnd || lang.groupCheckedEnd);
           isValid = false;
           break;
         // ok

@@ -12,6 +12,8 @@
 
   'use strict';
 
+  $.formUtils.registerLoadedModule('jsconf');
+
   $.setupValidation = function(conf) {
     var $forms = $(conf.form || 'form');
     $.each(conf.validate || conf.validation || {}, function(elemRef, attr) {

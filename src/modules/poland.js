@@ -12,7 +12,9 @@
  */
 (function($) {
 
-	/**
+  $.formUtils.registerLoadedModule('poland');
+
+  /**
 	 * PL PESEL - polish personal identity number (in Polish identity cards) validator
 	 */
 	$.formUtils.addValidator({

@@ -19,6 +19,8 @@
 
   'use strict';
 
+  $.formUtils.registerLoadedModule('security');
+
   /*
    * Simple spam check
    */

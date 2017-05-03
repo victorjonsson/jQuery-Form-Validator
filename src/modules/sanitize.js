@@ -28,6 +28,8 @@
 
   'use strict';
 
+  $.formUtils.registerLoadedModule('sanitize');
+
   var inputsThatCantBeSanitized = '[type="button"], [type="submit"], [type="radio"], [type="checkbox"], [type="reset"], [type="search"]',
       sanitizeCommands = {
         upper : function(val) {

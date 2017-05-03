@@ -13,6 +13,8 @@
 
 	'use strict';
 
+  $.formUtils.registerLoadedModule('logic');
+
   var setupValidationDependsOn = function($form, conf) {
 
       var dependingOnBeforeValidation = function() {

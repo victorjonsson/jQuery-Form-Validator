@@ -16,7 +16,10 @@
 
 	'use strict';
 
-	/**
+
+  $.formUtils.registerLoadedModule('uk');
+
+  /**
 	 * UK VAT Validator
 	 */
 	$.formUtils.addValidator({

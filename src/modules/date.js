@@ -13,6 +13,8 @@
  */
 (function($) {
 
+    $.formUtils.registerLoadedModule('date');
+
     /*
      * Validate time hh:mm
      */

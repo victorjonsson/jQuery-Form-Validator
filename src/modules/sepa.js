@@ -7,6 +7,7 @@
 
   'use strict';
 
+  $.formUtils.registerLoadedModule('sepa');
 
   var ibanCountryList = [
     ['AD', 24, 'F04F04A12'],

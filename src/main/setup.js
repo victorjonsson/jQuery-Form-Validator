@@ -162,7 +162,7 @@
     });
 
     if (conf.modules !== '') {
-      $.formUtils.loadModules(conf.modules, false, function() {
+      $.formUtils.loadModules(conf.modules, null, function() {
         if (typeof conf.onModulesLoaded === 'function') {
           conf.onModulesLoaded();
         }

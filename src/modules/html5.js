@@ -22,6 +22,8 @@
 
   'use strict';
 
+  $.formUtils.registerLoadedModule('html5');
+
   var SUPPORTS_PLACEHOLDER = 'placeholder' in document.createElement('INPUT'),
     SUPPORTS_DATALIST = 'options' in document.createElement('DATALIST'),
     hasLoadedDateModule = false,

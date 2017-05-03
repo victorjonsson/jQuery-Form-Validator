@@ -18,6 +18,21 @@
     loadedModules: {},
 
     /**
+     * @param {String} name
+     */
+    registerLoadedModule: function (name) {
+      this.loadedModules[$.trim(name).toLowerCase()] = true;
+    },
+
+    /**
+     * @param {String} name
+     * @return {Boolean}
+     */
+    hasLoadedModule: function (name) {
+      return $.trim(name).toLowerCase() in this.loadedModules;
+    },
+
+    /**
      * @example
      *  $.formUtils.loadModules('date, security.dev');
      *
@@ -30,20 +45,19 @@
      * name ends with .dev
      *
      * @param {String} modules - Comma separated string with module file names (no directory nor file extension)
-     * @param {String} [path] - Optional, path where the module files is located if their not in the same directory as the core modules
-     * @param {function} [callback] - Optional, whether or not to fire event 'load' when modules finished loading
+     * @param {String} [path] - Path where the module files are located if their not in the same directory as the core modules
+     * @param {function} [callback] - Callback invoked when all modules are loaded
      */
     loadModules: function (modules, path, callback) {
 
       if ($.formUtils.isLoadingModules) {
         setTimeout(function () {
           $.formUtils.loadModules(modules, path, callback);
-        }, 10);
+        }, 100);
         return;
       }
 
-      var hasLoadedAnyModule = false,
-        loadModuleScripts = function (modules, path) {
+      var loadModuleScripts = function (modules, path) {
 
           var moduleList = $.split(modules),
             numModules = moduleList.length,
@@ -51,14 +65,11 @@
               numModules--;
               if (numModules === 0) {
                 $.formUtils.isLoadingModules = false;
-                if (callback && hasLoadedAnyModule) {
-                  if( typeof callback === 'function' ) {
+                if (typeof callback === 'function') {
                     callback();
-                  }
                 }
               }
             };
-
 
           if (numModules > 0) {
             $.formUtils.isLoadingModules = true;
@@ -69,44 +80,33 @@
 
           $.each(moduleList, function (i, modName) {
             modName = $.trim(modName);
-            if (modName.length === 0) {
+            if (modName.length === 0 || $.formUtils.hasLoadedModule(modName)) {
               moduleLoadedCallback();
-            }
-            else {
+            } else {
               var scriptUrl = path + modName + (modName.slice(-3) === '.js' ? '' : '.js'),
                 script = document.createElement('SCRIPT');
 
-              if (scriptUrl in $.formUtils.loadedModules) {
-                // already loaded
-                moduleLoadedCallback();
-              }
-              else {
-
-                // Remember that this script is loaded
-                $.formUtils.loadedModules[scriptUrl] = 1;
-                hasLoadedAnyModule = true;
-
-                if (typeof define === 'function' && define.amd) {
-                  require([scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' )], moduleLoadedCallback);
-                } else {
-                  // Load the script
-                  script.type = 'text/javascript';
-                  script.onload = moduleLoadedCallback;
-                  script.src = scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' );
-                  script.onerror = function() {
-                    $.formUtils.warn('Unable to load form validation module '+scriptUrl);
-                  };
-                  script.onreadystatechange = function () {
-                    // IE 7 fix
-                    if (this.readyState === 'complete' || this.readyState === 'loaded') {
-                      moduleLoadedCallback();
-                      // Handle memory leak in IE
-                      this.onload = null;
-                      this.onreadystatechange = null;
-                    }
-                  };
-                  appendToElement.appendChild(script);
-                }
+              if (typeof define === 'function' && define.amd) {
+                require([scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' )], moduleLoadedCallback);
+              } else {
+                // Load the script
+                script.type = 'text/javascript';
+                script.onload = moduleLoadedCallback;
+                script.src = scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' );
+                script.onerror = function() {
+                  $.formUtils.warn('Unable to load form validation module '+scriptUrl);
+                  moduleLoadedCallback();
+                };
+                script.onreadystatechange = function () {
+                  // IE 7 fix
+                  if (this.readyState === 'complete' || this.readyState === 'loaded') {
+                    moduleLoadedCallback();
+                    // Handle memory leak in IE
+                    this.onload = null;
+                    this.onreadystatechange = null;
+                  }
+                };
+                appendToElement.appendChild(script);
               }
             }
           });
@@ -136,7 +136,15 @@
         };
 
         if (!findScriptPathAndLoadModules()) {
-          $(findScriptPathAndLoadModules);
+          $(function () {
+            var hasLoadedModuleScripts = findScriptPathAndLoadModules();
+            if (!hasLoadedModuleScripts) {
+              // The modules may have been inserted via a minified script
+              if (typeof callback === 'function') {
+                callback();
+              }
+            }
+          });
         }
       }
     }

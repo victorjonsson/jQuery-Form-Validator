@@ -13,6 +13,8 @@
 
   'use strict';
 
+  $.formUtils.registerLoadedModule('toggleDisabled');
+
   // Function that can enable/disable form
   var toggleFormState = function($form, state) {
       if( state === 'disabled' ) {

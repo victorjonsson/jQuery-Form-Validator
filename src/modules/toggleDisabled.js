@@ -69,6 +69,17 @@
           .on('afterValidation', afterValidationCallback)
           .on('blur', function() {
             $(this).valAttr('have-been-blurred', 1);
+          })
+          .each(function() {
+            var $input = $(this),
+              validationRules = $input.attr('data-validation');
+            if (validationRules.indexOf('checkbox_group') > -1) {
+              $input.closest('form').find('input[name="'+$input.attr('name')+'"]').each(function() {
+                $(this).on('change', function() {
+                  $input.validate();
+                });
+              });
+            }
           });
 
 

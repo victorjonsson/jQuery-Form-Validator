@@ -606,14 +606,15 @@
                 {val:'2000-13-1', isValid:false},
                 {val:'2000-1-1', isValid:false},
                 {val:'-01-01', isValid:false},
-                {val:input('01/01/2000', {'format':'dd/mm/yyyy', '':'date'}), isValid:true},
-                {val:input('29/02/2000', {'format':'dd/mm/yyyy', '':'date'}), isValid:true},
-                {val:input('29/02/2013', {'format':'dd/mm/yyyy', '':'date'}), isValid:false},
-                {val:input('29/13/2013', {'format':'dd/mm/yyyy', '':'date'}), isValid:false},
-                {val:input('29/00/2013', {'format':'dd/mm/yyyy', '':'date'}), isValid:false},
+                {val:input('01/01/2000', {'format':'dd/mm/yyyy', '':'birthdate'}), isValid:true},
+                {val:input('29/02/2000', {'format':'dd/mm/yyyy', '':'birthdate'}), isValid:true},
+                {val:input('29/02/2013', {'format':'dd/mm/yyyy', '':'birthdate'}), isValid:false},
+                {val:input('29/13/2013', {'format':'dd/mm/yyyy', '':'birthdate'}), isValid:false},
+                {val:input('29/00/2013', {'format':'dd/mm/yyyy', '':'birthdate'}), isValid:false},
                 {val:'2030-01-01', isValid:false}, // no future date
-                {val:'1880-01-01', isValid:false} // no date that is to old
-            ];
+                {val:'1880-01-01', isValid:false}, // no date that is to old
+                {val:input('2000-01-01', {'age-range':'0-5', '':'birthdate'}), isValid:false},
+                {val:input('2000-01-01', {'age-range':'17-100', '':'birthdate'}), isValid:true}            ];
 
             $.each(dates, function(i, obj) {
                 runTest(obj, 'birthdate');
@@ -1062,7 +1063,7 @@
             });
 
         });
-    
+
         /*
          * COMPLEXITY VALIDATION
          */
@@ -1107,7 +1108,7 @@
                 runTest(obj, 'complexity');
             });
         });
-        
+
         // TODO: Write more tests...
     }
 

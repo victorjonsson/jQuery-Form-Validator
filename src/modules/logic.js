@@ -53,18 +53,19 @@
         },
         dependingOnValueChanged = function() {
           var $input = $(this),
-            $otherInput = this.$dependingInput,
-            valueOfDependingInput = $.formUtils.getValue($input),
-            requiredValueOfDependingInput = $input.valAttr('depending-value'),
-            otherInputHasValue = $.formUtils.getValue($otherInput) ? true:false,
-            dependingInputIsMissingValueOrHasIncorrectValue = !valueOfDependingInput || (
-                requiredValueOfDependingInput &&
-                requiredValueOfDependingInput !== valueOfDependingInput
-              );
+            inputValue = $.formUtils.getValue($input),
+            requiredValueOfDependingInput = $input.valAttr('depending-value');
+          $.each(this.dependingInputs, function (i, $otherInput) {
+            var otherInputHasValue = $.formUtils.getValue($otherInput) ? true:false,
+              dependingInputIsMissingValueOrHasIncorrectValue = !inputValue || (
+                  requiredValueOfDependingInput &&
+                  requiredValueOfDependingInput !== inputValue
+                );
 
-          if (dependingInputIsMissingValueOrHasIncorrectValue && !otherInputHasValue) {
-            $.formUtils.dialogs.removeInputStylingAndMessage($otherInput, conf);
-          }
+            if (dependingInputIsMissingValueOrHasIncorrectValue && !otherInputHasValue) {
+              $.formUtils.dialogs.removeInputStylingAndMessage($otherInput, conf);
+            }
+          });
         };
 
       $form.find('[data-validation-depends-on]')
@@ -79,10 +80,9 @@
               .on('change', dependingOnValueChanged)
               .valAttr('depending-value', $dependingInput.valAttr('depends-on-value'));
 
-            this.$dependingInput = $dependingInput;
-
+            this.dependingInputs = this.dependingInputs || [];
+            this.dependingInputs.push($dependingInput);
           });
-
         });
 
     },

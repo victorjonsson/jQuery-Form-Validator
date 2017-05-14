@@ -1386,7 +1386,7 @@
           // Doing this in a callback makes it possible for others to prevent the default
           // behaviour by binding to the same event and call evt.stopImmediatePropagation()
           if ($elem.attr('disabled') ||
-            (!$elem.is(':visible') && !conf.validateHiddenInputs && !$elem.data('force-validation-if-hidden'))
+            (!$elem.is(':visible') && !conf.validateHiddenInputs && !$elem.valAttr('force-validation-if-hidden'))
           ) {
             $elem.valAttr('skipped', 1);
           }

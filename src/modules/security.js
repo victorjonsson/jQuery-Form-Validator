@@ -47,7 +47,7 @@
         $passwordInput = $form.find('[name="' + passwordInputName + '"]');
       if (!$passwordInput.length) {
         $.formUtils.warn('Password confirmation validator: could not find an input ' +
-          'with name "' + passwordInputName + '"');
+          'with name "' + passwordInputName + '"', true);
         return false;
       }
 
@@ -105,7 +105,7 @@
               return false;
             }
           } else {
-            $.formUtils.warn('Use of unknown credit card "' + cardName + '"');
+            $.formUtils.warn('Use of unknown credit card "' + cardName + '"', true);
           }
         });
 
@@ -558,7 +558,7 @@
 
     $forms.each(function () {
       var $form = $(this),
-        config = $form.context.validationConfig || false;
+        config = $form.get(0).validationConfig || $form.context.validationConfig || false;
 
       if (config) {
         $('[data-validation~="recaptcha"]', $form).each(function () {

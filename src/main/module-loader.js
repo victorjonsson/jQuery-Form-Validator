@@ -94,7 +94,7 @@
                 script.onload = moduleLoadedCallback;
                 script.src = scriptUrl + ( scriptUrl.slice(-7) === '.dev.js' ? cacheSuffix : '' );
                 script.onerror = function() {
-                  $.formUtils.warn('Unable to load form validation module '+scriptUrl);
+                  $.formUtils.warn('Unable to load form validation module '+scriptUrl, true);
                   moduleLoadedCallback();
                 };
                 script.onreadystatechange = function () {

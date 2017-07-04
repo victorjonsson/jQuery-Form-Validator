@@ -79,12 +79,12 @@
     $.formUtils.addValidator({
         name : 'mime',
         validatorFunction : function(str, $input, conf, language) {
-
             if( SUPPORTS_FILE_READER ) {
                 var valid = true,
                     files = $input.get(0).files || [],
                     mime = '',
                     allowedTypes = _getTypes($input);
+                console.log(files[0]);
 
                 if( files.length ) {
                     $.each(files, function(i, file) {
@@ -151,7 +151,7 @@
         validatorFunction : function(val, $input, conf, language) {
             var maxSize = $input.valAttr('max-size');
             if( !maxSize ) {
-                $.formUtils.warn('Input "'+$input.attr('name')+'" is missing data-validation-max-size attribute');
+                $.formUtils.warn('Input "'+$input.attr('name')+'" is missing data-validation-max-size attribute', true);
                 return true;
             } else if( !SUPPORTS_FILE_READER ) {
                 return true; // no fallback available

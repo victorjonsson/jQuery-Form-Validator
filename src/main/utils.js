@@ -75,14 +75,15 @@
     /**
      * Warn user via the console if available
      */
-    warn: function(msg) {
+    warn: function(msg, fallbackOnAlert) {
       if( 'console' in window ) {
         if( typeof window.console.warn === 'function' ) {
           window.console.warn(msg);
         } else if( typeof window.console.log === 'function' ) {
           window.console.log(msg);
         }
-      } else {
+      } else if (fallbackOnAlert) {
+        // This is for some old IE version...
         alert(msg);
       }
     },

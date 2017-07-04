@@ -348,17 +348,21 @@
 
   var requestServer = function (serverURL, $element, val, conf, callback) {
       var reqParams = $element.valAttr('req-params') || $element.data('validation-req-params') || {},
+        inputName = $element.valAttr('param-name') || $element.attr('name'),
         handleResponse = function (response, callback) {
           callback(response);
         };
 
+      if (!inputName) {
+        throw new Error('Missing input name used for http requests made by server validator');
+      }
       if (!reqParams) {
         reqParams = {};
       }
       if (typeof reqParams === 'string') {
         reqParams = $.parseJSON(reqParams);
       }
-      reqParams[$element.valAttr('param-name') || $element.attr('name')] = val;
+      reqParams[inputName] = val;
 
       $.ajax({
         url: serverURL,
@@ -583,7 +587,7 @@
             callback: function (result) {
               $form.find('[data-validation~="recaptcha"]')
                 .trigger('validation', (result && result !== ''));
-              
+
             },
             'expired-callback': function() {
               $form.find('[data-validation~="recaptcha"]').trigger('validation', false);

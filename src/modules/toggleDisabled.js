@@ -82,6 +82,12 @@
             }
           });
 
+      // Notice! Async validator can't be validated onkeyup
+      // We can not determine if an input has an async validator by looking at the markup.
+      // The solution here would be to add the flag `async` to addValidator configuration
+      // for now we will have to hard code known async validators
+      $formsToDisable.find('[data-validation~="server"],[data-validation~="dimension"]')
+        .valAttr('event', 'change');
 
       // Make all inputs validated on keyup, require validateOnEvent in validation config
       toggleFormState($formsToDisable, 'disabled');

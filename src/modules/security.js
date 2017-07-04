@@ -558,60 +558,49 @@
       $forms = $('form');
     }
 
-    var i=0,
-		grecaptchaRenderCallback = [];
     $forms.each(function () {
       var $form = $(this),
         config = $form.context.validationConfig || false;
+
       if (config) {
+        $('[data-validation~="recaptcha"]', $form).each(function () {
+          var $input = $(this),
+            div = document.createElement('DIV'),
+            siteKey = config.reCaptchaSiteKey || $input.valAttr('recaptcha-sitekey'),
+            theme = config.reCaptchaTheme || $input.valAttr('recaptcha-theme') || 'light',
+            size = config.reCaptchaSize || $input.valAttr('recaptcha-size') || 'normal',
+            type = config.reCaptchaType || $input.valAttr('recaptcha-type') || 'image';
 
-      $('[data-validation~="recaptcha"]', $form).each(function () {
-        var $input = $(this),
-          div = document.createElement('DIV'),
-          siteKey = config.reCaptchaSiteKey || $input.valAttr('recaptcha-sitekey'),
-          theme = config.reCaptchaTheme || $input.valAttr('recaptcha-theme') || 'light',
-		      size = config.reCaptchaSize || $input.valAttr('recaptcha-size') || 'normal',
-          type = config.reCaptchaType || $input.valAttr('recaptcha-type') || 'image';
+          if (!siteKey) {
+            throw new Error('Google reCaptcha site key is required.');
+          }
 
-        if (!siteKey) {
-          throw new Error('Google reCaptcha site key is required.');
-        }
-
-        if (!$form.attr('id')) {
-			$form.attr('id', 'recaptcha-form-' + (i++));
-		}
-        grecaptchaRenderCallback[$form.attr('id')] = function (result) {
-		  var formID;
-          $('#' + formID).each(function () {
-            $('[data-validation~="recaptcha"]', $(this)).each(function () {
-              $(this).trigger('validation', (result && result !== ''));
-            });
+          var widgetId = grecaptcha.render(div, {
+            sitekey: siteKey,
+            theme: theme,
+            size: size,
+            type: type,
+            callback: function (result) {
+              $form.find('[data-validation~="recaptcha"]').each(function () {
+                  $(this).trigger('validation', (result && result !== ''));
+              });
+            },
+            'expired-callback': function() {
+              console.log('redo....');
+              $form.find('[data-validation~="recaptcha"]').trigger('validation', false);
+            }
           });
-        };
-		grecaptchaRenderCallback[$form.attr('id')].formID = $form.attr('id');
-
-        var widgetId = grecaptcha.render(div, {
-          sitekey: siteKey,
-          theme: theme,
-		      size: size,
-          type: type,
-          callback: grecaptchaRenderCallback[$form.attr('id')],
-          'expired-callback': grecaptchaRenderCallback[$form.attr('id')]
+          $input
+            .valAttr('recaptcha-widget-id', widgetId)
+            .hide()
+            .on('beforeValidation', function (evt) {
+              // prevent validator from skipping this input because its hidden
+              evt.stopImmediatePropagation();
+            })
+            .parent()
+            .append(div);
         });
-
-        $input
-          .valAttr('recaptcha-widget-id', widgetId)
-          .hide()
-          .on('beforeValidation', function (evt) {
-            // prevent validator from skipping this input becaus its hidden
-            evt.stopImmediatePropagation();
-          })
-          .parent()
-          .append(div);
-
-      });
-	  }
-
+      }
     });
   };
 

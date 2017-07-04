@@ -5,6 +5,7 @@
   var disableFormSubmit = function () {
       return false;
     },
+    lastFormEvent = null,
     HaltManager = {
       numHalted: 0,
       haltValidation: function($form) {
@@ -48,7 +49,8 @@
     if (eventContext === 'keyup') {
       return null;
     } else if (this.isRunning) {
-      if (!this.haltedFormValidation && eventContext === 'submit') {
+      lastFormEvent = eventContext;
+      if (!this.haltedFormValidation) {
         HaltManager.haltValidation();
         this.haltedFormValidation = true;
       }
@@ -57,10 +59,9 @@
       //this.$input.one('keyup change paste', this.reset.bind(this));
       return this.result;
     } else {
-      if (eventContext === 'submit') {
-        HaltManager.haltValidation(this.$form);
-        this.haltedFormValidation = true;
-      }
+      lastFormEvent = eventContext;
+      HaltManager.haltValidation(this.$form);
+      this.haltedFormValidation = true;
       this.isRunning = true;
       this.$input
         .attr('disabled', 'disabled')
@@ -85,9 +86,11 @@
     this.$form.removeClass('async-validation');
     if (this.haltedFormValidation) {
       HaltManager.unHaltValidation(this.$form);
-      this.$form.trigger('submit');
-    } else {
-      this.$input.trigger('validation.revalidate');
+      if (lastFormEvent == 'submit') {
+        this.$form.trigger('submit');
+      } else {
+        this.$input.trigger('validation.revalidate');
+      }
     }
   };
 

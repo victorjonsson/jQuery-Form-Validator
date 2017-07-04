@@ -581,9 +581,9 @@
             size: size,
             type: type,
             callback: function (result) {
-              $form.find('[data-validation~="recaptcha"]').each(function () {
-                  $(this).trigger('validation', (result && result !== ''));
-              });
+              $form.find('[data-validation~="recaptcha"]')
+                .trigger('validation', (result && result !== ''));
+              
             },
             'expired-callback': function() {
               $form.find('[data-validation~="recaptcha"]').trigger('validation', false);

@@ -586,7 +586,6 @@
               });
             },
             'expired-callback': function() {
-              console.log('redo....');
               $form.find('[data-validation~="recaptcha"]').trigger('validation', false);
             }
           });

@@ -1,6 +1,6 @@
 /**
  */
-(function ($, undefined) {
+(function ($, window, undefined) {
 
   var disableFormSubmit = function () {
       return false;
@@ -94,26 +94,73 @@
     }
   };
 
+  AsyncValidation.loadInstance = function(validatorName, $input, $form) {
+    // Return async validator attached to this input element
+    // or create a new async validator and attach it to the input
+    var asyncValidation,
+      input = $input.get(0);
+
+    if (!input.asyncValidators) {
+      input.asyncValidators = {};
+    }
+
+    if (input.asyncValidators[validatorName]) {
+      asyncValidation = input.asyncValidators[validatorName];
+    } else {
+      asyncValidation = new AsyncValidation($form, $input);
+      input.asyncValidators[validatorName] = asyncValidation;
+    }
+
+    return asyncValidation;
+  };
+
   $.formUtils = $.extend($.formUtils || {}, {
+
+    /**
+     * @deprecated
+     * @param validatorName
+     * @param $input
+     * @param $form
+     */
     asyncValidation: function(validatorName, $input, $form) {
-      // Return async validator attached to this input element
-      // or create a new async validator and attach it to the input
-      var asyncValidation,
-        input = $input.get(0);
+      // @todo: Remove when moving up to version 3.0
+      this.warn('Use of deprecated function $.formUtils.asyncValidation, use $.formUtils.addAsyncValidator() instead');
+      return AsyncValidation.loadInstance(validatorName, $input, $form);
+    },
 
-      if (!input.asyncValidators) {
-        input.asyncValidators = {};
-      }
-
-      if (input.asyncValidators[validatorName]) {
-        asyncValidation = input.asyncValidators[validatorName];
-      } else {
-        asyncValidation = new AsyncValidation($form, $input);
-        input.asyncValidators[validatorName] = asyncValidation;
-      }
-
-      return asyncValidation;
+    /**
+     * @param {Object} asyncValidator
+     */
+    addAsyncValidator: function (asyncValidator) {
+      var validator = $.extend({}, asyncValidator),
+        originalValidatorFunc = validator.validatorFunction;
+      validator.async = true;
+      validator.validatorFunction = function (value, $el, config, language, $form, eventContext) {
+        var asyncValidation = AsyncValidation.loadInstance(this.name, $el, $form);
+        return asyncValidation.run(eventContext, function(done) {
+          originalValidatorFunc(done, value, $el, config, language, $form, eventContext);
+        });
+      };
+      this.addValidator(validator);
     }
   });
 
-})(jQuery);
+  // Tag elements having async validators
+  $(window).bind('validatorsLoaded formValidationSetup', function (evt, $form) {
+    if (!$form) {
+      $form = $('form');
+    }
+    $form.find('[data-validation]').each(function () {
+      var $input = $(this);
+      $input.valAttr('async', false);
+      $.each($.split($input.attr('data-validation')), function (i, validatorName) {
+        console.log(validatorName);
+        var validator = $.formUtils.validators['validate_'+validatorName];
+        if (validator && validator.async) {
+          $input.valAttr('async', 'yes');
+        }
+      });
+    });
+  });
+
+})(jQuery, window);

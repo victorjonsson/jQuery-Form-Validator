@@ -383,23 +383,20 @@
   /*
    * Server validation
    */
-  $.formUtils.addValidator({
+  $.formUtils.addAsyncValidator({
     name: 'server',
-    validatorFunction: function (val, $input, conf, lang, $form, eventContext) {
-      var asyncValidation = $.formUtils.asyncValidation(this.name, $input, $form);
-      return asyncValidation.run(eventContext, function(done) {
-        var serverURL = $input.valAttr('url') || conf.backendUrl || document.location.href;
-        // @todo: deprecated class names that should be removed when moving up to 3.0
-        $form.addClass('validating-server-side');
-        $input.addClass('validating-server-side');
-        requestServer(serverURL, $input, val, conf, function (response) {
-          $form.removeClass('validating-server-side');
-          $input.removeClass('validating-server-side');
-          if (response.message) {
-            $input.attr(conf.validationErrorMsgAttribute, response.message);
-          }
-          done(response.valid);
-        });
+    validatorFunction: function (done, val, $input, conf, lang, $form) {
+      var serverURL = $input.valAttr('url') || conf.backendUrl || document.location.href;
+      // @todo: deprecated class names that should be removed when moving up to 3.0
+      $form.addClass('validating-server-side');
+      $input.addClass('validating-server-side');
+      requestServer(serverURL, $input, val, conf, function (response) {
+        $form.removeClass('validating-server-side');
+        $input.removeClass('validating-server-side');
+        if (response.message) {
+          $input.attr(conf.validationErrorMsgAttribute, response.message);
+        }
+        done(response.valid);
       });
     },
     errorMessage: '',

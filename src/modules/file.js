@@ -279,51 +279,48 @@
     /**
      * Validate image dimension
      */
-    $.formUtils.addValidator({
+    $.formUtils.addAsyncValidator({
       name : 'dimension',
-      validatorFunction : function(val, $input, conf, language, $form, eventContext) {
-        if (SUPPORTS_FILE_READER) {
-          var thisValidator = this,
-            asyncValidation = $.formUtils.asyncValidation(this.name, $input, $form);
+      validatorFunction : function(done, val, $input, conf, language) {
+        if (!SUPPORTS_FILE_READER) {
+          // Unable to do the validation, lacking FileReader support
+          done(true);
+        } else {
+          var file = $input.get(0).files || [],
+            thisValidator = this;
+          if ($input.attr('data-validation').indexOf('mime') === -1) {
+            alert('You should validate file type being jpg, gif or png on input ' + $input[0].name);
+            done(false);
+          } else if (file.length > 1) {
+            alert('Validating image dimensions does not support inputs allowing multiple files');
+            done(false);
+          } else if (file.length === 0) {
+            done(true);
+          } else {
+            _loadImage(file[0], function (img) {
+              var error = false;
 
-          return asyncValidation.run(eventContext, function (done) {
-            var file = $input.get(0).files || [];
-            if ($input.attr('data-validation').indexOf('mime') === -1) {
-              alert('You should validate file type being jpg, gif or png on input ' + $input[0].name);
-              done(false);
-            } else if (file.length > 1) {
-              alert('Validating image dimensions does not support inputs allowing multiple files');
-              done(false);
-            } else if (file.length === 0) {
-              done(true);
-            } else {
-              _loadImage(file[0], function (img) {
-                var error = false;
+              if ($input.valAttr('dimension')) {
+                error = $.formUtils.checkImageDimension(img, $input.valAttr('dimension'), language);
+              }
 
-                if ($input.valAttr('dimension')) {
-                  error = $.formUtils.checkImageDimension(img, $input.valAttr('dimension'), language);
-                }
+              if (!error && $input.valAttr('ratio')) {
+                error = $.formUtils.checkImageRatio(img, $input.valAttr('ratio'), language);
+              }
 
-                if (!error && $input.valAttr('ratio')) {
-                  error = $.formUtils.checkImageRatio(img, $input.valAttr('ratio'), language);
-                }
+              // Set validation result flag on input
+              if (error) {
+                thisValidator.errorMessage = language.wrongFileDim + ' ' + $input.valAttr('has-not-valid-dim');
+                done(false);
+              } else {
+                done(true);
+              }
 
-                // Set validation result flag on input
-                if (error) {
-                  thisValidator.errorMessage = language.wrongFileDim + ' ' + $input.valAttr('has-not-valid-dim');
-                  done(false);
-                } else {
-                  done(true);
-                }
-
-              }, function (err) {
-                throw err;
-              });
-            }
-          });
+            }, function (err) {
+              throw err;
+            });
+          }
         }
-
-        return true; // Unable to do the validation, lacking FileReader support
       },
       errorMessage : '',
       errorMessageKey: '' // error message created dynamically

@@ -60,6 +60,7 @@
 
     /**
      * Function for adding a validator
+     * @see $.formUtils.addAsyncValidator (async.js)
      * @param {Object} validator
      */
     addValidator: function (validator) {

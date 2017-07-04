@@ -86,7 +86,7 @@
     this.$form.removeClass('async-validation');
     if (this.haltedFormValidation) {
       HaltManager.unHaltValidation(this.$form);
-      if (lastFormEvent == 'submit') {
+      if (lastFormEvent === 'submit') {
         this.$form.trigger('submit');
       } else {
         this.$input.trigger('validation.revalidate');

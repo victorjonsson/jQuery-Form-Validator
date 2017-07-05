@@ -469,14 +469,14 @@
           'numeral': {
             pattern: '^(?=(?:.*\\d){'+numRequiredNumericChars+',}).+',
             numRequired: numRequiredNumericChars,
-            dialogEnd: $.formUtils.LANG.passwordComplexityNumericCharsInfo
+            dialogEnd: language.passwordComplexityNumericCharsInfo
           },
           'length': {
             callback: function(val) {
               return val.length > numRequiredCharsTotal;
             },
             numRequired: numRequiredCharsTotal,
-            dialogEnd: 'Lorem te ipsum'
+            dialogEnd: language.lengthBadEnd
           }
         },
         errorMessage = '';

@@ -84,7 +84,6 @@
                     files = $input.get(0).files || [],
                     mime = '',
                     allowedTypes = _getTypes($input);
-                console.log(files[0]);
 
                 if( files.length ) {
                     $.each(files, function(i, file) {

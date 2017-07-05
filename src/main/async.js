@@ -154,7 +154,6 @@
       var $input = $(this);
       $input.valAttr('async', false);
       $.each($.split($input.attr('data-validation')), function (i, validatorName) {
-        console.log(validatorName);
         var validator = $.formUtils.validators['validate_'+validatorName];
         if (validator && validator.async) {
           $input.valAttr('async', 'yes');

@@ -55,7 +55,7 @@
         .find('*[data-validation]')
           .valAttr('event','keyup change')
           .on('validation', function(evt, valid) {
-            if( !isCheckingIfFormValid ) {
+            if (!isCheckingIfFormValid) {
               isCheckingIfFormValid = true;
               var $form = $(this).closest('form');
               if(valid && peekIfFormIsSuccessfullyValidated($form, this, conf)) {
@@ -103,8 +103,11 @@
     var allValid = true;
     $form.find('[data-validation]').each(function() {
       if (this !== excludeInputElement) {
-        var $elem = $(this);
-        if (!$elem.hasClass(config.successElementClass) || $elem.hasClass(config.errorElementClass)) {
+        var $elem = $(this),
+          hasSuccessfullyValidated = $elem.hasClass(config.successElementClass),
+          isOptional = $elem.valAttr('optional') === 'true',
+          isInvalid = $elem.hasClass(config.errorElementClass);
+        if (isInvalid || (!hasSuccessfullyValidated && !isOptional)) {
           allValid = false;
           return false;
         }

@@ -8,7 +8,10 @@
  * @license MIT
  */
 (function($, window) {
+
   'use strict';
+
+  $.formUtils.registerLoadedModule('lang/ru');
 
   $(window).bind('validatorsLoaded', function() {
 

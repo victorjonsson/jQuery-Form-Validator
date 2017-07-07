@@ -10,7 +10,10 @@
  * @version 0.0.1
  */
 (function($, window) {
+
   'use strict';
+
+  $.formUtils.registerLoadedModule('lang/fa');
 
   $(window).bind('validatorsLoaded', function() {
 

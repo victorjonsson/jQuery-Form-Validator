@@ -473,7 +473,7 @@
           },
           'length': {
             callback: function(val) {
-              return val.length > numRequiredCharsTotal;
+              return val.length >= numRequiredCharsTotal;
             },
             numRequired: numRequiredCharsTotal,
             dialogEnd: language.lengthBadEnd

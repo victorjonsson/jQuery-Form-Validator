@@ -1077,6 +1077,8 @@
                 {val:input('12345678', {'':'complexity'}), isValid:true},
                 {val:input('@|#{}[]', {'':'complexity'}), isValid:true},
                 {val:input('abcdefgh', {'require-lc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('abcdefgh', {'require-lc-letter':'2', 'require-length':'9', '':'complexity'}), isValid:false},
+                {val:input('abcdefgha', {'require-lc-letter':'2', 'require-length':'9', '':'complexity'}), isValid:true},
                 {val:input('12@ABCDEFgh', {'require-lc-letter':'2', '':'complexity'}), isValid:true},
                 {val:input('12@ABCDEFGh', {'require-lc-letter':'2', '':'complexity'}), isValid:false},
                 {val:input('12@ABCDEFGH', {'require-lc-letter':'2', '':'complexity'}), isValid:false},

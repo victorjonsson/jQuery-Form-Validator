@@ -138,7 +138,9 @@
       validator.validatorFunction = function (value, $el, config, language, $form, eventContext) {
         var asyncValidation = AsyncValidation.loadInstance(this.name, $el, $form);
         return asyncValidation.run(eventContext, function(done) {
-          originalValidatorFunc(done, value, $el, config, language, $form, eventContext);
+          originalValidatorFunc.apply(validator, [
+            done, value, $el, config, language, $form, eventContext
+          ]);
         });
       };
       this.addValidator(validator);

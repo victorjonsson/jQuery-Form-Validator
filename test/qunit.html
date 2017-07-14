@@ -167,20 +167,33 @@
 
         });
 
-        /*
-         * Test validation of hidden inputs
-         */
-         test('Validation of hidden inputs', function(assert) {
-          assert.expect(3);
-          var $input = input('--', {'':'required alphanumeric'});
-          equal(false, $input.closest('form').isValid({}, {}, false));
-          $input.hide();
-          equal(true, $input.closest('form').isValid({}, {}, false));
-          $input.validate(function(valid) {
-            assert.equal(false, valid);
-          }, {validateHiddenInputs: true});
+      /*
+      * Test $.fn.validate
+      */
+      test('Test $.fn.validate() ', function(assert) {
+        clearForm();
+        assert.expect(1);
+        var $input = input('--', {'':'required alphanumeric'});
+        $input.attr('id', 'some-input');
+        $('#some-input').validate(function(valid, elem) {
+          assert.equal(false, valid);
+        });
+      });
 
-         });
+      /*
+       * Test validation of hidden inputs
+       */
+      test('Validation of hidden inputs', function(assert) {
+        clearForm();
+        assert.expect(3);
+        var $input = input('--', {'':'required alphanumeric'});
+        assert.equal(false, $input.closest('form').isValid({}, {}, false));
+        $input.hide();
+        assert.equal(true, $input.closest('form').isValid({}, {}, false));
+        $input.validate(function(valid) {
+          assert.equal(false, valid);
+        }, {validateHiddenInputs: true});
+      });
 
         /*
          * Test error message

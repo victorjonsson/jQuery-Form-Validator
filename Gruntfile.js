@@ -95,9 +95,6 @@ function initializeGruntConfig(grunt) {
       }
     },
 
-    // watch for changes to source
-    // Better than calling grunt a million times
-    // (call 'grunt watch')
     watch: {
       files: [SRC_DIR + '/**'],
       tasks: ['test'],
@@ -202,7 +199,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-umd');
 
   grunt.registerTask("build-production", ["version", "test", "uglify"]);
-  grunt.registerTask('test', ['concat', 'copy', 'umd', 'cssmin','jshint', 'qunit']);
+  grunt.registerTask('build', ['concat', 'copy', 'umd', 'cssmin']);
+  grunt.registerTask('test', ['build','jshint', 'qunit']);
   grunt.registerTask("default", ["test", "watch"]);
   grunt.registerTask("prepublish", ["test", "uglify"]);
 };

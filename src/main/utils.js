@@ -128,6 +128,10 @@
       conf = conf || $.formUtils.defaultConfig();
       language = language || $.formUtils.LANG;
 
+      if (!$form.length) {
+        $form = $elem.parent();
+      }
+
       var value = this.getValue($elem);
 
       $elem
@@ -141,7 +145,6 @@
           }
         })
         .trigger('beforeValidation', [value, language, conf]);
-
 
       var inputIsOptional = $elem.valAttr('optional') === 'true',
           skipBecauseItsEmpty = !value && inputIsOptional,

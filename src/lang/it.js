@@ -28,7 +28,7 @@
       lengthBadEnd: ' caratteri',
       lengthTooLongStart: 'La lunghezza della risposta deve essere minore di ',
       lengthTooShortStart: 'La lunghezza della risposta deve essere maggiore di ',
-      notConfirmed: 'Los valores proporcionados no pudieron ser confirmados',
+      notConfirmed: 'Il valore non è stato confermato.',
       badDomain: 'Il dominio inserito non &egrave; corretto.',
       badUrl: 'L\' URL inserito non &egrave; valido',
       badCustomVal: 'I valori inseriti non sono validi',

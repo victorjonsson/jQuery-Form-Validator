@@ -32,11 +32,13 @@
         return $($elem.valAttr('error-msg-container'));
       } else {
         var $parent = $elem.parent();
-        if (!$parent.hasClass('form-group') && !$parent.closest('form').hasClass('form-horizontal')) {
-          var $formGroup = $parent.closest('.form-group');
-          if ($formGroup.length) {
-            return $formGroup.eq(0);
-          }
+        if($elem.attr('type') === 'checkbox' && $elem.closest('.checkbox').length) {
+          $parent = $elem.closest('.checkbox').parent();
+        } else if($elem.attr('type') === 'radio' && $elem.closest('.radio').length) {
+          $parent = $elem.closest('.radio').parent();
+        }
+        if($parent.closest('.input-group').length) {
+          $parent = $parent.closest('.input-group').parent();
         }
         return $parent;
       }

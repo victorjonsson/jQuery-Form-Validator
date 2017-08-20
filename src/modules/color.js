@@ -132,4 +132,47 @@
     errorMessageKey: 'badRgba'
   });
 
+  $.formUtils.addValidator({
+    name: 'hsl',
+    validatorFunction: function(val, $el, config, language){
+      if($el.valAttr('allow-transparent') === 'true' && val === 'transparent'){
+        return true;
+      };
+
+      var removedSpace = val.replace(/ /g, '');
+      var regex = /\([0-9]{1,3},[0-9]{1,3}%,[0-9]{1,3}%\)/i;
+
+      if(removedSpace.match(regex)){
+        var removeBrackets = removedSpace.replace(/\(/g, '').replace(/\)/g, '');
+        var valueSliced = removeBrackets.split(',');
+        var isValid = true;
+
+        valueSliced.forEach(function(i,index){
+          var parsedInt = parseInt(i);
+
+          if(Number.isInteger(parsedInt)){
+            if(index === 0){
+              var isInRange = 0 <= parsedInt && parsedInt <= 360;
+              if(!isInRange){
+                isValid = false;
+              }
+            } else {
+              var isInRange = 0 <= parsedInt && parsedInt <= 100;
+              if(!isInRange){
+                isValid = false;
+              }
+            }
+          } else {
+            isValid = false;
+          }
+        });
+        return isValid;
+      }
+
+      return false;
+    },
+    errorMessage: '',
+    errorMessageKey: 'badHsl'
+  });
+
 })(jQuery);

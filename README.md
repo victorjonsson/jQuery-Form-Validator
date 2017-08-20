@@ -147,6 +147,13 @@ Read the documentation for the UK module at [http://formvalidator.net/#uk-valida
  * **plpesel** - *validate polish personal identity number (in Polish identity cards)*
  * **plnip** - *validate polish VAT identification number*
  * **plregon** - *validate polish bussiness identity number*
+ 
+### Module: color 
+ * **hex** - *validate hex color format*
+ * **rgb** - *validate rgb color format*
+ * **rgba** - *validate rgba color format*
+ * **hsl** - *validate hsl color format*
+ * **hsla** - *validate hsla color format*
 
 ### Module: sanitation
  * **trim**

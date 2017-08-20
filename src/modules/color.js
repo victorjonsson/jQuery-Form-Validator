@@ -20,8 +20,10 @@
    */
   var filterFloat = function(value) {
     if (/^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
-        .test(value))
+        .test(value)) {
       return Number(value);
+    }
+
     return NaN;
   };
 
@@ -39,7 +41,7 @@
         return true;
       }
 
-      var startWithHex = val[0] === "#";
+      var startWithHex = val[0] === '#';
       if (!startWithHex) {
         return false;
       }
@@ -51,8 +53,9 @@
         var valueSliced = val.slice(1).split('');
         var isValid = true;
         valueSliced.forEach(function(i) {
-          if (i.match(regex) === null)
+          if (i.match(regex) === null) {
             isValid = false;
+          }
         });
         return isValid;
       }
@@ -84,8 +87,9 @@
 
         valueSliced.forEach(function(i) {
           var parsedInt = parseInt(i);
-          if ((Number.isInteger(parsedInt) && 0 <= parsedInt && parsedInt <= 255) === false)
+          if ((Number.isInteger(parsedInt) && 0 <= parsedInt && parsedInt <= 255) === false) {
             isValid = false;
+          }
         });
         return isValid;
       }

@@ -186,4 +186,65 @@
     errorMessageKey: 'badHsl'
   });
 
+  /**
+   * Check HSLA format
+   */
+  $.formUtils.addValidator({
+    name: 'hsla',
+    validatorFunction: function(val, $el) {
+      if ($el.valAttr('allow-transparent') === 'true' && val === 'transparent') {
+        return true;
+      }
+
+      var isInRange;
+      var removedSpace = val.replace(/ /g, '');
+      var regex = /\([0-9]{1,3},[0-9]{1,3}%,[0-9]{1,3}%,[0,1]{1}.?[0-9]*\)/i;
+
+      if (removedSpace.match(regex)) {
+        var removeBrackets = removedSpace.replace(/\(/g, '').replace(/\)/g, '');
+        var valueSliced = removeBrackets.split(',');
+        var isValid = true;
+
+        valueSliced.forEach(function(i, index) {
+          var value = filterFloat(i);
+
+          if (Number.isInteger(value)) {
+
+            if (index === 0) {
+              isInRange = 0 <= value && value <= 360;
+              if (!isInRange) {
+                isValid = false;
+              }
+            } else {
+
+              isInRange = 0 <= value && value <= 100;
+              if (!isInRange) {
+                isValid = false;
+              }
+            }
+          } else {
+            if (isNaN(value)) {
+              // percent value
+              value = parseInt(i);
+              isInRange = 0 <= value && value <= 100;
+              if (!isInRange) {
+                isValid = false;
+              }
+            } else {
+              isInRange = 0 <= value && value <= 1;
+              if (!isInRange) {
+                isValid = false;
+              }
+            }
+          }
+        });
+        return isValid;
+      }
+
+      return false;
+    },
+    errorMessage: '',
+    errorMessageKey: 'badHsla'
+  });
+
 })(jQuery);

@@ -99,5 +99,45 @@
     errorMessageKey: 'badRgb'
   });
 
+  /**
+   * Check RGBA format
+   */
+  $.formUtils.addValidator({
+    name: 'rgba',
+    validatorFunction: function(val, $el) {
+      if ($el.valAttr('allow-transparent') === 'true' && val === 'transparent') {
+        return true;
+      }
+
+      var removedSpace = val.replace(/ /g, '');
+      var regex = /\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3},[0,1]{1}.?[0-9]*\)/i;
+
+      if (removedSpace.match(regex)) {
+        var removeBrackets = removedSpace.replace(/\(/g, '').replace(/\)/g, '');
+        var valueSliced = removeBrackets.split(',');
+        var isValid = true;
+
+        valueSliced.forEach(function(i) {
+          var value = filterFloat(i);
+          if (Number.isInteger(value)) {
+            var isInRange = value >= 0 && value <= 255;
+            if (!isInRange) {
+              isValid = false;
+            }
+          } else {
+            if (!isBetween0and1(value)) {
+              isValid = false;
+            }
+          }
+        });
+        return isValid;
+      }
+
+      return false;
+    },
+    errorMessage: '',
+    errorMessageKey: 'badRgba'
+  });
+
 
 })(jQuery);

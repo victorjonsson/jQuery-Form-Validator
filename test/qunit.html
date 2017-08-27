@@ -1124,11 +1124,30 @@
             });
         });
 
+        test("Color Hex validation", function() {
+
+          clearForm();
+
+          var links = [
+            {val: '#0000FF', isValid: true},
+            {val: '#00F', isValid: true},
+            {val: '123', isValid: false},
+            {val: '112233', isValid: false},
+            {val: '#4567', isValid: false},
+            {val: input('transparent', {'allow-transparent': 'true'}), isValid: true},
+            {val: 'transparent', isValid: false}
+          ];
+
+          $.each(links, function(i, obj) {
+            runTest(obj, 'hex');
+          });
+        });
+
         // TODO: Write more tests...
     }
 
     $.validate({
-        modules : 'security, location, sweden, file, date, sanitize, uk, poland',
+        modules : 'security, location, sweden, file, date, sanitize, uk, poland, color',
         onModulesLoaded: function( $form ) {
             if( window.console && window.console.log )
                 console.log('About to run all tests');

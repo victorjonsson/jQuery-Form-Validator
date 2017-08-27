@@ -1143,6 +1143,31 @@
           });
         });
 
+        test("Color Rgb validation", function() {
+
+          clearForm();
+
+          var links = [
+            {val: 'rgb(255,255,255)', isValid: true},
+            {val: 'rgb( 255 , 255 , 255 )', isValid: true},
+            {val: 'rgb( 255, 255, 255 )', isValid: true},
+            {val: 'rgb(255,255,255)', isValid: true},
+
+
+            {val: 'rgb(-10,255,255)', isValid: false},
+            {val: '255255255', isValid: false},
+            {val: 'rgb(255,255,256)', isValid: false},
+
+
+            {val: input('transparent', {'allow-transparent': 'true'}), isValid: true},
+            {val: 'transparent', isValid: false}
+          ];
+
+          $.each(links, function(i, obj) {
+            runTest(obj, 'rgb');
+          });
+        });
+
         // TODO: Write more tests...
     }
 

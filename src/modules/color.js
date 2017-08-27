@@ -31,6 +31,13 @@
     return value > 0 && value < 1;
   };
 
+  // workaround for PhantomJS
+  // https://github.com/ariya/phantomjs/issues/14014
+  // can't use Number.isInteger
+  var isInteger = function(value) {
+    return Math.floor(value) === value && $.isNumeric(value);
+  };
+
   /**
    * Check HEX format
    */
@@ -77,16 +84,17 @@
       }
 
       var removedSpace = val.replace(/ /g, '');
-      var regex = /\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3}\)/i;
+      var regex = /rgb\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3}\)/i;
 
       if (removedSpace.match(regex)) {
-        var removeBrackets = removedSpace.replace(/\(/g, '').replace(/\)/g, '');
+        var removeRgbCall = removedSpace.replace(/rgb/g, '');
+        var removeBrackets = removeRgbCall.replace(/\(/g, '').replace(/\)/g, '');
         var valueSliced = removeBrackets.split(',');
         var isValid = true;
 
         valueSliced.forEach(function(i) {
-          var parsedInt = parseInt(i);
-          if ((Number.isInteger(parsedInt) && 0 <= parsedInt && parsedInt <= 255) === false) {
+          var parsedInt = parseInt(i, 10);
+          if ((isInteger(parsedInt) && 0 <= parsedInt && parsedInt <= 255) === false) {
             isValid = false;
           }
         });
@@ -110,24 +118,27 @@
       }
 
       var removedSpace = val.replace(/ /g, '');
-      var regex = /\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3},[0,1]{1}.?[0-9]*\)/i;
+      var regex = /rgba\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3},[0,1]?.?[0-9]*\)/i;
 
       if (removedSpace.match(regex)) {
-        var removeBrackets = removedSpace.replace(/\(/g, '').replace(/\)/g, '');
+        var removeRgbaCall = removedSpace.replace(/rgba/g, '');
+        var removeBrackets = removeRgbaCall.replace(/\(/g, '').replace(/\)/g, '');
         var valueSliced = removeBrackets.split(',');
         var isValid = true;
 
-        valueSliced.forEach(function(i) {
+        valueSliced.forEach(function(i, index) {
           var value = filterFloat(i);
-          if (Number.isInteger(value)) {
+          if (isInteger(value)) {
             var isInRange = value >= 0 && value <= 255;
             if (!isInRange) {
               isValid = false;
             }
-          } else {
-            if (!isBetween0and1(value)) {
-              isValid = false;
+
+            if (isValid && index === 3) {
+              isValid = value >= 0 && value < 2;
             }
+          } else if (!isBetween0and1(i)) {
+            isValid = false;
           }
         });
         return isValid;
@@ -149,26 +160,21 @@
         return true;
       }
 
-      var isInRange;
       var removedSpace = val.replace(/ /g, '');
-      var regex = /\([0-9]{1,3},[0-9]{1,3}%,[0-9]{1,3}%\)/i;
+      var regex = /hsl\(-?[0-9]{1,3},[0-9]{1,3}%,[0-9]{1,3}%\)/i;
 
       if (removedSpace.match(regex)) {
-        var removeBrackets = removedSpace.replace(/\(/g, '').replace(/\)/g, '');
+        var removeHslCall = removedSpace.replace(/hsl/g, '');
+        var removeBrackets = removeHslCall.replace(/\(/g, '').replace(/\)/g, '');
         var valueSliced = removeBrackets.split(',');
         var isValid = true;
 
         valueSliced.forEach(function(i, index) {
-          var parsedInt = parseInt(i);
+          var parsedInt = parseInt(i, 10);
 
-          if (Number.isInteger(parsedInt)) {
-            if (index === 0) {
-              isInRange = 0 <= parsedInt && parsedInt <= 360;
-              if (!isInRange) {
-                isValid = false;
-              }
-            } else {
-              isInRange = 0 <= parsedInt && parsedInt <= 100;
+          if (isInteger(parsedInt)) {
+            if (index !== 0) {
+              var isInRange = parsedInt >= 0 && parsedInt <= 100;
               if (!isInRange) {
                 isValid = false;
               }
@@ -198,46 +204,44 @@
 
       var isInRange;
       var removedSpace = val.replace(/ /g, '');
-      var regex = /\([0-9]{1,3},[0-9]{1,3}%,[0-9]{1,3}%,[0,1]{1}.?[0-9]*\)/i;
+      var regex = /hsla\(-?[0-9]{1,3},[0-9]{1,3}%,[0-9]{1,3}%,[0,1]?.?[0-9]*\)/i;
 
       if (removedSpace.match(regex)) {
-        var removeBrackets = removedSpace.replace(/\(/g, '').replace(/\)/g, '');
+        var removeHslaCall = removedSpace.replace(/hsla/g, '');
+        var removeBrackets = removeHslaCall.replace(/\(/g, '').replace(/\)/g, '');
         var valueSliced = removeBrackets.split(',');
         var isValid = true;
 
         valueSliced.forEach(function(i, index) {
           var value = filterFloat(i);
+          var parsedInt = parseInt(i, 10);
 
-          if (Number.isInteger(value)) {
-
-            if (index === 0) {
-              isInRange = 0 <= value && value <= 360;
-              if (!isInRange) {
-                isValid = false;
-              }
-            } else {
-
-              isInRange = 0 <= value && value <= 100;
+          if (isInteger(value)) {
+            if (index !== 0 && index !== 3) {
+              isInRange = value >= 0 && value <= 100;
               if (!isInRange) {
                 isValid = false;
               }
             }
+
+            if (isValid && index === 3) {
+              isValid = value >= 0 && value < 2;
+            }
+          } else if (isNaN(value) && isInteger(parsedInt)) {
+            isInRange = parsedInt >= 0 && parsedInt <= 100;
+            if (!isInRange) {
+              isValid = false;
+            }
           } else {
-            if (isNaN(value)) {
-              // percent value
-              value = parseInt(i);
-              isInRange = 0 <= value && value <= 100;
-              if (!isInRange) {
-                isValid = false;
-              }
-            } else {
-              isInRange = 0 <= value && value <= 1;
-              if (!isInRange) {
-                isValid = false;
-              }
+            value = filterFloat(Number(i).toFixed(20));
+
+            isInRange = value >= 0 && value <= 1;
+            if (!isInRange) {
+              isValid = false;
             }
           }
         });
+
         return isValid;
       }
 

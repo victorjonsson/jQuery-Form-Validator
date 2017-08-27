@@ -1200,6 +1200,34 @@
         });
       });
 
+      test("Color Hsl validation", function() {
+
+        clearForm();
+
+        var links = [
+          {val: 'hsl(120,50%,50%)', isValid: true},
+          {val: 'hsl( 120 , 50% , 50% )', isValid: true},
+          {val: 'hsl( 120, 50%, 50% )', isValid: true},
+          {val: 'hsl(-120,50%,50%)', isValid: true},
+          {val: 'hsl(480,50%,50%)', isValid: true},
+
+          {val: 'hsl(10,-50%,50%)', isValid: false},
+          {val: 'hsl(10,50%,-50%)', isValid: false},
+          {val: '120,50%,50%', isValid: false},
+          {val: 'hsl(120,100%,101%)', isValid: false},
+          {val: 'hsl(50%, 50%, 100%)', isValid: false},
+          {val: 'hsl(120, 50, 100%)', isValid: false},
+          {val: 'hsl(120, 50%, 100)', isValid: false},
+
+          {val: input('transparent', {'allow-transparent': 'true'}), isValid: true},
+          {val: 'transparent', isValid: false}
+        ];
+
+        $.each(links, function(i, obj) {
+          runTest(obj, 'hsl');
+        });
+      });
+
         // TODO: Write more tests...
     }
 

@@ -31,6 +31,13 @@
     return value > 0 && value < 1;
   };
 
+  // workaround for PhantomJS
+  // https://github.com/ariya/phantomjs/issues/14014
+  // can't use Number.isInteger
+  var isInteger = function(value) {
+    return Math.floor(value) === value && $.isNumeric(value);
+  };
+
   /**
    * Check HEX format
    */
@@ -87,7 +94,7 @@
 
         valueSliced.forEach(function(i) {
           var parsedInt = parseInt(i, 10);
-          if ((Number.isInteger(parsedInt) && 0 <= parsedInt && parsedInt <= 255) === false) {
+          if ((isInteger(parsedInt) && 0 <= parsedInt && parsedInt <= 255) === false) {
             isValid = false;
           }
         });
@@ -121,7 +128,7 @@
 
         valueSliced.forEach(function(i, index) {
           var value = filterFloat(i);
-          if (Number.isInteger(value)) {
+          if (isInteger(value)) {
             var isInRange = value >= 0 && value <= 255;
             if (!isInRange) {
               isValid = false;
@@ -165,7 +172,7 @@
         valueSliced.forEach(function(i, index) {
           var parsedInt = parseInt(i, 10);
 
-          if (Number.isInteger(parsedInt)) {
+          if (isInteger(parsedInt)) {
             if (index !== 0) {
               var isInRange = parsedInt >= 0 && parsedInt <= 100;
               if (!isInRange) {
@@ -209,7 +216,7 @@
           var value = filterFloat(i);
           var parsedInt = parseInt(i, 10);
 
-          if (Number.isInteger(value)) {
+          if (isInteger(value)) {
             if (index !== 0 && index !== 3) {
               isInRange = value >= 0 && value <= 100;
               if (!isInRange) {
@@ -220,7 +227,7 @@
             if (isValid && index === 3) {
               isValid = value >= 0 && value < 2;
             }
-          } else if (isNaN(value) && Number.isInteger(parsedInt)) {
+          } else if (isNaN(value) && isInteger(parsedInt)) {
             isInRange = parsedInt >= 0 && parsedInt <= 100;
             if (!isInRange) {
               isValid = false;

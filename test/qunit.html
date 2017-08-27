@@ -1228,6 +1228,45 @@
         });
       });
 
+      test("Color Hsla validation", function() {
+
+        clearForm();
+
+        var links = [
+          {val: 'hsla(120,50%,50%,1)', isValid: true},
+          {val: 'hsla( 120 , 50% , 50%, 1 )', isValid: true},
+          {val: 'hsla( 120, 50%, 50% , 1 )', isValid: true},
+          {val: 'hsla(-120,50%,50%,1)', isValid: true},
+          {val: 'hsla(480,50%,50%,1)', isValid: true},
+          {val: 'hsla(120,50%,100%,0)', isValid: true},
+          {val: 'hsla(120,50%,100%,1)', isValid: true},
+          {val: 'hsla(120,50%,100%,0.5)', isValid: true},
+          {val: 'hsla(120,50%,100%,.5)', isValid: true},
+          {val: 'hsla(120,50%,100%,.524141)', isValid: true},
+
+          {val: 'hsla(120,50%,100%,50%)', isValid: false},
+          {val: 'hsla(120,50%,100%,2)', isValid: false},
+          {val: 'hsla(120,50%,100%,-1)', isValid: false},
+          {val: 'hsla(120,50%,100%,1.000000000001)', isValid: false},
+          {val: 'hsla(120,50%,100%,-0.5)', isValid: false},
+          {val: 'hsla(120,50%,100%,2.3)', isValid: false},
+          {val: 'hsla(10,-50%,50%,1)', isValid: false},
+          {val: 'hsla(10,50%,-50%,1)', isValid: false},
+          {val: '120,50%,50%,1', isValid: false},
+          {val: 'hsla(120,100%,101%,1)', isValid: false},
+          {val: 'hsla(50%, 50%, 100%,1)', isValid: false},
+          {val: 'hsla(120, 50, 100%,1)', isValid: false},
+          {val: 'hsla(120, 50%, 100,1)', isValid: false},
+
+          {val: input('transparent', {'allow-transparent': 'true'}), isValid: true},
+          {val: 'transparent', isValid: false}
+        ];
+
+        $.each(links, function(i, obj) {
+          runTest(obj, 'hsla');
+        });
+      });
+
         // TODO: Write more tests...
     }
 

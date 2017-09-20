@@ -115,5 +115,46 @@
       errorMessageKey: 'badBrazilCEPAnswer'
 
   });
+  
+  $.formUtils.addValidator({
+      name: 'brdate',
+      validatorFunction: function (val) {
+          var regExpCharacter = /[^\d]/;
+          var regExpSpace = /^\s+|\s+$/g;
+          if (val.length !== 10) {
+              return false;
+          }
+  
+          splitData = val.split('/');
+          if (splitData.length !== 3) {
+              return false;
+          }
+  
+          splitData[0] = splitData[0].replace(regExpSpace, '');
+          splitData[1] = splitData[1].replace(regExpSpace, '');
+          splitData[2] = splitData[2].replace(regExpSpace, '');
+  
+          if ((splitData[0].length !== 2) || (splitData[1].length !== 2) || (splitData[2].length !== 4)) {
+              return false;
+          }
+  
+          if (regExpCharacter.test(splitData[0]) || regExpCharacter.test(splitData[1]) || regExpCharacter.test(splitData[2])) {
+              return false;
+          }
+  
+          day = parseInt(splitData[0], 10);
+          month = parseInt(splitData[1], 10) - 1;
+          year = parseInt(splitData[2], 10);
+  
+          var newDate = new Date(year, month, day);
+          if ((newDate.getDate() !== day) || (newDate.getMonth() !== month) || (newDate.getFullYear() !== year)) {
+              return false;
+          } else {
+              return true;
+          }
+      },
+      errorMessage: '',
+      errorMessageKey: 'badDate'
+  });
 
 })(jQuery);

@@ -25,7 +25,7 @@
       * @return {Array}
       */
       _getTypes = function($input) {
-        var allowedTypes = $.split( ($input.valAttr('allowing') || '').toLowerCase() );
+        var allowedTypes = ($input.valAttr('allowing') || '').toLowerCase().split(/,\s*/);
         if ($.inArray('jpg', allowedTypes) > -1 && $.inArray('jpeg', allowedTypes) === -1) {
           allowedTypes.push('jpeg');
         }

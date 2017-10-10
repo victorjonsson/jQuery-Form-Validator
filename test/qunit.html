@@ -167,20 +167,33 @@
 
         });
 
-        /*
-         * Test validation of hidden inputs
-         */
-         test('Validation of hidden inputs', function(assert) {
-          assert.expect(3);
-          var $input = input('--', {'':'required alphanumeric'});
-          equal(false, $input.closest('form').isValid({}, {}, false));
-          $input.hide();
-          equal(true, $input.closest('form').isValid({}, {}, false));
-          $input.validate(function(valid) {
-            assert.equal(false, valid);
-          }, {validateHiddenInputs: true});
+      /*
+      * Test $.fn.validate
+      */
+      test('Test $.fn.validate() ', function(assert) {
+        clearForm();
+        assert.expect(1);
+        var $input = input('--', {'':'required alphanumeric'});
+        $input.attr('id', 'some-input');
+        $('#some-input').validate(function(valid, elem) {
+          assert.equal(false, valid);
+        });
+      });
 
-         });
+      /*
+       * Test validation of hidden inputs
+       */
+      test('Validation of hidden inputs', function(assert) {
+        clearForm();
+        assert.expect(3);
+        var $input = input('--', {'':'required alphanumeric'});
+        assert.equal(false, $input.closest('form').isValid({}, {}, false));
+        $input.hide();
+        assert.equal(true, $input.closest('form').isValid({}, {}, false));
+        $input.validate(function(valid) {
+          assert.equal(false, valid);
+        }, {validateHiddenInputs: true});
+      });
 
         /*
          * Test error message
@@ -1077,6 +1090,8 @@
                 {val:input('12345678', {'':'complexity'}), isValid:true},
                 {val:input('@|#{}[]', {'':'complexity'}), isValid:true},
                 {val:input('abcdefgh', {'require-lc-letter':'2', '':'complexity'}), isValid:true},
+                {val:input('abcdefgh', {'require-lc-letter':'2', 'require-length':'9', '':'complexity'}), isValid:false},
+                {val:input('abcdefgha', {'require-lc-letter':'2', 'require-length':'9', '':'complexity'}), isValid:true},
                 {val:input('12@ABCDEFgh', {'require-lc-letter':'2', '':'complexity'}), isValid:true},
                 {val:input('12@ABCDEFGh', {'require-lc-letter':'2', '':'complexity'}), isValid:false},
                 {val:input('12@ABCDEFGH', {'require-lc-letter':'2', '':'complexity'}), isValid:false},
@@ -1109,11 +1124,154 @@
             });
         });
 
+        test("Color Hex validation", function() {
+
+          clearForm();
+
+          var links = [
+            {val: '#0000FF', isValid: true},
+            {val: '#00F', isValid: true},
+            {val: '123', isValid: false},
+            {val: '112233', isValid: false},
+            {val: '#4567', isValid: false},
+            {val: input('transparent', {'allow-transparent': 'true'}), isValid: true},
+            {val: 'transparent', isValid: false}
+          ];
+
+          $.each(links, function(i, obj) {
+            runTest(obj, 'hex');
+          });
+        });
+
+        test("Color Rgb validation", function() {
+
+          clearForm();
+
+          var links = [
+            {val: 'rgb(255,255,255)', isValid: true},
+            {val: 'rgb( 255 , 255 , 255 )', isValid: true},
+            {val: 'rgb( 255, 255, 255 )', isValid: true},
+            {val: 'rgb(255,255,255)', isValid: true},
+
+
+            {val: 'rgb(-10,255,255)', isValid: false},
+            {val: '255255255', isValid: false},
+            {val: 'rgb(255,255,256)', isValid: false},
+
+
+            {val: input('transparent', {'allow-transparent': 'true'}), isValid: true},
+            {val: 'transparent', isValid: false}
+          ];
+
+          $.each(links, function(i, obj) {
+            runTest(obj, 'rgb');
+          });
+        });
+
+      test("Color Rgba validation", function() {
+
+        clearForm();
+
+        var links = [
+          {val: 'rgba(255,255,255,1)', isValid: true},
+          {val: 'rgba( 255 , 255 , 255 , 1 )', isValid: true},
+          {val: 'rgba( 255 , 255 , 255 , 1 )', isValid: true},
+          {val: 'rgba(255,255,255,1)', isValid: true},
+          {val: 'rgba(255,255,255,0)', isValid: true},
+          {val: 'rgba(255,255,255,1)', isValid: true},
+          {val: 'rgba(255,255,255,0.5)', isValid: true},
+          {val: 'rgba(255,255,255,.5)', isValid: true},
+          {val: 'rgba(255,255,255,.524141)', isValid: true},
+          {val: 'rgba(255,255,255,2)', isValid: false},
+          {val: 'rgba(255,255,255,-1)', isValid: false},
+          {val: 'rgba(255,255,255,1.000000000001)', isValid: false},
+          {val: 'rgba(255,255,255,-0.5)', isValid: false},
+          {val: 'rgba(255,255,255,2.3)', isValid: false},
+          {val: 'rgba(-10,255,255,1)', isValid: false},
+          {val: '2552552551', isValid: false},
+          {val: 'rgba(255,255,256),1', isValid: false},
+          {val: '0000FF', isValid: false},
+          {val: input('transparent', {'allow-transparent': 'true'}), isValid: true},
+          {val: 'transparent', isValid: false}
+        ];
+
+        $.each(links, function(i, obj) {
+          runTest(obj, 'rgba');
+        });
+      });
+
+      test("Color Hsl validation", function() {
+
+        clearForm();
+
+        var links = [
+          {val: 'hsl(120,50%,50%)', isValid: true},
+          {val: 'hsl( 120 , 50% , 50% )', isValid: true},
+          {val: 'hsl( 120, 50%, 50% )', isValid: true},
+          {val: 'hsl(-120,50%,50%)', isValid: true},
+          {val: 'hsl(480,50%,50%)', isValid: true},
+
+          {val: 'hsl(10,-50%,50%)', isValid: false},
+          {val: 'hsl(10,50%,-50%)', isValid: false},
+          {val: '120,50%,50%', isValid: false},
+          {val: 'hsl(120,100%,101%)', isValid: false},
+          {val: 'hsl(50%, 50%, 100%)', isValid: false},
+          {val: 'hsl(120, 50, 100%)', isValid: false},
+          {val: 'hsl(120, 50%, 100)', isValid: false},
+
+          {val: input('transparent', {'allow-transparent': 'true'}), isValid: true},
+          {val: 'transparent', isValid: false}
+        ];
+
+        $.each(links, function(i, obj) {
+          runTest(obj, 'hsl');
+        });
+      });
+
+      test("Color Hsla validation", function() {
+
+        clearForm();
+
+        var links = [
+          {val: 'hsla(120,50%,50%,1)', isValid: true},
+          {val: 'hsla( 120 , 50% , 50%, 1 )', isValid: true},
+          {val: 'hsla( 120, 50%, 50% , 1 )', isValid: true},
+          {val: 'hsla(-120,50%,50%,1)', isValid: true},
+          {val: 'hsla(480,50%,50%,1)', isValid: true},
+          {val: 'hsla(120,50%,100%,0)', isValid: true},
+          {val: 'hsla(120,50%,100%,1)', isValid: true},
+          {val: 'hsla(120,50%,100%,0.5)', isValid: true},
+          {val: 'hsla(120,50%,100%,.5)', isValid: true},
+          {val: 'hsla(120,50%,100%,.524141)', isValid: true},
+
+          {val: 'hsla(120,50%,100%,50%)', isValid: false},
+          {val: 'hsla(120,50%,100%,2)', isValid: false},
+          {val: 'hsla(120,50%,100%,-1)', isValid: false},
+          {val: 'hsla(120,50%,100%,1.000000000001)', isValid: false},
+          {val: 'hsla(120,50%,100%,-0.5)', isValid: false},
+          {val: 'hsla(120,50%,100%,2.3)', isValid: false},
+          {val: 'hsla(10,-50%,50%,1)', isValid: false},
+          {val: 'hsla(10,50%,-50%,1)', isValid: false},
+          {val: '120,50%,50%,1', isValid: false},
+          {val: 'hsla(120,100%,101%,1)', isValid: false},
+          {val: 'hsla(50%, 50%, 100%,1)', isValid: false},
+          {val: 'hsla(120, 50, 100%,1)', isValid: false},
+          {val: 'hsla(120, 50%, 100,1)', isValid: false},
+
+          {val: input('transparent', {'allow-transparent': 'true'}), isValid: true},
+          {val: 'transparent', isValid: false}
+        ];
+
+        $.each(links, function(i, obj) {
+          runTest(obj, 'hsla');
+        });
+      });
+
         // TODO: Write more tests...
     }
 
     $.validate({
-        modules : 'security, location, sweden, file, date, sanitize, uk, poland',
+        modules : 'security, location, sweden, file, date, sanitize, uk, poland, color',
         onModulesLoaded: function( $form ) {
             if( window.console && window.console.log )
                 console.log('About to run all tests');

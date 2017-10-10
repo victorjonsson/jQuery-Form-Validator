@@ -55,10 +55,10 @@
         .find('*[data-validation]')
           .valAttr('event','keyup change')
           .on('validation', function(evt, valid) {
-            if( !isCheckingIfFormValid ) {
+            if (!isCheckingIfFormValid) {
               isCheckingIfFormValid = true;
               var $form = $(this).closest('form');
-              if( valid && $form.isValid(conf.language, conf, false) ) {
+              if(valid && peekIfFormIsSuccessfullyValidated($form, this, conf)) {
                 toggleFormState($form, 'enabled');
               } else {
                 toggleFormState($form, 'disabled');
@@ -82,6 +82,8 @@
             }
           });
 
+      // Notice! Async validator can't be validated onkeyup
+      $formsToDisable.find('[data-validation-async]').valAttr('event', 'change');
 
       // Make all inputs validated on keyup, require validateOnEvent in validation config
       toggleFormState($formsToDisable, 'disabled');
@@ -94,5 +96,24 @@
         $elem.hide();
       }
   });
+
+  // We want to peek at the form to check if all is valid, we don't want to trigger
+  // the validators since that seems to cause unwanted side effects, that's hard to foresee
+  function peekIfFormIsSuccessfullyValidated($form, excludeInputElement, config) {
+    var allValid = true;
+    $form.find('[data-validation]').each(function() {
+      if (this !== excludeInputElement) {
+        var $elem = $(this),
+          hasSuccessfullyValidated = $elem.hasClass(config.successElementClass),
+          isOptional = $elem.valAttr('optional') === 'true',
+          isInvalid = $elem.hasClass(config.errorElementClass);
+        if (isInvalid || (!hasSuccessfullyValidated && !isOptional)) {
+          allValid = false;
+          return false;
+        }
+      }
+    });
+    return allValid;
+  }
 
 })(jQuery, window);

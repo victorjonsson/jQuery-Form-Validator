@@ -44,7 +44,11 @@
       month = $.formUtils.parseDateInt(RegExp.$2);
       day = $.formUtils.parseDateInt(RegExp.$3);
 
-      window.ssnGender = ( parseInt((RegExp.$4).substring(2, 3)) % 2 ) === 0 ? 'female' : 'male';
+      var ssnGender = ( parseInt((RegExp.$4).substring(2, 3)) % 2 ) === 0 ? 'female' : 'male';
+      $input.trigger('genderDerived', [ssnGender]);
+
+      // todo: remove when moving to version 3.0
+      window.ssnGender = ssnGender;
 
       var months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
       if (year % 400 === 0 || year % 4 === 0 && year % 100 !== 0) {

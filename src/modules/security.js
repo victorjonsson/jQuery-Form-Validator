@@ -47,7 +47,7 @@
         $passwordInput = $form.find('[name="' + passwordInputName + '"]');
       if (!$passwordInput.length) {
         $.formUtils.warn('Password confirmation validator: could not find an input ' +
-          'with name "' + passwordInputName + '"');
+          'with name "' + passwordInputName + '"', true);
         return false;
       }
 
@@ -105,7 +105,7 @@
               return false;
             }
           } else {
-            $.formUtils.warn('Use of unknown credit card "' + cardName + '"');
+            $.formUtils.warn('Use of unknown credit card "' + cardName + '"', true);
           }
         });
 
@@ -348,17 +348,21 @@
 
   var requestServer = function (serverURL, $element, val, conf, callback) {
       var reqParams = $element.valAttr('req-params') || $element.data('validation-req-params') || {},
+        inputName = $element.valAttr('param-name') || $element.attr('name'),
         handleResponse = function (response, callback) {
           callback(response);
         };
 
+      if (!inputName) {
+        throw new Error('Missing input name used for http requests made by server validator');
+      }
       if (!reqParams) {
         reqParams = {};
       }
       if (typeof reqParams === 'string') {
         reqParams = $.parseJSON(reqParams);
       }
-      reqParams[$element.valAttr('param-name') || $element.attr('name')] = val;
+      reqParams[inputName] = val;
 
       $.ajax({
         url: serverURL,
@@ -379,26 +383,20 @@
   /*
    * Server validation
    */
-  $.formUtils.addValidator({
+  $.formUtils.addAsyncValidator({
     name: 'server',
-    validatorFunction: function (val, $input, conf, lang, $form, eventContext) {
-      var asyncValidation = $.formUtils.asyncValidation(this.name, $input, $form);
-      return asyncValidation.run(eventContext, function(done) {
-        var serverURL = $input.valAttr('url') || conf.backendUrl || document.location.href;
-        // @todo: deprecated class names that should be removed when moving up to 3.0
-        $form.addClass('validating-server-side');
-        $input.addClass('validating-server-side');
-        requestServer(serverURL, $input, val, conf, function (response) {
-          $form.removeClass('validating-server-side');
-          $input.removeClass('validating-server-side');
-          if (response.message) {
-            $input.attr(conf.validationErrorMsgAttribute, response.message);
-            $input.one('validation', function() {
-              $input.removeAttr(conf.validationErrorMsgAttribute);
-            });
-          }
-          done(response.valid);
-        });
+    validatorFunction: function (done, val, $input, conf, lang, $form) {
+      var serverURL = $input.valAttr('url') || conf.backendUrl || document.location.href;
+      // @todo: deprecated class names that should be removed when moving up to 3.0
+      $form.addClass('validating-server-side');
+      $input.addClass('validating-server-side');
+      requestServer(serverURL, $input, val, conf, function (response) {
+        $form.removeClass('validating-server-side');
+        $input.removeClass('validating-server-side');
+        if (response.message) {
+          $input.attr(conf.validationErrorMsgAttribute, response.message);
+        }
+        done(response.valid);
       });
     },
     errorMessage: '',
@@ -471,14 +469,14 @@
           'numeral': {
             pattern: '^(?=(?:.*\\d){'+numRequiredNumericChars+',}).+',
             numRequired: numRequiredNumericChars,
-            dialogEnd: $.formUtils.LANG.passwordComplexityNumericCharsInfo
+            dialogEnd: language.passwordComplexityNumericCharsInfo
           },
           'length': {
             callback: function(val) {
-              return val.length > numRequiredCharsTotal;
+              return val.length >= numRequiredCharsTotal;
             },
             numRequired: numRequiredCharsTotal,
-            dialogEnd: 'Lorem te ipsum'
+            dialogEnd: language.lengthBadEnd
           }
         },
         errorMessage = '';
@@ -558,60 +556,48 @@
       $forms = $('form');
     }
 
-    var i=0,
-		grecaptchaRenderCallback = [];
     $forms.each(function () {
       var $form = $(this),
-        config = $form.context.validationConfig || false;
+        config = $form.get(0).validationConfig || $form.context.validationConfig || false;
+
       if (config) {
+        $('[data-validation~="recaptcha"]', $form).each(function () {
+          var $input = $(this),
+            div = document.createElement('DIV'),
+            siteKey = config.reCaptchaSiteKey || $input.valAttr('recaptcha-sitekey'),
+            theme = config.reCaptchaTheme || $input.valAttr('recaptcha-theme') || 'light',
+            size = config.reCaptchaSize || $input.valAttr('recaptcha-size') || 'normal',
+            type = config.reCaptchaType || $input.valAttr('recaptcha-type') || 'image';
 
-      $('[data-validation~="recaptcha"]', $form).each(function () {
-        var $input = $(this),
-          div = document.createElement('DIV'),
-          siteKey = config.reCaptchaSiteKey || $input.valAttr('recaptcha-sitekey'),
-          theme = config.reCaptchaTheme || $input.valAttr('recaptcha-theme') || 'light',
-		      size = config.reCaptchaSize || $input.valAttr('recaptcha-size') || 'normal',
-          type = config.reCaptchaType || $input.valAttr('recaptcha-type') || 'image';
+          if (!siteKey) {
+            throw new Error('Google reCaptcha site key is required.');
+          }
 
-        if (!siteKey) {
-          throw new Error('Google reCaptcha site key is required.');
-        }
+          var widgetId = grecaptcha.render(div, {
+            sitekey: siteKey,
+            theme: theme,
+            size: size,
+            type: type,
+            callback: function (result) {
+              $form.find('[data-validation~="recaptcha"]')
+                .trigger('validation', (result && result !== ''));
 
-        if (!$form.attr('id')) {
-			$form.attr('id', 'recaptcha-form-' + (i++));
-		}
-        grecaptchaRenderCallback[$form.attr('id')] = function (result) {
-		  var formID;
-          $('#' + formID).each(function () {
-            $('[data-validation~="recaptcha"]', $(this)).each(function () {
-              $(this).trigger('validation', (result && result !== ''));
-            });
+            },
+            'expired-callback': function() {
+              $form.find('[data-validation~="recaptcha"]').trigger('validation', false);
+            }
           });
-        };
-		grecaptchaRenderCallback[$form.attr('id')].formID = $form.attr('id');
-
-        var widgetId = grecaptcha.render(div, {
-          sitekey: siteKey,
-          theme: theme,
-		      size: size,
-          type: type,
-          callback: grecaptchaRenderCallback[$form.attr('id')],
-          'expired-callback': grecaptchaRenderCallback[$form.attr('id')]
+          $input
+            .valAttr('recaptcha-widget-id', widgetId)
+            .hide()
+            .on('beforeValidation', function (evt) {
+              // prevent validator from skipping this input because its hidden
+              evt.stopImmediatePropagation();
+            })
+            .parent()
+            .append(div);
         });
-
-        $input
-          .valAttr('recaptcha-widget-id', widgetId)
-          .hide()
-          .on('beforeValidation', function (evt) {
-            // prevent validator from skipping this input becaus its hidden
-            evt.stopImmediatePropagation();
-          })
-          .parent()
-          .append(div);
-
-      });
-	  }
-
+      }
     });
   };
 

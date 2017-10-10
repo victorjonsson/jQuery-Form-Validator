@@ -11,6 +11,8 @@
 
   'use strict';
 
+  $.formUtils.registerLoadedModule('lang/pt');
+
   $(window).bind('validatorsLoaded', function() {
 
     $.formUtils.LANG = {

@@ -95,13 +95,13 @@ function initializeGruntConfig(grunt) {
       }
     },
 
-    // watch for changes to source
-    // Better than calling grunt a million times
-    // (call 'grunt watch')
     watch: {
       files: [SRC_DIR + '/**'],
       tasks: ['test'],
-      options: { nospawn: true}
+      options: {
+        nospawn: true,
+        livereload: true
+      }
     },
 
     // Unit tests
@@ -114,8 +114,7 @@ function initializeGruntConfig(grunt) {
       server: {
         options: {
           port: 8000,
-          base: '.',
-          keepalive: true
+          base: '.'
         }
       }
     },
@@ -202,7 +201,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-umd');
 
   grunt.registerTask("build-production", ["version", "test", "uglify"]);
-  grunt.registerTask('test', ['concat', 'copy', 'umd', 'cssmin','jshint', 'qunit']);
-  grunt.registerTask("default", ["test", "watch"]);
+  grunt.registerTask('build', ['concat', 'copy', 'umd', 'cssmin']);
+  grunt.registerTask('test', ['build','jshint', 'qunit']);
+  grunt.registerTask("default", ["test", "connect", "watch"]);
   grunt.registerTask("prepublish", ["test", "uglify"]);
 };

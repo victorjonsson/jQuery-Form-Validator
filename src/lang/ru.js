@@ -25,6 +25,8 @@
       badTelephone: 'Вы задали некорректный номер телефона',
       badSecurityAnswer: 'Вы задали некорректный ответ на секретный вопрос',
       badDate: 'Вы задали некорректную дату',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'Значение должно быть в диапазоне',
       lengthBadEnd: ' символов',
       lengthTooLongStart: 'Значение длинее, чем ',

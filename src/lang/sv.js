@@ -24,6 +24,8 @@
       badTelephone: 'Du har inte angett ett korrekt telefonnummer',
       badSecurityAnswer: 'Du har angett fel svar på säkerhetsfrågan',
       badDate: 'Du har anget ett felaktigt datum',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'Ditt svar måste innehålla mellan ',
       lengthBadEnd: ' tecken',
       lengthTooLongStart: 'Du har angett ett svar som är längre än ',

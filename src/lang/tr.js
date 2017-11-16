@@ -24,6 +24,8 @@
       badTelephone: 'Geçersiz telefon numarası girdiniz',
       badSecurityAnswer: 'Güvenlik sorusuna doğru cevap vermediniz',
       badDate: 'Geçersiz tarih girdiniz',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'Girilen değer ',
       lengthBadEnd: ' karakter olmalıdır',
       lengthTooLongStart: 'Girilen değer en fazla ',

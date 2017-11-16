@@ -24,6 +24,8 @@
       badTelephone: 'Numărul de telefon este incorect',
       badSecurityAnswer: 'Răspuns incorect la întrebarea de siguran?ă',
       badDate: 'Dară incorectă',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'Valoarea introdusă trebuie să fie interval ',
       lengthBadEnd: ' caractere',
       lengthTooLongStart: 'Valoarea introdusă este mai mare decât ',

@@ -26,6 +26,8 @@
         badTelephone: 'شماره تلفن وارد شده معتبر نیست',
         badSecurityAnswer: 'شما به سوال امنیتی درست پاسخ نداده اید',
         badDate: 'تاریخ درستی را وارد نکرده اید',
+        badDateBefore: 'The minimum allowed date is ',
+        badDateAfter: 'The maximum allowed date is ',
         lengthBadStart: 'مقدار وارد شده باید ',
         lengthBadEnd: ' حرف باشد.',
         lengthTooLongStart: 'مقدار ورودی بیشتر از ',

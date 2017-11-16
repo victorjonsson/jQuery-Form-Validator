@@ -23,6 +23,8 @@
       badCreditCard: 'Kredittkortnummeret er ikke korrekt',
       badCustomVal: 'Inntastingsverdien er ikke korrekt',
       badDate: 'Du har ikke oppgitt en korrekt dato',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       badDomain: 'Ukorrekt domeneverdi',
       badEmail: 'Du har ikke oppgitt en korrekt e-postadresse',
       badInt: 'Inntastingsverdien er ikke et korrekt tall',

@@ -24,6 +24,8 @@
       badTelephone: 'Vous n\'avez pas saisi un numéro de téléphone valide',
       badSecurityAnswer: 'Vous avez saisi une mauvaise réponse à la question de sécurité',
       badDate: 'Vous n\'avez pas saisi une date correcte',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'Votre saisie doit comporter entre ',
       lengthBadEnd: ' caractères',
       lengthTooLongStart: 'Vous avez saisi une réponse qui est plus longue que ',

@@ -24,6 +24,8 @@
       badTelephone: 'თქვენ მიუთითეთ არასწორი ტელეფონის ნომერი',
       badSecurityAnswer: 'თქვენ გაეცით არასწორი პასუხი უსაფრთხოების კითხვას',
       badDate: 'თქვენ მიუთითეთ არასწორი თარიღი',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'ველის მნიშვნელობის სიგრძე უნდა იყოს ',
       lengthBadEnd: ' შუალედში',
       lengthTooLongStart: 'ველის მნიშვნელობის სიგრძე უნდა იყოს მაქსიმუმ ',

@@ -23,6 +23,8 @@
       badTelephone: 'Số điện thoại chưa chính xác',
       badSecurityAnswer: 'Câu hỏi bảo mật chưa chính xác',
       badDate: 'Ngày tháng chưa chính xác',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'Yêu cầu nhập từ ',
       lengthBadEnd: ' ký tự',
       lengthTooLongStart: 'Dữ liệu quá dài, yêu cầu ít hơn ',

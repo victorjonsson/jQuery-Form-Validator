@@ -24,6 +24,8 @@
       badTelephone: '전화번호를 정확하게 입력하지 않았습니다.',
       badSecurityAnswer: '보안 입력을 정확하게 입력하지 않았습니다.',
       badDate: '날짜를 정확하게 입력하지 않았습니다.',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: '입력 값은 ',
       lengthBadEnd: ' 사이의 문자여야 합니다.',
       lengthTooLongStart: '입력 값의 길이가 ',

@@ -24,6 +24,8 @@
       badTelephone: 'Wprowadzono niepoprawny numeru telefonu',
       badSecurityAnswer: 'Nieprawidłowa odpowiedź na pytanie bezpieczeństwa',
       badDate: 'Niepoprawna data',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'Wprowadzona wartość musi być pomiędzy ',
       lengthBadEnd: ' znaków',
       lengthTooLongStart: 'Wprowadzona wartość jest większa niż ',

@@ -24,6 +24,8 @@
       badTelephone: 'رقم الهاتف المدخل خاطئ',
       badSecurityAnswer: 'لم يتم الإجابة عن سؤال الأمان',
       badDate: 'تاريخ مدخل خاطئ',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'القيمة المدخلة يجب أن تكون بين ',
       lengthBadEnd: ' حروف',
       lengthTooLongStart: 'القيمة المدخل أطول من ',

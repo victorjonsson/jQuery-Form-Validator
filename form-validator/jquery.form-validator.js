@@ -1958,8 +1958,6 @@
       badTelephone: 'You have not given a correct phone number',
       badSecurityAnswer: 'You have not given a correct answer to the security question',
       badDate: 'You have not given a correct date',
-      badDateBefore: 'The minimum allowed date is ',
-      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'The input value must be between ',
       lengthBadEnd: ' characters',
       lengthTooLongStart: 'The input value is longer than ',
@@ -2288,47 +2286,18 @@
 
   /*
    * Validate date
-   * element attrs (optional, and both must use the same format as the field)
-   *    data-validation-min-date
-   *    data-validation-max-date
    */
   $.formUtils.addValidator({
     name: 'date',
-    validatorFunction: function (date, $el, conf, lang) {
+    validatorFunction: function (date, $el, conf) {
       var dateFormat = $el.valAttr('format') || conf.dateFormat || 'yyyy-mm-dd',
         addMissingLeadingZeros = $el.valAttr('require-leading-zero') === 'false';
-      var dateParsed = $.formUtils.parseDate(date, dateFormat, addMissingLeadingZeros);
-      //checking date format
-      if (dateParsed === false){
-        this.errorMessage = lang.badDate;
-        return false;
-      }
-      var dateInput = new Date(dateParsed[0], dateParsed[1] - 1, dateParsed[2]);
-      //checking min date, when informed
-      var dateMinValue = $el.valAttr('min-date');
-      if (dateMinValue !== false && $.formUtils.parseDate(dateMinValue, dateFormat, addMissingLeadingZeros) !== false){
-        var dateMinParsed = $.formUtils.parseDate(dateMinValue, dateFormat, addMissingLeadingZeros);
-        var dateMin = new Date(dateMinParsed[0], dateMinParsed[1] - 1, dateMinParsed[2]);
-        if (dateInput < dateMin){    
-          this.errorMessage = lang.badDateBefore + dateMinValue;
-          return false;
-        }
-      }
-      //checking max date, when informed
-      var dateMaxValue = $el.valAttr('max-date');
-      if (dateMaxValue !== false && $.formUtils.parseDate(dateMaxValue, dateFormat, addMissingLeadingZeros) !== false){
-        var dateMaxParsed = $.formUtils.parseDate(dateMaxValue, dateFormat, addMissingLeadingZeros);
-        var dateMax = new Date(dateMaxParsed[0], dateMaxParsed[1] - 1, dateMaxParsed[2]);
-        if (dateInput > dateMax){
-          this.errorMessage = lang.badDateAfter + dateMaxValue;
-          return false;
-        }
-      }
-      return true;
-    }
-    //errorMessage: '', //setted above on the function
-    //errorMessageKey: 'badDate' //not used
+      return $.formUtils.parseDate(date, dateFormat, addMissingLeadingZeros) !== false;
+    },
+    errorMessage: '',
+    errorMessageKey: 'badDate'
   });
+
 
   /*
    * Validate group of checkboxes, validate qty required is checked

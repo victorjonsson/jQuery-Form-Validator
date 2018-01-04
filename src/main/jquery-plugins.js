@@ -56,6 +56,8 @@
    * * @return {jQuery}
    */
   $.fn.validateOnEvent = function (language, config) {
+    if(this.length === 0) return;
+
     var $elements = this[0].nodeName === 'FORM' ? this.find('*[data-validation-event]') : this;
     $elements
       .each(function () {

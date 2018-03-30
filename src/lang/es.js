@@ -16,18 +16,18 @@
   $(window).bind('validatorsLoaded', function() {
 
     $.formUtils.LANG = {
-      errorTitle: 'El formulario no se ha podido enviar!',
+      errorTitle: 'El formulario no se pudo enviar.',
       requiredField: 'Este campo es obligatorio',
-      requiredFields: 'No ha contestado todos los campos requeridos',
+      requiredFields: 'No ha llenado todos los campos requeridos',
       badTime: 'La hora proporcionada no es válida',
       badEmail: 'La dirección de e-mail no es válida',
       badTelephone: 'El número de teléfono proporcionado no es válido',
       badSecurityAnswer: 'La respuesta a su pregunta de seguridad es incorrecta',
       badDate: 'La fecha proporcionada no es válida',
-      lengthBadStart: 'Su respuesta debe incluir entre ',
+      lengthBadStart: 'El campo debe incluir entre ',
       lengthBadEnd: ' caracteres',
-      lengthTooLongStart: 'Su respuesta debe de ser menor a ',
-      lengthTooShortStart: 'Su respuesta debe de ser mayor a ',
+      lengthTooLongStart: 'El campo debe de ser menor a ',
+      lengthTooShortStart: 'El campo debe de ser mayor a ',
       notConfirmed: 'Los valores proporcionados no pudieron ser confirmados',
       badDomain: 'Ha introducido un dominio incorrecto',
       badUrl: 'La URL proporcionada no es válida',

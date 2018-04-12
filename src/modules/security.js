@@ -283,6 +283,7 @@
       var config = {
         fontSize: '12pt',
         padding: '4px',
+        display: 'inline-blocks',
         bad: 'Very bad',
         weak: 'Weak',
         good: 'Good',
@@ -304,7 +305,8 @@
             fontWeight: 'bold',
             border: 'red solid 1px',
             borderWidth: '0px 0px 4px',
-            display: 'inline-block',
+            
+            : config.display,
             fontSize: config.fontSize,
             padding: config.padding
           },

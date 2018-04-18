@@ -47,6 +47,11 @@
     validators: {},
 
     /**
+     * Available sanitizers
+     */
+    sanitizers: {},
+
+    /**
      * Events triggered by form validator
      */
     _events: {load: [], valid: [], invalid: []},
@@ -70,6 +75,14 @@
         validator.validateOnKeyUp = true;
       }
       this.validators[name] = validator;
+    },
+
+    /**
+     * Function for adding a sanitizer
+     * @param {Object} sanitizer
+     */
+    addSanitizer: function (sanitizer) {
+      this.sanitizers[sanitizer.name] = sanitizer;
     },
 
     /**

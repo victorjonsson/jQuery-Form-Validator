@@ -63,7 +63,7 @@
       badBrazilCPFAnswer: 'CPF 输入无效',
       badPlPesel: 'PESEL 输入无效',
       badPlNip: 'NIP 输入无效',
-      badPlRegon: 'The REGON 输入无效',
+      badPlRegon: 'REGON 输入无效',
       badreCaptcha: 'Please confirm that you are not a bot',
       passwordComplexityStart: '密码必须至少要包含 ',
       passwordComplexitySeparator: ', ',

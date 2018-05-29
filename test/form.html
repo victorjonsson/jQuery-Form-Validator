@@ -276,6 +276,10 @@
                    data-sanitize="numberFormat"  data-sanitize-number-format="0,0.0">
         </div>
         <div class="form-group">
+            <label class="control-label">Proper Case (mcdonalds to McDonalds)</label>
+            <input name="proper case" class="form-control" name="test3" data-sanitize="proper_case" />
+        </div>
+        <div class="form-group">
             <label class="control-label">Alphanumeric (will only be validated if checkbox below is checked)</label>
             <input name="test2"
                    data-validation="alphanumeric"
@@ -405,6 +409,33 @@
             borderColorOnError : '',
             errorMessage : 'You have to give an even number',
             errorMessageKey: 'badEvenNumber',
+        });
+
+        // UK Surname Proper Casing
+        $.formUtils.addSanitizer({
+            name : 'proper_case',
+            sanitizerFunction : function(value) {
+                value = value.toLocaleLowerCase();
+                value = value.substring(0, 1).toUpperCase() + value.substring(1);
+                intPointer = value.indexOf(' ');
+                while (intPointer > -1) {
+                    value = value.substring(0, intPointer + 1) + value.substring(intPointer + 1, intPointer + 2).toUpperCase() + value.substring(intPointer + 2);
+                    intPointer = value.indexOf(' ', intPointer + 1);
+                }
+                intPointer = value.indexOf('-');
+                if (intPointer > -1)
+                    value = value.substring(0, intPointer + 1) + value.substring(intPointer + 1, intPointer + 2).toUpperCase() + value.substring(intPointer + 2);
+                intPointer = value.indexOf('O\'');
+                if (intPointer > -1)
+                    value = value.substring(0, intPointer + 2) + value.substring(intPointer + 2, intPointer + 3).toUpperCase() + value.substring(intPointer + 3);
+                intPointer = value.indexOf('Mc');
+                if (intPointer > -1)
+                    value = value.substring(0, intPointer + 2) + value.substring(intPointer + 2, intPointer + 3).toUpperCase() + value.substring(intPointer + 3);
+                intPointer = value.indexOf('Mac');
+                if (intPointer > -1)
+                    value = value.substring(0, intPointer + 3) + value.substring(intPointer + 3, intPointer + 4).toUpperCase() + value.substring(intPointer + 4);
+                return value;
+            }
         });
 
         window.applyValidation = function(validateOnBlur, forms, messagePosition, xtraModule) {

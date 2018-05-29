@@ -28,70 +28,112 @@
 
   'use strict';
 
-  $.formUtils.registerLoadedModule('sanitize');
+  $.formUtils.addSanitizer({
+    name : 'upper',
+    sanitizerFunction : function(val) {
+      return val.toLocaleUpperCase();
+    }
+  });
 
-  var inputsThatCantBeSanitized = '[type="button"], [type="submit"], [type="radio"], [type="checkbox"], [type="reset"], [type="search"]',
-      sanitizeCommands = {
-        upper : function(val) {
-          return val.toLocaleUpperCase();
-        },
-        lower : function(val) {
-          return val.toLocaleLowerCase();
-        },
-        trim : function(val) {
-          return $.trim(val);
-        },
-        trimLeft : function(val) {
-          return val.replace(/^\s+/,'');
-        },
-        trimRight : function(val) {
-          return val.replace(/\s+$/,'');
-        },
-        capitalize : function(val) {
-          var words = val.split(' ');
+  $.formUtils.addSanitizer({
+    name : 'lower',
+    sanitizerFunction : function(val) {
+      return val.toLocaleLowerCase();
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'trim',
+    sanitizerFunction : function(val) {
+      return $.trim(val);
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'trimLeft',
+    sanitizerFunction : function(val) {
+      return val.replace(/^\s+/,'');
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'trimRight',
+    sanitizerFunction : function(val) {
+      return val.replace(/\s+$/,'');
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'capitalize',
+    sanitizerFunction : function(val) {
+      var words = val.split(' ');
           $.each(words, function(i, word) {
             words[i] = word.substr(0,1).toUpperCase() + word.substr(1, word.length);
           });
           return words.join(' ');
-        },
-        insert : function(val, $input, pos) {
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'insert',
+    sanitizerFunction : function(val, $input, pos) {
           var extra = ($input.attr('data-sanitize-insert-'+pos) || '').replace(/\[SPACE\]/g, ' ');
           if ( (pos === 'left' && val.indexOf(extra) === 0) || (pos === 'right' && val.substring(val.length - extra.length) === extra)) {
             return val;
           }
           return (pos === 'left' ? extra:'') + val + (pos === 'right' ? extra : '');
-        },
-        insertRight : function(val, $input) {
-          return this.insert(val, $input, 'right');
-        },
-        insertLeft : function(val, $input) {
-          return this.insert(val, $input, 'left');
-        },
-        numberFormat : function(val, $input) {
-          if (val.length === 0) {
-            return val;
-          }
-          if ( 'numeral' in window ) {
-            //If this has been previously formatted, it needs to be unformatted first before being reformatted.
-            //Else numeral will fail
-            val = numeral().unformat(val);
-            val = numeral(val).format( $input.attr('data-sanitize-number-format') );
-          }
-          else {
-            throw new ReferenceError('Using sanitation function "numberFormat" requires that you include numeral.js ' +
-              '(http://numeraljs.com/)');
-          }
-          return val;
-        },
-        strip: function(val, $input) {
-          var toRemove = $input.attr('data-sanitize-strip') || '';
-          $.split(toRemove, function(char) {
-            var regex = new RegExp($.isNumeric(char) ? char : '\\'+char, 'g');
-            val = val.replace(regex, '');
-          });
-          return val;
-        },
-        escape : function(val, $input) {
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'insertRight',
+    sanitizerFunction : function(val, $input) { 
+        return $.formUtils.sanitizers.insert.sanitizerFunction(val, $input, 'right');
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'insertLeft',
+    sanitizerFunction : function(val, $input) {
+        return $.formUtils.sanitizers.insert.sanitizerFunction(val, $input, 'left');
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'numberFormat',
+    sanitizerFunction : function(val, $input) {
+      if (val.length === 0) {
+        return val;
+      }
+      if ( 'numeral' in window ) {
+        //If this has been previously formatted, it needs to be unformatted first before being reformatted.
+        //Else numeral will fail
+        val = numeral().unformat(val);
+        val = numeral(val).format( $input.attr('data-sanitize-number-format') );
+      }
+      else {
+        throw new ReferenceError('Using sanitation function "numberFormat" requires that you include numeral.js ' +
+          '(http://numeraljs.com/)');
+      }
+      return val;
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'strip',
+    sanitizerFunction : function(val, $input) {
+      var toRemove = $input.attr('data-sanitize-strip') || '';
+      $.split(toRemove, function(char) {
+        var regex = new RegExp($.isNumeric(char) ? char : '\\'+char, 'g');
+        val = val.replace(regex, '');
+      });
+      return val;
+    }
+  });
+
+  $.formUtils.addSanitizer({
+    name : 'escape',
+    sanitizerFunction : function(val, $input) {
           var isEscaped = $input.valAttr('is-escaped'),
             entities = {
               '<' : '__%AMP%__lt;',
@@ -117,27 +159,35 @@
           });
 
           return val.replace(new RegExp('__\%AMP\%__', 'g'), '&');
-        }
-      },
+    }
+  });
+
+  $.formUtils.registerLoadedModule('sanitize');
+
+  var inputsThatCantBeSanitized = '[type="button"], [type="submit"], [type="radio"], [type="checkbox"], [type="reset"], [type="search"]',
       setupSanitation = function(evt, $forms, config) {
 
         if ( !$forms ) {
           $forms = $('form');
         }
-        if ( !$forms.each ) {
+        if ( !$forms.each ) { 
           $forms = $($forms);
         }
 
         var execSanitationCommands = function() {
+
           var $input = $(this),
             value = $input.val();
-          $.split($input.attr('data-sanitize'), function(command) {
-            if ( command in sanitizeCommands ) {
-              value = sanitizeCommands[command](value, $input, config);
-            }
-            else {
+            $.split($input.attr('data-sanitize'), function(command) {
+
+            var sanitizer = $.formUtils.sanitizers[command];
+
+            if (sanitizer) {
+                value = sanitizer.sanitizerFunction(value, $input, config);
+            } else {
               throw new Error('Use of unknown sanitize command "'+command+'"');
             }
+
           });
           $input
             .val(value)

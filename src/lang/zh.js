@@ -64,7 +64,7 @@
       badPlPesel: 'PESEL 输入无效',
       badPlNip: 'NIP 输入无效',
       badPlRegon: 'REGON 输入无效',
-      badreCaptcha: 'Please confirm that you are not a bot',
+      badreCaptcha: '请确认你不是机器人',
       passwordComplexityStart: '密码必须至少要包含 ',
       passwordComplexitySeparator: ', ',
       passwordComplexityUppercaseInfo: ' 大写字母(s)',

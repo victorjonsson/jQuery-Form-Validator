@@ -78,7 +78,7 @@ Read the documentation for the default features at [http://formvalidator.net/#de
  * **strength** — *Validate the strength of a password*
  * **server** — *Validate value of input on server side*
  * **letternumeric** — *Validate that the input value consists out of only letters and/or numbers*
- * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)* 
+ * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)*
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
 
@@ -133,8 +133,8 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
 
 ### Module: uk
  * **ukvatnumber**
- * **uknin** 
- * **ukutr** 
+ * **uknin**
+ * **ukutr**
 
 Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://www.formvalidator.net/#country-specific-validators_uk)
 
@@ -143,12 +143,12 @@ Read the documentation for the UK module at [http://formvalidator.net/#uk-valida
  * **cep**
  * **cpf**
 
-### Module: poland 
+### Module: poland
  * **plpesel** - *validate polish personal identity number (in Polish identity cards)*
  * **plnip** - *validate polish VAT identification number*
  * **plregon** - *validate polish bussiness identity number*
- 
-### Module: color 
+
+### Module: color
  * **hex** - *validate hex color format*
  * **rgb** - *validate rgb color format*
  * **rgba** - *validate rgba color format*
@@ -265,6 +265,7 @@ You can cause an element to be validated upon the firing of an event, by attachi
 
 This plugin comes with translations for English, Polish,
   Romanian,
+  Chinese,
   Danish,
   Norwegian,
   Dutch,

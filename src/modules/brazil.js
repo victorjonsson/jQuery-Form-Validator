@@ -31,8 +31,18 @@
           var remainder2 = 0;
 
           // skip special cases
-          if (cpf.length !== 11 || cpf === '00000000000') {
-              return false;
+          if (cpf.length !== 11 || 
+            cpf === '00000000000' ||
+            cpf === '11111111111' ||
+            cpf === '22222222222' ||
+            cpf === '33333333333' ||
+            cpf === '44444444444' ||
+            cpf === '55555555555' ||
+            cpf === '66666666666' ||
+            cpf === '77777777777' ||
+            cpf === '88888888888' ||
+            cpf === '99999999999') {
+            return false;
           }
 
           // check 1st verification digit
@@ -115,5 +125,67 @@
       errorMessageKey: 'badBrazilCEPAnswer'
 
   });
+  
+  $.formUtils.addValidator({
+	name : 'cnpj',
+	validatorFunction : function(string) {
+
+		// Based on:
+		// http://www.geradorcnpj.com/javascript-validar-cnpj.htm
+
+		// clean up the input (digits only) and set some support vars
+		var cnpj = cnpj.replace(/[^\d]+/g,'');
+		var sum1 = 0;
+		var sum2 = 0;
+		var remainder1 = 0;
+		var remainder2 = 0;
+
+		// skip special cases
+		if (cnpj.length !== 14 || 
+			cnpj == "00000000000000" || 
+			cnpj == "11111111111111" || 
+			cnpj == "22222222222222" || 
+			cnpj == "33333333333333" || 
+			cnpj == "44444444444444" || 
+			cnpj == "55555555555555" || 
+			cnpj == "66666666666666" || 
+			cnpj == "77777777777777" || 
+			cnpj == "88888888888888" || 
+			cnpj == "99999999999999")
+			return false;
+
+    // validate verification digits
+    size = cnpj.length - 2
+    numbers = cnpj.substring(0,size);
+    digits = cnpj.substring(size);
+    sum = 0;
+    position = size - 7;
+    for (i = size; i >= 1; i--) {
+    sum += numbers.charAt(size - i) * position--;
+    if (position < 2)
+      position = 9;
+    }
+    result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+    if (result != digits.charAt(0))
+      return false;
+
+    size = size + 1;
+    numbers = cnpj.substring(0,size);
+    sum = 0;
+    position = size - 7;
+    for (i = size; i >= 1; i--) {
+    sum += numbers.charAt(size - i) * position--;
+    if (position < 2)
+        position = 9;
+    }
+    result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+    if (result != digits.charAt(1))
+      return false;
+
+    return true;
+  },
+  errorMessage : '',
+  errorMessageKey: 'badBrazilCNPJAnswer'
+});
 
 })(jQuery);

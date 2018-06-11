@@ -58,7 +58,8 @@
       imageRatioNotAccepted : 'A proporção da imagem (largura x altura) não é válida',
       badBrazilTelephoneAnswer: 'O número de telefone digitado é inválido',
       badBrazilCEPAnswer: 'O CEP digitado é inválido',
-      badBrazilCPFAnswer: 'O CPF digitado é inválido'
+      badBrazilCPFAnswer: 'O CPF digitado é inválido',
+      badBrazilCNPJAnswer: 'O CNPJ digitado é inválido'
     };
 
   });

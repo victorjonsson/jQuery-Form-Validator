@@ -134,7 +134,7 @@
 		// http://www.geradorcnpj.com/javascript-validar-cnpj.htm
 
 		// clean up the input (digits only) and set some support vars
-		var cnpj = cnpj.replace(/[^\d]+/g,'');
+		var cnpj = string.replace(/[^\d]+/g,'');
 		var sum1 = 0;
 		var sum2 = 0;
 		var remainder1 = 0;

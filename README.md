@@ -1,8 +1,10 @@
 # jQuery Form Validator
 
-jQuery Form Validator is a **feature rich and multilingual** jQuery plugin that makes it easy to validate user input while keeping your HTML markup clean from javascript code. This plugin approaches validation as a form of configuration that should'nt require any knowledge of JavaScript nor programming.
+*Validation framework that let's you configure, rather than code, your validation logic.*
 
-**Form demos and full documentation available at http://formvalidator.net/**
+I started writing this plugin back in 2009 and it has given me much joy over the year. But all good things must come to an end and now it's time for this plugin to pull in its oars and go down with history.
+
+**NOTICE!** This plugin is no longer being developed! It supports jQuery v. 1.8 >= 2.2.4. No pull requests will become merged in but feel free to fork and do whatever you like!
 
 [![Travis](https://travis-ci.org/victorjonsson/jQuery-Form-Validator.svg)](https://travis-ci.org/victorjonsson/jQuery-Form-Validator/builds/)
 
@@ -78,7 +80,7 @@ Read the documentation for the default features at [http://formvalidator.net/#de
  * **strength** — *Validate the strength of a password*
  * **server** — *Validate value of input on server side*
  * **letternumeric** — *Validate that the input value consists out of only letters and/or numbers*
- * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)* 
+ * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)*
 
 Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
 
@@ -133,8 +135,8 @@ Read the documentation for the Swedish module at [http://formvalidator.net/#swed
 
 ### Module: uk
  * **ukvatnumber**
- * **uknin** 
- * **ukutr** 
+ * **uknin**
+ * **ukutr**
 
 Read the documentation for the UK module at [http://formvalidator.net/#uk-validators](http://www.formvalidator.net/#country-specific-validators_uk)
 
@@ -143,12 +145,12 @@ Read the documentation for the UK module at [http://formvalidator.net/#uk-valida
  * **cep**
  * **cpf**
 
-### Module: poland 
+### Module: poland
  * **plpesel** - *validate polish personal identity number (in Polish identity cards)*
  * **plnip** - *validate polish VAT identification number*
  * **plregon** - *validate polish bussiness identity number*
- 
-### Module: color 
+
+### Module: color
  * **hex** - *validate hex color format*
  * **rgb** - *validate rgb color format*
  * **rgba** - *validate rgba color format*

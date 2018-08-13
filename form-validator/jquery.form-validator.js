@@ -565,6 +565,10 @@
    * * @return {jQuery}
    */
   $.fn.validateOnEvent = function (language, config) {
+    if(this.length === 0) {
+      return;
+    }
+    
     var $elements = this[0].nodeName === 'FORM' ? this.find('*[data-validation-event]') : this;
     $elements
       .each(function () {
@@ -1359,6 +1363,11 @@
     validators: {},
 
     /**
+     * Available sanitizers
+     */
+    sanitizers: {},
+
+    /**
      * Events triggered by form validator
      */
     _events: {load: [], valid: [], invalid: []},
@@ -1382,6 +1391,14 @@
         validator.validateOnKeyUp = true;
       }
       this.validators[name] = validator;
+    },
+
+    /**
+     * Function for adding a sanitizer
+     * @param {Object} sanitizer
+     */
+    addSanitizer: function (sanitizer) {
+      this.sanitizers[sanitizer.name] = sanitizer;
     },
 
     /**

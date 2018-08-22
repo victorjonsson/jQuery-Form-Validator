@@ -2,7 +2,7 @@
 
 *Validation framework that let's you configure, rather than code, your validation logic.*
 
-I started writing this plugin back in 2009 and it has given me much joy over the year. But all good things must come to an end and now it's time for this plugin to pull in its oars and go down with history.
+I started writing this plugin back in 2009 and it has given me much joy over the years. But all good things must come to an end and now it's time for this plugin to pull in its oars and go down with history.
 
 **NOTICE!** This plugin is no longer being developed! It supports jQuery v. 1.8 >= 2.2.4. No pull requests will become merged in but feel free to fork and do whatever you like!
 
@@ -41,7 +41,7 @@ I started writing this plugin back in 2009 and it has given me much joy over the
 
 ### Support for HTML5
 
-This plugin can serve as a fallback solution for the validation attributes in the HTML5 spec. With the [html5](http://www.formvalidator.net/#configuration_html5) module you can use the following native features:
+This plugin can serve as a fallback solution for the validation attributes in the HTML5 spec. With the html5 module you can use the following native features:
 
 **Attributes**: require, pattern, maxlength, min, max, placeholder
 
@@ -70,7 +70,7 @@ This plugin can serve as a fallback solution for the validation attributes in th
  * Create input suggestions with ease, no jquery-ui needed
  * to apply multiple validators to an input element, separate the validator names using a space (ex: required email)
 
-Read the documentation for the default features at [http://formvalidator.net/#default-validators](http://formvalidator.net/#default-validators)
+Read the documentation for the default features at [#default-validators](#default-validators)
 
 ### Module: security
  * **spamcheck**
@@ -279,6 +279,213 @@ This plugin comes with translations for English, Polish,
   Swedish and
   Portuguese. You can also choose to override the error
 dialogs yourself. Here you can read more about [localization](http://formvalidator.net/#localization)
+
+# Default validators
+
+### Answer length (required)
+
+```
+<!-- Require an answer (can be applied to all types of inputs and select elements) -->
+<input type="text" data-validation="required">
+<input type="checkbox" name="agreement" data-validation="required">
+<select name="answer" data-validation="required">
+  <option value=""> - - Answer - - </option>
+  <option>Yes</option>
+  <option>No</option>
+</select>
+
+<!-- Max 100 characters -->
+<input type="text" data-validation="length" data-validation-length="max100">
+
+<!-- Minimum 20 characters -->
+<input type="text" data-validation="length" data-validation-length="min20">
+
+<!-- No less than 50 characters and no more than 200 characters -->
+<input type="text" data-validation="length" data-validation-length="50-200">
+
+<!-- Require that atleast 2 options gets choosen -->
+<select multiple="multiple" size="5" data-validation="length" data-validation-length="min2">
+  <option>A</option>
+  <option>B</option>
+  <option>C</option>
+  <option>D</option>
+  <option>E</option>
+</select>
+```
+This plugin also supports the attributes "required" and "maxlength" by using the Html5 module.
+
+### Numbers
+```
+<!-- Any numerical value -->
+<input type="text" data-validation="number">
+
+<!-- Only allowing float values -->
+<input type="text" data-validation="number" data-validation-allowing="float">
+
+<!-- Allowing float values and negative values -->
+<input type="text" data-validation="number" data-validation-allowing="float,negative">
+
+<!-- Validate float number with comma separated decimals -->
+<input type="text" data-validation="number" data-validation-allowing="float" 
+		 data-validation-decimal-separator=",">
+
+<!-- Only allowing numbers from 1 to 100 -->
+<input type="text" data-validation="number" data-validation-allowing="range[1;100]">
+
+<!-- Only allowing numbers from -50 to 30 -->
+<input type="text" data-validation="number" data-validation-allowing="range[-50;30],negative">
+
+<!-- Only allowing numbers from 0.05 to 0.5 -->
+<input type="text" data-validation="number" data-validation-allowing="range[0.05;0.5],float">
+You can also define the decimal separator when initializing the validation.
+
+<p>
+    <strong>Average points</strong><br>
+    <input type="text" data-validation="number" data-validation-allowing="float">
+  </p>
+  ....
+</form>
+<script>
+  $.validate({
+    decimalSeparator : ','
+  });
+</script>
+```
+Inputs of type "number" will also become validated by loading the html5 module.
+
+### E-mail
+```
+<input type="text" data-validation="email">
+```
+Inputs of type "email" will also become validated by loading the html5 module.
+
+### URL:s
+
+```
+<input type="text" data-validation="url">
+```
+Inputs of type "url" will also become validated by loading the html5 module.
+
+### Date
+
+```
+<!-- Validate date formatted yyyy-mm-dd -->
+<input type="text" data-validation="date">
+
+<!-- Validate date formatted yyyy-mm-dd but dont require leading zeros -->
+<input type="text" data-validation="date" data-validation-require-leading-zero="false">
+
+<!-- Validate date formatted dd/mm/yyyy -->
+<input type="text" data-validation="date" data-validation-format="dd/mm/yyyy">
+```
+
+See the date module for further validators.
+
+### Alphanumeric
+
+```
+<!-- This input requires an answer that contains only letters a-z and/or numbers -->
+<input type="text" data-validation="alphanumeric">
+
+<!-- This input requires the same as the one above but it also allows hyphen and underscore -->
+<input type="text" data-validation="alphanumeric" data-validation-allowing="-_">
+```
+If you want to allow any kind of letters (not only A-Z) you're looking for the letternumeric validator.
+
+### Checkboxes Group
+Validate qty of checkboxes in a group (same name) have been checked, using min, max or range. Only the first checkbox element in the group needs to have the validation attributes added.
+```
+<!-- Require checkboxes in this group, min1 -->
+<input type="checkbox" name="newsletters[]" data-validation="checkbox_group" data-validation-qty="min1">
+<!-- Require checkboxes in this group, max3 -->
+<input type="checkbox" name="newsletters[]" data-validation="checkbox_group" data-validation-qty="max3">
+<!-- Require checkboxes in this group, min1, max4 -->
+<input type="checkbox" name="newsletters[]" data-validation="checkbox_group" data-validation-qty="1-4">
+If your checkboxes group is generated by a server-side script and you don't want to add the validation attributes to each input element, you can use this javascript snippet before calling the validatorLoad() function
+
+<!-- Add validation attributes to first input element in
+ checkboxes group, before loading validator -->
+<script>
+$("[name='newsletters[]']:eq(0)")
+  .valAttr('','validate_checkbox_group')
+  .valAttr('qty','1-2')
+  .valAttr('error-msg','chose 1, max 2');
+</script>
+Regexp
+<!-- This input would only allow lowercase letters a-z -->
+<input type="text" data-validation="custom" data-validation-regexp="^([a-z]+)$">
+```
+
+This plugin also supports the attribute "pattern" by using the Html5 module.
+
+### Character count down
+```
+<p>
+    History (<span id="maxlength">50</span> characters left)
+    <textarea rows="3" id="area"></textarea>
+  </p>
+<script>
+  $('#area').restrictLength($('#maxlength'));
+</script>
+```
+### Make validation optional
+```
+<!-- This input will only be validated if a value is given -->
+<input type="text" data-validation="url" data-validation-optional="true">
+```
+You can also use the logic module if you want the validation of an input depend on another input having a value.
+
+### Display help text
+It is possible to display help information beside each input. The text will fade in when the input gets focus on and fade out when the input looses focus. The container for the help text will have the class form-help. If you don't want this feature you can read the setup guide on how to disable it.
+
+```
+<form action="" id="some-form">
+    <p>
+      <strong>Why not?</strong>
+      <input name="why" data-validation-help="Please give us some more information">
+    </p>
+    ...
+  </form>
+  ```
+### Validate inputs when blurred
+
+By default each input will become validated immediately when the input looses focus. If you don't want this feature you can read the setup guide on how to disable it.
+
+### Input suggestions
+There are two ways you can give suggestions to the user while the user types.
+
+1) Using attribute data-suggestions
+
+```
+<p>
+    What's your favorite color?
+    <input name="color" data-suggestions="White, Green, Blue, Black, Brown">
+  </p>
+  ...
+</form>
+```
+2) Using $.formUtils.suggest()
+```
+<script>
+  var largeArray = [];
+  largeArray.push('Something');
+  largeArray.push('Something else');
+  ...
+
+  $.formUtils.suggest( $('#the-input'), largeArray );
+</script>
+```
+This plugin also supports the data-list element by using the Html5 module.
+
+Ignoring characters
+You can tell any validator to ignore certain characters by using the attribute data-validation-ignore (comma separated list).
+```
+<p>
+  How much do you want to donate?
+  <!-- Make it optional to end the amount with a dollar-sign -->
+  <input name="color" data-validation="number" data-validation-ignore="$">
+</p>
+```
 
 ## Changelog
 

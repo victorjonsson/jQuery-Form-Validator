@@ -25,7 +25,7 @@
       badSecurityAnswer: 'Chyba pri odpovedi na bezpečnostnú otázku',
       badDate: 'Nesprávny dátum',
       lengthBadStart: 'Zadaná hodnota musí byť v rozmedzí ',
-      lengthBadEnd: ' znakov',
+      lengthBadEnd: ' znaky/znakov',
       lengthTooLongStart: 'Zadaná hodnota je väčšia než ',
       lengthTooShortStart: 'Zadaná hodnota je menšia než ',
       notConfirmed: 'Zadané hodnoty neboli potvrdené',

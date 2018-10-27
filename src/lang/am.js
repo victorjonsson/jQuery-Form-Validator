@@ -11,7 +11,7 @@
 
   'use strict';
 
-  $.formUtils.registerLoadedModule('lang/ru');
+  $.formUtils.registerLoadedModule('lang/am');
 
   $(window).bind('validatorsLoaded', function() {
 
@@ -29,7 +29,7 @@
       lengthBadEnd: ' պայմանանշաններ',
       lengthTooLongStart: 'Նշանը ավելի երկար է, քան ',
       lengthTooShortStart: 'Նշանը ավելի փոքր է, քան ',
-      notConfirmed: 'Ներմուշված նշանները չեն կարող հաստատվել',
+      notConfirmed: 'Ներմուծված նշանները չեն կարող հաստատվել',
       badDomain: 'Դոմենի ոչ ճշգրիտ նշան',
       badUrl: 'Ոչ ճշգրիտ URL',
       badCustomVal: 'Ներմուծված նշանը ճշգրիտ չէ',

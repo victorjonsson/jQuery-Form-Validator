@@ -45,7 +45,7 @@
       groupCheckedRangeStart: 'เลือกระหว่าง ',
       groupCheckedTooFewStart: 'เลือกอย่างน้อย ',
       groupCheckedTooManyStart: 'เลือกได้มากสุด ',
-      groupCheckedEnd: ' ข้อ',
+      groupCheckedEnd: ' ตัวเลือก',
       badCreditCard: 'หมายเลขบัตรเครดิตไม่ถูกต้อง',
       badCVV: 'หมายเลข CVV ไม่ถูกต้อง',
       wrongFileDim: 'ขนาดภาพไม่ถูกต้อง,',

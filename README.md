@@ -112,7 +112,7 @@ Read the documentation for the file module at [#file-validators](#file-validator
 * **Dependent validation**
 * **Require "one-of"**
 
-Read the documentation for this module at [http://formvalidator.net/#logic](http://www.formvalidator.net/#logic)
+Read the documentation for this module at [/#logic](#logic)
 
 ### Module: sepa
 
@@ -875,6 +875,88 @@ Use the attribute <code>data-validation-ratio</code> to validate that the upload
 <input data-validation="ratio mime" data-validation-allowing="jpg" break="" data-validation-dimension="min100" data-validation-ratio="8:10-12:10" />
 ```
 
+## Logic
+
+### Validators depending on each other
+
+Use the attributes <code>data-validation-depends-on</code> to configure that an input is optional as long as another input is left without an answer.
+
+```
+<!-- Require e-mail only if checkbox is checked -->
+<p>
+    <strong>Contact me:</strong>
+    <input name="do-contact" type="checkbox" value="1" />
+</p>
+<p>
+    <strong>E-mail:</strong>
+    <input
+           type="text"
+           data-validation="email"
+           data-validation-depends-on="do-contact"
+    />
+</p>
+```
+
+```
+<!-- Require a state to be given if the user comes from either USA or Canada -->
+<p>
+    <strong>Country:</strong>
+    <input
+           type="text"
+           name="country"
+           id="country-input"
+           data-validation="country"
+    />
+</p>
+
+<p>
+    <strong>State:</strong>
+    <input type="text"
+           name="state" break=""
+           data-validation="required" break1=""
+           data-validation-depends-on="country" break2=""
+           data-validation-depends-on-value="usa, canada"
+    />
+</p>
+</div>
+...
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+<script>
+$.validate({
+    modules : 'location, logic',
+    onModulesLoaded : function() {
+        $('#country-input').suggestCountry();
+    }
+});
+</script>
+```
+
+### Require only one out of several inputs
+
+Use the attribute <code>data-validation-optional-if-answered</code> to tell the validator that only one, out of a group of inputs, requires an answer.
+
+```
+<p>
+    <strong>Home phone number:</strong>
+    <input name="home-phone"
+           data-validation="number" break=""
+            data-validation-optional-if-answered="cell-phone, work-phone" />
+</p>
+<p>
+    <strong>Cell phone number:</strong>
+    <input name="cell-phone"
+           data-validation="number" break=""
+            data-validation-optional-if-answered="home-phone, work-phone" />
+</p>
+<p>
+    <strong>Work phone number:</strong>
+    <input name="work-phone"
+           data-validation="number" break=""
+            data-validation-optional-if-answered="home-phone, cell-phone" />
+</p>
+</div>
+```
 
 ## Changelog
 

@@ -1,10 +1,10 @@
-# jQuery Form Validator
+# jQuery Form Validator [DISCONTINUED]
 
 *Validation framework that let's you configure, rather than code, your validation logic.*
 
 I started writing this plugin back in 2009 and it has given me much joy over the years. But all good things must come to an end and now it's time for this plugin to pull in its oars and go down with history.
 
-**NOTICE!** This plugin is no longer being developed! It supports jQuery v. 1.8 >= 2.2.4. No pull requests will become merged in but feel free to fork and do whatever you like!
+**This plugin is no longer being developed!** It supports jQuery v. 1.8 >= 2.2.4. No pull requests will become merged in but feel free to fork and do whatever you like!
 
 [![Travis](https://travis-ci.org/victorjonsson/jQuery-Form-Validator.svg)](https://travis-ci.org/victorjonsson/jQuery-Form-Validator/builds/)
 
@@ -82,7 +82,7 @@ Read the documentation for the default features at [#default-validators](#defaul
  * **letternumeric** — *Validate that the input value consists out of only letters and/or numbers*
  * **recaptcha** - *Validate Google [reCaptcha 2](https://www.google.com/recaptcha/intro/index.html)*
 
-Read the documentation for the security module at [http://formvalidator.net/#security-validators](http://formvalidator.net/#security-validators)
+Read the documentation for the security module at [#security-validators](#security-validators)
 
 ### Module: date
  * **time** — *hh:mm*
@@ -485,6 +485,244 @@ You can tell any validator to ignore certain characters by using the attribute d
   <!-- Make it optional to end the amount with a dollar-sign -->
   <input name="color" data-validation="number" data-validation-ignore="$">
 </p>
+```
+
+## Security validators<
+
+### Password confirmation
+
+This validator can be used to validate that the values of two inputs are the same. The first input should have a name suffixed with <em>_confirmation</em> and the second should have the same name but without the suffix.
+
+```
+<p>
+    Password (at least 8 characters)
+    <input name="pass_confirmation" data-validation="length" data-validation-length="min8">
+
+    Confirm password
+    <input name="pass" data-validation="confirmation">
+</p>
+```
+
+```
+<p>
+    E-mail
+    <input name="user-email" data-validation="email" />
+
+    Repeat e-mail
+    <input name="repeat" data-validation="confirmation" data-validation-confirm="user-email" />
+</p>
+```
+
+### Password strength
+
+Use this validator to make sure that your user has a strong enough password. Set attribute <code>data-validation-strength</code> to 1, 2 or 3 depending on how strong password you require.
+
+If you want the strength of the password to be displayed while the user types you call <code>displayPasswordStrength()</code> in the end of the form.
+
+```
+<form action="">
+    <p>
+        <strong>Password:</strong>
+        <input name="pass" type="password" break=""
+                data-validation="strength" break="" data-validation-strength="2">
+    </p>
+    ...
+</form>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+<script>
+$.validate({
+    modules : 'security',
+    onModulesLoaded : function() {
+        var optionalConfig = {
+            fontSize: '12pt',
+            padding: '4px',
+            bad : 'Very bad',
+            weak : 'Weak',
+            good : 'Good',
+            strong : 'Strong'
+        };
+
+        $('input[name="pass"]').displayPasswordStrength(optionalConfig);
+    }
+});
+</script>
+```
+
+### Server side validation
+
+By using this validator you can validate the value given by the user on the server before the form gets submitted. The validation function will send a POST request to the URL declared in <code>data-validation-url</code>. The argument posted to the URL will have the same name as the input being validated.
+
+The form will get the class <em>validating-server-side</em> while the server is being requested.
+
+The response from the validation script must be a JSON formatted object, containing the properties "valid" and "message".
+
+```
+{
+    "valid" : true|false,
+    "message" : "String with text that should be displayed as error message"
+}
+```
+
+#### Form
+
+```
+<form action="">
+    <p>
+        <strong>User name:</strong>
+        <input name="user" data-validation="server" data-validation-url="/validate-input.php">
+    </p>
+    ...
+</form>
+```
+
+#### /validate-input.php
+
+```
+<?php
+$response = array(
+    'valid' => false,
+    'message' => 'Post argument "user" is missing.'
+);
+
+if( isset($_POST['user']) ) {
+    $userRepo = new UserRepository( DataStorage::instance() );
+    $user = $userRepo->loadUser( $_POST['user'] );
+
+    if( $user ) {
+        // User name is registered on another account
+        $response = array('valid' => false, 'message' => 'This user name is already registered.');
+    } else {
+        // User name is available
+        $response = array('valid' => true);
+    }
+}
+echo json_encode($response);
+```
+
+**Modifying the server request**
+
+The parameter containing the input value, sent to the server, will by default have the same name as the input. You can however set your own parameter name by using the attribute <code>data-validation-param-name</code>. You can also send along other parameters to the server by using the attribute <code>data-validation-req-params</code>.
+
+```
+<?php
+  $json = json_encode(array('user'=>$user->get('ID')));
+?>
+<p>
+  <strong>E-mail:</strong>
+  <input type="email" name="check-email" data-validation="server"
+              data-validation-url="/validate-form-input.php"
+              data-validation-param-name="email"
+              data-validation-req-params="<?php echo $json ?>" />
+</p>
+```
+
+### Credit card validation
+
+This validator makes it possible to validate any of the credit cards VISA, Mastercard, Diners club, Maestro, CJB, Discover and American express
+
+```
+<-- Accept credit card number from Visa, Mastercard and American Express -->
+<p>
+    Credit card number
+    <input data-validation="creditcard" data-validation-allowing="visa, mastercard, amex" />
+</p>
+<p>
+    Security code (cvv)
+    <input name="cvv" data-validation="cvv" />
+</p>
+```
+
+You can also let the user choose a credit card and programmatically change the allowed credit card on the input of the card number.
+
+```
+<p>
+    Credit card
+    <select name="credit-card" id="credit-card">
+        <option value="visa">VISA</option>
+        <option value="mastercard">Mastercard</option>
+        <option value="amex">American express</option>
+        <option value="diners_club">Diners club</option>
+        <option value="discover">Discover</option>
+        <option value="cjb">CJB</option>
+        <option value="maestro">Maestro</option>
+    </select>
+</p>
+<p>
+    Credit card number
+    <input name="creditcard_num" data-validation="creditcard" data-validation-allowing="visa" />
+</p>
+...
+</div>
+<script>
+$.validate({
+    modules : 'security',
+    onModulesLoaded : function() {
+        // Bind card type to card number validator
+        $('#credit-card').on('change', function() {
+            var card = $(this).val();
+            $('input[name="creditcard_num"]').attr('data-validation-allowing', card);
+        });
+    }
+});
+</script>
+```
+
+### Simple captcha
+
+```
+<?php
+session_start();
+if( isset($_POST['captcha']) && isset($_SESSION['captcha'])) {
+    if( $_POST['captcha'] != ($_SESSION['captcha'][0]+$_SESSION['captcha'][1]) ) {
+        die('Invalid captcha answer');  // client does not have javascript enabled
+    }
+    // process form data
+    ...
+}
+$_SESSION['captcha'] = array( mt_rand(0,9), mt_rand(1, 9) );
+?>
+<form action="">
+    <p>
+        What is the sum of <?=$_SESSION['captcha'][0]?> + <?=$_SESSION['captcha'][1]?>?
+        (security question)
+        <input name="captcha" data-validation="spamcheck"
+                    data-validation-captcha="<?=( $_SESSION['capthca'][0] + $_SESSION['captcha'][1] )?>"/>
+    </p>
+    <p><input type="submit" /></p>
+</form>
+```
+
+### Google reCAPTCHA
+
+Use this validator if wanting to integrate the Google service reCAPTCHA.
+
+``` 
+<p>
+    <input  data-validation="recaptcha" data-validation-recaptcha-sitekey="[RECAPTCHA_SITEKEY]">
+</p>
+```
+
+You can also use the setup function to configure the recaptcha service.
+
+```
+$.validate({
+    reCaptchaSiteKey: '...',
+    reCaptchaTheme: 'light'
+});
+```
+
+### Letters and numbers
+
+By using the validator <code>letternumeric</code> you can validate that given input value only contains letters and/or numbers. This validator allows any type of character in contrast to the <a href="#default-validators_alphanumeric">alphanumeric</a> validator, which only allows letters A-Z.
+
+```
+<!-- This input requires an answer that contains only letters and/or numbers -->
+<input type="text" data-validation="letternumeric">
+
+<!-- This input requires the same as the one above but it also allows hyphen and underscore -->
+<input type="text" data-validation="alphanumeric" data-validation-allowing="-_">
 ```
 
 ## Changelog

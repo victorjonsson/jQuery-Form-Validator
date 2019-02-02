@@ -88,7 +88,7 @@ Read the documentation for the security module at [#security-validators](#securi
  * **time** — *hh:mm*
  * **birthdate** — *yyyy-mm-dd, not allowing dates in the future or dates that's older than 122 years (format can be customized, more information below)*
 
-Read the documentation for the date module at [http://formvalidator.net/#date-validators](http://formvalidator.net/#date-validators)
+Read the documentation for the date module at [#date-validators](#date-validators)
 
 ### Module: location
  * **country**
@@ -723,6 +723,30 @@ By using the validator <code>letternumeric</code> you can validate that given in
 
 <!-- This input requires the same as the one above but it also allows hyphen and underscore -->
 <input type="text" data-validation="alphanumeric" data-validation-allowing="-_">
+```
+
+## Date validators
+
+### Birthdate
+
+This validator is the same as the default <a href="#default-validators_dates">date validator</a> except that it only allows past dates and dates that is not older than 120 years.
+
+```
+<!-- Validate birth date formatted yyyy-mm-dd -->
+<input type="text" data-validation="birthdate">
+
+<!-- Validate birthdate formatted yyyy-mm-dd but dont require leading zeros -->
+<input type="text" data-validation="birthdate" data-validation-require-leading-zero="false">
+
+<!-- Validate birth date formatted dd/mm/yyyy -->
+<input type="text" data-validation="birthdate" data-validation-format="dd/mm/yyyy">
+```
+
+## Time
+
+```
+<!-- Validate time formatted HH:mm -->
+<input type="text" data-validation="time">
 ```
 
 ## Changelog

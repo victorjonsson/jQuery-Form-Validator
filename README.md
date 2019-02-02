@@ -97,7 +97,7 @@ Read the documentation for the date module at [#date-validators](#date-validator
  * Suggest countries (english only)
  * Suggest states in the US
 
-Read the documentation for the location module at [http://formvalidator.net/#location-validators](http://formvalidator.net/#location-validators)
+Read the documentation for the location module at [#location-validators](/#location-validators)
 
 ### Module: file
  * **mime**
@@ -105,7 +105,7 @@ Read the documentation for the location module at [http://formvalidator.net/#loc
  * **size** (file size)
  * **dimension** (size dimension and ratio)
 
-Read the documentation for the file module at [http://formvalidator.net/#file-validators](http://formvalidator.net/#file-validators)
+Read the documentation for the file module at [#file-validators](#file-validators)
 
 ### Module: logic
 
@@ -748,6 +748,133 @@ This validator is the same as the default <a href="#default-validators_dates">da
 <!-- Validate time formatted HH:mm -->
 <input type="text" data-validation="time">
 ```
+
+
+## Location validators
+
+### Country
+
+```
+<!-- Validate country (english only) -->
+<input type="text" data-validation="country"/>
+```
+
+### State (US)
+
+```
+<!-- Validate US state -->
+<input type="text" data-validation="federatestate"/>
+```
+
+### Longitude and Latitude
+
+```
+<!-- Validate longitude and latitude (eg 40.714623,-74.006605) -->
+<input type="text" data-validation="longlat"/>
+```
+
+### Suggest country/state
+
+By using this function you'll make it easier for your visitor to input a country or state.
+
+```
+    <form action="">
+        ...
+        <p>
+            <strong>Which country are you from?</strong>
+            <input name="user_country" data-validation="country"/>
+        </p>
+        <p>
+            <strong>Which state do you live in?</strong>
+            <input name="user_home_state" data-validation="federatestate"/>
+        </p>
+    </form>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+<script>
+$.validate({
+    modules : 'location',
+    onModulesLoaded : function() {
+        $('input[name="user_country"]').suggestCountry();
+        $('input[name="user_home_state"]').suggestState();
+    }
+});
+</script>
+```
+
+## File validators
+
+### File size
+
+This validation is only supported by Internet Explorer 10, Mozilla FireFox v >= 3.6 and any of the later versions of webkit based browsers.
+
+```
+<!-- Validate that file isn't larger than 512 kilo bytes -->
+<input type="file" data-validation="size" data-validation-max-size="512kb" />
+
+<!-- Validate that file isn't larger than 3 mega bytes -->
+<input type="file" data-validation="size" data-validation-max-size="3M" />
+```
+
+### File type
+
+This validation will fall back on checking the file extension in older browsers. In modern browsers the validation will check that any of the extensions in <code>data-validation-allowing</code> exists in the mime type declaration of the file. This means that <code>data-validation-allowing="pdf"</code> will work in both modern browsers (checking against "application/pdf") and older browsers (checking the file extension ".pdf").
+
+```
+<!-- Validate that file is an image of type JPG, GIF or PNG and not larger than 2 mega bytes -->
+<input type="file" data-validation="mime size" break0="" data-validation-allowing="jpg, png, gif" break=""
+       data-validation-max-size="2M" />
+
+<!-- Validate that a file is given and that it has .txt as extension -->
+<input type="file" data-validation="required extension" data-validation-allowing="txt" />
+```
+
+Validating multiple files (with separate error messages depending on failed validation):
+
+```
+<input type="file" multiple="multiple" name="images"
+    data-validation="length mime size"
+    data-validation-length="min2"
+    data-validation-allowing="jpg, png, gif"
+    data-validation-max-size="512kb"
+    data-validation-error-msg-size="You can not upload images larger than 512kb"
+    data-validation-error-msg-mime="You can only upload images"
+    data-validation-error-msg-length="You have to upload at least two images"
+    />
+```
+
+### Image dimension and ratio
+
+Use the validator <code>dimension</code> to check the dimension of an image (jpg, gif or png).
+
+```
+<!-- Validate that the image is no smaller than 100x100px -->
+<input data-validation="dimension mime" data-validation-allowing="jpg" break="" data-validation-dimension="min100" />
+
+<!-- Validate that the image is no smaller than 300x500 px (width/height) -->
+<input data-validation="dimension mime" data-validation-allowing="jpg" break="" data-validation-dimension="min300x500" />
+
+<!-- Validate that the image is no larger than 500x1000 px -->
+<input data-validation="dimension mime" data-validation-allowing="jpg" break="" data-validation-dimension="max500x1000" />
+
+<!-- Validate that the image is no smaller than 100x100 px and no larger than 800x800 -->
+<input data-validation="dimension mime" data-validation-allowing="jpg" break="" data-validation-dimension="100-800" />
+
+<!-- Validate that the image is no smaller than 200x400 px and no larger than 600x1200 -->
+<input data-validation="dimension mime" data-validation-allowing="jpg" break="" data-validation-dimension="200x400-600x1200" />
+```
+
+Use the attribute <code>data-validation-ratio</code> to validate that the uploaded image has a certain ratio
+
+```
+<!-- Validate that only square images gets uploaded -->
+<input data-validation="ratio mime" data-validation-allowing="jpg, png, gif" break="" data-validation-dimension="min100" data-validation-ratio="1:1" />
+
+<!-- Validate that only somewhat square images gets uploaded -->
+<input data-validation="ratio mime" data-validation-allowing="jpg" break="" data-validation-dimension="min100" data-validation-ratio="8:10-12:10" />
+```
+
 
 ## Changelog
 

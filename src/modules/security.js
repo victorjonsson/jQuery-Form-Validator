@@ -281,12 +281,14 @@
 
     strengthDisplay: function ($el, options) {
       var config = {
-        fontSize: '12pt',
-        padding: '4px',
-        bad: 'Very bad',
-        weak: 'Weak',
-        good: 'Good',
-        strong: 'Strong'
+        text_strength0: 'Very bad',
+        text_strength1: 'Weak',
+        text_strength2: 'Good',
+        text_strength3: 'Strong',
+        cssClass_strength0: 'strength-meter-0',
+        cssClass_strength1: 'strength-meter-1',
+        cssClass_strength2: 'strength-meter-2',
+        cssClass_strength3: 'strength-meter-3'
       };
 
       if (options) {
@@ -298,22 +300,12 @@
           $parent = typeof config.parent === 'undefined' ? $(this).parent() : $(config.parent),
           $displayContainer = $parent.find('.strength-meter'),
           strength = $.formUtils.validators.validate_strength.calculatePasswordStrength(val),
-          css = {
-            background: 'pink',
-            color: '#FF0000',
-            fontWeight: 'bold',
-            border: 'red solid 1px',
-            borderWidth: '0px 0px 4px',
-            display: 'inline-block',
-            fontSize: config.fontSize,
-            padding: config.padding
-          },
-          text = config.bad;
+          text = config.text_strength0,
+          cssClass = config.cssClass_strength0;
 
         if ($displayContainer.length === 0) {
           $displayContainer = $('<span></span>');
           $displayContainer
-            .addClass('strength-meter')
             .appendTo($parent);
         }
 
@@ -324,23 +316,21 @@
         }
 
         if (strength === 1) {
-          text = config.weak;
+          text = config.text_strength1;
+          cssClass = config.cssClass_strength1;
         }
         else if (strength === 2) {
-          css.background = 'lightyellow';
-          css.borderColor = 'yellow';
-          css.color = 'goldenrod';
-          text = config.good;
+          text = config.text_strength2;
+          cssClass = config.cssClass_strength2;
         }
         else if (strength >= 3) {
-          css.background = 'lightgreen';
-          css.borderColor = 'darkgreen';
-          css.color = 'darkgreen';
-          text = config.strong;
+          text = config.text_strength3;
+          cssClass = config.cssClass_strength3;
         }
 
         $displayContainer
-          .css(css)
+          .removeClass()
+          .addClass('strength-meter ' + cssClass)          
           .text(text);
       });
     }

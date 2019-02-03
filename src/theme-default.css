@@ -108,3 +108,27 @@ div.form-error ul,
 div.form-error ul li {
     background: none;
 }
+
+span.strength-meter {
+  font-weight: bold;
+  border-bottom: 1px solid;
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px;
+}
+
+span.strength-meter-0,
+span.strength-meter-1 {
+  background-color: #ffc0cb;
+  border-bottom-color: #f00;
+}
+
+span.strength-meter-2 {
+  background-color: #ffff00;
+  border-bottom-color: #daa520;
+}
+
+span.strength-meter-3 {
+  background-color: #90ee90;
+  border-bottom-color: #006400;
+}

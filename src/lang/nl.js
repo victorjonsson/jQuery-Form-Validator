@@ -23,6 +23,8 @@
       badCreditCard: 'Het creditcardnummer is onjuist',
       badCustomVal: 'De ingevoerde waarde is onjuist',
       badDate: 'U heeft niet de juiste datum aangegeven',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       badDomain: 'Incorrect domein',
       badEmail: 'U heeft een onjuist e-mailadres ingevoerd ',
       badInt: 'De ingevoerde waarde was een onjuist getal',

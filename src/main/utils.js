@@ -659,6 +659,8 @@
       badTelephone: 'You have not given a correct phone number',
       badSecurityAnswer: 'You have not given a correct answer to the security question',
       badDate: 'You have not given a correct date',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'The input value must be between ',
       lengthBadEnd: ' characters',
       lengthTooLongStart: 'The input value is longer than ',

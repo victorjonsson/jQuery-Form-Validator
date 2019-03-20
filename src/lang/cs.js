@@ -24,6 +24,8 @@
       badTelephone: 'Neplatné telefonní číslo',
       badSecurityAnswer: 'Chybná odpověď na bezpečnostní otázku',
       badDate: 'Nesprávné datum',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'Zadaná hodnota musí být v rozmezí ',
       lengthBadEnd: ' znaků',
       lengthTooLongStart: 'Zadaná hodnota je větší než ',

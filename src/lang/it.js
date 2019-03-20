@@ -24,6 +24,8 @@
       badTelephone: 'Il numero di telefono imputato non &egrave; valido',
       badSecurityAnswer: 'La risposta alla domanda di sicurezza &egrave; errata',
       badDate: 'La data scelta non &egrave; valida',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'La sua risposta non può essere più lunga di ',
       lengthBadEnd: ' caratteri',
       lengthTooLongStart: 'La lunghezza della risposta deve essere minore di ',

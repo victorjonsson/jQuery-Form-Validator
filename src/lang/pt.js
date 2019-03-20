@@ -24,6 +24,8 @@
       badTelephone: 'O telefone digitado não é válido',
       badSecurityAnswer: 'A pergunta de segurança não foi respondida corretamente',
       badDate: 'A data digitada não é válida',
+      badDateBefore: 'A data mínima permitida é ',
+      badDateAfter: 'A data máxima permitida é ',
       lengthBadStart: 'Sua resposta deve incluir entre ',
       lengthBadEnd: ' caracteres',
       lengthTooLongStart: 'Sua resposta tem mais que ',

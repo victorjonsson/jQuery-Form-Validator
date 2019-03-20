@@ -23,6 +23,8 @@
           badCreditCard:'Det angivne kortnummer er ugyldigt',
           badCustomVal: 'Den indtastede værdi er ugyldig',
           badDate: 'Den angivne dato er ugyldig',
+          badDateBefore: 'The minimum allowed date is ',
+          badDateAfter: 'The maximum allowed date is ',
           badDomain: 'Det angivne domæne er ugyldigt',
           badEmail: 'Den angivne email adresse er ugyldig',
           badInt: 'Det angivne tal er ugyldigt',

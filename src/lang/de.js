@@ -24,6 +24,8 @@
       badTelephone: 'Sie haben keine richtige Telefonnummer eingetragen',
       badSecurityAnswer: 'Sie haben die falsche Antwort auf die Sicherheitsfrage eingegeben',
       badDate: 'Eingabe eines falschen Datums',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'Der eingegebene Wert muss dazwischen sein ',
       lengthBadEnd: '  Zeichen',
       lengthTooLongStart: 'Der eingegebene Wert ist größer als ',

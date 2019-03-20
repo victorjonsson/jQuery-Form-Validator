@@ -24,6 +24,8 @@
       badTelephone: 'El número de telèfon proporcionat no és vàlid',
       badSecurityAnswer: 'La resposta a la seva pregunta de seguretat és incorrecte',
       badDate: 'La data proporcionada no és vàlida',
+      badDateBefore: 'The minimum allowed date is ',
+      badDateAfter: 'The maximum allowed date is ',
       lengthBadStart: 'La seva resposta s\'ha d\'incloure entre ',
       lengthBadEnd: ' caràcters',
       lengthTooLongStart: 'La seva resposta ha de ser menor a ',

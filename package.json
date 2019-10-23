@@ -37,10 +37,10 @@
     "grunt-umd": "~2.4.0",
     "numeral": "~1.5.3",
     "qunitjs": "^1.20.0",
-    "jquery": "2.2.4"
+    "jquery": "3.4.1"
   },
   "dependencies": {
-    "jquery": "2.2.4"
+    "jquery": "3.4.1"
   },
   "scripts": {
     "prepublish": "grunt prepublish",
